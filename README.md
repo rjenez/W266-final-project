@@ -24,22 +24,22 @@ The most used plagiarism detection tool MOSS (â€œMeasure Of Software Similarityâ
 
 ### Datasets 
 
-- Programming Homework Dataset for Plagiarism Detection (https://ieee-dataport.org/open-access/programming-homework-dataset-plagiarism-detection)<br>
+1. Programming Homework Dataset for Plagiarism Detection (https://ieee-dataport.org/open-access/programming-homework-dataset-plagiarism-detection)<br>
 Dataset is intended for studying how student programming styles and usage of IDE differs between students who plagiarise their homework and students who solve them honestly.
-- IR-Plag data set (Personal communication with author Oscar Karnalim)
+2. IR-Plag data set (Personal communication with author Oscar Karnalim)
 Benefit: it is canonically mapped
 Drawback: Small size and only cover introductory programming
 https://doi.org/10.15388/infedu.2019.15
 https://github.com/oscarkarnalim/sourcecodeplagiarismdataset
-- StaQC: A Systematically Mined Question-Code Dataset from Stack Overflow
+3. StaQC: A Systematically Mined Question-Code Dataset from Stack Overflow
 https://github.com/LittleYUYU/StackOverflow-Question-Code-Data
 StaQC (Stack Overflow Question-Code pairs) is the largest dataset to date of around 148K Python and 120K SQL domain question-code pairs, which are automatically mined from Stack Overflow using a Bi-View Hierarchical Neural Network, as described in the paper "StaQC: A Systematically Mined Question-Code Dataset from Stack Overflow" (WWW'18). 
-- Conala data source for https://conala-corpus.github.io
+4. Conala data source for https://conala-corpus.github.io
 This challenge was designed to test systems for generating program snippets from natural language. For example, if the input is sort list x in reverse order, then the system would be required to output x.sort(reverse=True) in Python.
 Dataset Information
 We have released a dataset crawled from Stack Overflow, automatically filtered, then curated by annotators, split into 2,379 training and 500 test examples (read more about the process here). We also provide a large automatically-mined dataset with 600k examples and links to other similar datasets. These data sets can be used for the CoNaLa challenge or for any other research on the intersection of code and natural language.
 --- Use this to look at snippets of similar intent and see how the plagiarism detector would grade them (does it present the same results as a well-trained user?). 
-- Stack Overflow - Self Annotated
+5. Stack Overflow - Self Annotated
 We have access to the Stack Overflow dataset of millions of questions and code answer pairs, so if the above examples for data sources are insufficient, we can annotate several thousand quickly using StaQC and Conala as templates for templates building a dataset. We could even imagine passing code segments through MOSS as a first pass to determine the similarity between code snippets or simply taking code snippets of an appropriate size and running a source code obfuscator to generate the plagiarized sets.
   
   
