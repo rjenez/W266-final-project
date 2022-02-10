@@ -17,8 +17,8 @@ from rkr_gst_helpers.manage_tokens import ManageTokens
 def main():
 	# test()
 	# process_tokens()
-	process_rkrgst()
-	# process_vsm()
+	# process_rkrgst()
+	process_vsm()
 	# process_lm()
 
 
@@ -149,8 +149,10 @@ def process_rkrgst():
 					current_fn = layers_dict[layer]["fn"]
 					if result <= 0.5:
 						current_tp.append(p)
+						tp.append(p)
 					else:
 						current_fn.append(p)
+						fn.append(p)
 
 					rank = (result, p)
 					ranks.append(rank)
@@ -185,17 +187,18 @@ def process_rkrgst():
 
 
 
-	# print("\n")
-	# print(tp)
-	# print(tn)
-	# print(fp)
-	# print(fn)
-	# print(len(tp), len(tn), len(fp), len(fn))
-	# for i in range(1, 7):
-	# 	print("\nL{} precision recall".format(i))
-	# 	current_tp = len(layers_dict[i]["tp"])
-	# 	current_fn = len(layers_dict[i]["fn"])
-	# 	print(current_tp, current_tp/(current_tp + len(fp)), current_tp/(current_tp + current_fn))
+	print("\n")
+	print(tp)
+	print(tn)
+	print(fp)
+	print(fn)
+	print(len(tp), len(tn), len(fp), len(fn))
+	for i in range(1, 7):
+		print("\nL{} precision recall".format(i))
+		current_tp = len(layers_dict[i]["tp"])
+		current_fn = len(layers_dict[i]["fn"])
+		print(current_tp, current_tp/(current_tp + len(fp)), current_tp/(current_tp + current_fn))
+	print(len(tp), len(tp)/(len(tp) + len(fp)), len(tp)/(len(tp) + len(fn)))
 		
 
 
@@ -218,7 +221,7 @@ def process_rkrgst():
 	
 def _process_rkrgst_helper(mantok_orig, mantok_other):
 	mininum_match_length = 2
-	initial_search_size = 8
+	initial_search_size = 1
 	rkr_gst(mantok_orig, mantok_other, mininum_match_length, initial_search_size)
 
 	tiles = {}
@@ -237,77 +240,131 @@ def _process_rkrgst_helper(mantok_orig, mantok_other):
 	similarity = 0
 	for tile_length, total in tiles.items():
 		similarity += total*tile_length*math.log(tile_length + 1)
-
 	normalized_similarity = similarity/normalization
+
+	# match_check = []
+	# for i, token in enumerate(mantok_orig.is_marked):
+	# 	if token:
+	# 		match_check.append(mantok_orig.tokens[i])
+	# normalized_similarity = 2 * len(match_check)/(len(mantok_orig.tokens) + len(mantok_other.tokens))
 
 	print(normalized_similarity)
 	return normalized_similarity
 
 
 def process_vsm():
-	check = dict()
-	for root, dirs, files in os.walk("IR-Plag-Dataset"):
-		print(root)
-		print(dirs)
-		print(files)
-		for f in files:
-			if f.endswith("indexes.json"):
-				with open("{}/{}".format(root, f)) as f:
-					tmp = loads(f.read())
-				for k, v in tmp.items():
-					if k not in check:
-						check[k] = 0
-					check[k] += v
-	print(check)
-	# for k in check.keys():
-	# 	check[k] = 0
-	with open("unigram_indexes.json", "w") as of:
-		of.write(dumps(check))
-	return
+	# check = dict()
+	# for root, dirs, files in os.walk("IR-Plag-Dataset"):
+	# 	print(root)
+	# 	print(dirs)
+	# 	print(files)
+	# 	for f in files:
+	# 		if f.endswith("indexes.json"):
+	# 			with open("{}/{}".format(root, f)) as f:
+	# 				tmp = loads(f.read())
+	# 			for k, v in tmp.items():
+	# 				if k not in check:
+	# 					check[k] = 0
+	# 				check[k] += v
+	# print(check)
+	# # for k in check.keys():
+	# # 	check[k] = 0
+	# with open("unigram_indexes.json", "w") as of:
+	# 	of.write(dumps(check))
+	# return
+	layers_dict = dict()
+	for layer in range(1, 7):
+		layers_dict[layer] = {
+			"tp": [],
+			"tn": [],
+			"fp": [],
+			"fn": [],
+			"map_check": [],
+			"ranks": [],
+			"n_plagiarized_files": 0
+		}
+	map_check = []
+	for i in range(1, 8):
+		case = str(i)
+		orig = "IR-Plag-Dataset/case-0{}/original/T{}_indexes.json".format(case, case)
 
+		ranks = []
+		np_ranks = []
+		print("\nNon-plagiarized")
+		nonp_check = []
+		for root, dirs, files in os.walk("IR-Plag-Dataset/case-0{}/non-plagiarized".format(case)):
+			for f in files:
+				if f.endswith("indexes.json"):
+					nonp = "{}/{}".format(root, f)
+					# print(nonp)
+					result = _process_vsm_helper(orig, nonp)
+					nonp_check.append(result)
+					rank = (result, nonp)
+					ranks.append(rank)
+					np_ranks.append(rank)
 
-	# for i in range(1, 8):
-	# 	case = str(i)
-	# 	orig = "IR-Plag-Dataset/case-0{}/original/T{}_indexes.json".format(case, case)
+		print("\nPlagiarized")
+		p_check = []
+		n_plagiarized_files = 0
+		for root, dirs, files in os.walk("IR-Plag-Dataset/case-0{}/plagiarized".format(case)):
+			for f in files:
+				if f.endswith("indexes.json"):
+					n_plagiarized_files += 1
+					p = "{}/{}".format(root, f)
+					# print(p)
+					result = _process_vsm_helper(orig, p)
+					p_check.append(result)
+					
+					rank = (result, p)
+					ranks.append(rank)
+					layer = int(p.split("/")[3][-1])
+					current_ranks = layers_dict[layer]["ranks"]
+					current_ranks.append(rank)
+					layers_dict[layer]["n_plagiarized_files"] += 1
 
-	# 	print("\nNon-plagiarized")
-	# 	nonp_check = []
-	# 	for root, dirs, files in os.walk("IR-Plag-Dataset/case-0{}/non-plagiarized".format(case)):
-	# 		for f in files:
-	# 			if f.endswith("indexes.json"):
-	# 				nonp = "{}/{}".format(root, f)
-	# 				# print(nonp)
-	# 				nonp_check.append(_process_vsm_helper(orig, nonp))
+		# print(nonp_check)
+		# print(p_check)
+		# input((np.mean(nonp_check), np.mean(p_check)))
 
-	# 	print("\nPlagiarized")
-	# 	p_check = []
-	# 	for root, dirs, files in os.walk("IR-Plag-Dataset/case-0{}/plagiarized".format(case)):
-	# 		for f in files:
-	# 			if f.endswith("indexes.json"):
-	# 				p = "{}/{}".format(root, f)
-	# 				# print(p)
-	# 				p_check.append(_process_vsm_helper(orig, p))
+		ranks = sorted(ranks, reverse=True)
+		print(ranks)
+		avg_precision = calculate_avg_precision(ranks, n_plagiarized_files)
+		print(avg_precision)
+		map_check.append(avg_precision)
 
-	# 	print(nonp_check)
-	# 	print(p_check)
-	# 	break
+		for layer in range(1, 7):
+			current_ranks = layers_dict[layer]["ranks"]
+			current_ranks = sorted(current_ranks + np_ranks, reverse=True)
+			current_n_plagiarized_files = layers_dict[layer]["n_plagiarized_files"]
+			# print(current_ranks)
+			# print(current_n_plagiarized_files)
+			current_avg_precision = calculate_avg_precision(current_ranks, current_n_plagiarized_files)
+			# input(current_avg_precision)
+			current_map_check = layers_dict[layer]["map_check"]
+			current_map_check.append(current_avg_precision)
+			# input(layers_dict[layer]["map_check"])
 
-	# 	print(np.mean(nonp_check), np.mean(p_check))
+	print("\n\nOverall")
+	print(map_check)
+	print(np.mean(map_check))
+	print("\nBy Layer")
+	for layer in range(1, 7):
+		print(np.mean(layers_dict[layer]["map_check"]))
 
 def _process_vsm_helper(orig, other):
-	# with open(orig, "r") as f:
-	# 	orig_indexes = loads(f.read())
-	# with open(other, "r") as f:
-	# 	other_indexes = loads(f.read())
-	# orig_keys = set(orig_indexes.keys())
-	# other_keys = set(other_indexes.keys())
-	# all_keys = orig_keys.union(other_keys)
-	# missing_orig_keys = all_keys.difference(orig_keys)
-	# missing_other_keys = all_keys.difference(other_keys)
-	# missing_orig = dict([(i, 0) for i in missing_orig_keys])
-	# missing_other = dict([(i, 0) for i in missing_other_keys])
-	# orig_indexes.update(missing_orig)
-	# other_indexes.update(missing_other)
+	with open(orig, "r") as f:
+		orig_indexes = loads(f.read())
+	with open(other, "r") as f:
+		other_indexes = loads(f.read())
+	orig_keys = set(orig_indexes.keys())
+	other_keys = set(other_indexes.keys())
+	all_keys = orig_keys.union(other_keys)
+	missing_orig_keys = all_keys.difference(orig_keys)
+	missing_other_keys = all_keys.difference(other_keys)
+	missing_orig = dict([(i, 0) for i in missing_orig_keys])
+	missing_other = dict([(i, 0) for i in missing_other_keys])
+	orig_indexes.update(missing_orig)
+	other_indexes.update(missing_other)
 
 	with open(orig, "r") as f:
 		tmp_orig_indexes = loads(f.read())
@@ -340,12 +397,24 @@ def process_lm():
 	with open("unigram_indexes.json", "r") as f:
 		collection_indexes = loads(f.read())
 
+	layers_dict = dict()
+	for layer in range(1, 7):
+		layers_dict[layer] = {
+			"tp": [],
+			"tn": [],
+			"fp": [],
+			"fn": [],
+			"map_check": [],
+			"ranks": [],
+			"n_plagiarized_files": 0
+		}
+	map_check = []
 	for i in range(1, 8):
 		case = str(i)
 		orig = "IR-Plag-Dataset/case-0{}/original/T{}_indexes.json".format(case, case)
 		
-
-
+		ranks = []
+		np_ranks = []
 		print("\nNon-plagiarized")
 		nonp_check = []
 		for root, dirs, files in os.walk("IR-Plag-Dataset/case-0{}/non-plagiarized".format(case)):
@@ -354,24 +423,57 @@ def process_lm():
 					nonp = "{}/{}".format(root, f)
 					print(nonp)
 					result = _process_lm_helper(orig, nonp, collection_indexes)
-
 					nonp_check.append(result)
+					rank = (result, nonp)
+					ranks.append(rank)
+					np_ranks.append(rank)
 
 		print("\nPlagiarized")
 		p_check = []
+		n_plagiarized_files = 0
 		for root, dirs, files in os.walk("IR-Plag-Dataset/case-0{}/plagiarized".format(case)):
 			for f in files:
 				if f.endswith("indexes.json"):
+					n_plagiarized_files += 1
 					p = "{}/{}".format(root, f)
 					print(p)
 					result = _process_lm_helper(orig, p, collection_indexes)
-
 					p_check.append(result)
+
+					rank = (result, p)
+					ranks.append(rank)
+					layer = int(p.split("/")[3][-1])
+					current_ranks = layers_dict[layer]["ranks"]
+					current_ranks.append(rank)
+					layers_dict[layer]["n_plagiarized_files"] += 1
 		
 		print(nonp_check)
 		print(p_check)
 		print(np.mean(nonp_check), np.mean(p_check))
-		input(i)
+		ranks = sorted(ranks, reverse=True)
+		print(ranks)
+		avg_precision = calculate_avg_precision(ranks, n_plagiarized_files)
+		print(avg_precision)
+		map_check.append(avg_precision)
+
+		for layer in range(1, 7):
+			current_ranks = layers_dict[layer]["ranks"]
+			current_ranks = sorted(current_ranks + np_ranks, reverse=True)
+			current_n_plagiarized_files = layers_dict[layer]["n_plagiarized_files"]
+			# print(current_ranks)
+			# print(current_n_plagiarized_files)
+			current_avg_precision = calculate_avg_precision(current_ranks, current_n_plagiarized_files)
+			# input(current_avg_precision)
+			current_map_check = layers_dict[layer]["map_check"]
+			current_map_check.append(current_avg_precision)
+			# input(layers_dict[layer]["map_check"])
+
+	print("\n\nOverall")
+	print(map_check)
+	print(np.mean(map_check))
+	print("\nBy Layer")
+	for layer in range(1, 7):
+		print(np.mean(layers_dict[layer]["map_check"]))
 
 def _process_lm_helper(orig, other, collection_indexes):
 	with open(orig, "r") as f:
@@ -380,8 +482,12 @@ def _process_lm_helper(orig, other, collection_indexes):
 		other_indexes = loads(f.read())
 
 	results = []
+	other_denom = len(orig_indexes)
+	collection_denom = len(collection_indexes)
+	# other_denom = sum(other_indexes.values())
+	# collection_denom = sum(collection_indexes.values())
 	for tok in orig_indexes.keys():
-		results.append(np.log(0.3 * other_indexes.get(tok, 0)/len(other_indexes) + 0.7 * collection_indexes[tok]/len(collection_indexes)))
+		results.append(np.log(0.3 * other_indexes.get(tok, 0)/other_denom + 0.7 * collection_indexes[tok]/collection_denom))
 
 	return sum(results)
 
