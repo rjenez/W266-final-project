@@ -2,6 +2,7 @@ import os
 import math
 from json import dumps, loads
 
+import nltk
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import cosine
@@ -18,8 +19,8 @@ def main():
 	# test()
 	# process_tokens()
 	# process_rkrgst()
-	process_vsm()
-	# process_lm()
+	# process_vsm()
+	process_lm()
 
 
 def test():
@@ -37,8 +38,8 @@ def process_tokens():
 	for root, dirs, fs in os.walk("IR-Plag-Dataset"):
 		for f in fs:
 			if f.endswith(".java"):
-				tokens_of = "{}/{}".format(root, f.replace(".java", "_tokens.json"))
-				indexes_of = "{}/{}".format(root, f.replace(".java", "_indexes.json"))
+				tokens_of = "{}/{}".format(root, f.replace(".java", "_tokens_2.json"))
+				indexes_of = "{}/{}".format(root, f.replace(".java", "_indexes_2.json"))
 				
 
 				with open("{}/{}".format(root, f), "r") as f:
@@ -48,12 +49,14 @@ def process_tokens():
 				stream.fill()
 
 				tokens = [token.text for token in stream.tokens][:-1]
+				tokens = list(nltk.bigrams(tokens))
 				with open(tokens_of, "w") as of:
 					# save tokens as text (EOF is stripped from the end)
 					of.write(dumps(tokens))
 
 				tokens_dict = dict()
 				for t in tokens:
+					t = "{},{}".format(t[0], t[1])
 					if t not in tokens_dict:
 						tokens_dict[t] = 0
 					tokens_dict[t] += 1
@@ -160,6 +163,7 @@ def process_rkrgst():
 					current_ranks.append(rank)
 					layers_dict[layer]["n_plagiarized_files"] += 1
 
+		# ranks = sorted(ranks)
 		ranks = sorted(ranks)
 		print(ranks)
 		avg_precision = calculate_avg_precision(ranks, n_plagiarized_files)
@@ -168,6 +172,7 @@ def process_rkrgst():
 
 		for layer in range(1, 7):
 			current_ranks = layers_dict[layer]["ranks"]
+			# current_ranks = sorted(current_ranks + np_ranks)
 			current_ranks = sorted(current_ranks + np_ranks)
 			current_n_plagiarized_files = layers_dict[layer]["n_plagiarized_files"]
 			# print(current_ranks)
@@ -246,9 +251,19 @@ def _process_rkrgst_helper(mantok_orig, mantok_other):
 	# for i, token in enumerate(mantok_orig.is_marked):
 	# 	if token:
 	# 		match_check.append(mantok_orig.tokens[i])
+	# # match_check = set()
+	# # for i, token in enumerate(mantok_orig.is_marked):
+	# # 	if token:
+	# # 		match_check.add(mantok_orig.tokens[i])
 	# normalized_similarity = 2 * len(match_check)/(len(mantok_orig.tokens) + len(mantok_other.tokens))
 
 	print(normalized_similarity)
+	# if normalized_similarity > 1:
+	# 	print(match_check)
+	# 	print(mantok_orig.tokens)
+	# 	print(mantok_other.tokens)
+	# 	print(len(match_check), len(mantok_orig.tokens), len(mantok_other.tokens))
+	# 	input("check")
 	return normalized_similarity
 
 
@@ -259,7 +274,7 @@ def process_vsm():
 	# 	print(dirs)
 	# 	print(files)
 	# 	for f in files:
-	# 		if f.endswith("indexes.json"):
+	# 		if f.endswith("indexes_2.json"):
 	# 			with open("{}/{}".format(root, f)) as f:
 	# 				tmp = loads(f.read())
 	# 			for k, v in tmp.items():
@@ -269,7 +284,7 @@ def process_vsm():
 	# print(check)
 	# # for k in check.keys():
 	# # 	check[k] = 0
-	# with open("unigram_indexes.json", "w") as of:
+	# with open("bigram_indexes.json", "w") as of:
 	# 	of.write(dumps(check))
 	# return
 	layers_dict = dict()
@@ -352,28 +367,37 @@ def process_vsm():
 		print(np.mean(layers_dict[layer]["map_check"]))
 
 def _process_vsm_helper(orig, other):
-	with open(orig, "r") as f:
-		orig_indexes = loads(f.read())
-	with open(other, "r") as f:
-		other_indexes = loads(f.read())
-	orig_keys = set(orig_indexes.keys())
-	other_keys = set(other_indexes.keys())
-	all_keys = orig_keys.union(other_keys)
-	missing_orig_keys = all_keys.difference(orig_keys)
-	missing_other_keys = all_keys.difference(other_keys)
-	missing_orig = dict([(i, 0) for i in missing_orig_keys])
-	missing_other = dict([(i, 0) for i in missing_other_keys])
-	orig_indexes.update(missing_orig)
-	other_indexes.update(missing_other)
+	# with open(orig, "r") as f:
+	# 	orig_indexes = loads(f.read())
+	# with open(other, "r") as f:
+	# 	other_indexes = loads(f.read())
+	# orig_keys = set(orig_indexes.keys())
+	# other_keys = set(other_indexes.keys())
+	# all_keys = orig_keys.union(other_keys)
+	# missing_orig_keys = all_keys.difference(orig_keys)
+	# missing_other_keys = all_keys.difference(other_keys)
+	# missing_orig = dict([(i, 0) for i in missing_orig_keys])
+	# missing_other = dict([(i, 0) for i in missing_other_keys])
+	# orig_indexes.update(missing_orig)
+	# other_indexes.update(missing_other)
 
 	with open(orig, "r") as f:
 		tmp_orig_indexes = loads(f.read())
 	with open(other, "r") as f:
 		tmp_other_indexes = loads(f.read())
-	with open("unigram_indexes.json", "r") as f:
+	
+	if not os.path.exists("unigram_indexes_zeroed.json"):
+		with open("unigram_indexes.json", "r") as f:
+			indexes = loads(f.read())
+			for k in indexes.keys():
+				indexes[k] = 0
+		with open("unigram_indexes_zeroed.json", "w") as of:
+			of.write(dumps(indexes))
+
+	with open("unigram_indexes_zeroed.json", "r") as f:
 		orig_indexes = loads(f.read())
 		orig_indexes.update(tmp_orig_indexes)
-	with open("unigram_indexes.json", "r") as f:
+	with open("unigram_indexes_zeroed.json", "r") as f:
 		other_indexes = loads(f.read())
 		other_indexes.update(tmp_other_indexes)
 
@@ -395,6 +419,7 @@ def _calc_cos_sim(a, b):
 
 def process_lm():
 	with open("unigram_indexes.json", "r") as f:
+	# with open("bigram_indexes.json", "r") as f:
 		collection_indexes = loads(f.read())
 
 	layers_dict = dict()
