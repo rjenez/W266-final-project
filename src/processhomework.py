@@ -12,16 +12,6 @@ homeworkDir='../data/programming-homework-dataset-plagiarism-detection/src'
 groundtruth='../data/programming-homework-dataset-plagiarism-detection/ground-truth-static.txt'
 groundtruth='../data/programming-homework-dataset-plagiarism-detection/ground-truth-anon.txt'
 groundtruth='../data/programming-homework-dataset-plagiarism-detection/ground-truth-dynamic.txt'
-locationfilter=['A2016/Z1/Z1','A2016/Z1/Z2','A2016/Z1/Z3','A2016/Z1/Z4',
-                'A2016/Z2/Z1','A2016/Z2/Z2','A2016/Z2/Z3','A2016/Z2/Z4',
-                'A2016/Z3/Z1','A2016/Z3/Z2','A2016/Z3/Z3',
-                'A2016/Z4/Z1','A2016/Z4/Z2','A2016/Z4/Z3','A2016/Z4/Z4',
-                'A2016/Z5/Z1','A2016/Z5/Z2','A2016/Z5/Z3',
-                'A2017/Z1/Z1','A2017/Z1/Z2','A2017/Z1/Z3','A2017/Z1/Z4',
-                'A2017/Z2/Z1','A2017/Z2/Z2','A2017/Z2/Z3','A2017/Z2/Z4',
-                'A2017/Z3/Z1','A2017/Z3/Z2','A2017/Z3/Z3','A2017/Z3/Z4',
-                'A2017/Z4/Z1','A2017/Z4/Z2','A2017/Z4/Z3','A2017/Z4/Z4',
-                'A2017/Z5/Z1','A2017/Z5/Z2','A2017/Z5/Z3','A2017/Z5/Z4']
 
 
 class SimilarityManager:
@@ -81,8 +71,6 @@ class SimilarityManager:
         similar = []
         found = []
         for location in [random.choice(list(self.groundtruthdetail.keys())) for _ in range(n)]:
-            #if location not in locationfilter:
-            #    continue
             if self.allfiles.get(location,False) is False or self.groundtruthdetail.get(location,False) is False or \
                self.groundtruthdetail[location].get('similar',False) is False or \
                len(self.groundtruthdetail[location]['similar']) < 1: #or len(self.groundtruthdetail[location]['similar'][0]) <= 0:
@@ -104,62 +92,6 @@ class SimilarityManager:
             similar.append({c[0]:self.allfiles[location][c[0]],c[1]:self.allfiles[location][c[1]]})
         return similar
 
-    def xxx_getsimilar(self,n):
-        similar = []
-        found = []
-        for location in list(self.groundtruthdetail.keys()):
-            #if location not in locationfilter:
-            #    continue
-            if self.allfiles.get(location,False) is False or self.groundtruthdetail.get(location,False) is False or \
-               self.groundtruthdetail[location].get('similar',False) is False:
-                if len(self.groundtruthdetail[location]['similar']) <= 0:
-                    #print('continuing', location,self.groundtruthdetail[location]['similar'],len(self.groundtruthdetail[location]['similar']))
-                    #print('____',location,self.groundtruthdetail[location]['similar'])
-                    continue
-                
-            #students = random.choice(self.groundtruthdetail[location]['similar'])
-            for students in self.groundtruthdetail[location]['similar']:
-                if students is None or len(students) <= 1:
-                    break
-                #c = random.choice(list(combinations(students,2)))
-                for c in list(combinations(students,2)):
-                    if self.allfiles.get(location, False) is False or self.allfiles[location].get(c[0], False) is False or \
-                    self.allfiles[location].get(c[1], False) is False or \
-                    (location,c[0],c[1]) in found or (location,c[1],c[0]) in found:
-                        #print('continuing...@@ ' ,location, c)
-                        continue
-                    #won't do this check for now
-                    #found.append((location,c[0],c[1]))
-                    #found.append((location,c[1],c[0]))
-                    similar.append({c[0]:self.allfiles[location][c[0]],c[1]:self.allfiles[location][c[1]]})
-                    n -= 1
-        return similar
-
-    def xxx_getnonsimilar(self,n):
-        nonsimilar = []
-        found = []
-        for location in list(self.groundtruthdetail.keys()):
-            #if location not in locationfilter:
-            #    continue
-            if self.allfiles.get(location,False) is False or self.groundtruthdetail.get(location,False) is False or \
-               self.groundtruthdetail[location].get('similar',False) is False or len(self.groundtruthdetail[location]['similar']) <= 0:
-                continue
-
-            allstudents = self.groundtruthdetail[location]['similar']
-            for  i in range(len(allstudents)-1):
-                for student in allstudents[i]:
-                    if student is None or len(student) == 0:
-                        continue
-                    flat = list(np.array(allstudents[i+1]).flatten())
-                    flat.append(student)
-                    for c in combinations(flat,2):
-                        if self.allfiles[location].get(c[0], False) is False or self.allfiles[location].get(c[1], False) is False or \
-                           (location,c[0],c[1]) in found or (location,c[1],c[0]) in found:
-                            continue
-                        found.append((location,c[0],c[1]))
-                        found.append((location,c[1],c[0]))
-                        nonsimilar.append({c[0]:self.allfiles[location][c[0]],c[1]:self.allfiles[location][c[1]]})
-        return nonsimilar                        
                         
     def getnonsimilar(self,n):
         nonsimilar = []
