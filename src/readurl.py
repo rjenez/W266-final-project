@@ -66,7 +66,9 @@ parser.add_argument('--title', dest='title', type=str, default='',
 parser.add_argument('--include-source', default=True, action='store_true',
                     help='Include source in training and test ')
 parser.add_argument('--ground-truth', dest='ground_truth', type=str, default='',
-                    help='Ground truth file for plagiarism')
+                    help='ground truth files for plagiarized content')
+parser.add_argument('--baseurl', dest='baseurl', type=str, default='',
+                    help='baseurl for getting the results')
 
 from requests_testadapter import Resp
 
@@ -223,7 +225,10 @@ def main():
     global args
     args = parser.parse_args()
 
-    urls = args.urls
+    urls = [os.path.join(args.baseurl,url) for url in args.urls]
+    #print(urls, args.urls)
+
+    #return
 
     alldatadf = pd.DataFrame(columns = ['label','filename0','filename1','source0','source1','percent','percent0','percent1','lines'])
 

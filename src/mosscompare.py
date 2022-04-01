@@ -66,7 +66,7 @@ def docomparisons(samplefile,groundtruth, inputdir, outputdir, outputfile, n,mat
         print(n,matches,nfiles)
         m.setNumberOfMatchingFiles(n)
         m.setIgnoreLimit(matches)
-        m.setExperimentalServer(1)
+        #m.setExperimentalServer(1)
         rootdir = os.path.join(inputdir,k)
         for root, subdirs, files in os.walk(rootdir):
             print('--\nroot = ' + root + rootdir)
@@ -84,28 +84,34 @@ def docomparisons(samplefile,groundtruth, inputdir, outputdir, outputfile, n,mat
                 #print('\t- file %s (full path: %s) (destination path %s)' % (filename, filepath,destinationfile))
                 #shutil.copy(filepath,destinationfile)
         if count == 0:
-            # no files found, so move on
+            # no files found, so need to create the directory to keep track and move on..
+            os.mkdir(outputdir+k.replace("/","_"))
             continue
         #print(json.dumps(allfiles,sort_keys=True, indent=4))
         print(f'sending...{count}' )
 
         try:
-            url = m.send(lambda file_path, display_name: print(display_name,  flush=True) if verbose > 0 else lambda file_path, display_name: file_path )
+            url,resp = m.send(lambda file_path, display_name: print(display_name,  flush=True) if verbose > 0 else lambda file_path, display_name: file_path )
         except IOError as e:
             print(f'Failed getting {k} with error {e}  continuing tryng next section')
             del m
             m = None
             count = 0
+            print('sleeping...')
+            time.sleep(300)
             continue
 
         print(f'waiting... for data, {url}',url)
         try:
+            
             m.saveWebPage(url, outputfile+k.replace("/","_")+".html")
         except Exception as e:
-            print(f'Failed getting {url} with error {e}  continuing tryng next section')
+            print(f'Failed getting {url} {resp} with error {e}  continuing tryng next section')
             del m
             m = None
             count = 0
+            print('sleeping...')
+            time.sleep(300)
             continue            
         print('webpage saved...')
         mosspy.download_report(url, outputdir+k.replace("/","_"), connections=4, log_level=20)#, on_read=lambda url: print(url,  flush=True))
