@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student4100.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student4100.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+<a name="0"></a><font color="#FF0000"><a href="match221-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+typedef std::vector&lt;double&gt; Vektor;
+
+Matrica KreirajMatricu(int br_redova, int br_kolona){
+    return Matrica(br_redova,Vektor(br_kolona));
+}
+
+Matrica UnesiMatricu(int br_redova, int br_kolona){
+    auto m(KreirajMatricu(br_redova,br_kolona));
+    
+    for(int i=0;i&lt;br_redova;i++){
+        for(int j=0;j&lt;br_kolona;j++){
+            cin&gt;&gt;m.at(i).at(j);
+        }
+    }
+    return m;
+}
+
+void IspisMatricu(Matrica m){
+    for(int i=0;i&lt;m.size();i++){
+        for(int j=0;j&lt;m.at(0).size();j++){
+            cout&lt;&lt;right&lt;&lt;setw(6)&lt;&lt;m.at(i).at(j);
+        }
+        cout&lt;&lt;endl;
+    }
+}
+
+bool DaLiJeGrbava(Matrica m){
+    
+    for(int i=0;i&lt;m.size()-1;i++)
+        if(m.at(i).size()!=m.at(i+1).size())
+            return true;
+    return false;
+}
+
+Matrica NajvecaPlaninaMatrice (Matrica m){
+    
+    double maxi=0,maxj=0;
+    int d=0,maxd=0;
+    Matrica pom_m;
+    
+  
+      
+          if(DaLiJeGrbava(m)==true){
+                           throw domain_error("Matrica nije korektna");
+                           return pom_m;
+           }
+    
+      
+        for(int i=0;i&lt;m.size();i++){
+            for(int j=0;j&lt;m.at(i).size();j++){
+                double suma=0;
+                double proslasuma=0;
+                double svesume=0;
+                //3 3 1 0 0 0 9 0 1 3 0
+                for(d=0;d&lt;=i &amp;&amp; d&lt;=j &amp;&amp; d&lt;m.size()-i &amp;&amp; d&lt;m.at(i).size()-j;d++){
+                    suma=0;
+                    for(int k=i-d;k&lt;=i+d;k++){
+                        for(int g=j-d;g&lt;=j+d;g++){
+                            suma+=m.at(k).at(g);
+                        }
+                    }
+                    
+                    if(suma-svesume&gt;=proslasuma &amp;&amp; d!=0)break;
+                    proslasuma=suma-svesume;
+                    svesume=suma;
+                    
+                    if(d&gt;=maxd){
+                        
+                        if(d==maxd &amp;&amp; m.at(i).at(j)&gt;m.at(maxi).at(maxj)){
+                            maxi=i;
+                            maxj=j;
+                            maxd=d;
+                        }
+                        else{
+                            maxi=i;
+                            maxj=j;
+                            maxd=d;
+                        }
+                        
+                    }
+                }
+                
+                
+               
+               
+            }
+        }
+                Vektor red;
+                for(int p=maxi-maxd;p&lt;=maxi+maxd;p++){
+                    for(int q=maxj-maxd;q&lt;=maxj+maxd;q++){
+                        red.push_back(m.at(p).at(q));
+                    }
+                    pom_m.push_back(red);
+                    red.resize(0);
+                }
+                
+        return pom_m;
+    
+}
+
+int main ()
+{
+    int m,n;
+    
+    cout&lt;&lt;"Unesite dimenzije matrice (m i n): ";
+    cin&gt;&gt;m&gt;&gt;n;
+    
+    if(m&lt;0 || n&lt;0){
+        cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+        return 0;
+    }
+    
+    cout&lt;&lt;"Unesite elemente matrice:";
+    Matrica M;
+   
+    M=UnesiMatricu(m,n);
+    
+    cout&lt;&lt;endl&lt;&lt;"Najveca planina unesene matrice je: "&lt;&lt;endl;
+    
+    Matrica M1;
+    try{
+        NajvecaPlaninaMatrice(M);
+    }catch(domain_error izuzetak){
+        cout&lt;&lt;izuzetak.what();
+    }
+    
+    M1=NajvecaPlaninaMatrice(M);
+    IspisMatricu(M1);
+    
+	return 0;
+</font>}</pre>
+</body>
+</html>

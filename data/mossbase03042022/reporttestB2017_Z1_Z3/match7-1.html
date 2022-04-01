@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student9946.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student3567.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;deque&gt;
+#include &lt;cmath&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match7-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_95.gif"/></a>
+
+typedef std::deque&lt;std::deque&lt;int&gt;&gt; DekVektora;
+typedef std::deque&lt;int&gt; Dek;
+enum Smjer {
+    Rastuci=1,
+    Opadajuci=2
+
+} rasti_padaj;
+bool JeliKvadrat(int n)
+{
+	float broj(n);
+	if(broj&lt;=0 || broj==10) return false;
+	long long test=sqrt(broj);
+	if(test%1==0) return true;
+	return false;
+}
+bool ProvjeriJelPodnizNekogDrugogNiza(DekVektora dekvektora,int n)
+{
+	for(int i=0; i&lt;dekvektora.size(); i++) {
+		for(int j=0; j&lt;dekvektora.at(i).size(); j++) {
+			if (n==dekvektora.at(i).at(j))
+				return false;
+		}
+	}
+	return true;
+}
+DekVektora MaksimalniPodnizoviStepenaDvojke(Dek vekt_cijelih_brojeva,Smjer rasti_padaj)
+{
+
+	DekVektora nikoJaciOdMene;
+
+	// za rastuce od manjih ka vecim
+	if(rasti_padaj==Rastuci) {
+		int minimalac;
+		int zapamti_indeks;
+		Dek dodjiDaTiPomognem;
+		for(int i=0; i&lt;vekt_cijelih_brojeva.size(); i++) {
+			if(JeliKvadrat(vekt_cijelih_brojeva.at(i))) {
+				minimalac=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.push_back(minimalac);
+				zapamti_indeks=i;
+				break;
+
+			}
+		}
+		for(int i=zapamti_indeks; i&lt;vekt_cijelih_brojeva.size(); i++) {
+			if(i!=zapamti_indeks &amp;&amp; JeliKvadrat(vekt_cijelih_brojeva.at(i)) &amp;&amp; vekt_cijelih_brojeva.at(i)&gt;minimalac ) {
+				minimalac=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.push_back(minimalac);
+				continue;
+			} else if(i!=zapamti_indeks &amp;&amp; dodjiDaTiPomognem.size()==1 &amp;&amp; JeliKvadrat(vekt_cijelih_brojeva.at(i)) &amp;&amp; vekt_cijelih_brojeva.at(i)&lt;=minimalac ) {
+				minimalac=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.resize(0);
+				dodjiDaTiPomognem.push_back(minimalac);
+				continue;
+			} else if(i!=zapamti_indeks &amp;&amp; dodjiDaTiPomognem.size()&gt;1 &amp;&amp; JeliKvadrat(vekt_cijelih_brojeva.at(i)) &amp;&amp; vekt_cijelih_brojeva.at(i)&lt;=minimalac ) {
+				nikoJaciOdMene.push_back(dodjiDaTiPomognem);
+				dodjiDaTiPomognem.resize(0);
+				minimalac=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.push_back(minimalac);
+
+
+
+			}
+
+		}
+	}
+	// za opadajuce od manjeg ka vecim
+	if(rasti_padaj==Opadajuci) {
+		int velikiSam;
+		int zapamti_indeks;
+		Dek dodjiDaTiPomognem;
+		for(int i=0; i&lt;vekt_cijelih_brojeva.size(); i++) {
+			if(JeliKvadrat(vekt_cijelih_brojeva.at(i))) {
+				velikiSam=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.push_back(velikiSam);
+				zapamti_indeks=i;
+				break;
+
+			}
+		}
+		for(int i=zapamti_indeks; i&lt;vekt_cijelih_brojeva.size(); i++) {
+			if(i==vekt_cijelih_brojeva.size()-2 &amp;&amp; JeliKvadrat(vekt_cijelih_brojeva.at(i+1))==false &amp;&amp; vekt_cijelih_brojeva.at(i-1)&gt;vekt_cijelih_brojeva.at(i)){
+					velikiSam=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.push_back(velikiSam);
+					nikoJaciOdMene.push_back(dodjiDaTiPomognem);
+				return nikoJaciOdMene;
+			}
+			if(i==vekt_cijelih_brojeva.size()-1 &amp;&amp; JeliKvadrat(vekt_cijelih_brojeva.at(i)) &amp;&amp; velikiSam&gt;vekt_cijelih_brojeva.at(i)){
+					velikiSam=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.push_back(velikiSam);
+					nikoJaciOdMene.push_back(dodjiDaTiPomognem);
+				return nikoJaciOdMene;
+			}
+			if((JeliKvadrat(vekt_cijelih_brojeva.at(i))==false &amp;&amp; vekt_cijelih_brojeva.at(i)&lt;velikiSam &amp;&amp; (i+1&lt;=vekt_cijelih_brojeva.size()-1 )  &amp;&amp; dodjiDaTiPomognem.size()&gt;1)) {
+				nikoJaciOdMene.push_back(dodjiDaTiPomognem);
+				dodjiDaTiPomognem.resize(0);
+				i++;
+				velikiSam=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.push_back(velikiSam);
+			} else if (JeliKvadrat(vekt_cijelih_brojeva.at(i))==false &amp;&amp; vekt_cijelih_brojeva.at(i)&lt;velikiSam &amp;&amp; i+1&lt;=vekt_cijelih_brojeva.size()-1  &amp;&amp; dodjiDaTiPomognem.size()==1) {
+				dodjiDaTiPomognem.resize(0);
+				i++;
+				velikiSam=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.push_back(velikiSam);
+			} else if(JeliKvadrat(vekt_cijelih_brojeva.at(i))==false &amp;&amp; i+1&gt;=vekt_cijelih_brojeva.size()-1 || i==vekt_cijelih_brojeva.size() &amp;&amp; dodjiDaTiPomognem.size()==1) {
+			return nikoJaciOdMene;
+		}
+
+
+		if(i!=zapamti_indeks &amp;&amp; JeliKvadrat(vekt_cijelih_brojeva.at(i)) &amp;&amp; vekt_cijelih_brojeva.at(i)&lt;velikiSam  ) {
+			velikiSam=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.push_back(velikiSam);
+				continue;
+			} else if(i!=zapamti_indeks &amp;&amp; dodjiDaTiPomognem.size()==1 &amp;&amp; vekt_cijelih_brojeva.at(i)&gt;=velikiSam &amp;&amp; JeliKvadrat(vekt_cijelih_brojeva.at(i))) {
+			velikiSam=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.resize(0);
+				dodjiDaTiPomognem.push_back(velikiSam);
+				continue;
+			} else if(i!=zapamti_indeks &amp;&amp; dodjiDaTiPomognem.size()&gt;1  &amp;&amp; vekt_cijelih_brojeva.at(i)&gt;=velikiSam &amp;&amp; JeliKvadrat(vekt_cijelih_brojeva.at(i))) {
+			nikoJaciOdMene.push_back(dodjiDaTiPomognem);
+				dodjiDaTiPomognem.resize(0);
+				velikiSam=vekt_cijelih_brojeva.at(i);
+				dodjiDaTiPomognem.push_back(velikiSam);
+			}
+
+
+
+		}
+	}
+	return nikoJaciOdMene;
+
+}
+int main ()
+{
+
+	std::cout&lt;&lt;"Unesite broj elemenata vektora: ";
+	int n;
+	std::cin&gt;&gt;n;
+	std::deque&lt;int&gt; glavni_niz;
+	std::cout&lt;&lt;"Unesite elemente vektora: ";
+
+	for (int i=0; i&lt;n; i++) {
+		int broj;
+		std::cin&gt;&gt;broj;
+		glavni_niz.push_back(broj);
+
+	}
+	std::cout&lt;&lt;"Unesite: 1 - za rastuce podnizove, 2 - za opadajuce podnizove: ";
+
+	Smjer rasti_padaj;
+	int unos;
+	std::cin &gt;&gt; unos;
+	rasti_padaj=Smjer(unos);
+	DekVektora kraj(MaksimalniPodnizoviStepenaDvojke(glavni_niz,rasti_padaj));
+	if(unos==1) {
+		std::cout&lt;&lt;"Maksimalni rastuci podnizovi: ";
+		std::cout &lt;&lt;std::endl;
+	} else {
+		std::cout&lt;&lt;"Maksimalni opadajuci podnizovi: ";
+		std::cout &lt;&lt;std::endl;
+	}
+
+	for(int i=0; i&lt;kraj.size(); i++) {
+
+		for(int j=0; j&lt;kraj.at(i).size(); j++) {
+</font>			std::cout&lt;&lt;kraj.at(i).at(j)&lt;&lt;" ";
+		}
+		std::cout &lt;&lt;std::endl;
+	}
+	return 0;
+}</pre>
+</body>
+</html>

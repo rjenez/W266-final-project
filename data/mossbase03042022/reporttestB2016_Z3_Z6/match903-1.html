@@ -1,0 +1,174 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student4949.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student8430.cpp<p></p><pre>
+<a name="2"></a><font color="#0000FF"><a href="match903-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 6
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt;
+using namespace std;
+
+struct Dijete{
+    
+    string ime;
+    shared_ptr&lt;Dijete&gt; sljedeci;
+</font>    //Dijete *sljedeci;
+
+};
+
+<a name="1"></a><font color="#00FF00"><a href="match903-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+int DajBrojSlova(string s){
+    
+    int broj_slova = 0;
+    for(int i = 0 ; i &lt; s.length() ; i++){
+        if((s[i] &gt;= 'a' &amp;&amp; s[i] &lt;= 'z') || (s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z') || (s[i] &gt;= '0' &amp;&amp; s[i] &lt;= '9') ){
+</font><a name="0"></a><font color="#FF0000"><a href="match903-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+            broj_slova++;
+        }
+    }
+    
+    return broj_slova;
+}
+
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector&lt;string&gt; v, int broj_timova){
+    
+    if(broj_timova &lt; 1 || broj_timova &gt; v.size()){
+        throw logic_error("Razvrstavanje nemoguce");
+</font>    }
+    
+    vector&lt;set&lt;string&gt;&gt; timovi(broj_timova);
+    
+    //Dijete *poc = nullptr;
+    //Dijete *pred = nullptr;
+    shared_ptr&lt;Dijete&gt; poc(nullptr);
+    shared_ptr&lt;Dijete&gt; pred(nullptr);
+    for(int i = 0 ; i &lt; v.size() ; i++){
+            
+        //Dijete *pom = new Dijete;
+        shared_ptr&lt;Dijete&gt; pom(new Dijete);
+        if(!poc){
+            poc = pom;
+        }
+        else{
+            pred -&gt; sljedeci = pom;
+        }
+        if(i != v.size() - 1){
+            pom -&gt; sljedeci = nullptr;
+        }
+        else{
+            pom -&gt; sljedeci = poc;
+        }
+        pred = pom;
+        pom -&gt; ime = v[i];
+            
+    }
+    
+    //Dijete *p = poc;
+    shared_ptr&lt;Dijete&gt; p(poc);
+    int brojac = 0 , tim = 0;
+    for(int i = 0 ; i &lt; v.size() ; i++){
+        
+        
+        brojac++;
+        int broj_slova = DajBrojSlova(p -&gt; ime);
+        
+        //Dijete *predhodnik = p;
+        shared_ptr&lt;Dijete&gt; predhodnik(p);
+        while(predhodnik -&gt; sljedeci != p){
+            predhodnik = predhodnik -&gt; sljedeci;
+        }
+        predhodnik -&gt; sljedeci = p -&gt; sljedeci;
+        //Dijete *brisanje = p;//
+        //shared_ptr&lt;Dijete&gt; brisanje;
+        //p = p -&gt; sljedeci;
+        timovi[tim].insert(p -&gt; ime);
+        for(int k = 0 ; k &lt; broj_slova ; k++){
+            p = p -&gt; sljedeci;
+        }
+        //delete brisanje;
+        
+        if(i == v.size() - 1){
+            p -&gt; sljedeci = nullptr;
+        }
+        
+        
+        if(brojac &gt; v.size() / broj_timova){
+            tim++;
+            brojac = 0;
+        }
+        if(brojac == v.size() / broj_timova){
+            if(tim &lt; v.size() % broj_timova){
+                broj_slova = DajBrojSlova(p -&gt; ime);
+                continue;
+            }
+            tim++;
+            brojac = 0;
+
+        }
+        
+    }
+    
+    return timovi;
+}
+
+int main ()
+{
+    //vector&lt;string&gt; v{"Damir", "Ana" , "Muhamed" , "Marko" , "Ivan" , "Mirsad" , "Nikolina" , "Alen" , "Jasmina" , "Merima"};
+    //Razvrstavanje(v , 3);
+    
+    vector&lt;string&gt; v;
+    cout &lt;&lt; "Unesite broj djece: ";
+    int broj;
+    cin &gt;&gt; broj;
+    cout &lt;&lt; "Unesite imena djece: " &lt;&lt; endl;
+    cin.ignore(1000 , '\n');
+    for(int i = 0 ; i &lt; broj ; i++){
+        string s;
+        getline(cin,s);
+        v.push_back(s);
+    }
+    cout &lt;&lt; "Unesite broj timova: ";
+    cin &gt;&gt; broj;
+
+    try{
+        vector&lt;set&lt;string&gt;&gt; pom = Razvrstavanje(v , broj);
+        
+        for(int i = 0 ; i &lt; broj ; i++){
+            
+            int broj = 0;
+            for(auto it = pom[i].begin() ; it != pom[i].end() ; it++){
+                broj++;
+            }
+            
+            cout &lt;&lt; "Tim " &lt;&lt; i + 1 &lt;&lt; ": ";
+            int brojac = 0;
+            for(auto it = pom[i].begin() ; it != pom[i].end() ; it++){
+                brojac++;
+                if(broj == brojac){
+                    cout &lt;&lt; *it &lt;&lt; endl;
+                }
+                else{
+                    cout &lt;&lt; *it &lt;&lt; ", ";
+                }
+            }
+            
+        }
+    }
+    catch(logic_error e){
+        cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; endl;
+    }
+	return 0;
+}</pre>
+</body>
+</html>

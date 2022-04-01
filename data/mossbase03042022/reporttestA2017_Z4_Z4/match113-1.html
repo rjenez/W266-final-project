@@ -1,0 +1,113 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z4/Z4/student7013.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z4/Z4/student7936.c<p></p><pre>
+#include &lt;stdio.h&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match113-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_98.gif"/></a>
+
+int provjeri(char *s)
+{
+	char tagovi[10000];
+	char* pocetak=tagovi;
+	char* t=tagovi;
+	int broj_tagova=0;
+	*t=' ';
+
+	while(*s!='\0') {
+		if (*s=='&lt;' &amp;&amp; *(s+1)!='/') {
+			char *p=s+1;
+			char* kraj=s+1;
+			int kraj_taga=0;
+			if(!((*(s+1)&gt;='A' &amp;&amp; *(s+1)&lt;='Z') || (*(s+1)&gt;='a' &amp;&amp; *(s+1)&lt;='z'))) return 0;
+			/*trazenje kraja taga*/
+			while(*kraj!='\0') {
+				if(*kraj=='&lt;') return 0;
+				else if(*kraj=='&gt;') {
+					kraj_taga=1;
+					break;
+				}
+				kraj++;
+			}
+			if(kraj_taga==0) return 0;
+			s++;
+			t++;
+			broj_tagova++;
+			while(*p!='\0') {
+				if (*p==' ' || *p=='&gt;') break;
+				p++;
+			}
+			/*stavljanje naziva taga u string*/
+			while(s&lt;p) {
+				char temp=*s;
+				if(temp&gt;='A'&amp;&amp; temp&lt;='Z') temp+='a' - 'A';
+				*t++=temp;
+				s++;
+			}
+			*t=' ';
+		}
+
+		else if(*s=='&lt;' &amp;&amp; *(s+1)=='/') {
+			char* p=s+2;
+			char* kraj=s+2;
+			char* razmak=t;
+			char* tag=t-1;
+			int kraj_taga=0;
+			if(!((*(s+2)&gt;='A' &amp;&amp; *(s+2)&lt;='Z') || (*(s+2)&gt;='a' &amp;&amp; *(s+2)&lt;='z'))) return 0;
+			s+=2;
+			while(*p!='\0') {
+				if(*p==' ' || *p=='&gt;') break;
+				p++;
+			}
+			kraj=p;
+			/*trazenje kraja taga*/
+			while(*kraj!='\0') {
+				if(*kraj!='&gt;' &amp;&amp; *kraj!=' ') return 0;
+				else if(*kraj=='&gt;') {
+					kraj_taga=1;
+					break;
+				}
+				kraj++;
+			}
+			if(kraj_taga==0) return 0;
+			/*ako nema otvorenih tagova*/
+			if(broj_tagova==0) 	return 0;
+
+			while(tag&gt;=pocetak) {
+				if (*tag==' ') {
+					razmak=tag;
+					break;
+				}
+				tag--;
+			}
+			tag++;
+			while(tag&lt;t) {
+				char temp=*s;
+				if(temp&gt;='A' &amp;&amp; temp&lt;='Z') temp+='a'-'A';
+				if(s==p) return 0;
+				if(*tag!=temp) return 0;
+				tag++;
+				s++;
+			}
+			if (s!=p) return 0;
+			t=razmak;
+			*(t+1)='\0';
+			s=kraj;
+			broj_tagova--;
+		}
+		s++;
+	}
+	if(broj_tagova!=0) return 0;
+	return 1;
+</font>}
+
+int main()
+{
+	return 0;
+}
+</pre>
+</body>
+</html>

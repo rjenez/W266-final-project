@@ -1,0 +1,189 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z1/student1583.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z1/student2553.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 1
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+
+enum class Polje { Prazno, Posjeceno, Mina, BlokiranoPrazno, BlokiranoPosjeceno, BlokiranoMina }; 
+enum class Smjerovi { GoreLijevo, Gore, GoreDesno, Desno, DoljeDesno, Dolje, DoljeLijevo, Lijevo };
+enum class Status { NijeKraj, KrajPoraz, KrajPobjeda };
+enum class KodoviGresaka { PogresnaKomanda, NedostajeParmetar, SuvisanParametar, NeispravanParametar }; 
+<a name="1"></a><font color="#00FF00"><a href="match180-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_36.gif"/></a>
+
+enum class Komande { PomjeriJednoMjesto, PomjeriDalje, Blokiraj, Deblokiraj, PrikaziOkolinu, ZavrsiIgru, KreirajIgru }; 
+ 
+ 
+typedef std::vector&lt;std::vector&lt;Polje&gt;&gt; Tabla; 
+
+using std::cout;
+using std::cin;
+using std::endl;
+
+
+Tabla KreirajIgru(int n, const std::vector&lt;std::vector&lt;int&gt;&gt; &amp;mine){
+	
+	Tabla Minesweeper(n);
+	
+	for(int i=0;i&lt;Minesweeper.size();i++)
+		Minesweeper.at(i).resize(n);
+
+	for(int i=0;i&lt;mine.size();i++)
+			Minesweeper.at(mine.at(i).at(0)).at(mine.at(i).at(1)) = Polje::Mina;
+		
+	return Minesweeper;
+	
+}
+
+int Suma_okoline(const Tabla &amp;polja, int x, int y){
+	
+	int suma(0);
+	
+	for(int i=x-1;i&lt;=x+1;i++){
+		for(int j=y-1;j&lt;=y+1;j++){
+			if(i!=-1 &amp;&amp; i!=-2 &amp;&amp; i!=polja.size() &amp;&amp; i!=polja.size()+1 &amp;&amp; j!=-1 &amp;&amp; j!=-2  &amp;&amp; j!=polja.size() &amp;&amp; j!=polja.size()+1){ // u okolini table nema mina
+				if( (i!=x || j!=y) &amp;&amp; polja.at(i).at(j)==Polje::Mina) suma++;
+			}
+		}
+	}
+
+	
+	return suma;
+}
+
+std::vector&lt;std::vector&lt;int&gt;&gt; PrikaziOkolinu(const Tabla &amp;polja, int x, int y){
+	
+	std::vector&lt;std::vector&lt;int&gt;&gt; Okolina(3);
+	
+	for(int i=0;i&lt;3;i++) Okolina.at(i).resize(3);
+	
+	int suma (0);
+	int k(0),l(0);
+	
+	
+	for(int i=x-1;i&lt;=x+1;i++){
+		for(int j=y-1;j&lt;=y+1;j++){
+				suma=Suma_okoline(polja,i,j);
+				Okolina.at(k).at(l)=suma;
+			l++;
+		}
+	l=0;	
+	k++;
+	}
+	
+	return Okolina;
+}
+
+void BlokirajPolje(Tabla &amp;polja, int x, int y){
+	
+		if (polja.at(x).at(y)==Polje::Prazno) polja.at(x).at(y)=Polje::BlokiranoPrazno;
+</font>		if (polja.at(x).at(y)==Polje::Posjeceno) polja.at(x).at(y)=Polje::BlokiranoPosjeceno;
+<a name="2"></a><font color="#0000FF"><a href="match180-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+		if (polja.at(x).at(y)==Polje::Mina) polja.at(x).at(y)=Polje::BlokiranoMina;
+}
+
+void DeblokirajPolje(Tabla &amp;polja, int x, int y){
+
+		if (polja.at(x).at(y)==Polje::BlokiranoPrazno) polja.at(x).at(y)=Polje::Prazno;
+</font>		if (polja.at(x).at(y)==Polje::BlokiranoPosjeceno) polja.at(x).at(y)=Polje::Posjeceno;
+<a name="0"></a><font color="#FF0000"><a href="match180-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_45.gif"/></a>
+
+		if (polja.at(x).at(y)==Polje::BlokiranoMina) polja.at(x).at(y)=Polje::Mina;
+}
+
+Status Idi(Tabla &amp;polja, int &amp;x, int &amp;y, Smjerovi smjer){
+	
+	polja.at(x).at(y)=Polje::Posjeceno;
+	if(smjer==Smjerovi::GoreLijevo) {x--; y--;}
+	if(smjer==Smjerovi::Gore) {x--;}
+	if(smjer==Smjerovi::GoreDesno) {x--; y++;}
+	if(smjer==Smjerovi::Desno) {y++;}
+	if(smjer==Smjerovi::DoljeDesno) {x++; y++;}
+	if(smjer==Smjerovi::Dolje) {x++;}
+	if(smjer==Smjerovi::DoljeLijevo) {x++; y--;}
+	if(smjer==Smjerovi::Lijevo) {y--;}
+	
+	int n(polja.size());
+	
+	if(polja.at(x).at(y)==Polje::Mina) {
+	polja.resize(0);
+	polja.resize(n);
+	for(int i=0;i&lt;n;i++)
+	polja.at(i).resize(n);
+	return Status::KrajPoraz;
+	}
+	
+	for(int i=0;i&lt;n;i++)
+		for(int j=0;j&lt;n;j++)
+			if(polja.at(i).at(j)==Polje::Prazno || polja.at(i).at(j)==Polje::BlokiranoPrazno || polja.at(i).at(j)==Polje::BlokiranoPosjeceno || polja.at(i).at(j)==Polje::BlokiranoMina)
+			return Status::NijeKraj;
+		
+		return Status::KrajPobjeda;
+	
+}
+
+Status Idi(Tabla &amp;polja, int &amp;x, int &amp;y, int novi_x, int novi_y){
+	
+	polja.at(x).at(y)=Polje::Posjeceno;
+
+	x=novi_x;
+	y=novi_y;
+	
+	int n(polja.size());
+	
+	if(polja.at(x).at(y)==Polje::Mina) {
+	polja.resize(0);
+	polja.resize(n);
+	for(int i=0;i&lt;n;i++)
+	polja.at(i).resize(n);
+	return Status::KrajPoraz;
+	}
+	
+	for(int i=0;i&lt;n;i++)
+		for(int j=0;j&lt;n;j++)
+			if(polja.at(i).at(j)==Polje::Prazno || polja.at(i).at(j)==Polje::BlokiranoPrazno || polja.at(i).at(j)==Polje::BlokiranoPosjeceno || polja.at(i).at(j)==Polje::BlokiranoMina)
+			return Status::NijeKraj;
+		
+		return Status::KrajPobjeda;
+}
+
+void PrijaviGresku(KodoviGresaka greska){
+	if(greska==KodoviGresaka::PogresnaKomanda) cout&lt;&lt;"Nerazumljiva komanda!"&lt;&lt;endl;
+	if(greska==KodoviGresaka::NedostajeParmetar) cout&lt;&lt;"Komanda trazi parametar koji nije naveden!"&lt;&lt;endl;
+	if(greska==KodoviGresaka::NeispravanParametar) cout&lt;&lt;"Parametar komande nije ispravan!"&lt;&lt;endl;
+	if(greska==KodoviGresaka::SuvisanParametar) cout&lt;&lt;"Zadan je suvisan parametar nakon komande!"&lt;&lt;endl;
+}
+
+bool UnosKomande(Komande &amp;komanda, Smjerovi &amp;smjer, int &amp;x, int &amp;y, KodoviGresaka &amp;greska){
+	
+	return true;
+</font>	
+}
+
+int main ()
+{
+
+   
+	return 0;
+}</pre>
+</body>
+</html>

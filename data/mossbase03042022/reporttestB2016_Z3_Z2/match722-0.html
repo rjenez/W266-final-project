@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4412.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4412.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string trazena_rijec, std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa){
+    
+    auto i = mapa.begin();
+    for(int j=0; j&lt;mapa.size(); j++ ){
+        if(i-&gt;first == trazena_rijec) return i-&gt;second;
+        i++;
+    }
+    throw std::logic_error("Unesena rijec nije nadjena!");
+        
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa){
+    auto i = mapa.begin();
+    for(int j=0; j&lt;mapa.size(); j++){
+        std::cout&lt;&lt;i-&gt;first &lt;&lt;": ";
+        int k(0);
+        for(auto broj : i-&gt;second) {
+            
+            if(k==(i-&gt;second).size()-1) std::cout&lt;&lt;broj;
+            else std::cout&lt;&lt;broj &lt;&lt;",";
+            k++;
+        }
+        std::cout&lt;&lt;std::endl;
+        i++;
+    }
+}
+bool DaLiImaVecUMapi(const std::string &amp;s, const std::map&lt;std::string, std::set&lt;int&gt;&gt; &amp;mapa){
+    
+    auto i = mapa.begin();
+    for(int j=0; j&lt;mapa.size(); j++){
+        if(i-&gt;first == s) return true;
+        i++;
+    }
+    return false;
+}
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string s){
+    
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa; 
+    for(int i=0; i&lt; s.size();i++)
+        if(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') s[i]=s[i]+'a'-'A';
+    
+    for(int i = 0; i&lt;s.size(); i++){
+        if(((s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z')
+            || (s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')
+<a name="0"></a><font color="#FF0000"><a href="match722-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+            || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')) &amp;&amp; (i==0 || !((s[i-1]&gt;='A' &amp;&amp; s[i-1]&lt;='Z')
+                                                        || (s[i-1]&gt;='a' &amp;&amp; s[i-1]&lt;='z')
+                                                        || (s[i-1]&gt;='0' &amp;&amp; s[i-1]&lt;='9'))) ){
+</font>                
+                std::string nadjena_rijec;
+                while(i&lt;s.size() &amp;&amp; ((s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z')
+                        || (s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')
+                        || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')))
+                             {
+                            
+                            nadjena_rijec+=s[i];
+                            i++;
+                        }
+              
+                std::set&lt;int&gt; skup_mjesta;
+                for(int j=0; j&lt;s.size(); j++){
+                    if(s[j]==nadjena_rijec[0]){
+                        int zapamti_pocetak=j;
+                        int k = 0;
+                        while(s[j]==nadjena_rijec[k] &amp;&amp; j&lt;s.size() &amp;&amp; k&lt;nadjena_rijec.size()){
+                            j++;
+                            k++;
+                        }
+                        
+                        
+                        if(k==nadjena_rijec.size() &amp;&amp; !((s[j]&gt;='A' &amp;&amp; s[j]&lt;='Z')
+                        || (s[j]&gt;='a' &amp;&amp; s[j]&lt;='z')
+<a name="1"></a><font color="#00FF00"><a href="match722-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+                        || (s[j]&gt;='0' &amp;&amp; s[j]&lt;='9')) &amp;&amp; (zapamti_pocetak==0 || !((s[zapamti_pocetak-1]&gt;='A' &amp;&amp; s[zapamti_pocetak-1]&lt;='Z')
+                                                                            || (s[zapamti_pocetak-1]&gt;='a' &amp;&amp; s[zapamti_pocetak-1]&lt;='z')
+                                                                            || (s[zapamti_pocetak-1]&gt;='0' &amp;&amp; s[zapamti_pocetak-1]&lt;='9')))){
+</font>                            skup_mjesta.insert(zapamti_pocetak);
+                       
+                        }
+                    }
+                }
+             
+                if(DaLiImaVecUMapi(nadjena_rijec, mapa) == false){
+                    mapa.insert(std::pair&lt;std::string,std::set&lt;int&gt;&gt;(nadjena_rijec,skup_mjesta));
+                   
+                }
+                
+                
+            } 
+            
+    }
+    return mapa;
+}
+
+
+<a name="2"></a><font color="#0000FF"><a href="match722-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+int main ()
+{
+   std::string s; 
+   std::cout&lt;&lt;"Unesite tekst: "; 
+   std::getline(std::cin, s);
+   auto mapa = KreirajIndeksPojmova(s);
+   IspisiIndeksPojmova(mapa);
+</font>   for(;;){
+       std::string rijec;
+       std::cout&lt;&lt;"Unesite rijec: ";
+       std::getline(std::cin, rijec);
+       if(rijec ==".") break;
+       try{
+           std::set&lt;int&gt; skup = PretraziIndeksPojmova(rijec,mapa);
+           for(auto element_skupa : skup) std::cout&lt;&lt;element_skupa &lt;&lt; " ";
+           std::cout&lt;&lt;std::endl;
+       }
+       catch(std::logic_error e){
+           std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+       }
+   }
+   
+	return 0;
+}</pre>
+</body>
+</html>

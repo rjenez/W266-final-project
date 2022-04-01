@@ -1,0 +1,167 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student8598.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student1833.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 6
+/B2016/2017: Zadaća 3, Zadatak 5
+<a name="0"></a><font color="#FF0000"><a href="match720-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include&lt;set&gt;
+#include&lt;list&gt;
+#include&lt;vector&gt;
+#include&lt;iomanip&gt;
+#include&lt;memory&gt;
+#include&lt;stdexcept&gt;
+
+//definisanje strukture dijete
+struct Dijete
+{
+    std::string ime;
+    std::shared_ptr&lt;Dijete&gt;sljedeci;
+};
+
+
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; m1, int brojTimova)
+{
+    int ukupanBrojDjece=m1.size();
+</font>    std::vector&lt;std::set&lt;std::string&gt;&gt; pom;
+    std::set&lt;std::string&gt; tim;
+    if(brojTimova&lt;1 || brojTimova&gt;ukupanBrojDjece) throw std::logic_error("Razvrstavanje nemoguce");
+    
+    //kreiramo prvo dijete
+    std::shared_ptr&lt;Dijete&gt; prvo;
+    std::shared_ptr&lt;Dijete&gt; prethodni;
+    for(int i=0;i&lt;ukupanBrojDjece;i++)
+    {
+        //ako je prvo dijete onda nema prethodnog
+        std::shared_ptr&lt;Dijete&gt; dijete(new Dijete());
+        if(i==0)
+        {
+        prvo=dijete;
+        prethodni=prvo;
+        }
+        else
+        {
+            prethodni-&gt;sljedeci=dijete;
+            prethodni=dijete;
+        }
+        dijete-&gt;ime=m1[i];
+        
+    }
+    prethodni-&gt;sljedeci=prvo;
+   
+    //ovim smo dobili kružnu listu, valjda je sve ok
+    
+    int brojac=0;
+    int brojClanovaTima=ukupanBrojDjece/brojTimova;
+    int nesvrstani=ukupanBrojDjece-brojClanovaTima*brojTimova;
+    //prvo Dijete
+    auto it=prvo;
+    //zadnje dijete, treba da preusmjerimo pokazivač je prethodni
+    int trenutniBrojDjeceUTimu=0;
+    //prolaz kroz svako dijete
+    while(brojac!=ukupanBrojDjece)
+    {
+        brojac++;
+        tim.insert(it-&gt;ime);
+        trenutniBrojDjeceUTimu+=1;
+        //provjera da li je skupljeno dovoljno za jedan tim
+        int nesvrstani1=brojClanovaTima+1;
+        if(nesvrstani&lt;=0) nesvrstani1-=1;
+        if(nesvrstani1==trenutniBrojDjeceUTimu)
+        {
+            //smanji ostatak za jedan
+            nesvrstani--;
+            //postavi broj elemenata tima na 0
+            trenutniBrojDjeceUTimu=0;
+            //dodaj u vektor trenutni tim
+            pom.push_back(tim);
+            //izbrisi sve iz tima za iduci tim
+            tim.clear();
+        }
+        // izracunaj broj slova u imenu
+        int brojSlovaImena=0;
+        for(int i=0;i&lt;(it-&gt;ime).size();i++)
+        {
+            if((it-&gt;ime)[i]==' '|| (it-&gt;ime)[i]=='-') continue;
+            brojSlovaImena++;
+        }
+        //sad brisi to dijete;
+        //specijalan slučaj kad je ostalo dvoje djece, ili jedno
+        //ako je dvoje djece ostalo, prebaci prethodni sljedeći na samog sebe, to je ok
+        //ako je jedno dijete, opet prebaci na samog sebe, ok
+        if(brojac==ukupanBrojDjece)
+        {
+            prethodni=nullptr;
+            it-&gt;sljedeci=nullptr;
+            it=nullptr;
+            break;
+        }
+        prethodni-&gt;sljedeci=it-&gt;sljedeci;
+        it=prethodni-&gt;sljedeci;
+        for(int j=1;j&lt;brojSlovaImena;j++)
+        {   
+            prethodni=prethodni-&gt;sljedeci;
+            it=it-&gt;sljedeci;
+        }
+    }
+    
+    return pom;
+}
+int main ()
+{
+<a name="2"></a><font color="#0000FF"><a href="match720-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+    int brDjece,brTimova;
+    std::vector&lt;std::string&gt; djeca;
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    std::cin&gt;&gt;brDjece;
+    std::cout&lt;&lt;"Unesite imena djece:";
+    std::cin.ignore(4444, '\n');
+</font>    for(int i=0;i&lt;brDjece;i++)
+    {
+        std::string imeDjeteta;
+        getline(std::cin,imeDjeteta);
+        djeca.push_back(imeDjeteta);
+    }
+<a name="1"></a><font color="#00FF00"><a href="match720-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+    std::cout&lt;&lt;"\nUnesite broj timova: ";
+    std::cin&gt;&gt;brTimova;
+    try {
+        /* code */
+         std::vector&lt;std::set&lt;std::string&gt;&gt; rezultat=Razvrstavanje(djeca,brTimova);
+    for(int i=0;i&lt;rezultat.size();i++)
+</font>    {
+        auto skup=rezultat[i];
+        auto iter1=begin(skup);
+        int brojElemenataSkupa=0;
+        while(iter1!=end(skup)) {iter1++;brojElemenataSkupa++;}
+        //vratimo ga opet na početak
+        iter1=begin(skup);
+        std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+        for(int j=0;j&lt;brojElemenataSkupa;j++)
+        {
+            if(j&gt;=(brojElemenataSkupa-1)) std::cout&lt;&lt;*iter1;
+            else std::cout&lt;&lt;*iter1++&lt;&lt;","&lt;&lt;" ";
+        }
+        std::cout&lt;&lt;"\n";
+    }
+        
+        
+    }
+    catch (std::logic_error e) {
+        std::cout &lt;&lt;"Izuzetak: "&lt;&lt; e.what() &lt;&lt; std::endl;
+    }
+    
+   
+	return 0;
+}</pre>
+</body>
+</html>

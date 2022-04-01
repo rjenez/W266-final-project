@@ -1,0 +1,234 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8854.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student1202.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cstring&gt;
+int PotencijalniKrivci(char **&amp; ime, std::vector&lt;std::string&gt; imena){
+	try{
+	ime=new char*[imena.size()+1];
+	}
+	catch(std::bad_alloc e){
+		delete[] ime;
+		throw e;
+	}
+	for(int i=0;i&lt;imena.size();i++){
+		ime[i]=nullptr;
+	}
+	int brojac(0);
+	for(int i=0;i&lt;imena.size();i++){
+		try{
+			ime[i]=new char[imena[i].length()+1];
+			brojac++;
+		}
+		catch(std::bad_alloc e){
+			delete[] ime;
+			throw e;
+		}
+	}
+	for(int i=0;i&lt;imena.size();i++){
+		char radni_prostor[1000];
+		for(int j=0;j&lt;imena[i].length();j++){
+			radni_prostor[j]=imena[i][j];
+		}
+		radni_prostor[imena[i].length()]='\0';
+		std::strcpy(ime[i],radni_prostor);
+	}
+	return brojac;
+}
+int OdbaciOptuzbu(char **&amp; ime, int n, std::string osoba){
+	int br(0);
+	char radni_prostor[1000];
+	char**ime1=nullptr;
+	for(int i=0;i&lt;osoba.length();i++)radni_prostor[i]=osoba[i];
+	radni_prostor[osoba.length()]='\0';
+	bool nema_krivaca(true);
+	int broj;
+	for(int i=0;i&lt;n;i++){
+		if(std::strcmp(radni_prostor,ime[i])==0){nema_krivaca=false;broj=i;}
+	}
+	if(nema_krivaca==true)throw std::domain_error("Osoba sa imenom "+osoba+" nije bila optuzena");
+	if(nema_krivaca==false){
+		int brojac(0);
+		for(int i=0;i&lt;n;i++){
+			if(std::strcmp(radni_prostor,ime[i])==0){
+				delete[] ime[i];
+				brojac++;
+			}
+		}
+		if(brojac&lt;10){
+			for(int i=0;i&lt;n;i++){
+				if(ime[i][0]=='\0')ime[i]==nullptr;
+			}
+		}
+		else if(brojac&gt;10){
+			try{
+			ime1=new char*[n-brojac];
+			}catch(std::bad_alloc e){
+				delete[] ime1;
+				throw e;
+			}
+			br=0;
+			for(int i=0;i&lt;n;i++){
+				if(ime[i]!=nullptr){
+				
+					try{
+						ime1[br++]=new char[strlen(ime[i])];
+					}
+					catch(std::bad_alloc e){
+						throw e;
+					}
+				}
+			}
+			
+		}
+	}
+
+	for(int i=0;i&lt;n;i++){
+		if(ime[i]!=nullptr){
+		delete[] ime[i];
+		ime[i]==nullptr;
+		}
+	}
+<a name="1"></a><font color="#00FF00"><a href="match843-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+	ime=ime1;
+	
+	return br;
+}
+int DodajOptuzbu(char **&amp; ime,int n, std::string osoba){
+	char*novi_niz=nullptr;
+	try{
+	novi_niz=new char[osoba.size()+1];
+	}catch(std::bad_alloc e){
+</font>		delete[] novi_niz;
+		throw e;
+	}
+	bool ima_prazan(true);
+	for(int i=0;i&lt;n;i++){
+		if(ime[i]==nullptr){
+			ima_prazan=false;
+			ime[i]=novi_niz;
+		}
+	}
+	char**ime_novi=nullptr;
+	if(ima_prazan==true){
+		try{
+		ime_novi=new char*[n+1];
+		}catch(std::bad_alloc e){
+			delete[] ime_novi;
+			throw e;
+		}
+		for(int i=0;i&lt;n+1;i++)ime_novi[i]=nullptr;
+		for(int i=0;i&lt;n;i++){
+			ime_novi[i]=ime[i];
+		}
+		ime_novi[n]=novi_niz;
+		for(int i=0;i&lt;n;i++)delete[] ime[i];
+		ime=ime_novi;
+	}
+	if(ima_prazan==false)return n;
+<a name="2"></a><font color="#0000FF"><a href="match843-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+	else return n+1;
+}
+void IzlistajOptuzbu(char **imena, int n){
+	for(int i=0;i&lt;n;i++){
+		if(imena[i]!=nullptr){
+</font>			for(int j=0;j&lt;strlen(imena[i]);j++){
+				std::cout&lt;&lt;imena[i][j];
+			}
+<a name="0"></a><font color="#FF0000"><a href="match843-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+			std::cout&lt;&lt;std::endl;
+		}
+	}
+}
+int main ()
+{
+	std::cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? "&lt;&lt;std::endl;
+	int q;
+	std::cin&gt;&gt;q;
+	std::cin.ignore(10000000,'\n');
+	std::vector&lt;std::string&gt; imena;
+	int &amp;n(q);
+	std::cout&lt;&lt;"Unesite potencijalne krivce: "&lt;&lt;std::endl;
+	for(int i=0;i&lt;n;i++){
+		std::string neki;
+</font>		std::getline(std::cin,neki);
+		imena.push_back(neki);
+	}
+	char ** nizPotencijalnih=nullptr;
+	try{
+	nizPotencijalnih=new char*[n];
+	}catch(std::bad_alloc e){
+		delete[] nizPotencijalnih;
+		throw e;
+	}
+	for(int i=0;i&lt;n;i++)nizPotencijalnih[i]=nullptr;
+	n= PotencijalniKrivci( nizPotencijalnih, imena);
+	int p;
+	int opcija;
+	std::cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: "&lt;&lt;std::endl;
+	std::cin&gt;&gt;opcija;
+	while(opcija!=0){
+	if(opcija==1){
+		std::cin.ignore(10000000,'\n');
+		std::cout&lt;&lt;"Unesite ime novog optuzenog: \n";
+		std::string nova;
+		std::getline(std::cin,nova);
+		imena.push_back(nova);
+		try{
+		n= PotencijalniKrivci( nizPotencijalnih, imena);
+		}catch(std::bad_alloc e){
+			for(int i=0;i&lt;n;i++){
+				delete[] nizPotencijalnih[i];
+			}
+			delete[] nizPotencijalnih;
+		}
+	}
+	if(opcija==2){
+		std::cin.ignore(10000000,'\n');
+		std::cout&lt;&lt;"Unesite ime koje zelite izbaciti: \n";
+		std::string novi;
+		std::getline(std::cin,novi);
+		try{
+		n = OdbaciOptuzbu(nizPotencijalnih, n, novi);
+		}catch(std::domain_error e){
+			std::cout&lt;&lt;e.what();
+			for(int i=0;i&lt;n;i++){
+				delete[] nizPotencijalnih[i];
+			}
+			delete[] nizPotencijalnih;
+		}
+	}
+	if(opcija==0){
+		return 0;
+	}
+	if(opcija==3){
+		std::cin.ignore(10000000,'\n');
+		IzlistajOptuzbu(nizPotencijalnih,n);
+	}
+	std::cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: "&lt;&lt;std::endl;
+	std::cin&gt;&gt;opcija;
+//std::cin.ignore(10000000,'\n');
+	}
+	for(int i=0;i&lt;n;i++)delete[] nizPotencijalnih[i];
+	delete[] nizPotencijalnih;
+	return 0;
+}</pre>
+</body>
+</html>

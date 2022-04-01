@@ -1,0 +1,213 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student6981.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student6981.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::vector;
+
+void IspisiMatricu(vector&lt;vector&lt;double&gt; &gt; M)
+{
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		cout&lt;&lt;" ";
+		for(int j=0; j&lt;M[0].size(); j++)
+			cout&lt;&lt;std::setw(3)&lt;&lt;M[i][j]&lt;&lt;" ";
+		cout&lt;&lt;endl;
+	}
+}
+
+vector&lt;vector&lt;double&gt; &gt;Horizontalno(vector&lt;vector&lt;double&gt; &gt;M)
+{
+	vector&lt;vector&lt;double&gt; &gt; H(M.size());
+	for(int i=0; i&lt;M.size(); i++) H[i].resize(M[0].size());
+	for(int i=0; i&lt;M.size(); i++)
+		for(int j=0; j&lt;M[0].size(); j++)
+			H[i][j]=M[i][M[0].size()-j- 1];
+	
+	return H;
+}
+
+vector&lt;vector&lt;double&gt; &gt;Vertikalno(vector&lt;vector&lt;double&gt; &gt;M)
+{
+	vector&lt;vector&lt;double&gt; &gt; V(M.size());
+	for(int i=0; i&lt;M.size(); i++) V[i].resize(M[0].size());
+	for(int i=0; i&lt;M.size(); i++)
+<a name="7"></a><font color="#0000FF"><a href="match321-1.html#7" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+		for(int j=0; j&lt;M[0].size(); j++)
+			V[i][j]=M[M.size()-i- 1][j];
+</font>			
+/*	for(int i=0; i&lt;M.size(); i++)
+	{
+		V[i]=M[M.size()- 1 -i];
+	}*/
+			
+	return V;
+}
+
+vector&lt;vector&lt;double&gt; &gt;Kombinovano(vector&lt;vector&lt;double&gt; &gt;M)
+{
+	vector&lt;vector&lt;double&gt; &gt; HV(M.size());
+	for(int i=0; i&lt;M.size(); i++) HV[i].resize(M[0].size());
+	for(int i=0; i&lt;M.size(); i++)
+		for(int j=0; j&lt;M[0].size(); j++)
+			HV[i][j]=M[M.size()-i- 1][M[0].size()-j- 1];
+			
+	return HV;
+}
+
+vector&lt;vector&lt;double&gt; &gt;OgledaloMatrica(vector&lt;vector&lt;double&gt; &gt;M)
+{
+<a name="8"></a><font color="#00FFFF"><a href="match321-1.html#8" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+	for(int i=1; i&lt;M.size(); i++)
+		if(M[0].size()!=M[i].size())throw std::domain_error("Matrica nije korektna");
+</font>	
+	vector&lt;vector&lt;double&gt; &gt;OM(3*M.size());
+	//if(OM.size()==0)return OM;
+	
+	for(int i=0; i&lt;OM.size(); i++) OM[i].resize(3*M[0].size());
+	vector&lt;vector&lt;double&gt; &gt;HV(Kombinovano(M));
+	vector&lt;vector&lt;double&gt; &gt;H(Horizontalno(M));
+	vector&lt;vector&lt;double&gt; &gt;V(Vertikalno(M));
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[0].size(); j++)
+			OM[i][j]=HV[i][j];
+<a name="5"></a><font color="#FF0000"><a href="match321-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+		for(int j=0; j&lt;M[0].size(); j++)
+			OM[i][M[0].size()+j]=V[i][j];
+</font><a name="1"></a><font color="#00FF00"><a href="match321-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+		for(int j=0; j&lt;M[0].size(); j++)
+			OM[i][2*M[0].size()+j]=HV[i][j];
+</font>	}
+<a name="6"></a><font color="#00FF00"><a href="match321-1.html#6" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[0].size(); j++)
+			OM[M.size()+i][j]=H[i][j];
+</font><a name="0"></a><font color="#FF0000"><a href="match321-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+		for(int j=0; j&lt;M[0].size(); j++)
+			OM[M.size()+i][M[0].size()+j]=M[i][j];
+		for(int j=0; j&lt;M[0].size(); j++)
+			OM[M.size()+i][2*M[0].size()+j]=H[i][j];
+</font>	}
+<a name="3"></a><font color="#00FFFF"><a href="match321-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[0].size(); j++)
+			OM[2*M.size()+i][j]=HV[i][j];
+</font><a name="4"></a><font color="#FF00FF"><a href="match321-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+		for(int j=0; j&lt;M[0].size(); j++)
+			OM[2*M.size()+i][M[0].size()+j]=V[i][j];
+</font><a name="2"></a><font color="#0000FF"><a href="match321-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+		for(int j=0; j&lt;M[0].size(); j++)
+			OM[2*M.size()+i][2*M[0].size()+j]=HV[i][j];
+</font>	}
+	
+	return OM;
+}
+
+int main ()
+{
+	int m, n;
+	
+	cout&lt;&lt;"Unesite dimenzije matrice (m n): ";
+	cin&gt;&gt;m&gt;&gt;n;
+	
+	if(m&lt;0 || n&lt;0)cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+	else
+	{
+		vector&lt;vector&lt;double&gt; &gt;M(m, vector&lt;double&gt;(n));
+		cout&lt;&lt;"Unesite elemente matrice: ";
+		for(int i=0; i&lt;m; i++)
+			for(int j=0; j&lt;n; j++)
+				cin&gt;&gt;M[i][j];
+			
+		cout&lt;&lt;endl&lt;&lt;"Rezultantna matrica:"&lt;&lt;endl;
+	
+		IspisiMatricu(OgledaloMatrica(M));
+	}
+	
+	
+	/*int m, n;
+	cout&lt;&lt;"Unesite broj redova: ";
+	cin&gt;&gt;m;
+	cout&lt;&lt;"Unesite broj kolona: ";
+	cin&gt;&gt;n;
+	
+	vector&lt;vector&lt;double&gt; &gt;M(m, vector&lt;double&gt;(n));
+	
+	cout&lt;&lt;"Unesite elemente matrice: "&lt;&lt;endl;
+	
+	for(int i=0; i&lt;m; i++)
+		for(int j=0; j&lt;n; j++)
+			cin&gt;&gt;M[i][j];
+			
+	vector&lt;vector&lt;double&gt; &gt;OM(OgledaloMatrica(M));
+	
+	for(int i=0; i&lt;OM.size(); i++)
+	{
+		for(int j=0; j&lt;OM[0].size(); j++)
+			cout&lt;&lt;OM[i][j]&lt;&lt;" ";
+		cout&lt;&lt;endl;
+	}
+	
+	*/
+	
+	/*vector&lt;vector&lt;double&gt; &gt; h(Horizontalno({{1,2,3}, {4,5,6}}));
+	vector&lt;vector&lt;double&gt; &gt; v(Vertikalno({{1,2,3}, {4,5,6}}));
+	vector&lt;vector&lt;double&gt; &gt; k(Kombinovano({{1,2,3}, {4,5,6}}));
+	
+	for(int i=0; i&lt;h.size(); i++)
+	{
+		for(int j=0; j&lt;h[0].size(); j++)
+			cout&lt;&lt;h[i][j]&lt;&lt;" ";
+		cout&lt;&lt;endl;
+	}
+	
+	for(int i=0; i&lt;v.size(); i++)
+	{
+		for(int j=0; j&lt;v[0].size(); j++)
+			cout&lt;&lt;v[i][j]&lt;&lt;" ";
+		cout&lt;&lt;endl;
+	}
+	
+	for(int i=0; i&lt;k.size(); i++)
+	{
+		for(int j=0; j&lt;k[0].size(); j++)
+			cout&lt;&lt;k[i][j]&lt;&lt;" ";
+		cout&lt;&lt;endl;
+	}*/
+	
+	return 0;
+}</pre>
+</body>
+</html>

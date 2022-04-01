@@ -1,0 +1,127 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student9160.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student4425.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;string&gt;
+#include &lt;list&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match48-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+int DajKorakRazbrajanja (const std::string &amp;ime) {
+    auto itt(ime.begin()); int count(0);
+    while (itt!=ime.end()) if ((std::toupper(*itt)&gt;='A' &amp;&amp; std::toupper(*itt)&lt;='Z') || (*itt&gt;='0' &amp;&amp; *itt&lt;='9')) count++, itt++;
+    return count-1;
+}
+
+int DajBroj(const std::list&lt;std::string&gt; &amp;lista) {
+    auto it(lista.begin()); int broj(0);
+    while (it!=lista.end()) broj++, it++;
+    return broj;
+}
+
+void SetOut (const std::set&lt;std::string&gt; &amp;s) {
+    auto it(s.begin());
+    std::cout &lt;&lt; *it++; while (it!=s.end()) std::cout &lt;&lt; ", " &lt;&lt; *it++;
+}
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje (std::vector&lt;std::string&gt; n, int k) {
+    if (k&lt;1 || k&gt;(int)(n.size())) throw std::logic_error("Razvrstavanje nemoguce");
+    std::vector&lt;std::set&lt;std::string&gt;&gt; vrati;
+    bool Is = false;
+    std::list&lt;std::string&gt; kids; for (auto x : n) kids.push_back(x);
+    int valuex(n.size()%k);
+    int valuey(n.size()/k);
+    std::deque&lt;int&gt; teams_num;
+    int i(0), j(0);
+    int odcount(valuex);
+    while(i &lt; k) {
+        if(odcount!=0) {
+            teams_num.push_back(valuey+1);
+            odcount--;
+            i++;
+            continue;
+        }
+        teams_num.push_back(valuey);
+        i++;
+    }
+    
+    auto it(kids.begin());
+    int count(0);
+    std::set&lt;std::string&gt; team, empty;
+    while (1) {
+        
+        if (count &lt; teams_num.at(j)) {
+            team.insert(*it);
+            int korak = DajKorakRazbrajanja(*it);
+            count++;
+            it = kids.erase(it);
+            if(it == kids.end()) it = kids.begin();
+            int numero = DajBroj(kids);
+            if (numero == teams_num[teams_num.size()-1]) {
+                vrati.push_back(team);
+                team = empty;
+                it = kids.begin();
+                for (int w = 0; w &lt; numero; w++) team.insert(*it), it++;
+                vrati.push_back(team);
+                Is = true;
+            }
+            
+            if(!Is) {
+                for (int i = 0; i &lt; korak; i++) {//korak - 1
+                    it++;
+                    if (it==kids.end()) it = kids.begin();
+                }
+            }
+            
+        }
+        
+        if (Is) {
+            count = teams_num[j];
+            if (count == teams_num[j]) {
+                if (Is) break;
+                vrati.push_back(team);
+                j++;
+                team = empty;
+                count = 0;
+            }
+        }
+        
+        
+    }
+    
+    return vrati;
+}
+
+int main () {
+    std::cout &lt;&lt; "Unesite broj djece: ";
+    int n;
+    std::cin &gt;&gt; n;
+    std::cin.ignore(1000, '\n');
+    std::cout &lt;&lt; "Unesite imena djece: " &lt;&lt; std::endl;
+    std::vector&lt;std::string&gt; kids(n);
+    for (int i = 0; i &lt; n; i++) std::getline(std::cin, kids[i]);
+    std::cout &lt;&lt; "Unesite broj timova: ";
+    int k;
+    std::cin &gt;&gt; k; 
+    try {
+        auto ispisi(Razvrstavanje(kids, k));
+        for (int i = 0; i &lt; k; i++) {
+            std::cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+            SetOut(ispisi[i]);
+            std::cout &lt;&lt; std::endl;
+        }
+    } catch(std::logic_error err) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; err.what();
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

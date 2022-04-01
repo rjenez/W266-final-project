@@ -1,0 +1,388 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z1/student8964.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z1/student8964.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match225-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_91.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 1)
+//Autotestovi by Eldar Kurtic (mail: ekurtic3@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;map&gt;
+#include &lt;iomanip&gt;
+
+
+using namespace std;
+
+struct Korisnik {
+    string ime;
+    string prezime;
+    string adresa;
+    string telefon;
+    
+    Korisnik(string ime,string prezime,string adresa,string telefon):
+        ime(ime),prezime(prezime),adresa(adresa),telefon(telefon){};
+    
+    void Ispisi() {
+        cout&lt;&lt;"Ime i prezime: "&lt;&lt;ime&lt;&lt;" "&lt;&lt;prezime&lt;&lt;endl;
+        cout&lt;&lt;"Adresa: "&lt;&lt;adresa&lt;&lt;endl;
+        cout&lt;&lt;"Broj telefona: "&lt;&lt;telefon&lt;&lt;endl&lt;&lt;endl;
+    }
+
+};
+
+
+class Knjiga
+{
+    string naslov;
+    string imepisca;
+    string zanr;
+    int godinaizdavanja;
+    Korisnik *kod_koga_je;
+
+public:
+    Knjiga(string naslov,string imepisca,string zanr,int godinaizdavanja):
+        naslov(naslov),imepisca(imepisca),zanr(zanr),godinaizdavanja(godinaizdavanja),kod_koga_je(nullptr) {}
+    string DajNaslov() const {
+        return naslov;
+    }
+    string DajAutora() const {
+        return imepisca;
+    }
+    string DajZanr() const {
+        return zanr;
+    }
+    int DajGodinuIzdavanja() const {
+        return godinaizdavanja;
+    }
+    Korisnik *DajKodKogaJe()const {
+        return kod_koga_je;
+    }
+    void ZaduziKnjigu(Korisnik &amp;k) {
+        kod_koga_je=&amp;k;
+    }
+    void RazduziKnjigu() {
+        kod_koga_je=nullptr;
+    }
+    bool DaLiJeZaduzena() const {
+        if(kod_koga_je==nullptr) return false;
+        return true;
+    }
+    void Ispisi() const;
+};
+
+void Knjiga::Ispisi() const
+{
+    cout&lt;&lt;"Naslov: "&lt;&lt;DajNaslov()&lt;&lt;endl;
+    cout&lt;&lt;"Pisac: "&lt;&lt;DajAutora()&lt;&lt;endl;
+    cout&lt;&lt;"Zanr: "&lt;&lt;DajZanr()&lt;&lt;endl;
+    cout&lt;&lt;"Godina izdavanja: "&lt;&lt;DajGodinuIzdavanja()&lt;&lt;endl;
+    if(DajKodKogaJe()!=nullptr) 
+    cout&lt;&lt;"Zaduzena kod korisnika: "&lt;&lt;DajKodKogaJe()-&gt;ime&lt;&lt;" "&lt;&lt;DajKodKogaJe()-&gt;prezime&lt;&lt;endl;
+    cout&lt;&lt;endl;
+}
+
+
+class Biblioteka
+{
+    
+    map&lt;int,Korisnik*&gt;m1;
+    map&lt;int,Knjiga*&gt;m2;
+
+
+public:
+    Biblioteka() {};
+    Biblioteka(Biblioteka &amp;b)=delete;
+    Biblioteka &amp;operator=(Biblioteka &amp;b)=delete;
+    ~Biblioteka()
+    {
+        for(auto i=m1.begin();i!=m1.end();i++)
+            delete i-&gt;second;
+            
+        for(auto i=m2.begin();i!=m2.end();i++)
+            delete i-&gt;second;
+    }
+    void RegistrirajNovogKorisnika(int clanski_broj,string ime,string prezime,string adresa,string telefon)
+    {
+        m1.insert(make_pair(clanski_broj,new Korisnik(ime,prezime,adresa,telefon)));
+    }
+    void RegistrirajNovuKnjigu(int evidencijski_broj,string naslov,string imepisca,string zanr,int godinaizdavanja)
+    {
+        m2.insert(make_pair(evidencijski_broj,new Knjiga(naslov,imepisca,zanr,godinaizdavanja)));
+    }
+    Korisnik &amp;NadjiKorisnika(int clanski_broj)
+    {
+        return *m1[clanski_broj];
+    }
+    Knjiga &amp;NadjiKnjigu(int evidencijski_broj) 
+    {
+        return *m2[evidencijski_broj];
+    }
+    void IzlistajKorisnike() const
+    {
+        for(auto i:m1) 
+        {   cout&lt;&lt;"Clanski broj: "&lt;&lt;i.first&lt;&lt;endl;
+            i.second-&gt;Ispisi();
+        }
+    }
+    void IzlistajKnjige() const
+    {
+        for(auto i:m2) 
+        {   cout&lt;&lt;"Evidencijski broj: "&lt;&lt;i.first&lt;&lt;endl;
+            i.second-&gt;Ispisi();
+        }
+    }
+    void ZaduziKnjigu(int indexa,int indexb)
+    {
+        m2[indexa]-&gt;ZaduziKnjigu(*m1[indexb]);
+    }
+    void RazduziKnjigu(int index)
+    {
+        m2[index]-&gt;RazduziKnjigu();
+    }
+    void PrikaziZaduzenje(int index)
+    {
+        for(auto i:m2)
+        {
+            if(m1[index]==i.second-&gt;DajKodKogaJe())
+            {
+                cout&lt;&lt;"Naslov: "&lt;&lt;i.second-&gt;DajNaslov()&lt;&lt;endl;
+                cout&lt;&lt;"Pisac: "&lt;&lt;i.second-&gt;DajAutora()&lt;&lt;endl;
+</font><a name="1"></a><font color="#00FF00"><a href="match225-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+                cout&lt;&lt;"Zanr: "&lt;&lt;i.second-&gt;DajZanr()&lt;&lt;endl;
+                cout&lt;&lt;"Godina izdavanja: "&lt;&lt;i.second-&gt;DajGodinuIzdavanja()&lt;&lt;endl;
+                cout&lt;&lt;endl;
+            }
+        }
+    }
+};
+
+
+int main ()
+</font>{
+
+  /*  map&lt;int,Korisnik*&gt;m1;
+    map&lt;int,Knjiga*&gt;m2;
+
+    for(;;) {
+        int n;
+        cout&lt;&lt;"Odaberite jednu od opcija:\n 1-Registriraj novog korisnika\n 2-Registriraj novu knjigu\n3-Nadji korisnika\n 4-Nadji knjigu\n 5-Izlistaj korisnike\n 6-Izlistaj knjige\n 7-Zaduzi knjigu\n 8-Razduzi knjigu\n 9-Prikazi zaduzenja\n 10-Izlistaj korisnike1\n 11-Kraj rada";
+        cout&lt;&lt;endl;
+        cin&gt;&gt;n;
+        cin.ignore(1000,'\n');
+        if(n==1) { /*registracija novog korisnika
+            string ime,prezime,telefon,adresa;
+            int clanski_broj;
+
+            cout&lt;&lt;"Clanski broj:-&gt;";
+            cin&gt;&gt;clanski_broj;
+            cout&lt;&lt;"Ime i prezime:-&gt;";
+            getline(cin,ime);
+            getline(cin,prezime);
+            cout&lt;&lt;"Adresa-&gt;";
+            getline(cin,adresa);
+            cout&lt;&lt;"Telefon-&gt;";
+            getline(cin,telefon);
+            bool postoji(false);
+
+            for(auto it=m1.begin(); it!=m1.end(); it++) {
+                if(clanski_broj==it-&gt;key) {
+                    postoji=true;
+                    break;
+                }
+            }
+            if(postoji) {
+                throw logic_error("Korisnik vec postoji");
+            } else {
+                m1.insert(make_pair(clanski_broj,Korisnik));
+                try {
+                m1.insert[clanski_broj]=new Korisnik(k);
+                } catch(...) {
+                    delete 
+                }
+            }
+
+        }
+
+        if(n==2) { /*registracija nove knjige
+            int evidencijski_broj;
+            string naslov,imepisca,zanr;
+            int godinaizdavanja;
+
+            cout&lt;&lt;"Evidencijski broj:-&gt;";
+            cin&gt;&gt;evidencijski_broj;
+            cout&lt;&lt;"Naslov:-&gt;";
+            getline(cin,naslov);
+            cout&lt;&lt;"Pisac:-&gt;";
+            getline(cin,imepisca);
+            cout&lt;&lt;"Zanr:-&gt;";
+            getline(cin,zanr);
+            cout&lt;&lt;"Godina izdavanja:-&gt;";
+            cin&gt;&gt;godinaizdavanja;
+            bool postoji(false);
+
+            for(auto it=m2.begin(); it!=m2.end(); i++) {
+                if(evidencijski_broj==it-&gt;key) {
+                    postoji=true;
+                    break;
+                }
+            }
+            if(postoji) {
+                throw range_error("Knjiga vec postoji");
+            } else {
+                m2.insert(make_pair(evidencijski_broj,Knjiga));
+                try {
+                    m2[evidencijski_broj]=new Knjiga(k);
+                } catch(...) {
+                    delete m2[key,value];
+                }
+            }
+
+        }
+
+        if(n==3) { /*pretraga korisnika
+            int clanski_broj;
+            cout&lt;&lt;"Clanski broj:-&gt;";
+            cin&gt;&gt;clanski_broj;
+            bool ne_postoji(true);
+
+            for(auto it=m1.begin(); it!=m1.end(); it++) {
+                if(clanski_broj==it-&gt;key) {
+                    it[key,value]-&gt;Ispisi;
+                    ne_postoji=false;
+                    break;
+                }
+            }
+            if(ne_postoji) cout&lt;&lt;"Korisnik nije nadjen";
+        }
+
+        if(n==4) { /*pretraga knjiga
+            int evidencijski_broj;
+            cout&lt;&lt;"Evidencijski broj:-&gt;";
+            cin&gt;&gt;evidencijski_broj;
+            bool ne_postoji(true);
+            for(auto it=m2.begin(); it!=m2.end(); it++) {
+                if(evidencijski_broj==it-&gt;key {
+                    ne_postoji=false;
+                    m2[key,value]-&gt;Ispisi();
+                    if(m2[key,value]-&gt;DaLiJeZaduzena()) {
+                        cout&lt;&lt;"Zaduzena kod korisnika(clanski_broj,ime,prezime):\n"&lt;&lt;m2[key]-&gt;DajKodKogaJe()-&gt;clanski_broj&lt;&lt;" "&lt;&lt;m2[key]-&gt;DajKodKogaJe()-&gt;ime&lt;&lt;" "m2[key]-&gt;DajKodKogaJe()-&gt;prezime&lt;&lt;endl;
+                    } else {
+                        throw logic_error("Knjiga nije nadjena");
+                    }
+                }
+            }
+        }
+
+        if(n==5) { /*izlistaj korisnike
+            for(auto it=m1.begin(); it!=m1.end(); it++)
+                m1[key,value]-&gt;Ispisi;
+        }
+
+
+        if(n==6) /izlistaj knnige/ {
+            for(auto it=m2.begin(); it!=m2.end(); it++)
+                m2[key,value]-&gt;Ispisi();
+        }
+
+
+
+        if(n==7) { /*zaduzivanje knjige
+            int evidencijski_broj,clanski_broj;
+            cout&lt;&lt;"Clanski broj:-&gt;";
+            cin&gt;&gt;clanski_broj;
+            cout&lt;&lt;"EvidencijskiBroj:-&gt;";
+            cin&gt;&gt;evidencijski_broj;
+            bool ne_postoji_clan(true);
+            int sacuvaj_clana,br1=0;
+            for(auto it=m1.begin(); it!=m1.end(); it++) {
+                if(clanski_broj==it-&gt;key) {
+                    br++;
+                    ne_postoji_clan=false;
+                    sacuvaj_clana=br;
+                    break;
+                }
+            }
+            if(ne_postoji_clan) throw logic_error("Korisnik nije nadjen");
+            else {
+                bool ne_postoji_knjiga(true);
+                int sacuvaj_knjigu;
+                for(auto it=m2.begin(); it!=m2.end(); it++) {
+                    if(evidencijski_broj==it-&gt;key) {
+                        ne_postoji_knjiga=false;
+                        sacuvaj_knjigu=(*it);
+                        break;
+                    }
+                }
+                if(ne_postoji_knjiga) throw logic_error("Knjiga nije nadjena");
+                else {
+                    if(m2[sacuvaj_knjigu]-&gt;DaLiJeZaduzena()) throw logic_error("Knjiga vec zaduzena");
+                    else {
+                        m2[sacuvaj_knjigu]-&gt;ZaduziKnjigu(*m1[sacuvaj_clana]);
+                    }
+                }
+            }
+        }
+
+        if(n==8) { /*razduzi knjige
+            int evidencijski_broj;
+            cout&lt;&lt;"Evidencijski broj:-&gt;";
+            cin&gt;&gt;evidencijski_broj;
+            bool ne_postoji(true);
+            for(auto it=m2.begin(); it!=m2.end(); i++) {
+                if(evidencijski_broj==it-&gt;key {
+                    m2.i-&gt;RazduziKnjigu();
+                    ne_postoji=false;
+                    break;
+                }
+            }
+            if(ne_postoji) throw logic_error("Knjiga nije nadjena");
+        }
+
+
+        if(n==9) { /*prikazi zaduzenja
+            int clanski_broj;
+            cout&lt;&lt;"Evidencijski broj:-&gt;";
+            cin&gt;&gt;clanski_broj;
+            bool ne_postoji(true);
+
+            for(auto it=m1.begin(); it!=m1.end(); it++) {
+                if(clanski_broj==it-&gt;key) {
+                    ne_postoji=false;
+
+                    for(auto it1=m2.begin(); itt1!=m2.end(); it1++) {
+                        bool nema_zaduzenja(true);
+                        if(it1-&gt;DajKodKogaJe()==it.Korisnik[i]) {
+                            nema_zaduzenja=false;
+                            cout&lt;&lt;endl&lt;&lt;"Zaduzena knjiga:-&gt;"&lt;&lt;endl;
+                            m1.Knjiga[it]-&gt;Ispisi();
+                        }
+                        if(nema_zaduzenja) throw logic_error("Nema zaduzenih knjiga");
+                    }
+                }
+            }
+            if(ne_postoji) throw logic_error("Korisnik nije nadjen");
+        }
+
+        if(n==10) { /*izlistaj korisnike1
+            throw("Izgbija");
+        }
+
+        if(n==11) /*kraj rada
+            break;
+    }
+
+    for(auto it=m1.begin(); it!=m1.end(); it++) delete m1;
+    for(auto it1=m2.begin(); it1!=m2.end(); it1) delete m2;
+*/
+    return 0;
+}</pre>
+</body>
+</html>

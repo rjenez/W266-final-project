@@ -1,0 +1,265 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student5863.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student5863.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match0-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+#include &lt;new&gt;
+#include &lt;stdexcept&gt;
+
+
+struct Dijete {
+    std::string ime;
+    Dijete *sljedeci = nullptr;
+};
+
+int Prebroji(Dijete *to, Dijete *zadnji) {
+    int br=1;
+    while (to-&gt;sljedeci != zadnji) {
+        br++;
+        to = to-&gt;sljedeci;
+    }
+    return br;
+}
+
+int PrebrojiDjecu(Dijete *prvo) {
+    Dijete *ovo(prvo);
+    int brojac = 1;
+    
+    while(ovo-&gt;sljedeci != prvo) {
+        brojac++;
+        ovo = ovo-&gt;sljedeci;
+    }
+   
+   return brojac;
+}
+
+void KillThemAll(Dijete *prvo) {
+    /*int vel = PrebrojiDjecu(prvo);
+    
+    for(int i = 0; i &lt; vel; i++) {
+        Dijete *musko(prvo);
+        prvo = prvo-&gt;sljedeci;
+        musko-&gt;sljedeci = nullptr;
+        delete musko;
+    }*/
+    auto zensko(prvo-&gt;sljedeci);
+    while (zensko != prvo) {
+        Dijete * musko = zensko-&gt;sljedeci;
+        delete zensko;
+        zensko = musko;
+    }
+    delete zensko;
+    prvo = nullptr;
+}
+
+int velicinaImena(std::string ime) {
+    int vel = ime.length();
+    
+    for(int i = 0; i &lt; ime.length(); i++) {
+        if( !( (ime[i] &gt;= 'a' &amp;&amp; ime[i] &lt;= 'z') || (ime[i] &gt;= 'A' &amp;&amp; ime[i] &lt;= 'Z') || (ime[i] &gt;= '0' &amp;&amp; ime[i] &lt;= '9') ) ) vel--;
+    }
+    
+    return vel;
+}
+
+
+
+Dijete *ProsloDijete( Dijete *neko) {
+    Dijete *ovo(neko);
+    
+    while(ovo-&gt;sljedeci != neko) ovo = ovo-&gt;sljedeci; 
+    
+    return ovo;
+}
+
+Dijete *KreirajListuDjece(std::vector&lt;std::string&gt; djeca) {
+    Dijete *pocetak(nullptr), *prethodni(nullptr), *novi(nullptr);
+    
+    for(int i = 0; i &lt; djeca.size(); i++) {
+        try{
+        novi = new Dijete;
+       }catch(...) {
+           if(pocetak == nullptr) throw;
+           KillThemAll(pocetak);
+            throw;
+        }
+        novi-&gt;ime = djeca[i];
+        novi-&gt;sljedeci = nullptr;
+        if(!pocetak ) pocetak = novi;
+        else prethodni-&gt;sljedeci = novi;
+        prethodni = novi;
+        novi = nullptr;
+    }
+    prethodni-&gt;sljedeci = pocetak; 
+    
+    return pocetak;
+}
+
+
+void IspisiDjecu(Dijete *prvi) {
+     Dijete *p = prvi;
+     
+    do{
+     std::cout&lt;&lt;p-&gt;ime&lt;&lt;std::endl;
+     p = p-&gt;sljedeci; 
+    }while(p != prvi);
+}
+
+void Pomakni(Dijete *&amp;prvi, int zaToliko) {
+    
+    while (true) {
+        if(zaToliko == 0) break;
+        prvi = prvi-&gt;sljedeci;
+        zaToliko--;
+    }
+}
+
+
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; djeca, int brojTimova) {
+    if( brojTimova &lt; 1 || brojTimova &gt; djeca.size() ) throw std::logic_error("Razvrstavanje nemoguce");
+    
+    std::vector&lt;std::set&lt;std::string&gt;&gt; timovi;
+    int kolkoVise = djeca.size() % brojTimova;
+    int brojClanova = djeca.size() / brojTimova;
+    std::vector&lt;int&gt; brClTim; // smijem li imat?
+    int korak = 0, k = 0;
+    
+    for(int i = 0; i &lt; brojTimova; i++) {
+        if(i &lt; kolkoVise) brClTim.push_back(brojClanova+1);
+        else brClTim.push_back(brojClanova);
+    }
+    
+    Dijete *djecaUListi = KreirajListuDjece(djeca);
+    
+    Dijete *tu = djecaUListi;
+    Dijete *prvi = djecaUListi;
+    Dijete *zadnji = ProsloDijete(prvi);
+    
+        for(int j = 0 ; j &lt; brClTim.size(); j++) {
+            
+            std::set&lt;std::string&gt; tim;
+                k = 0;
+                auto it = tu;
+                 
+                while( true ) {
+                    int vel = PrebrojiDjecu(it);
+                    
+                    if ( k == brClTim[j]) break;
+                   
+                    Pomakni(it, korak);
+                    
+                    tim.insert(it-&gt;ime);
+                    
+                    korak = velicinaImena(it-&gt;ime)-1;
+                    if(vel == 1) { 
+                        //delete it;
+                        KillThemAll(it);
+                        it = nullptr;
+                        break; 
+                    }
+                    else if(it == prvi) {
+                      Dijete  *p = it;
+                      it = it-&gt;sljedeci;
+                      prvi = it;
+                      zadnji-&gt;sljedeci = it;
+                     
+                      delete p;
+                      p = nullptr;
+                    }
+                    else if( it == zadnji){ 
+                        Dijete *kr = it;
+                        Dijete *prethodni = ProsloDijete(it);
+                        prethodni-&gt;sljedeci = prvi;
+                        it = it-&gt;sljedeci;
+                        zadnji = prethodni;
+                        
+                       
+                        delete kr;
+                        kr = nullptr;
+                    }
+                    else {
+                    Dijete *t = it;
+                    Dijete *prethodni = ProsloDijete(it);
+                    it = it-&gt;sljedeci;
+                    prethodni-&gt;sljedeci = it;
+                    delete t;
+                    t = nullptr;
+                    }
+                  
+                   tu = it;
+                  
+                    k++;
+    }
+    timovi.push_back(tim);
+        }
+        return timovi;
+}
+
+
+
+
+
+
+
+int main ()
+{
+   
+  // std::vector&lt;std::string&gt; djeca = {"Damir","Ana","Muhamed","Marko","Ivan","Mirsad","Nikolina","Alen","Jasmina","Merima"};
+  // std::vector&lt;std::string&gt; djeca = {"Zlata","Akif","Mehmed","Muris","Jasmina","Nezla","Ali Raza","Muhamed-Ali"};
+ //std::vector&lt;std::string&gt; djeca = {"Ana Marija","Bin Laden","Isus Hristos Simnen Stanko","Mirza","David Vid Viktorije Dimitrije Sebastijan Ernest"};
+  // std::cout&lt;&lt;velicinaImena("David Vid Viktorije Dimitrije Sebastijan Ernest");
+  try{
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    int n=0;
+    std::cin&gt;&gt;n;
+    std::cout&lt;&lt;"Unesite imena djece: ";
+    std::vector&lt;std::string&gt; djeca;
+    std::string dijete;
+    std::cin.ignore(10000,'\n');
+    for(int i = 0 ; i &lt; n; i++) {
+        std::getline(std::cin,dijete);
+        djeca.push_back(dijete);
+    }
+
+    
+    std::cout&lt;&lt;std::endl&lt;&lt;"Unesite broj timova: ";
+    int br;
+    std::cin&gt;&gt;br;
+    
+    auto vek = Razvrstavanje(djeca,br);
+    
+    for(int i = 0; i &lt; vek.size(); i++) {
+        std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+        int vel = std::distance(vek[i].begin(),vek[i].end());
+        for(auto it = vek[i].begin(); it != vek[i].end(); it++) {
+            vel--;
+            if(vel == 0) std::cout&lt;&lt;*it;
+            else std::cout&lt;&lt;*it&lt;&lt;", ";
+    }
+    std::cout&lt;&lt;std::endl;
+    }
+    
+    }catch(std::bad_alloc b) {
+        std::cout &lt;&lt; b.what() &lt;&lt; std::endl;
+    }
+    catch(std::logic_error l){
+        std::cout &lt;&lt;"Izuzetak: "&lt;&lt; l.what() &lt;&lt; std::endl; 
+    }
+     
+  
+  
+    
+	return 0;
+</font>}</pre>
+</body>
+</html>

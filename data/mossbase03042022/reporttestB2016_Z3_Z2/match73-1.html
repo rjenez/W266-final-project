@@ -1,0 +1,123 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student9385.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student1029.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match73-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_15.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+
+
+map&lt;string,set&lt;int&gt;&gt; KreirajIndeksPojmova(string recenica)
+{
+    
+for(int i=0;i&lt;recenica.size();i++) {
+    if(recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') {
+        recenica[i]+=32;
+    }
+}
+
+//Prebaciti rijeci iz recenice u vektor rijeci iz recenice
+    vector&lt;string&gt; rijeciURecenici;
+    for(int i=0; i&lt;recenica.size(); i++) {
+        if((recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z') || (recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') || (recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9')) {
+</font><a name="0"></a><font color="#FF0000"><a href="match73-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_81.gif"/></a>
+
+            string rijec;
+            while(i&lt;recenica.size() &amp;&amp;  ((recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z') || (recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') || (recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9'))) {
+                rijec+=recenica[i];
+                i++;
+            }
+
+            rijeciURecenici.push_back(rijec);
+        }
+    }
+    
+    map&lt;string,set&lt;int&gt;&gt; mapa;
+    set&lt;int&gt; pamti_indekse;
+    int pocetak=0,kraj=0;
+
+// Hajmo naci substr iz rec i uporediti ga sa rijecju iz vektora rijeci
+    for(int i=0; i&lt;rijeciURecenici.size(); i++) {
+        for(int j=0; j&lt;recenica.size(); j++) {
+            pocetak=0, kraj=0;
+            if((recenica[j]&gt;='a' &amp;&amp; recenica[j]&lt;='z') || (recenica[j]&gt;='A' &amp;&amp; recenica[j]&lt;='Z') || (recenica[j]&gt;='0' &amp;&amp; recenica[j]&lt;='9')) {
+                pocetak=j;
+                while((recenica[j]&gt;='a' &amp;&amp; recenica[j]&lt;='z') || (recenica[j]&gt;='A' &amp;&amp; recenica[j]&lt;='Z') || (recenica[j]&gt;='0' &amp;&amp; recenica[j]&lt;='9')) {
+                    j++;
+                }
+                kraj=j;
+            }
+
+            if(recenica.substr(pocetak,kraj-pocetak)==rijeciURecenici[i]) 
+            mapa[rijeciURecenici[i]].insert(pocetak);
+        }
+    }
+
+
+    return mapa;
+}
+
+set&lt;int&gt; PretraziIndeksPojmova(string rijec, map&lt;string,set&lt;int&gt;&gt; indeks_pojmova )
+{
+    if(indeks_pojmova.count(rijec)==1) return indeks_pojmova.find(rijec)-&gt;second;
+    else throw logic_error("Unesena rijec nije nadjena!");
+}
+
+void IspisiIndeksPojmova(map&lt;string,set&lt;int&gt;&gt; mapa)
+{
+    for(auto it1=mapa.begin(); it1!=mapa.end(); it1++) {
+        vector&lt;int&gt; skup;
+        cout&lt;&lt;it1-&gt;first&lt;&lt;": ";
+        for(auto it2=it1-&gt;second.begin(); it2!=it1-&gt;second.end(); it2++) {
+            skup.push_back(*it2);
+        }
+
+        cout&lt;&lt;skup[0];
+        for(int i=1; i&lt;skup.size(); i++) {
+            cout&lt;&lt;","&lt;&lt;skup[i];
+        }
+
+        cout&lt;&lt;endl;
+    }
+}
+
+int main ()
+{
+    cout&lt;&lt;"Unesite tekst: ";
+    string recenica;
+    getline(cin,recenica);
+    map&lt;string,set&lt;int&gt;&gt; mapa = KreirajIndeksPojmova(recenica);
+    IspisiIndeksPojmova(mapa);
+    
+    
+        string rijec;
+        do {
+        cout&lt;&lt;"Unesite rijec: ";
+        rijec="";
+        getline(cin,rijec);
+        if(rijec==".") break;
+        try{
+        set&lt;int&gt; pronadjena= PretraziIndeksPojmova(rijec,mapa);
+        for(auto i: pronadjena) cout&lt;&lt;i&lt;&lt;" ";
+        cout&lt;&lt;endl;
+        
+        
+    }
+    catch(logic_error greska) {
+        cout&lt;&lt;greska.what()&lt;&lt;endl;
+    }
+        }while(rijec!=".");
+</font>    return 0;
+}</pre>
+</body>
+</html>

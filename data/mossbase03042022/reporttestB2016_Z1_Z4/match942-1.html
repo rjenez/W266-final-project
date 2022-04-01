@@ -1,0 +1,167 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student7977.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student1571.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+std::string obrni_rijec (std::string s) {
+	std::string pomocni;
+	for (int i=s.length() - 1; i&gt;=0; i--)
+		pomocni += s[i];
+	s = pomocni;
+	return pomocni;
+}
+int broj_rijeci (std::string s) {
+	int broj(0);
+<a name="0"></a><font color="#FF0000"><a href="match942-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+	bool neslovo (true);
+	for (int i=0; i&lt;s.length(); i++) {
+		if (!(s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z' || s[i] &gt;= 'a' &amp;&amp; s[i] &lt;= 'z'))
+			neslovo = true;
+</font>		else if (neslovo) {
+			neslovo = false;
+			broj++;
+		}
+	}
+	return broj;
+}
+std::string pig_latin (std::string s) {
+	
+	std::string prvo_slovo (s.substr(0, 1));
+	std::cout &lt;&lt; s;
+	std::string ostatak_rijeci (s.substr (1, s.size()-1));
+	std::string rijec_pig_latin (ostatak_rijeci + prvo_slovo + "ay");
+	
+	return rijec_pig_latin;
+}
+
+std::string IzmijeniUPigLatin (std::string s, std::vector&lt;std::string&gt; v1) {
+	if (s.length() == 0)
+		return s;
+		
+	std::string recenica_pig_latin;
+	std::vector&lt;std::string&gt; v (broj_rijeci(s));
+	int brojac(0);
+	char znak;
+	
+	for (int i=0; i&lt;v1.size(); i++) {
+		if (broj_rijeci (v1[i]) &gt; 1)
+			throw ("Izuzetak: Nekorektan izbor rijeci");
+	}
+	for (int i=0; i&lt;s.length(); i++) { 
+		if ((s[i] &lt; 'A') || (s[i] &gt;'Z' &amp;&amp; s[i] &lt; 'a') || (s[i] &gt;'z')) {
+			brojac++;
+			znak = s[i];
+		}
+		else
+		 v[brojac] += s[i];
+	}
+	
+	if (v1.size() == 0) {
+		for (int i=0; i&lt;v.size(); i++) {
+			recenica_pig_latin += pig_latin(v[i]);
+		}
+		return recenica_pig_latin;
+	}
+	
+<a name="1"></a><font color="#00FF00"><a href="match942-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+	for (int i=0; i&lt;v.size(); i++) {
+		for (int j=0; j&lt;v1.size(); j++) {
+			if (v[i] == v1[j])
+</font>				v[i] = pig_latin(v[i]);
+		}
+	}
+	
+	/*for (int i=0; i&lt;v.size(); i++) {
+		for (int j=0; j&lt;s.length(); j++) {
+			std::string pomocni (s.substr(j, v[i].size()));
+			if (pomocni == v[i]) {
+				pomocni = pig_latin(pomocni);
+				int index (0);
+				int pocetni (j);
+				while (index != pomocni.length()) {
+					s [pocetni] = pomocni [index];
+					pocetni++;
+					index++;
+				}
+			}
+		}
+	}*/
+	for (int i=0; i&lt;v.size(); i++)
+		recenica_pig_latin += v[i] + " ";
+		
+	return recenica_pig_latin;
+	//return s;
+}
+
+std::string ObrniFraze (std::string s, std::vector&lt;std::string&gt; v) {
+	if (s.length() == 0)
+		return s;
+	
+	for (int i=0; i&lt;v.size(); i++) {
+		for (int j=0; j&lt;s.length(); j++) {
+			std::string pomocni (s.substr (j, v[i].size()));
+			if (pomocni == v[i]) {
+				pomocni = obrni_rijec(pomocni);
+				int index (0);
+				int pocetni (j);
+				while (index != pomocni.length()) {
+					s[pocetni] = pomocni[index];
+					pocetni++;
+					index++;
+				}
+			}
+		}
+	}
+	return s;
+}
+
+int main ()
+{
+	std::string s;
+<a name="2"></a><font color="#0000FF"><a href="match942-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+	std::string a;
+	std::vector&lt;std::string&gt; v;
+	std::cout &lt;&lt; "Unesite recenicu: ";
+	std::getline (std::cin, s);
+	std::cout &lt;&lt; "Unesite fraze: ";
+</font>	
+	try {
+		for (;;) {
+			std::getline (std::cin,a);
+			if (!a.length())
+				break;
+			v.push_back(a);
+		}
+		for (int i=0; i&lt;v.size(); i++) {
+			for (int j=0; j&lt;v[i].size(); j++) {
+				if ((v[i][j] &gt; 'Z' &amp;&amp; v[i][j] &lt; 'a') || ( v[i][j] &lt; 'A' &amp;&amp; v[i][j] != ' ') || v[i][j] &gt; 'z')
+					throw std::domain_error ("Nekorektan izbor rijeci");
+			}
+		}
+		try {
+			std::string pomocni (IzmijeniUPigLatin(s, v));
+			std::cout &lt;&lt; "Recenica nakon PigLatin transformacije: " &lt;&lt; pomocni;
+		}
+		catch (const char poruka[]) {
+			std::cout &lt;&lt; poruka;
+		}
+		std::cout &lt;&lt; std::endl &lt;&lt; "Recenica nakon obrtanja fraza: ";
+		std::cout &lt;&lt; ObrniFraze(s, v);
+	}
+	catch (std::domain_error poruka) {
+		std::cout &lt;&lt; poruka.what() &lt;&lt; std::endl;
+	}
+	return 0;
+}</pre>
+</body>
+</html>

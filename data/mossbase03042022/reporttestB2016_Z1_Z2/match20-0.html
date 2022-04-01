@@ -1,0 +1,190 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student7162.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student7162.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2 */
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+// PONOVITI 
+// if(matrica.size() == 0 || matrica[0].size() == 0) ne radi ?
+// if(matrica.size() == 0) radi !
+
+// KREIRA MATRICU
+<a name="1"></a><font color="#00FF00"><a href="match20-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_10.gif"/></a>
+
+std::vector&lt;std::vector&lt;double&gt;&gt; KreirajMatricu(int m, int n){
+    std::cout &lt;&lt; "Unesite elemente matrice: ";
+    std::vector&lt;std::vector&lt;double&gt;&gt; MATRIX (m, std::vector&lt;double&gt;(n));
+    for(int i=0; i&lt;m; i++){
+        for(int j=0; j&lt;n; j++){
+            std::cin &gt;&gt; MATRIX[i][j];
+        }
+    }
+    return MATRIX;
+}
+
+// ISPISUJE MATRICU
+void IspisMatrice(std::vector&lt;std::vector&lt;double&gt;&gt; MATRIX){
+    std::cout &lt;&lt; std::endl &lt;&lt; "Rezultantna matrica: " &lt;&lt; std::endl;
+    for(int i=0; i&lt;MATRIX.size(); i++){
+        for(int j=0; j&lt;MATRIX[0].size(); j++){
+</font><a name="0"></a><font color="#FF0000"><a href="match20-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_86.gif"/></a>
+
+            std::cout &lt;&lt; std::setw(4) &lt;&lt; MATRIX[i][j];
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+// h(M) MATRICA
+std::vector&lt;std::vector&lt;double&gt;&gt; hM(std::vector&lt;std::vector&lt;double&gt;&gt; MATRIX){
+    std::vector&lt;std::vector&lt;double&gt;&gt; OgledaloHM (MATRIX.size(), std::vector&lt;double&gt;(MATRIX[0].size(), 0));
+    int k_brojac(0);
+    for(int i=0; i&lt;MATRIX.size(); i++){
+        int l_brojac(0);
+        for(int j=MATRIX[0].size()-1; j&gt;=0; j--){
+            OgledaloHM[k_brojac][l_brojac] = MATRIX[i][j];
+            l_brojac++;
+        }
+        k_brojac++;
+    }
+    return OgledaloHM;
+}
+
+//v(M) MATRICA
+std::vector&lt;std::vector&lt;double&gt;&gt; vM(std::vector&lt;std::vector&lt;double&gt;&gt; MATRIX){
+    std::vector&lt;std::vector&lt;double&gt;&gt; OgledaloVM (MATRIX.size(), std::vector&lt;double&gt;(MATRIX[0].size(), 0));
+    int k_brojac(0);
+    for(int i=MATRIX.size()-1; i&gt;=0; i--){
+        int l_brojac(0);
+        for(int j=0; j&lt;MATRIX[0].size(); j++){
+            OgledaloVM[k_brojac][l_brojac] = MATRIX[i][j];
+            l_brojac++;
+        }
+        k_brojac++;
+    }
+    return OgledaloVM;
+}
+
+//hv(M) MATRICA
+std::vector&lt;std::vector&lt;double&gt;&gt; hvM(std::vector&lt;std::vector&lt;double&gt;&gt; MATRIX){
+    std::vector&lt;std::vector&lt;double&gt;&gt; OgledaloHVM (MATRIX.size(), std::vector&lt;double&gt;(MATRIX[0].size(), 0));
+    int k_brojac(0);
+    for(int i=MATRIX.size()-1; i&gt;=0; i--){
+        int l_brojac(0);
+        for(int j=MATRIX[0].size()-1; j&gt;=0; j--){
+            OgledaloHVM[k_brojac][l_brojac] = MATRIX[i][j];
+            l_brojac++;
+        }
+        k_brojac++;
+    }
+    return OgledaloHVM;
+}
+
+// hvm vm hvm
+// hm m hm
+// hvm vm hvm
+std::vector&lt;std::vector&lt;double&gt;&gt; OgledaloMatrica (std::vector&lt;std::vector&lt;double&gt;&gt; MATRIX){
+    // PROVJERA: da li je prazna
+    if(MATRIX.size()==0){
+        return MATRIX;
+    }
+    // PROVJERA: da li je grbava
+    for(int i=0; i&lt;MATRIX.size()-1; i++){
+        if(MATRIX[i].size() != MATRIX[i+1].size()){
+            throw std::domain_error("Matrica nije korektna");
+        }
+    }
+    int duzina_matrix(3*MATRIX.size()), sirina_matrix(3*MATRIX[0].size());
+    std::vector&lt;std::vector&lt;double&gt;&gt; hvm = hvM(MATRIX);
+    std::vector&lt;std::vector&lt;double&gt;&gt; hm = hM(MATRIX);
+    std::vector&lt;std::vector&lt;double&gt;&gt; vm = vM(MATRIX);
+    // Ogledalo matrice inicijalizacija i svi elementi su nula
+    std::vector&lt;std::vector&lt;double&gt;&gt; ogledalo (duzina_matrix, std::vector&lt;double&gt; (sirina_matrix, 0));
+    int prva_trecina_sirine = sirina_matrix/3, druga_trecina_sirine = prva_trecina_sirine*2;
+    int prva_trecina_duzine = duzina_matrix/3, druga_trecina_duzine = prva_trecina_duzine*2;
+
+    // PRVA DIO MATRICE
+    for(int i=0; i&lt;prva_trecina_duzine; i++){
+        int x_brojac(0), y_brojac(0), z_brojac(0);
+        for(int j=0; j&lt;prva_trecina_sirine; j++){
+            ogledalo[i][j] = hvm[i][x_brojac];
+            x_brojac++;
+        }
+        for(int k=prva_trecina_sirine; k&lt;druga_trecina_sirine; k++){
+            ogledalo[i][k] = vm[i][y_brojac];
+            y_brojac++;
+        }
+        for(int l=druga_trecina_sirine; l&lt;sirina_matrix; l++){
+            ogledalo[i][l] = hvm[i][z_brojac];
+            z_brojac++;
+        }
+    }
+
+    // DRUGI DIO MATRICE
+    int l_brojac(0), m_brojac(0), n_brojac(0);
+    for(int i=prva_trecina_duzine; i&lt;druga_trecina_duzine; i++){
+        int x_brojac(0), y_brojac(0), z_brojac(0);
+        for(int j=0; j&lt;prva_trecina_sirine; j++){
+            ogledalo[i][j] = hm[l_brojac][x_brojac];
+            x_brojac++;
+        }
+        for(int k=prva_trecina_sirine; k&lt;druga_trecina_sirine; k++){
+            ogledalo[i][k] = MATRIX[m_brojac][y_brojac];
+            y_brojac++;
+        }
+        for(int l=druga_trecina_sirine; l&lt;sirina_matrix; l++){
+            ogledalo[i][l] = hm[n_brojac][z_brojac];
+            z_brojac++;
+        }
+        l_brojac++; m_brojac++; n_brojac++;
+    }
+
+    // TRECI DIO MATRICE
+    l_brojac = 0; m_brojac = 0; n_brojac = 0;
+    for(int i=druga_trecina_duzine; i&lt;duzina_matrix; i++){
+        int x_brojac(0), y_brojac(0), z_brojac(0);
+        for(int j=0; j&lt;prva_trecina_sirine; j++){
+            ogledalo[i][j] = hvm[l_brojac][x_brojac];
+            x_brojac++;
+        }
+        for(int k=prva_trecina_sirine; k&lt;druga_trecina_sirine; k++){
+            ogledalo[i][k] = vm[m_brojac][y_brojac];
+            y_brojac++;
+        }
+        for(int l=druga_trecina_sirine; l&lt;sirina_matrix; l++){
+            ogledalo[i][l] = hvm[n_brojac][z_brojac];
+            z_brojac++;
+        }
+        l_brojac++; m_brojac++; n_brojac++;
+    }
+
+    return ogledalo;
+}
+
+int main(){
+    std::cout &lt;&lt; "Unesite dimenzije matrice (m n): ";
+    int m, n;
+    std::cin &gt;&gt; m &gt;&gt; n;
+    if(m&lt;0 || n&lt;0){
+        std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!";
+        return 0;
+    }
+    std::vector&lt;std::vector&lt;double&gt;&gt; MATRIX = KreirajMatricu(m, n);
+    try{
+        std::vector&lt;std::vector&lt;double&gt;&gt; ogledalo = OgledaloMatrica(MATRIX);
+        IspisMatrice(ogledalo);
+    }
+    catch(std::domain_error izuzetak){
+        std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+</font>    }
+    return 0;
+}</pre>
+</body>
+</html>

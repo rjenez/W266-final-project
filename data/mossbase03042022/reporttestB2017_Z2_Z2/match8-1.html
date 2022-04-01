@@ -1,0 +1,318 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student3350.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student7655.cpp<p></p><pre>
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;deque&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match8-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum  class SmjerKretanja
+{
+    NaprijedNazad,NazadNaprijed,GoreDolje,DoljeGore,LijevoDesno,DesnoLijevo
+};
+template &lt;typename Tip1&gt;
+Tip1 PjescaniSat(Tip1 Cudo,SmjerKretanja s )
+{
+	if(Cudo.size()==0) { return Cudo; }
+	int brojac_j(0),brojac_k(0),brojac_i(0);
+	for(int i(0);i&lt;Cudo.size();i++)
+	{
+		brojac_i++;
+		for(int j(0);j&lt;Cudo.at(i).size();j++)
+		{
+			brojac_j++;
+			for(int k(0);k&lt;Cudo.at(i).at(j).size();k++)
+			{
+				brojac_k++;
+			}
+		}
+	}
+	if(brojac_j!=brojac_i*brojac_i||brojac_k!=brojac_j*brojac_i) throw std::domain_error("3D matrica nema oblik kocke");
+	if(brojac_j%2==0||brojac_k%2==0) throw std::length_error("3D kontejner ne zadovoljava uvjet neparnosti");
+	int k1(0);
+	Tip1 l(Cudo);
+	Tip1 pom(Cudo);
+	auto red(Cudo.at(0).at(0));
+	for(int i(0); i&lt;Cudo.size(); i++) {
+		for(int j(0); j&lt;Cudo.size(); j++) {
+			red=Cudo.at(i).at(j);
+			pom.at(j).at(i)=red;
+		}
+	} 
+	if(s==SmjerKretanja::NaprijedNazad||s==SmjerKretanja::NazadNaprijed) {
+
+		for(int i(0); i&lt;Cudo.size(); i++) {
+			k1=0;
+			for(int j(0); j&lt;Cudo.at(i).size(); j++) {
+				if(j&gt;0&amp;&amp;j&lt;Cudo.size()-1) {
+					if(j&lt;=(Cudo.size()-1)/2)
+					{
+						k1++;
+					for(int k(0);k&lt;k1;k++)
+						pom.at(i).at(j).erase(pom.at(i).at(j).begin()+0);
+					pom.at(i).at(j).resize(pom.at(i).at(j).size()-k1);
+					}
+					else
+					{
+						k1--;
+						for(int k(0);k&lt;k1;k++)
+							pom.at(i).at(j).erase(pom.at(i).at(j).begin()+0);
+						pom.at(i).at(j).resize(pom.at(i).at(j).size()-k1);
+					}
+				}	
+			}
+		}
+		int l=0;
+		Tip1 pom1(pom);
+		for(int i(0); i&lt;pom.size(); i++) {
+			l=0;
+			for(int j=pom.at(i).size()-1; j&gt;=0; j--) {
+				for(int k(0); k&lt;pom.at(i).at(j).size(); k++) {
+					if(l==pom.size()) break;
+					pom1.at(i).at(l).at(k)=pom.at(i).at(j).at(k);
+				}
+				l++;
+			}
+		} 
+		if(s==SmjerKretanja::NaprijedNazad)
+			return pom;
+		else
+			return pom1;
+		}
+	if(s==SmjerKretanja::GoreDolje||s==SmjerKretanja::DoljeGore)
+	{
+		pom=Cudo;
+		for(int i(0);i&lt;Cudo.size();i++)
+		{
+			k1=0;
+			for(int j(0);j&lt;Cudo.size();j++)
+				{
+					if(j&gt;0&amp;&amp;j&lt;Cudo.size()-1)
+					{
+						if(j&lt;=(Cudo.size()-1)/2)
+						{
+							k1++;
+							for(int k(0);k&lt;k1;k++)
+								pom.at(i).at(j).erase(pom.at(i).at(j).begin()+0);
+							pom.at(i).at(j).resize(pom.at(i).at(j).size()-k1);	
+						}
+						else
+						{
+							k1--;
+							pom.at(i).at(j).erase(pom.at(i).at(j).begin()+0);
+							pom.at(i).at(j).resize(pom.at(i).at(j).size()-k1);
+						}
+					}
+				} 
+		}
+		if(s==SmjerKretanja::GoreDolje) return pom;
+		else {
+			Tip1 pom1(pom);
+			int 	l(0);
+			for(int i(0);i&lt;pom.size();i++)
+				{
+					l=0;
+					for(int j(pom.at(i).size()-1);j&gt;=0;j--)
+					{
+						for(int k(0);k&lt;pom.at(i).at(j).size();k++)
+						{
+							if(l==pom.size()) break;
+							pom1.at(i).at(l).at(k)=pom.at(i).at(j).at(k);
+						}
+						l++;
+					}
+				}
+				return pom1;
+		}
+	}
+	if(s==SmjerKretanja::DesnoLijevo||s==SmjerKretanja::LijevoDesno)
+	{
+		int l(0),m(0),n(0),l1;
+		auto red1(Cudo.at(0).at(0));
+		Tip1 pom1(Cudo);
+	   	red=Cudo.at(0).at(0);
+		for(int i(0);i&lt;Cudo.size();i++)
+		{
+			for(int j(Cudo.size()-1);j&gt;=0;j--)
+			{
+				l1=0;
+				for(int k1(Cudo.size()-1);k1&gt;=0;k1--)
+				{
+				if(l1==Cudo.size()) break;
+				red.at(l1)=(Cudo.at(i).at(k1).at(j));
+				l1++;
+				}
+			l=0;
+			for(int k(red.size()-1);k&gt;=0;k--)
+			{
+				if(l==Cudo.size()) break;
+				red1.at(l)=red.at(k);
+				l++;
+			}
+
+				pom1.at(m).at(n)=red1;
+			n++;
+		}
+		std::cout  &lt;&lt; std::endl;
+		n=0;
+		m++;
+		}
+	for(int i(0);i&lt;pom1.size();i++)
+	{
+		k1=0;
+		for(int j(0);j&lt;pom1.size();j++)
+		{
+			if(j&gt;0&amp;&amp;j&lt;pom1.size()-1)
+			{
+				if(j&lt;=(pom1.size()-1)/2)
+				{
+					k1++;
+					for(int k(0);k&lt;k1;k++)
+						pom1.at(i).at(j).erase(pom1.at(i).at(j).begin()+0);
+					pom1.at(i).at(j).resize(pom1.at(i).at(j).size()-k1);	
+					
+				}
+				else
+				{
+					k1--;
+					for(int k(0);k&lt;k1;k++)
+						pom1.at(i).at(j).erase(pom1.at(i).at(j).begin()+0);
+					pom1.at(i).at(j).resize(pom1.at(i).at(j).size()-k1);
+				}
+			}
+		}
+	}  
+if(s==SmjerKretanja::DesnoLijevo) return pom1;
+		Tip1 pom2(pom1);
+		int ko(0);
+		for(int i(0);i&lt;pom1.size();i++)
+		{
+			 ko=0;
+			for(int j(pom1.at(i).size()-1);j&gt;=0;j--)
+			{
+				for(int k(0);k&lt;pom1.at(i).at(j).size();k++)
+				{
+					if(ko==pom.size()) break;
+					pom2.at(i).at(ko).at(k)=pom1.at(i).at(j).at(k);
+				}
+				ko++;
+			}
+		}	
+ return pom2;
+	}
+	return Cudo;
+}
+int main ()
+{
+	try {
+	std::cout &lt;&lt; "Unesite dimenziju (x/y/z): ";
+	int d;
+	std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt;d3,p ;
+	do
+	{
+	std::cin &gt;&gt; d; 
+	if(d&lt;0) std::cout &lt;&lt; "Dimenzija nije ispravna, unesite opet: ";
+	}
+	while (d&lt;0);
+	std::cout &lt;&lt; "Unesite elemente kontejnera: ";
+	d3.resize(d);
+	for(int i(0); i&lt;d3.size(); i++) {
+		d3.at(i).resize(d);
+		for(int j(0); j&lt;d3.at(i).size(); j++)
+			d3.at(i).at(j).resize(d);
+	}
+	for(int i(0); i&lt;d; i++) {
+		for(int j(0); j&lt;d; j++) {
+			for(int k(0); k&lt;d; k++) {
+				std::cin &gt;&gt; d3.at(i).at(j).at(k);
+			}
+		}
+	}   
+	std::cout &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+	int smjer;
+	do
+	{
+	std::cin &gt;&gt; smjer;
+	if((smjer&lt;0||smjer&gt;5)) std::cout &lt;&lt; "Smjer nije ispravan, unesite opet: ";
+	}
+	while(smjer&lt;0||smjer&gt;5);
+	if(smjer==0)
+		p=PjescaniSat(d3,SmjerKretanja::NaprijedNazad);
+	if(smjer==1)
+		p=PjescaniSat(d3,SmjerKretanja::NazadNaprijed);
+	if(smjer==2)
+		p=PjescaniSat(d3,SmjerKretanja::GoreDolje);
+	if(smjer==3)
+		p=PjescaniSat(d3,SmjerKretanja::DoljeGore);
+	if(smjer==4)
+		p=PjescaniSat(d3,SmjerKretanja::LijevoDesno);
+	if(smjer==5)
+		p=PjescaniSat(d3,SmjerKretanja::DesnoLijevo);
+	std::cout &lt;&lt; "\nPjescani sat unesene matrice je:" &lt;&lt; std::endl;
+	std::cout  &lt;&lt; std::endl;
+	int b(0),t(0),t1(0);
+	for(int i(0); i&lt;p.size(); i++) {
+		b=1;
+		for(int j(0); j&lt;p.at(i).size(); j++) {
+			if(j&gt;0&amp;&amp;j&lt;p.at(i).size()-1&amp;&amp;j&lt;=(p.at(i).size()-1)/2) b++;
+			if(j&gt;(p.at(i).size()-1)/2) b--;
+			t=0; t1=0;
+			for(int k(0); k&lt;p.at(i).at(j).size(); k++) {
+				if(j&gt;0&amp;&amp;j&lt;p.size()-1) { 
+					if(j&lt;=(p.at(i).size()-1)/2)
+					{
+						if(t==0) { 
+							if(j==(p.at(i).size()-1)/2) { 
+								if(p.at(i).size()&lt;4) std::cout &lt;&lt; std::setw(4*b) &lt;&lt;p.at(i).at(j).at(k); 
+								else std::cout &lt;&lt; std::setw(4*b) &lt;&lt;p.at(i).at(j).at(k);
+							}
+							else std::cout &lt;&lt; std::setw(4*b) &lt;&lt;p.at(i).at(j).at(k);
+						}
+						else
+						{
+							std::cout &lt;&lt; std::setw(4)&lt;&lt;p.at(i).at(j).at(k);
+						}
+						t++;
+					}
+					else
+					{
+						if(t1==0) { std::cout &lt;&lt; std::setw(4*b) &lt;&lt;p.at(i).at(j).at(k);  }
+						else
+						{
+							if(k==0)
+							std::cout &lt;&lt; std::setw(4) &lt;&lt;p.at(i).at(j).at(k);
+							else 
+							std::cout &lt;&lt; std::setw(4)&lt;&lt;p.at(i).at(j).at(k);
+						}	
+					t1++;	
+					}
+				}
+			
+				else	
+				{
+					std::cout &lt;&lt; std::setw(4)&lt;&lt;p.at(i).at(j).at(k);
+				}	
+			}
+			std::cout  &lt;&lt; std::endl;
+		}
+		std::cout  &lt;&lt; std::endl;
+	}
+	}
+				catch (std::domain_error &amp;izuzetak)
+	{
+		std::cout &lt;&lt;"\nIzuzetak: "&lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+	}
+	catch (std::length_error &amp;izuzetak1)
+	{
+		std::cout &lt;&lt;"\nIzuzetak: "&lt;&lt;izuzetak1.what()  &lt;&lt; std::endl;
+</font>	}
+	return 0;
+}</pre>
+</body>
+</html>

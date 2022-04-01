@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z3/Z4/student7933.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z3/Z4/student6195.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+#define BR_EL 100
+
+int max(int matrica[100][100], int visina, int sirina)
+{
+    /* Pretvaramo matricu u niz, nas niz ce imati visina * sirina elemenata, a to je maksimalno 100 * 100 = 10000 */
+    int niz_matrice[10000];
+    int k = 0, l = 0, s = 0;
+    while(k &lt; visina) {
+        niz_matrice[l] = matrica[k][s];
+        l++;
+        s++;
+        if(s &gt;= sirina) {
+            s = 0;
+            k++;
+        }
+    }
+    /* Sortiramo nas niz, koji je sacinjen od elemenata matrice */
+    int najveci, temp, i, j;
+<a name="0"></a><font color="#FF0000"><a href="match368-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_32.gif"/></a>
+
+    for(i = 0; i &lt; l; i++) {
+        najveci = i;
+        for(j = i + 1; j &lt; l; j++) {
+            if(niz_matrice[j] &gt; niz_matrice[najveci])
+                najveci = j;
+        }
+        temp = niz_matrice[i];
+        niz_matrice[i] = niz_matrice[najveci];
+        niz_matrice[najveci] = temp;
+    }
+
+    int brojac_ponavljanja = 1, novi_clan_niza = niz_matrice[0], najveci_broj_ponavljanja = 1;
+
+    /* Provjeravamo da li se neki broj ponavlja u nizu, ako se ponavlja brojac_ponavljanja povecaj, ako se ne ponavlja brojac_ponavljanja ostavi kakav jeste
+    ako se ponavlja nekoliko puta postavi da je to najveci_broj_ponavljanja pa kroz jos jednu petlju provjeri je li to zaista njaveci broj ponavljanja nekog
+    broja u nasem nizu*/
+
+    for(i = 1; i &lt; l; i++) {
+        if(niz_matrice[i] == niz_matrice[i - 1]) {
+            brojac_ponavljanja++;
+        } else {
+            if(brojac_ponavljanja &gt;= najveci_broj_ponavljanja) {
+                najveci_broj_ponavljanja = brojac_ponavljanja;
+                novi_clan_niza = niz_matrice[i - 1];
+            }
+            brojac_ponavljanja = 1;
+        }
+    }
+    if(brojac_ponavljanja &gt;= najveci_broj_ponavljanja) {
+        najveci_broj_ponavljanja = brojac_ponavljanja;
+        novi_clan_niza = niz_matrice[l - 1];
+    }
+
+    return novi_clan_niza;
+}
+
+int izbaci_kolone(int matrica[100][100], int visina, int sirina, int N)
+{
+    int i, j, izbacivac = -2;
+</font>    /* Trazimo kolonu u kojoj postoji to N koje treba izbaciti, kada je nadjemo neka nasa logicka izbacivac zapamti indeks te kolone i nek napusti petlju tog trenutka */
+<a name="1"></a><font color="#00FF00"><a href="match368-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_19.gif"/></a>
+
+    while(sirina &gt; 0) {
+        izbacivac = -2;
+
+        for(j = 0; j &lt; sirina; j++) {
+            for(i = 0; i &lt; visina; i++)  {
+                if(matrica[i][j] == N) {
+                    izbacivac = j;
+                    break;
+                }
+            }
+            if(izbacivac != -2) {
+                break;
+            }
+        }
+        /* Ako je logicka izbacivac = 0, onda nije pronadjen ni jedan element koji se treba izbaciti zavrsi petlju (break) */
+        if(izbacivac == -2) {
+            break;
+        }
+
+        for(j = izbacivac; j &lt; sirina - 1; j++) {
+            for(i = 0; i &lt; visina; i++) {
+                matrica[i][j] = matrica[i][j + 1];
+            }
+        }
+
+        sirina --;
+
+    }
+
+    return sirina;
+}
+int main()
+{
+    int visina, sirina, matrica[BR_EL][BR_EL], i, j;
+</font>
+    printf("Unesite sirinu i visinu matrice: ");
+    scanf("%d %d", &amp;sirina, &amp;visina);
+
+    for(i = 0; i &lt; visina; i++) {
+<a name="2"></a><font color="#0000FF"><a href="match368-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_18.gif"/></a>
+
+        printf("Unesite elemente %d. reda: ", i + 1);
+        for(j = 0; j &lt; sirina; j++) {
+            scanf("%d",&amp;matrica[i][j]);
+        }
+    }
+    int broj_prolaza = 1, najveciBroj, kolona = sirina;
+
+    while(kolona &gt; 0) {
+
+        najveciBroj = max(matrica, visina, kolona);
+        kolona = izbaci_kolone(matrica, visina, kolona, najveciBroj);
+
+        if(kolona == 0) {
+            printf("\nNakon %d. prolaza matrica je prazna!", broj_prolaza);
+            break;
+        }
+        printf("\nNakon %d. prolaza matrica glasi:\n", broj_prolaza);
+        for(i = 0; i &lt; visina; i++) {
+            for(j = 0; j &lt; kolona; j++) {
+                printf("%5d", matrica[i][j]);
+</font>            }
+            printf("\n");
+        }
+        broj_prolaza++;
+
+    }
+
+    return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student2553.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student5660.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match75-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+bool jelislovo(char c){
+	if((c&gt;='a' &amp;&amp; c&lt;='z') || (c&gt;='A' &amp;&amp; c&lt;='Z'))return true;
+	return false;
+}
+std::string ObrniFraze(std::string tekst,std::vector&lt;std::string&gt; fraze){
+	int j,k,pocetak,kraj;
+	for(int i=0; i&lt;fraze.size();i++){
+		if(fraze[i].size()!=0 &amp;&amp; tekst.size()!=0){
+			j=0;
+			k=0;
+			do{
+				while(j&lt;tekst.size() &amp;&amp; fraze[i][0]!=tekst[j])j++;
+				if(j!=tekst.size())pocetak=j;
+				else break;
+				k=0;
+				while(j&lt;tekst.size() &amp;&amp; k&lt;fraze[i].size() &amp;&amp; fraze[i][k]==tekst[j]){j++; k++;}
+				kraj=j-1;
+				if(k==fraze[i].size()){
+					char c;
+					for(int f=0;f&lt;(kraj-pocetak)/2+1;f++){
+						c=tekst[f+pocetak];
+						tekst[f+pocetak]=tekst[kraj-f];
+						tekst[kraj-f]=c;
+					}
+				}
+				//j++;
+			}while(j&lt;tekst.size());
+		}
+	}
+	return tekst;
+}
+std::string IzmijeniUPigLatin(std::string tekst,std::vector&lt;std::string&gt; fraze){
+	for(int i=0; i&lt;fraze.size();i++){
+		for(int j=0; j&lt;fraze[i].size();j++){
+			if(!((fraze[i][j]&gt;='a' &amp;&amp; fraze[i][j]&lt;='z') || (fraze[i][j]&gt;='A' &amp;&amp; fraze[i][j]&lt;='Z')))throw std::domain_error("Nekorektan izbor rijeci");
+		}
+	}
+	if(fraze.size()==0){
+		if(tekst.size()!=0){
+			int i(0),pocetak,kraj;
+			do{
+				while(i&lt;tekst.size() &amp;&amp; !jelislovo(tekst[i]))i++; //do prvog slova
+				if(i!=tekst.size())pocetak=i;
+				else pocetak=-1;
+				while(i&lt;tekst.size() &amp;&amp; jelislovo(tekst[i]))i++; //do kraja rijeci
+				kraj=i-1; //zadnje slovo rijeci
+				if(pocetak!=-1){
+					char pslovo=tekst[pocetak];
+					for(int j=pocetak;j&lt;kraj;j++){
+						tekst[j]=tekst[j+1];
+					}
+					tekst[kraj]=pslovo;
+					if(i!=tekst.size()){
+						tekst.insert(tekst.begin() + i, 'y');
+						tekst.insert(tekst.begin() + i, 'a');
+					}else tekst+="ay";
+					i+=2;
+				}
+			}while(i&lt;tekst.size());
+		}
+	}else{
+		for(int i=0; i&lt;fraze.size();i++){
+			int j(0),k(0),pocetak;
+			do{
+				k=0;
+				while(j&lt;tekst.size() &amp;&amp; !jelislovo(tekst[j]))j++; //do prvog slova
+				pocetak=j;
+				
+				while (j&lt;tekst.size() &amp;&amp; k&lt;fraze[i].size() &amp;&amp; tekst[j]==fraze[i][k]){j++; k++;}//do kraja rijeci(dok se poklapa)
+				if(k==fraze[i].size() &amp;&amp; fraze[i].size()!=0 &amp;&amp; (j==tekst.size() || !jelislovo(tekst[j]))){
+					char pslovo=tekst[pocetak];
+					for(int f=pocetak;f&lt;j-1;f++){
+						tekst[f]=tekst[f+1];
+					}
+					tekst[j-1]=pslovo;
+					if(i!=tekst.size()){
+						tekst.insert(tekst.begin() + j, 'y');
+						tekst.insert(tekst.begin() + j, 'a');
+					}else tekst+="ay";
+					j+=2;
+				}else{
+					while(j&lt;tekst.size() &amp;&amp; jelislovo(tekst[j]))j++;
+				}
+			}while(j&lt;tekst.size());
+		}
+	}
+	return tekst;
+}
+int main ()
+{
+	try
+    {
+        std::cout &lt;&lt;  ObrniFraze ("kapak", {"kap"}) &lt;&lt; std::endl;
+        std::cout &lt;&lt;  ObrniFraze ("kapak", {"kapak"}) &lt;&lt; std::endl;
+        std::cout &lt;&lt;  ObrniFraze ("kapap", {"kap"}) &lt;&lt; std::endl; //Ovo ocigledno nije palindrom ali 
+                                                                  //rezultat bi bio u slucaju pogresnog obrtanja.
+        
+    }
+    catch(std::domain_error e)
+    {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what();
+</font>    }
+	/*
+	std::string recenica,t,fraz;
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	std::getline(std::cin,recenica);
+	std::cout&lt;&lt;"Unesite fraze: ";
+	std::vector&lt;std::string&gt; fraze(0);
+	while(std::cin.peek()!='\n'){
+		std::getline(std::cin,fraz);
+		fraze.push_back(fraz);
+	}
+	try{
+		t=IzmijeniUPigLatin(recenica,fraze);
+		std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: "&lt;&lt;t&lt;&lt;std::endl;//dodaj
+	}catch(std::domain_error z){
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;z.what()&lt;&lt;std::endl;
+	}
+	
+	t=ObrniFraze(recenica,fraze);
+	std::cout&lt;&lt;"Recenica nakon obrtanja fraza: "&lt;&lt;t&lt;&lt;std::endl;*/
+	return 0;
+}</pre>
+</body>
+</html>

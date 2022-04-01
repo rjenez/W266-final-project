@@ -1,0 +1,260 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student6109.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student1465.cpp<p></p><pre>
+/B16/17 (Zadaća 5, Zadatak 3)
+//Autotestovi by Enil Pajic (mail: epajic1@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;limits&gt;
+using namespace std;
+
+bool da_li_se_mogu_sabrati(long long int a, long long int b) {
+    long long int M = numeric_limits&lt;long long int&gt;::max();
+    long long int m = numeric_limits&lt;long long int&gt;::min();
+    if(b &gt; 0 &amp;&amp; a &gt; M - b) throw overflow_error("Nemoguce dobiti tacan rezultat");
+    if(b &lt; 0 &amp;&amp; a &lt; m - b) throw overflow_error("Nemoguce dobiti tacan rezultat");
+    return true;
+}
+
+bool da_li_se_mogu_oduzeti(long long int a, long long int b) {
+    long long int M = numeric_limits&lt;long long int&gt;::max();
+    long long int m = numeric_limits&lt;long long int&gt;::min();
+    if(b &gt; 0 &amp;&amp; a &lt; m + b) throw overflow_error("Nemoguce dobiti tacan rezultat");
+    if(b &lt; 0 &amp;&amp; a &gt; M + b) throw overflow_error("Nemoguce dobiti tacan rezultat");
+    return true;
+}
+
+bool da_li_se_mogu_mnoziti(long long int a, long long int b) {
+    long long int M = numeric_limits&lt;long long int&gt;::max();
+    long long int m = numeric_limits&lt;long long int&gt;::min();
+    if(b &gt; 0 &amp;&amp; (a &lt; m/b || a &gt; M/b)) throw overflow_error("Nemoguce dobiti tacan rezultat");
+    if(b &lt; 0 &amp;&amp; (a == m || -a &gt; M/(-b) || -a &lt; m/(-b))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+    return true;
+}
+
+class Razlomak {
+    long long int brojnik, nazivnik;
+    static long long int NZD(long long int p, long long int q) {
+        if(q == 0) return p;
+        return NZD(q, p%q);
+    }
+    
+public:
+    Razlomak(long long int b, long long int n);
+<a name="2"></a><font color="#0000FF"><a href="match939-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+    Razlomak(long long int b) { brojnik = b; nazivnik = 1; }
+    Razlomak() { brojnik = 0; nazivnik = 1; }
+    long long int DajBrojnik() const { return brojnik; }
+    long long int DajNazivnik() const { return nazivnik; }
+    friend Razlomak operator +(const Razlomak &amp;a1, const Razlomak &amp;a2);
+</font>    friend Razlomak operator -(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend Razlomak operator *(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend Razlomak operator /(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend Razlomak operator +(const Razlomak &amp;a);
+    friend Razlomak operator -(const Razlomak &amp;a);
+    friend Razlomak operator +=(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend Razlomak operator -=(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend Razlomak operator *=(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend Razlomak operator /=(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend Razlomak operator ++(Razlomak &amp;a);
+<a name="0"></a><font color="#FF0000"><a href="match939-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+    friend Razlomak operator --(Razlomak &amp;a);
+    friend Razlomak operator ++(Razlomak &amp;a, int);
+    friend Razlomak operator --(Razlomak &amp;a, int);
+    friend bool operator &gt;(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend bool operator &lt;(const Razlomak &amp;a1, const Razlomak &amp;a2);
+</font>    friend bool operator &lt;=(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend bool operator &gt;=(const Razlomak &amp;a1, const Razlomak &amp;a2);
+<a name="1"></a><font color="#00FF00"><a href="match939-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+    friend bool operator ==(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend bool operator !=(const Razlomak &amp;a1, const Razlomak &amp;a2);
+    friend ostream &amp;operator &lt;&lt;(ostream &amp;tok, const Razlomak &amp;a);
+    friend istream &amp;operator &gt;&gt;(istream &amp;tok, const Razlomak &amp;a);
+</font>    operator long double() const { return brojnik*(1.)/nazivnik; }
+};
+
+/////////////////////////////////////////////// IMPLEMENTACIJE ///////////////////////////////////////////////
+Razlomak::Razlomak(long long int b, long long int n) {
+    long long int nzd;
+    if(n == 0) throw logic_error("Nekorektan razlomak");
+    if(n &lt; 0) {
+        n = -n;
+        b = -b;
+    }
+    nzd = NZD(b,n);
+    brojnik = b/nzd; nazivnik = n/nzd;
+}
+Razlomak operator +(const Razlomak &amp;a1, const Razlomak &amp;a2) {
+    long long int r = a1.NZD(a1.nazivnik, a2.nazivnik);
+    bool mnozenje1 = da_li_se_mogu_mnoziti(a1.brojnik, a2.nazivnik/r);
+    bool mnozenje2 = da_li_se_mogu_mnoziti(a2.brojnik, a1.nazivnik/r);
+    bool sabiranje = da_li_se_mogu_sabrati(mnozenje1, mnozenje2);
+    bool mnozenje3 = da_li_se_mogu_mnoziti(a1.nazivnik, a2.nazivnik/r);
+    
+    if(sabiranje == false || mnozenje3 == false)
+        throw overflow_error("Nemoguce dobiti tacan rezultat");
+    long long int brojnik = a1.brojnik * int(a2.nazivnik/r) + a2.brojnik * int(a1.nazivnik/r);
+    long long int nazivnik = a1.nazivnik * int(a2.nazivnik/r);
+    return Razlomak(brojnik, nazivnik);
+}
+
+Razlomak operator -(const Razlomak &amp;a1, const Razlomak &amp;a2) {
+    long long int r = a1.NZD(a1.nazivnik, a2.nazivnik);
+    bool mnozenje1 = da_li_se_mogu_mnoziti(a1.brojnik, a2.nazivnik/r);
+    bool mnozenje2 = da_li_se_mogu_mnoziti(a2.brojnik, a1.nazivnik/r);
+    bool oduzimanje = da_li_se_mogu_oduzeti(mnozenje1, mnozenje2);
+    bool mnozenje3 = da_li_se_mogu_mnoziti(a1.nazivnik, a2.nazivnik/r);
+    
+    if(oduzimanje == false &amp;&amp; mnozenje3 == false)
+        throw overflow_error("Nemoguce dobiti tacan rezultat");
+    long long int brojnik = a1.brojnik * int(a2.nazivnik/r) - a2.brojnik * int(a1.nazivnik/r);
+    long long int nazivnik = a1.nazivnik * int(a2.nazivnik/r);
+    return Razlomak(brojnik, nazivnik);
+}
+
+Razlomak operator *(const Razlomak &amp;a1, const Razlomak &amp;a2) {
+    long long int s = a1.NZD(a1.brojnik, a2.nazivnik);
+    long long int t = a1.NZD(a2.brojnik, a1.nazivnik);
+    
+    bool mnozenje1 = da_li_se_mogu_mnoziti(a1.brojnik/s, a2.brojnik/t);
+    bool mnozenje2 = da_li_se_mogu_mnoziti(a1.nazivnik/t, a2.nazivnik/s);
+    if(mnozenje1 == false &amp;&amp; mnozenje2 == false) 
+        throw overflow_error("Nemoguce dobiti tacan rezultat");
+    long long int brojnik = int(a1.brojnik/s) * int(a2.brojnik/t);
+    long long int nazivnik = int(a1.nazivnik/t) * int(a2.nazivnik/s);
+    return Razlomak(brojnik, nazivnik);
+}
+
+Razlomak operator /(const Razlomak &amp;a1, const Razlomak &amp;a2) {
+    long long int r = a1.NZD(a1.nazivnik, a2.nazivnik);
+    long long int u = a1.NZD(a1.brojnik, a2.brojnik);
+    
+    bool mnozenje1 = da_li_se_mogu_mnoziti(a1.brojnik/u, a2.nazivnik/r);
+    bool mnozenje2 = da_li_se_mogu_mnoziti(a1.nazivnik/r, a2.brojnik/u);
+    if(mnozenje1 == false &amp;&amp; mnozenje2 == false)
+        throw overflow_error("Nemoguce dobiti tacan rezultat");
+    long long int brojnik = int(a1.brojnik/u) * int(a2.nazivnik/r);
+    long long int nazivnik = int(a1.nazivnik/r) * int(a2.brojnik/u);
+    return Razlomak(brojnik, nazivnik);
+}
+
+Razlomak operator +(const Razlomak &amp;a) {
+    return a;
+}
+Razlomak operator -(const Razlomak &amp;a) {
+    if(a.brojnik == numeric_limits&lt;long long int&gt;::min()) throw overflow_error("Nemoguce dobiti tacan rezultat");
+    Razlomak pomocni_razlomak = a;
+    pomocni_razlomak.brojnik = -pomocni_razlomak.brojnik;
+    return pomocni_razlomak;
+}
+Razlomak operator +=(Razlomak &amp;a1, const Razlomak &amp;a2) {
+    Razlomak pomocni_razlomak;
+    pomocni_razlomak = a1;
+    a1 = pomocni_razlomak + a2;
+    return a1;
+}
+Razlomak operator -=(Razlomak &amp;a1, const Razlomak &amp;a2) {
+    Razlomak pomocni_razlomak;
+    pomocni_razlomak = a1;
+    a1 = pomocni_razlomak - a2;
+    return a1;
+}
+Razlomak operator *=(Razlomak &amp;a1, const Razlomak &amp;a2) {
+    Razlomak pomocni_razlomak;
+    pomocni_razlomak = a1;
+    a1 = pomocni_razlomak * a2;
+    return a1;
+}
+Razlomak operator /=(Razlomak &amp;a1, const Razlomak &amp;a2) {
+    Razlomak pomocni_razlomak;
+    pomocni_razlomak = a1;
+    a1 = pomocni_razlomak / a2;
+    return a1;
+}
+Razlomak operator ++(Razlomak &amp;a) {
+    a += 1;
+    return a;
+}
+Razlomak operator --(Razlomak &amp;a) {
+    a -= 1;
+    return a;
+}
+Razlomak operator ++(Razlomak &amp;a, int) {
+    Razlomak nova_vrijednost = a;
+    ++a;
+    return nova_vrijednost;
+}
+Razlomak operator --(Razlomak &amp;a, int) {
+    Razlomak nova_vrijednost = a;
+    --a;
+    return nova_vrijednost;
+}
+<a name="3"></a><font color="#00FFFF"><a href="match939-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+bool operator &lt;(const Razlomak &amp;a1, const Razlomak &amp;a2) {
+    long double r1, r2;
+    r1 = a1.brojnik/a1.nazivnik;
+    r2 = a2.brojnik/a2.nazivnik;
+</font>    return r1 &lt; r2;
+}
+<a name="4"></a><font color="#FF00FF"><a href="match939-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+bool operator &gt;(const Razlomak &amp;a1, const Razlomak &amp;a2) {
+    long double r1, r2;
+    r1 = a1.brojnik/a1.nazivnik;
+    r2 = a2.brojnik/a2.nazivnik;
+</font>    return r1 &gt; r2;
+}
+
+bool operator &lt;=(const Razlomak &amp;a1, const Razlomak &amp;a2) {
+    long long int r1, r2;
+    r1 = a1.brojnik/a1.nazivnik;
+    r2 = a2.brojnik/a2.nazivnik;
+    return r1 &lt;= r2;
+}
+
+bool operator &gt;=(const Razlomak &amp;a1, const Razlomak &amp;a2) {
+    long long int r1, r2;
+    r1 = a1.brojnik/a1.nazivnik;
+    r2 = a2.brojnik/a2.nazivnik;
+    return r1 &gt;= r2;
+}
+bool operator ==(const Razlomak &amp;a1, const Razlomak &amp;a2) {
+    if(a1.brojnik == a2.brojnik &amp;&amp; a1.nazivnik == a2.nazivnik) 
+        return true;
+    return false;
+}
+
+bool operator !=(const Razlomak &amp;a1, const Razlomak &amp;a2) {
+    if(a1.brojnik != a2.brojnik || a1.nazivnik != a2.nazivnik)
+        return true;
+    return false;
+}
+
+ostream &amp;operator &lt;&lt;(ostream &amp;tok, const Razlomak &amp;a) {
+    tok &lt;&lt; a.brojnik;
+    if(a.nazivnik == 1) return tok;
+    else {
+        tok &lt;&lt; "/" &lt;&lt; a.nazivnik;
+    }
+    return tok;
+}
+
+/*istream &amp;operator &gt;&gt;(istream &amp;tok, Razlomak &amp;a1) {
+    
+}*/
+int main ()
+{
+    return 0;
+}</pre>
+</body>
+</html>

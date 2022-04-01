@@ -1,0 +1,118 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student5533.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student5533.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cctype&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match150-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+typedef long long ll;
+
+int find(std::string a, std::string b, int idx = 0) {
+	if (b.size() + idx &gt; a.size()) return -1;
+	
+	for (int i = idx; i + b.size() &lt;= a.size(); i++) {
+		bool isti = true;
+		
+		for (int j = 0; j &lt; b.size(); j++) {
+			isti &amp;= a[i + j] == b[j];
+			if (!isti) break;
+		}
+		
+		if (isti) return i;
+	}
+	
+	return -1;
+}
+
+std::string ObrniFraze(std::string str, std::vector&lt;std::string&gt; fraze) {
+	for (int i = 0; i &lt; fraze.size(); i++) {
+		int st(0);
+		
+		while ((st = find(str, fraze[i], st)) != -1) {
+			int en = st + fraze[i].size() - 1;
+			for(int j = 0; j &lt; fraze[i].size() / 2; j++) {
+				char tmp = str[st + j];
+				str[st + j] = str[en - j];
+				str[en - j] = tmp;
+			}
+			st++;
+		}
+	}
+	
+	return str;
+}
+
+bool unutra(std::vector&lt;std::string&gt;* rijeci, std::string str) {
+	for(int i = 0; i &lt; rijeci-&gt;size(); i++) {
+		if ((*rijeci)[i] == str) return true;
+	}
+	
+	return false;
+}
+
+std::string IzmijeniUPigLatin(std::string str, std::vector&lt;std::string&gt; rijeci) {
+	for (int i = 0; i &lt; rijeci.size(); i++)
+		for (int j = 0; j &lt; rijeci[i].size(); j++)
+			if (!std::isalpha(rijeci[i][j])) throw std::domain_error("Nekorektan izbor rijeci");
+			
+	//std::sort(rijeci.begin(), rijeci.end()); // izmijeni jer nije radjeno
+	
+	int i(0);
+	while(i &lt; str.size()) {
+		while(!std::isalpha(str[i]) &amp;&amp; i &lt; str.size()) i++;
+		if (i &gt;= str.size()) break;
+		
+		int prev(i);
+		std::string tmp;
+		while(std::isalpha(str[i]) &amp;&amp; i &lt; str.size()) tmp += str[i++];
+		
+		if (rijeci.empty()) {
+			str = str.substr(0, prev) + str.substr(prev + 1, i - prev - 1) + str[prev] + "ay" + str.substr(i); 
+			i += 3;
+		}
+		//else if (std::binary_search(rijeci.begin(), rijeci.end(), tmp)) {
+		else if (unutra(&amp;rijeci, tmp)) {
+			str = str.substr(0, prev) + str.substr(prev + 1, i - prev - 1) + str[prev] + "ay" + str.substr(i);
+			i += 3;
+		}
+	}
+	
+	return str;
+}
+
+int main () {
+	std::cout &lt;&lt; "Unesite recenicu: ";
+	
+	std::string str;
+	std::getline(std::cin, str);
+	
+	std::cout &lt;&lt; "Unesite fraze: ";
+	std::string tmp;
+	std::vector&lt;std::string&gt; fraze;
+	
+	while(std::getline(std::cin, tmp)) {
+		fraze.push_back(tmp);
+	}
+	
+	try {
+		std::cout &lt;&lt; "Recenica nakon PigLatin transformacije: " &lt;&lt; IzmijeniUPigLatin(str, fraze) &lt;&lt; std::endl;
+	}
+	catch(std::domain_error e) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; std::endl;
+	}
+	
+	std::cout &lt;&lt; "Recenica nakon obrtanja fraza: " &lt;&lt; ObrniFraze(str, fraze) &lt;&lt; std::endl;
+	
+	return 0;
+</font>}</pre>
+</body>
+</html>

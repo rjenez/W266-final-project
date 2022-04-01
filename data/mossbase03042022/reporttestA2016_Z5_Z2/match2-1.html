@@ -1,0 +1,295 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z2/student4082.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z2/student7597.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match2-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+struct _word
+{
+    char text[15];
+    int count;
+    int len;
+};
+
+typedef struct _word word;
+
+int _strlen(char *s)
+{
+	int len = 0;
+	if (s[0] == '\0') return len;
+	while(s[++len] != '\0');
+	return len;
+}
+
+int _isalpha(char c)
+{
+    return ((c &gt;= 'A' &amp;&amp; c &lt;= 'Z') || (c &gt;= 'a' &amp;&amp; c &lt;= 'z'));
+}
+
+
+word words[1010];
+
+void swap(word *a, word *b)
+{
+    word temp = *b;
+    *b = *a;
+    *a = temp;
+}
+
+void kompresuj(char *in, char *out)
+{
+    int word_count = 0, i;
+    FILE *fin = fopen(in, "r");
+    FILE *fout = fopen(out, "w");
+    char c;
+    word current_word;
+    current_word.len = 0;
+    int swapped = 1;
+    
+    c = 5;
+    
+    while ((c = (char)fgetc(fin)) != EOF)
+    {
+        if (_isalpha(c) &amp;&amp; current_word.len &lt; 13)
+        {
+            current_word.text[current_word.len] = c;
+            current_word.text[current_word.len + 1] = '\0';
+            current_word.len++;
+        }
+        else if (!_isalpha(c))
+        {
+            if (current_word.len &gt; 0 &amp;&amp; current_word.len &lt; 10)
+            {
+                int found = 0;
+                for (i = 0; i &lt; word_count; i++)
+                {
+                    if (strcmp(current_word.text, words[i].text) == 0)
+                    {
+                        found = 1;
+                        words[i].count++;
+                        break;
+                    }
+                }
+                
+                if (!found)
+                {
+                    for (i = 0; i &lt;= current_word.len; i++)
+                        words[word_count].text[i] = current_word.text[i];
+                    words[word_count].len = current_word.len;
+                    words[word_count].count = 1;
+                    word_count++;
+                }
+            }
+            current_word.len = 0;
+        }
+    }
+    
+    if (current_word.len &gt; 0 &amp;&amp; current_word.len &lt; 10)
+    {
+        int found = 0;
+        for (i = 0; i &lt; word_count; i++)
+        {
+            if (strcmp(current_word.text, words[i].text) == 0)
+            {
+                found = 1;
+                words[i].count++;
+                break;
+            }
+        }
+        
+        if (!found)
+        {
+            for (i = 0; i &lt;= current_word.len; i++)
+                words[word_count].text[i] = current_word.text[i];
+            words[word_count].len = current_word.len;
+            words[word_count].count = 1;
+            word_count++;
+        }
+    }
+    
+    while(swapped)
+    {
+        swapped = 0;
+        for (i = 1; i &lt; word_count; i++)
+        {
+            if (words[i - 1].count &lt; words[i].count ||
+                (words[i - 1].count == words[i].count &amp;&amp; strcmp(words[i - 1].text, words[i].text) &gt; 0))
+            {
+                swapped = 1;
+                swap(&amp;words[i - 1], &amp;words[i]);
+            }
+        }
+    }
+    
+    rewind(fin);
+    
+    c = 5;
+    
+    current_word.len = 0;
+    
+    for (i = 0; i &lt; 10 &amp;&amp; i &lt; word_count; i++)
+        fprintf(fout, "%s\n", words[i].text);
+    
+    if (i &lt; 10)
+        fprintf(fout, "\n");
+    
+    while ((c = (char)fgetc(fin)) != EOF)
+    {
+        if (_isalpha(c))
+        {
+            current_word.text[current_word.len] = c;
+            current_word.text[current_word.len + 1] = '\0';
+            current_word.len++;
+            
+            if (current_word.len &gt; 10)
+            {
+                fprintf(fout, "%s", current_word.text);
+                current_word.len = 0;
+                while (_isalpha(c = (char)fgetc(fin)) &amp;&amp; c)
+                    fprintf(fout, "%c", c);
+                if (!c)
+                    break;
+                fprintf(fout, "%c", c);
+            }
+        }
+        else
+        {
+            if (current_word.len &gt; 0)
+            {
+                char found = 0;
+                for (i = 0; i &lt; 10 &amp;&amp; i &lt; word_count; i++)
+                {
+                    if (strcmp(current_word.text, words[i].text) == 0)
+                    {
+                        found = 1;
+                        fprintf(fout, "%c", (char)(20 + i));
+                        break;
+                    }
+                }
+                if (!found)
+                    fprintf(fout, "%s", current_word.text);
+            }
+            
+            current_word.len = 0;
+            
+            fprintf(fout, "%c", c);
+        }
+    }
+    
+    if (current_word.len &gt; 0)
+    {
+        char found = 0;
+        for (i = 0; i &lt; 10 &amp;&amp; i &lt; word_count; i++)
+        {
+            if (strcmp(current_word.text, words[i].text) == 0)
+            {
+                found = 1;
+                fprintf(fout, "%c", (char)(20 + i));
+                break;
+            }
+        }
+        if (!found)
+            fprintf(fout, "%s", current_word.text);
+    }
+    
+    printf("Datoteka kompresovana.\n");
+
+    fclose(fin);
+    fclose(fout);
+}
+
+void dekompresuj(char *in, char *out)
+{
+    int word_count = 0, i;
+    FILE *fin  = fopen(in, "r");
+    FILE *fout = fopen(out, "w");
+    char c;
+    word current_word;
+    current_word.len = 0;
+    int swapped = 1;
+    char word[15];
+    c = 5;
+
+    for (i = 0; i &lt; 10; i++)
+    {
+        fgets(words[i].text, 100, fin);
+        if (words[i].text[0] == '\n')
+            break;
+        words[i].text[strlen(words[i].text) - 1] = '\0';
+    }
+    
+    word_count = i;
+    
+    while ((c = (char)fgetc(fin)) != EOF)
+    {
+        if (20 &lt;= c &amp;&amp; c &lt;= 29)
+            fprintf(fout, "%s", words[c - 20].text);
+        else
+            fprintf(fout, "%c", c);
+    }
+    
+    printf("Datoteka dekompresovana.\n");
+
+    fclose(fin);
+    fclose(fout);
+}
+
+int main()
+{
+    /* AT5: Test predugackih rijeci, nekih specijalnih karaktera i slicno (kompresija) */
+int c;
+FILE* ulaz = fopen("z5z2_test5.txt", "w");
+fputs("Proba proba predugacka proba predugackarijec proba proba proba... auto-stop!!@@##$$%%^^&amp;&amp;**(())--__++==sdfgsdfg", ulaz);
+fclose(ulaz);
+
+kompresuj("z5z2_test5.txt", "z5z2_test5.zip");
+
+/* Ispisujemo kompresovanu datoteku na ekran */
+printf("KOMPRESOVANA:\n");
+ulaz = fopen("z5z2_test5.zip", "r");
+if (ulaz == NULL) {
+    printf("Datoteka ne postoji!");
+    return 0;
+}
+do {
+    c=fgetc(ulaz);
+    if (c &gt;= 20 &amp;&amp; c&lt;=29) printf("[%d]", c);
+    else if (c != EOF) printf("%c", c);
+} while (c != EOF);
+fclose(ulaz);
+
+    return 0;
+}
+
+int _main()
+{
+    char in[50], out[50];
+    int q;
+    while (1 == 1)
+    {
+        printf ("Odaberite: 1 - kompresuj, 2 - dekompresuj, 0 - izlaz: ");
+        scanf ("%d", &amp;q);
+        if (!q)
+            break;
+        printf("Unesite ime ulazne datoteke: ");
+        scanf("%s", in);
+        printf("Unesite ime izlazne datoteke: ");
+        scanf("%s", out);
+        
+        if (q == 1)
+            kompresuj(in, out);
+        else if (q == 2)
+            dekompresuj(in, out);
+</font>    }
+    
+    return 0;
+}</pre>
+</body>
+</html>

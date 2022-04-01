@@ -1,0 +1,152 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student5961.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student7795.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;deque&gt;
+#include &lt;algorithm&gt;
+#include &lt;type_traits&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;limits&gt;
+
+/* 	types of legal movements 	*/
+<a name="0"></a><font color="#FF0000"><a href="match131-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum class SmjerKretanja { NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo };
+
+/*	function to throw exception with custom params 	*/
+enum class ErrorType { NotOdd, NotCubeShape };
+void throwCustomException(const ErrorType &amp;_ERROR) {
+	if(_ERROR == ErrorType::NotOdd) 			throw std::length_error("3D kontejner ne zadovoljava uvjet neparnosti");
+	else if(_ERROR == ErrorType::NotCubeShape) 	throw std::domain_error("3D matrica nema oblik kocke");
+}
+/* 	find location of an element that will be on position (x,y) based on trajectory path _path 	*/
+void GiveNewPosition(const int&amp; x, const int &amp;y, const int &amp;dim,
+				 int &amp;_newX, int &amp;_newY, int &amp;_newDim, const SmjerKretanja _path, const int &amp;_size) {
+	_newX = (_path == SmjerKretanja::GoreDolje) 		? y : x;
+	_newY = (_path == SmjerKretanja::LijevoDesno) 	? y : x;
+	_newDim = dim;
+	if(_path == SmjerKretanja::DesnoLijevo) 		_newY = _size - y - 1;
+	else if(_path == SmjerKretanja::DoljeGore) 		_newX = _size - y - 1;
+	else if(_path == SmjerKretanja::NaprijedNazad || _path == SmjerKretanja::NazadNaprijed) {
+		_newDim 	= 	(_path == SmjerKretanja::NaprijedNazad) ?  y : _size - 1 - y;
+		_newX 		= 	dim; 
+		_newY 		= 	x;
+	}
+}
+/*						*/
+/* 	function to implement 	*/
+/*						*/
+template &lt;class kont&gt; 
+auto PjescaniSat(kont input3DContainer, SmjerKretanja _path) -&gt; kont {
+	// 	check validity of matrix		
+	int _dim (input3DContainer.size());
+	for(auto _matrix: input3DContainer) {
+		if(_matrix.size() != _dim) 		throwCustomException(ErrorType::NotCubeShape);
+		for(auto _line: _matrix) 
+			if(_line.size() != _dim) 	throwCustomException(ErrorType::NotCubeShape);
+	}
+	if(!(_dim % 2)) throwCustomException(ErrorType::NotOdd);
+	// initialise values
+	typedef typename std::remove_reference&lt;decltype(input3DContainer.at(0))&gt;::type 				TwoDContainer;
+	typedef typename std::remove_reference&lt;decltype(input3DContainer.at(0).at(0))&gt;::type		 	OneDContainer;
+	
+	kont outputContainer;
+	int _newX(0), _newY(0), _newDim(0), _selectedRow, _incrValue;
+	// create output 3D array
+	for(int mat (0); mat &lt; _dim; ++mat) {
+		_selectedRow = 0;
+		_incrValue = 1;
+		TwoDContainer _addMatrix;			// create 2D array to add in 3D array
+		for(int y (0); y &lt; _dim; ++y) {
+			OneDContainer _addRow;	// create 1D array to add in 2D array
+			if(y &gt;= _dim/2) _incrValue = -1;
+			for(int x (_selectedRow); x &lt; _dim - _selectedRow; ++x) {
+				GiveNewPosition(x, y, mat, _newX, _newY, _newDim, _path, _dim);
+				_addRow.push_back(input3DContainer.at(_newDim).at(_newX).at(_newY));
+			}
+			_addMatrix.push_back(_addRow);		// add 1D array in 2D array
+			_selectedRow += _incrValue;
+		}
+		outputContainer.push_back(_addMatrix);		// add 2D array in final 3D output array
+	}
+	return outputContainer;
+}
+/* 	function to print 3D array 	*/
+template &lt;typename T&gt;
+void printTable(const T &amp;matrice){
+	int _dim (matrice.size()), _pos(0), _incrValue(1), _selectedRow(0);
+   	for(auto matrix : matrice) {
+   		_selectedRow = 0; _incrValue = 1; _pos = 0;
+   		std::cout &lt;&lt; std::endl;		
+   		for(auto row:matrix) {
+   			if(_pos &gt;= _dim/2) _incrValue = -1;
+   			std::cout &lt;&lt; std::string(_selectedRow * 4, ' '); // set cursor so the output looks like sand clock
+     		for(auto _val : row)
+     			std::cout &lt;&lt; std::setw(4) &lt;&lt; std::right &lt;&lt; _val;
+     		++_pos; _selectedRow += _incrValue;
+          	std::cout &lt;&lt; std::endl;
+		}	
+   	}
+}
+/* 	unos broja funkcija koju smo pravili na tutorijalu 	*/
+template &lt;typename T&gt;
+void UnosBroja(std::string promptText, std::string errorMessage, 
+			T &amp;var, T lowerBound, T upperBound = std::numeric_limits&lt;T&gt;::max()) {
+     T tempInputVar;
+     std::cout &lt;&lt; promptText;
+     for(;;) {
+          std::cin &gt;&gt; tempInputVar;
+          if(!std::cin || tempInputVar &lt; lowerBound || tempInputVar &gt; upperBound) {
+               std::cin.clear();
+               std::cin.ignore(10000, '\n');
+               std::cout &lt;&lt; errorMessage;
+          }
+          else {
+               var = tempInputVar;
+               break;
+          }
+     }
+}
+/*	main program logic		*/
+int main () {
+	int n;
+	UnosBroja&lt;int&gt;("Unesite dimenziju (x/y/z): ", "Dimenzija nije ispravna, unesite opet: ", n, 1);
+	
+	typedef std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt; contType;
+	contType DInput;
+	try {
+		DInput = contType (n, std::deque&lt;std::deque&lt;int&gt;&gt;(n, std::deque&lt;int&gt;(n)));	
+	}
+	catch(std::exception&amp; e) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what();
+		return -1;
+	}
+	
+	std::cout &lt;&lt; "Unesite elemente kontejnera: ";
+	for(int mat (0); mat &lt; n; mat++) 
+		for(int red (0); red &lt; n; red++) 
+			for(int clan (0); clan &lt; n; clan++)
+				std::cin &gt;&gt; DInput.at(mat).at(red).at(clan);
+	
+	int smjer(0);
+	UnosBroja&lt;int&gt;("Unesite smjer kretanja [0 - 5]: ", "Smjer nije ispravan, unesite opet: ", smjer, 0, 5);
+	std::cout &lt;&lt; std::endl;
+	try {
+		auto izlaz (PjescaniSat(DInput, static_cast&lt;SmjerKretanja&gt;(smjer)));
+		std::cout &lt;&lt; "Pjescani sat unesene matrice je:" &lt;&lt;  std::endl;
+		printTable(izlaz);
+	}
+	catch(std::exception&amp; e) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what();
+</font>	}
+ 	return 0;
+}</pre>
+</body>
+</html>

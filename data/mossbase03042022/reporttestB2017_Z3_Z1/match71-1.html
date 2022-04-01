@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student9805.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student8552.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+#include &lt;functional&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+
+ 
+<a name="0"></a><font color="#FF0000"><a href="match71-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_76.gif"/></a>
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::vector&lt;std::pair&lt;double,double&gt;&gt; vek) {
+ 
+    std::sort(vek.begin(),vek.end(), [](std::pair&lt;double,double&gt; par1, std::pair&lt;double,double&gt; par2) {
+        return par1.first&lt;par2.first;
+    });
+   
+    return [vek](double tmp) {
+        double rez(0);
+        if(tmp&lt;vek[0].first || tmp&gt;vek[vek.size()-1].first) throw std::range_error("Argument izvan opsega");
+        for(int i(0);i&lt;vek.size()-1;i++) {
+            if(tmp==vek[vek.size()-1].first) {
+                return vek[vek.size()-1].second;
+            }
+            if(tmp&gt;=vek[i].first &amp;&amp; tmp&lt;vek[i+1].first) {
+                double tmp1=vek[i].first;
+                double tmp2=vek[i].second;
+                double tmp11=vek[i+1].first;
+                double tmp22=vek[i+1].second;
+                rez=tmp2+((tmp22-tmp2)/(tmp11-tmp1))*(tmp-tmp1);
+                return rez;
+            }  
+        }
+        return rez;
+    };
+}
+ 
+std::function&lt;double(double)&gt; LinearnaInterpolacija(double funk(double), double min, double max, double param) {
+    if(min&gt;max or param&lt;=0) throw std::domain_error("Nekorektni parametri");
+    std::vector&lt;std::pair&lt;double,double&gt;&gt; vekpar;
+    int j(0);
+    for(double i(min);i&lt;=max;i=i+j*param) {
+        vekpar.push_back(std::make_pair(i,funk(i)));
+        j++;
+    }
+    return [funk,vekpar,param] (double x) {
+        double fun(0);
+        if(x&lt;vekpar[0].first or x&gt;vekpar[vekpar.size()-1].first) throw std::range_error("Argument izvan opsega");
+        if(x==vekpar[vekpar.size()-1].first) {
+            return vekpar[vekpar.size()-1].second;
+        }
+        for(int i(0);i&lt;vekpar.size();i++) {
+            if(i+1&lt;=vekpar.size()-1){
+            auto it(lower_bound(vekpar.begin(),vekpar.end(),x, [] (const std::pair&lt;double,double&gt; &amp;a, const double &amp;b) {
+                return a.first&lt;b;
+            }));
+            double xi=it-&gt;first;
+            double yi=funk(xi);
+            double xii=it-&gt;first-param;
+            double yii=funk(xii);
+            fun=yi+((yii-yi)/(xii-xi))*(x-xi);
+            return fun;
+            }
+        }
+        return fun;
+    };
+}
+ 
+int main ()
+{
+    int a;
+    std::cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    std::cin&gt;&gt;a;
+    if(a==1) {
+        int tmp;
+        std::cout&lt;&lt;"Unesite broj cvorova: ";
+        std::cin&gt;&gt;tmp;
+        std::cin.ignore(1000,'\n');
+        std::vector&lt;std::pair&lt;double,double&gt;&gt; vektorpar;
+        std::pair&lt;double,double&gt; p;
+        double x, y;
+        try {
+        std::cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+        for(int i(0);i&lt;tmp;i++) {
+            std::cin&gt;&gt;x&gt;&gt;y;
+            p=std::make_pair(x,y);
+            vektorpar.push_back(p);
+        }
+        for(int i(0);i&lt;vektorpar.size();i++) {
+        double prvi(vektorpar[i].first);
+        for(int j(0);j&lt;vektorpar.size();j++) {
+            if(i!=j) {
+            if(prvi==vektorpar[j].first) throw std::domain_error("Neispravni cvorovi");  
+            }
+        }
+        }
+        double param;
+        for(;;) {
+            std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+            std::cin&gt;&gt;param;
+            if(!std::cin) return 0;
+                auto f(LinearnaInterpolacija(vektorpar));
+                std::cout&lt;&lt;"f("&lt;&lt;param&lt;&lt;") = "&lt;&lt;f(param)&lt;&lt;std::endl;
+</font>        }
+        }
+        catch (std::domain_error a) {
+<a name="1"></a><font color="#00FF00"><a href="match71-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_17.gif"/></a>
+
+            std::cout&lt;&lt;a.what()&lt;&lt;std::endl;
+        }
+        catch (std::range_error b) {
+            std::cout&lt;&lt;b.what()&lt;&lt;std::endl;
+        }
+       
+    }
+    else if(a==2) {
+        double min,max,param;
+        std::cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+        std::cin&gt;&gt;min&gt;&gt;max&gt;&gt;param;
+        std::cin.ignore(1000,'\n');
+        double x;
+        for(;;) {
+             std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+             std::cin&gt;&gt;x;
+             if(!std::cin) return 0;
+             try {
+                 auto f(LinearnaInterpolacija([](double x) {return x*x+sin(x);},min,max,param));
+                 std::cout&lt;&lt;"f("&lt;&lt;x&lt;&lt;") = "&lt;&lt;x*x+sin(x)&lt;&lt;" fapprox("&lt;&lt;x&lt;&lt;") = "&lt;&lt;f(x)&lt;&lt;std::endl;
+             }
+             catch (std::domain_error a) {
+</font>                std::cout&lt;&lt;a.what()&lt;&lt;std::endl;
+             }
+             catch (std::range_error b) {
+                std::cout&lt;&lt;b.what()&lt;&lt;std::endl;
+             }
+        }
+    }
+    return 0;
+}</pre>
+</body>
+</html>

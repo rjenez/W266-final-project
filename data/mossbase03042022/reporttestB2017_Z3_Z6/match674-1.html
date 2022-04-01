@@ -1,0 +1,270 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z6/student8560.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z6/student8006.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stack&gt;
+#include &lt;memory&gt;
+
+enum class Boje {Pik, Tref, Herc, Karo};
+
+typedef std::stack&lt;std::pair&lt;Boje, std::string&gt;&gt; Stek;
+
+struct Karta {
+    Boje boja;
+    std::string vrijednost;
+};
+
+struct Cvor {
+    Karta karta;
+    std::shared_ptr&lt;Cvor&gt; sljedeci;
+};
+
+typedef std::shared_ptr&lt;Cvor&gt; Pok;
+
+int VrijednostKarte(const std::string &amp;karta) {
+    if (karta == "2") return 1;
+    else if (karta == "3") return 2;
+    else if (karta == "4") return 3;
+    else if (karta == "5") return 4;
+    else if (karta == "6") return 5;
+    else if (karta == "7") return 6;
+    else if (karta == "8") return 7;
+    else if (karta == "9") return 8;
+    else if (karta == "10") return 9;
+    else if (karta == "J") return 10;
+    else if (karta == "Q") return 11;
+    else if (karta == "K") return 12;
+    else if (karta == "A") return 13;
+    return 0;
+}
+
+void Unisti(Pok spil) {
+    if (!spil) return;
+    auto trenutni(spil-&gt;sljedeci);
+    while (trenutni != spil) {
+        auto sljedeci(trenutni-&gt;sljedeci);
+        trenutni-&gt;sljedeci = nullptr;
+        trenutni = sljedeci;
+    }
+    trenutni = nullptr; spil-&gt;sljedeci = nullptr; spil = nullptr;
+}
+
+Pok KreirajSpil() {
+    const std::string vrijednost[13]{"2", "3", "4", "5", "6", "7", "8", "9",
+        "10", "J", "Q", "K", "A"};
+    Pok spil(nullptr), karta(nullptr);
+    try {
+        for (int i = 0; i &lt; 52; i++) {
+            Pok nova = std::make_shared&lt;Cvor&gt;();
+            if (!spil) spil = nova;
+            else karta-&gt;sljedeci = nova;
+            if (i &lt; 13) nova-&gt;karta.boja = Boje::Pik;
+            else if (i &lt; 26) nova-&gt;karta.boja = Boje::Tref;
+<a name="2"></a><font color="#0000FF"><a href="match674-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+            else if (i &lt; 39) nova-&gt;karta.boja = Boje::Herc;
+            else nova-&gt;karta.boja = Boje::Karo;
+            nova-&gt;karta.vrijednost = vrijednost[i%13];
+</font>            karta = nova;
+            karta-&gt;sljedeci = spil;
+        }
+    }
+    catch (...) {
+        Unisti(spil);
+        throw;
+    }
+    return spil;
+}
+
+void ProvjeriSpil(Pok spil) {
+    if (!spil) return;
+    Pok karta(spil);
+    for (int i = 0; i &lt;= 52; i++) {
+        if (!VrijednostKarte(karta-&gt;karta.vrijednost))
+            throw std::logic_error("Neispravna lista!");
+        if (karta-&gt;sljedeci == spil) return;
+        if (karta-&gt;karta.boja &gt; karta-&gt;sljedeci-&gt;karta.boja
+            || (karta-&gt;karta.boja == karta-&gt;sljedeci-&gt;karta.boja
+            &amp;&amp; VrijednostKarte(karta-&gt;karta.vrijednost) &gt;= VrijednostKarte(karta-&gt;sljedeci-&gt;karta.vrijednost)))
+            throw std::logic_error("Neispravna lista!");
+        karta = karta-&gt;sljedeci;
+    }        
+    throw std::logic_error("Neispravna lista!");
+}
+
+void IzbaciKarte(Pok &amp;spil, std::multimap&lt;Boje, std::string&gt; &amp;red) {
+    ProvjeriSpil(spil);
+    for (auto it = red.begin(); it != red.end(); it++) {
+        if (!spil) return;
+        auto prethodna(spil), trenutna(prethodna-&gt;sljedeci), naredna(trenutna-&gt;sljedeci);
+        for (;;) {
+            if (trenutna-&gt;karta.boja == it-&gt;first &amp;&amp; VrijednostKarte(trenutna-&gt;karta.vrijednost) == VrijednostKarte(it-&gt;second)) {
+                if (prethodna == trenutna) {
+                    trenutna = nullptr; spil = nullptr;
+                    prethodna-&gt;sljedeci = nullptr;
+                }    
+                else {
+                    trenutna = nullptr; prethodna-&gt;sljedeci = nullptr;
+                }
+                if (spil == trenutna) spil = naredna;
+                prethodna-&gt;sljedeci = naredna;
+                trenutna = naredna;
+                red.erase(it);
+            }
+            if (trenutna == spil) break;
+            prethodna = trenutna; 
+            trenutna = naredna;
+            naredna = naredna-&gt;sljedeci;
+        }
+    }
+}
+
+Stek IzbaciKarteRazbrajanjem(Pok &amp;spil, short int r, int b) {
+    try {
+        ProvjeriSpil(spil);
+        if (r &lt; 1 || r &gt; 52 || b &lt; 1) throw std::logic_error("Izuzetak");
+    }
+    catch (std::logic_error e) {
+        throw std::logic_error("Neispravni elementi za izbacivanje!");
+    }
+    Stek izbacene;
+    auto prethodni(spil);
+    while (prethodni-&gt;sljedeci != spil) prethodni = prethodni-&gt;sljedeci;
+    auto trenutni(spil), naredni(trenutni-&gt;sljedeci);
+    for (int br_izbacenih = 0; br_izbacenih &lt; b; br_izbacenih++) {
+        if (prethodni == trenutni) {
+            izbacene.push(std::make_pair(trenutni-&gt;karta.boja, trenutni-&gt;karta.vrijednost));
+            trenutni = nullptr; 
+            spil = nullptr; break;
+        }
+        for (short int korak = 1; korak &lt; r; korak++) {
+            prethodni = trenutni; trenutni = naredni; naredni = naredni-&gt;sljedeci;
+        }
+        izbacene.push(std::make_pair(trenutni-&gt;karta.boja, trenutni-&gt;karta.vrijednost));
+        trenutni = nullptr;
+        prethodni-&gt;sljedeci = naredni; trenutni = naredni; naredni = naredni-&gt;sljedeci;
+    }
+    return izbacene;
+}
+
+void ProvjeriStek(Stek s) {
+    while (!s.empty()) {
+        if (!VrijednostKarte(s.top().second)) 
+            throw std::logic_error("Neispravne karte!");
+        s.pop();
+    }
+}
+
+void VratiPosljednjihNKarata(Pok &amp;spil, Stek &amp;stek, int n) {
+    if (n &lt; 0) throw std::domain_error("Broj n je besmislen!");
+    if (n &gt; stek.size()) throw std::range_error("Nedovoljno karata u redu!");
+    ProvjeriStek(stek); ProvjeriSpil(spil);
+    for (int i = 0; i &lt; n; i++) {
+        auto prethodni(spil);
+        while (prethodni-&gt;sljedeci != spil) prethodni = prethodni-&gt;sljedeci;
+        auto trenutni(spil);
+        for (;;) {
+            if (!spil || trenutni-&gt;karta.boja &gt; stek.top().first 
+            || (trenutni-&gt;karta.boja == stek.top().first
+            &amp;&amp; VrijednostKarte(trenutni-&gt;karta.vrijednost) &gt;= VrijednostKarte(stek.top().second))) break;
+            prethodni = trenutni; trenutni = trenutni-&gt;sljedeci;
+            if (trenutni == spil) break;
+        }
+        if (!spil) {
+            spil = std::make_shared&lt;Cvor&gt;();
+            spil-&gt;sljedeci = spil;
+            spil-&gt;karta.boja = stek.top().first;
+            spil-&gt;karta.vrijednost = stek.top().second;
+            stek.pop(); continue;
+        }
+        if (trenutni-&gt;karta.boja == stek.top().first
+        &amp;&amp; VrijednostKarte(trenutni-&gt;karta.vrijednost) == VrijednostKarte(stek.top().second)) continue;
+        trenutni = std::make_shared&lt;Cvor&gt;();
+        if (prethodni-&gt;sljedeci == spil &amp;&amp; (spil-&gt;karta.boja &gt; stek.top().first 
+            || (spil-&gt;karta.boja == stek.top().first
+            &amp;&amp; VrijednostKarte(spil-&gt;karta.vrijednost) &gt;= VrijednostKarte(stek.top().second))))
+                spil = trenutni;
+        trenutni-&gt;karta.boja = stek.top().first;
+        trenutni-&gt;karta.vrijednost = stek.top().second;
+        trenutni-&gt;sljedeci = prethodni-&gt;sljedeci; prethodni-&gt;sljedeci = trenutni;
+        stek.pop();
+    }
+}
+
+int BrojKarata(Pok spil) {
+    if (!spil) return 0;
+    auto trenutna(spil);
+    int i(1);
+    while (trenutna-&gt;sljedeci != spil) {
+        trenutna = trenutna-&gt;sljedeci; i++;
+    }
+    return i;
+}
+
+void IspisiZaBoju(Pok spil, Boje b) {
+    auto trenutna(spil);
+    for (;;) {
+        if (trenutna-&gt;karta.boja == b) std::cout &lt;&lt; trenutna-&gt;karta.vrijednost &lt;&lt; " ";
+        if (trenutna-&gt;sljedeci == spil) break;
+        trenutna = trenutna-&gt;sljedeci;
+    }
+    std::cout &lt;&lt; std::endl;
+}
+
+void IspisiSpil(Pok spil) {
+    std::cout &lt;&lt; "Pik: "; IspisiZaBoju(spil, Boje::Pik);
+    std::cout &lt;&lt; "Tref: "; IspisiZaBoju(spil, Boje::Tref);
+    std::cout &lt;&lt; "Herc: "; IspisiZaBoju(spil, Boje::Herc);
+    std::cout &lt;&lt; "Karo: "; IspisiZaBoju(spil, Boje::Karo);
+}
+
+int main ()
+{
+<a name="1"></a><font color="#00FF00"><a href="match674-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+    short int r;
+    std::cout &lt;&lt; "Unesite korak razbrajanja: ";
+    std::cin &gt;&gt; r;
+    int b;
+    std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    std::cin &gt;&gt; b;
+</font>    Pok spil(nullptr);
+    try {
+        spil = KreirajSpil();
+<a name="0"></a><font color="#FF0000"><a href="match674-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+        auto izbacene(IzbaciKarteRazbrajanjem(spil, r, b));
+        std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; BrojKarata(spil) &lt;&lt; " karata, i to:" 
+            &lt;&lt; std::endl;
+        IspisiSpil(spil);
+        int n;
+        std::cout &lt;&lt; "Unesite broj karata koje zelite vratiti u spil: ";
+        std::cin &gt;&gt; n;
+        VratiPosljednjihNKarata(spil, izbacene, n);
+        std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; BrojKarata(spil) &lt;&lt; " karata, i to:"
+            &lt;&lt; std::endl;
+        IspisiSpil(spil);
+    }
+    catch (std::domain_error e) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what();
+</font>    }
+    catch (std::range_error e) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what();
+    }
+    catch (std::logic_error e) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what();
+    }
+    catch (...) {}
+    Unisti(spil);
+	return 0;
+}
+</pre>
+</body>
+</html>

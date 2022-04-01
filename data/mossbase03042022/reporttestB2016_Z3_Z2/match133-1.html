@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student5297.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student1758.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match133-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+
+void PrebaciUMalaSlova (std::string &amp;rijec) {
+    auto it(rijec.begin());
+    while(it!=rijec.end()) {
+        if(*it&gt;='A' &amp;&amp; *it&lt;='Z') {
+            *it+=32;
+        }
+        it++;
+    }
+}
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova (std::string recenica) {
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa_pojmova;
+    for(int i(0); i&lt;recenica.length(); i++) {
+        while(!((recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') || (recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z') || (recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9')) &amp;&amp; i&lt;recenica.length()) i++;
+        if(i==recenica.length()) break;
+        int j(i);
+        std::string pomoc;
+        while(((recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') || (recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z') || (recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9')) &amp;&amp; i&lt;recenica.length()) {
+            pomoc.push_back(recenica[i]);
+            i++;
+        }
+        PrebaciUMalaSlova(pomoc);
+        auto pronadji_u_mapi(mapa_pojmova.find(pomoc));
+        if(pronadji_u_mapi==mapa_pojmova.end()) {
+            mapa_pojmova[pomoc].insert(j);
+        } else {
+            mapa_pojmova[pomoc].insert(j);
+        }
+    }
+    return mapa_pojmova;
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova (std::string rijec, std::map&lt;std::string, std::set&lt;int&gt;&gt; &amp;mapa) {
+    std::set&lt;int&gt; skup;
+    PrebaciUMalaSlova(rijec);
+    auto it(mapa.find(rijec));
+    if(it==mapa.end()) throw std::logic_error("Pojam nije nadjen");
+    else {
+        skup=it-&gt;second;
+    }
+    return skup;
+}
+
+void IspisiIndeksPojmova (std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa) {
+    for(auto it(mapa.begin()); it!=mapa.end(); it++) {
+        std::cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+        int brojac(0);
+        for(auto x: it-&gt;second) {
+            if(brojac==0) std::cout &lt;&lt; x;
+            else std::cout &lt;&lt; "," &lt;&lt; x;
+            brojac++;
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+int main () {
+    std::cout &lt;&lt; "Unesite tekst: ";
+    std::string recenica;
+    std::getline(std::cin, recenica);
+    auto mapa(KreirajIndeksPojmova(recenica));
+    IspisiIndeksPojmova(mapa);
+    std::cout &lt;&lt; std::endl;
+    for(;;) {
+        std::cout &lt;&lt; "Unesite rijec: " ; 
+        std::string rijec;
+        std::getline(std::cin, rijec);
+        if(rijec==".") break;
+        try {
+            auto skup(PretraziIndeksPojmova(rijec, mapa));
+            for(auto x:skup) {
+                std::cout &lt;&lt; x &lt;&lt; " ";
+            }
+            std::cout &lt;&lt; std::endl;
+        } catch(std::logic_error) {
+            std::cout &lt;&lt; "Unesena rijec nije nadjena!" &lt;&lt; std::endl;
+</font>        }
+    }
+	return 0;
+}</pre>
+</body>
+</html>

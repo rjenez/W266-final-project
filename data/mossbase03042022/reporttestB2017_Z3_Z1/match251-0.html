@@ -1,0 +1,136 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student8209.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student8209.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match251-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;functional&gt;
+#include &lt;utility&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+
+typedef std::vector&lt;std::pair&lt;double,double&gt;&gt; VektorParova;
+
+std::function &lt;double (double)&gt; LinearnaIterpolacija (VektorParova kontejner)
+{
+    std::sort(kontejner.begin(), kontejner.end());
+
+    for(int i = 0; i &lt; kontejner.size(); i++) {
+        int temp (std::count_if (kontejner.begin(), kontejner.end(), [kontejner,i] (std::pair&lt;double,double&gt; x ) {
+            return x.first == kontejner.at(i).first;
+        }));
+
+        if (temp != 1) throw std::domain_error("Neispravni cvorovi");
+    }
+
+    return [kontejner] (double x ) {
+
+        if (x &lt; (*kontejner.begin()).first || x &gt; (*(kontejner.end() - 1)).first)
+            throw std::range_error ("Argument izvan opsega");
+        std::pair&lt;double,double&gt; test {x,0};
+
+        std::pair&lt;double,double&gt; veci {*std::lower_bound(kontejner.begin(), kontejner.end(), test)};
+        std::pair&lt;double,double&gt; manji {*(std::upper_bound(kontejner.begin(), kontejner.end(), test) -1) };
+        return manji.second + ((veci.second - manji.second)/ (veci.first - manji.first)) * (x - manji.first);
+    };
+}
+
+std::function &lt;double(double)&gt; LinearnaIterpolacija(std::function&lt;double(double)&gt; f, double min, double max, double korak)
+{
+    VektorParova aproksimacija;
+    while (min &lt;= max) {
+        std::pair &lt;double, double&gt; trenutni {min, f(min)};
+        aproksimacija.push_back(trenutni);
+        min+= korak;
+    }
+    return [aproksimacija](double x) {
+        auto nova ( LinearnaIterpolacija(aproksimacija));
+        return nova(x);
+    };
+
+}
+
+int main ()
+{
+    std::cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    int opcija;
+    std::cin &gt;&gt; opcija;
+
+    if(opcija == 1) {
+        try {
+            std::cout &lt;&lt; "Unesite broj cvorova: ";
+            int broj_cvorova;
+            std::cin &gt;&gt; broj_cvorova;
+
+            std::cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+
+            VektorParova kontejner;
+
+            for(int i = 0; i &lt; broj_cvorova; i++) {
+                double x, y;
+                std::cin &gt;&gt; x &gt;&gt; y;
+                std::pair&lt;double, double&gt; trenutni {x , y};
+                kontejner.push_back(trenutni);
+            }
+
+            auto f(LinearnaIterpolacija(kontejner));
+            double argument;
+
+            std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+
+            while(std::cin &gt;&gt; argument) {
+                try {
+                    std::cout &lt;&lt; "f(" &lt;&lt; argument &lt;&lt; ") = " &lt;&lt; f(argument) &lt;&lt; std::endl;
+                } catch(const std::exception &amp;e) {
+                    std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                    std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                    continue;
+                }
+                std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            }
+        } catch (const std::exception &amp; e) {
+            std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+        }
+
+    }
+
+    else if(opcija == 2) {
+        std::cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+        double min, max, korak;
+        std::cin &gt;&gt; min &gt;&gt; max &gt;&gt; korak;
+
+        auto g (LinearnaIterpolacija([](double x) {
+            return x*x + std::sin(x);
+        }, min, max, korak));
+
+        double argument;
+        std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+        while (std::cin &gt;&gt; argument) {
+            try {
+                std::cout &lt;&lt; "f(" &lt;&lt; argument &lt;&lt; ") = " &lt;&lt; argument * argument + std::sin(argument)
+                          &lt;&lt; " fapprox(" &lt;&lt; argument &lt;&lt; ") = " &lt;&lt; g(argument) &lt;&lt; std::endl;
+            } catch(const std::exception &amp;e) {
+                std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                continue;
+            }
+
+            std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+</font>
+        }
+    }
+
+
+
+    return 0;
+}
+</pre>
+</body>
+</html>

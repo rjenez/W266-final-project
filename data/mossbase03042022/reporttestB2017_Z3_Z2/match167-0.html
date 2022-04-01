@@ -1,0 +1,131 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student3483.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student3483.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;map&gt;
+#include &lt;tuple&gt;
+#include &lt;set&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+
+<a name="0"></a><font color="#FF0000"><a href="match167-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_93.gif"/></a>
+
+typedef std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; Mapa;
+
+Mapa KreirajIndeksPojmova(Knjiga knjiga)
+{
+    Mapa mapa;
+    std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; oznake;
+
+    int pocetak(0), kraj(0);
+    std::string rijec;
+    for(auto it(knjiga.begin()); it!=knjiga.end(); it++) {
+        for(int i=0; i&lt;(it-&gt;second).size(); i++) {
+            for(int j=0; j&lt;(it-&gt;second)[i].size(); j++) {
+                while((it-&gt;second)[i][j]==' ') j++;
+                pocetak=j;
+                while((it-&gt;second)[i][j]!=' ' &amp;&amp; j&lt;(it-&gt;second)[i].size()) j++;
+                kraj=j;
+
+                rijec=(it-&gt;second)[i].substr(pocetak,kraj-pocetak);
+                if(!mapa.count(rijec)) {
+                    std::tuple&lt;std::string, int, int&gt; t(it-&gt;first,i,pocetak);
+                    oznake.insert(t);
+
+                    int pocetak1, kraj1;
+                    std::string rijec1;
+                    for(int k=0; k&lt;(it-&gt;second)[i].size(); k++) {
+                        while((it-&gt;second)[i][k]==' ') k++;
+                        pocetak1=k;
+                        while((it-&gt;second)[i][k]!=' ' &amp;&amp; k&lt;(it-&gt;second)[i].size()) k++;
+                        kraj1=k;
+
+                        rijec1=(it-&gt;second)[i].substr(pocetak1,kraj1-pocetak1);
+                        if(rijec1==rijec) {
+                            std::tuple&lt;std::string, int, int&gt; t1(it-&gt;first,i,pocetak1);
+                            oznake.insert(t1);
+                        }
+                        k--;
+                    }
+
+                    mapa.insert({rijec,oznake});
+
+                    j--;
+                }
+            }
+        }
+    }
+
+    return mapa;
+}
+
+std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; PretraziIndeksPojmova(std::string rijec, Mapa mapa)
+{
+    if(mapa.find(rijec)==mapa.end()) throw std::logic_error("Pojam nije naden");
+    auto it(mapa.find(rijec));
+
+    return it-&gt;second;
+}
+
+void IspisiIndeksPojmova(Mapa pojmovi)
+{
+    for(auto it(pojmovi.begin()); it!=pojmovi.end(); it++) {
+        std::cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+        auto it1(it-&gt;second);
+        auto pocetak(it1.begin());
+        auto kraj(it1.end());
+        auto prije_kraja=--it1.end();
+
+        for(auto it2=pocetak; it2!=kraj; it2++) {
+            if(it2!=prije_kraja) std::cout &lt;&lt; std::get&lt;0&gt;(*it2) &lt;&lt; "//" &lt;&lt; std::get&lt;1&gt;(*it2) &lt;&lt; "//" &lt;&lt; std::get&lt;2&gt;(*it2) &lt;&lt; ", ";
+            else std::cout &lt;&lt; std::get&lt;0&gt;(*it2) &lt;&lt; "//" &lt;&lt; std::get&lt;1&gt;(*it2) &lt;&lt; "//" &lt;&lt; std::get&lt;2&gt;(*it2) &lt;&lt; std::endl;
+        }
+
+    }
+}
+
+int main ()
+{
+    Knjiga knjiga;
+    std::string pogl;
+    std::string poglavlje;
+    std::vector&lt;std::string&gt; stranica;
+    do {
+        std::cout &lt;&lt; "Unesite naziv poglavlja: ";
+        std::cin &gt;&gt; pogl;
+        poglavlje=pogl;
+        std::cin.clear();
+        std::cin.ignore(1000000,'\n');
+
+        int i(0);
+        std::string sadrzaj;
+        do {
+            std::cout &lt;&lt; "Unesite sadrzaj stranice " &lt;&lt; i+1 &lt;&lt; ": ";
+            std::getline(std::cin,sadrzaj);
+            i++;
+            stranica.resize(i);
+            stranica[i-1]=sadrzaj;
+        } while(sadrzaj!=".");
+        
+        knjiga.insert({poglavlje,stranica});
+    } while(poglavlje!=".");
+    
+    Mapa indeks_pojmova(KreirajIndeksPojmova(knjiga));
+    std::cout &lt;&lt; "Kreirani indeks pojmova:" &lt;&lt; std::endl;
+    IspisiIndeksPojmova(indeks_pojmova);
+    
+    return 0;
+</font>}
+
+</pre>
+</body>
+</html>

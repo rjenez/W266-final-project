@@ -1,0 +1,244 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student3871.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student3871.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;deque&gt;
+#include &lt;type_traits&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match54-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum class SmjerKretanja{NaprijedNazad,NazadNaprijed,GoreDolje,DoljeGore,LijevoDesno,DesnoLijevo};
+
+template&lt;typename Tip&gt;
+Tip PjescaniSat(Tip kont,SmjerKretanja smjer)
+{
+ Tip pomocni;
+ if(kont.size()==0) return pomocni;
+ typename std::remove_reference&lt;decltype(kont[0][0])&gt;::type vek1;
+ typename std::remove_reference&lt;decltype(kont[0])&gt;::type vek2;
+ if((kont.size()!=kont[0].size())||(kont.size()!=kont[0][0].size())||(kont[0].size()!=kont[0][0].size()))
+  throw std::domain_error("3D matrica nema oblik kocke");
+ for(int i(0);i&lt;kont.size();i++)
+ {
+  if(kont[0].size()%2==0 || kont[0][0].size()%2==0)
+   throw std::length_error("3D kontejner ne zadovoljava uvjet neparnosti");
+ }
+ if(smjer==SmjerKretanja::GoreDolje)
+ {
+  for(int i(0);i&lt;kont.size();i++)
+  {
+   for(int j(0);j&lt;kont[0].size();j++)
+   {
+    for(int k(0);k&lt;kont[0][0].size();k++)
+    {
+     if(j==0 || j==kont[0].size()-1)
+     {
+      if(k&gt;=0 &amp;&amp; k&lt;kont[0][0].size())
+      {
+       vek1.push_back(kont[i][j][k]);
+      }
+     }
+     else 
+     {
+      if(j==k)
+      vek1.push_back(kont[i][j][k]);
+     }
+    }
+    vek2.push_back(vek1);
+    vek1.clear();
+   }
+   pomocni.push_back(vek2);
+   vek2.clear();
+  }
+ } 
+ else if(smjer==SmjerKretanja::DoljeGore)
+ {
+  for(int i(0);i&lt;kont.size();i++)
+  {
+   for(int j(kont[0].size()-1);j&gt;=0;j--)
+   {
+    for(int k(0);k&lt;kont[0][0].size();k++)
+    {
+    	if(j==0 || j==kont[0].size()-1)
+    	{
+    	 if(k&gt;=0 &amp;&amp; k&lt;kont[0][0].size())
+    	 {
+    	  vek1.push_back(kont[i][j][k]);
+    	 }
+    	}
+    	else if(j==k)
+    	vek1.push_back(kont[i][j][k]);
+    }
+    vek2.push_back(vek1);
+    vek1.clear();
+   }
+   pomocni.push_back(vek2);
+   vek2.clear();
+  }
+ }
+ else if(smjer==SmjerKretanja::LijevoDesno)
+ {
+  for(int i(0);i&lt;kont.size();i++)
+  {
+   for(int j(0);j&lt;kont[0][0].size();j++)
+   {
+    for(int k(0);k&lt;kont[0].size();k++)
+    {
+     if(j==0 || j==kont[0][0].size()-1)
+     {
+      if(k&gt;=0 &amp;&amp; k&lt;kont[0].size())
+      {
+       vek1.push_back(kont[i][k][j]);
+      }
+     }
+     else if(j==k)
+     vek1.push_back(kont[i][j][k]);
+    }
+    vek2.push_back(vek1);
+    vek1.clear();
+   }
+   pomocni.push_back(vek2);
+   vek2.clear();
+  }
+ }
+ else if(smjer==SmjerKretanja::DesnoLijevo)
+ {
+  for(int i(0);i&lt;kont.size();i++)
+  {
+   for(int j(kont[0][0].size()-1);j&gt;=0;j--)
+   {
+   	for(int k(0);k&lt;kont[0].size();k++)
+   	{
+   	 if(j==0 || j==kont[0][0].size()-1)
+   	 {
+   	  if(k&gt;=0 &amp;&amp; k&lt;kont[0].size())
+   	  {
+   	   vek1.push_back(kont[i][k][j]);
+   	  }
+   	 }
+   	 else if(j==k)
+   	 vek1.push_back(kont[i][j][k]);
+   	}
+   	vek2.push_back(vek1);
+   	vek1.clear();
+   }
+   pomocni.push_back(vek2);
+   vek2.clear();
+  }
+ }
+ else if(smjer==SmjerKretanja::NaprijedNazad)
+ {
+  for(int i(0);i&lt;kont.size();i++)
+  {
+   for(int j(0);j&lt;kont[0].size();j++)
+   {
+    for(int k(0);k&lt;kont[0][0].size();k++)
+    {
+     
+    }
+   }
+  }
+ }
+ else if(smjer==SmjerKretanja::NazadNaprijed)
+ {
+  for(int i(0);i&lt;kont.size();i++)
+  {
+   for(int j(0);j&lt;kont[0].size();j++)
+   {
+    for(int k(0);k&lt;kont[0][0].size();k++)
+    {
+     
+    }
+   }
+  }
+ }
+ return pomocni;
+}
+int main ()
+{
+ try
+ {
+  int n,nekibroj;
+  std::vector&lt;std::deque&lt;std::deque&lt;double&gt;&gt;&gt; kon;
+  std::cout &lt;&lt; "Unesite dimenziju (x/y/z): ";
+  unos: std::cin &gt;&gt; n;
+  if(n&lt;0) 
+  {
+   std::cout &lt;&lt; "Dimenzija nije ispravna, unesite opet: ";
+   goto unos;
+  }
+  std::cout &lt;&lt; "Unesite elemente kontejnera: ";
+  kon.resize(n);
+  for(int i(0);i&lt;n;i++) kon[i].resize(n);
+  for(int i(0);i&lt;n;i++)
+  {
+   for(int j(0);j&lt;n;j++)
+   {
+    kon[i][j].resize(n);
+   }
+  }
+  for(int i(0);i&lt;n;i++)
+  {
+   for(int j(0);j&lt;n;j++)
+   {
+    for(int k(0);k&lt;n;k++)
+    {
+     std::cin &gt;&gt; kon.at(i).at(j).at(k);
+    }
+   }
+  }
+  std::cout &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+  unesi: std::cin &gt;&gt; nekibroj;
+  if(nekibroj&lt;0 || nekibroj&gt;5)
+  {
+   std::cout &lt;&lt; "Smjer nije ispravan, unesite opet: ";
+   goto unesi;
+  }
+  std::cout &lt;&lt; std::endl;
+  auto kocka=PjescaniSat(kon,SmjerKretanja(nekibroj));
+  std::cout &lt;&lt; "Pjescani sat unesene matrice je: ";
+  std::cout &lt;&lt; std::endl;
+  for(int i(0);i&lt;n;i++)
+  {
+   for(int j(0);j&lt;n;j++)
+   {
+    for(int k(0);k&lt;kocka.at(i).at(j).size();k++)
+    {
+     if(!(j==0 || j==n-1)) std::cout &lt;&lt; std::setw(8) &lt;&lt; kocka[i][j][k];
+     else std::cout &lt;&lt; std::setw(4) &lt;&lt; kocka[i][j][k];
+    }
+    std::cout &lt;&lt; std::endl;
+   }
+   std::cout &lt;&lt; std::endl;
+  }
+ }
+ catch(std::domain_error e)
+ {
+  std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what();
+ }
+ catch(std::length_error izuzetak)
+ {
+  std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+</font> }
+ return 0;
+}</pre>
+</body>
+</html>

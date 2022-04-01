@@ -1,0 +1,126 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student8705.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student5261.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+#include &lt;utility&gt;
+#include &lt;algorithm&gt;
+#include &lt;queue&gt;
+#include &lt;map&gt;
+//Provjereno, poslano.
+<a name="0"></a><font color="#FF0000"><a href="match193-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum class Boje { Pik, Tref, Herc, Karo };
+typedef std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; Spil;
+std::string _karte_[13]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+std::string _boje_[4]{"Pik", "Tref", "Herc", "Karo"};
+bool manji(const std::pair&lt;Boje, std::string&gt; &amp;a, const std::pair&lt;Boje, std::string&gt; &amp;b)
+{
+    return int(a.first) &lt; int(b.first) || (a.first == b.first &amp;&amp; std::find(_karte_, _karte_+13, a.second) &lt; std::find(_karte_, _karte_+13, b.second));
+}
+void provjeri_spil(Spil &amp;spil)
+{
+    if (spil.empty()) return;
+    auto i(spil.begin());
+    if (spil.size() &gt; 52 || std::find(_karte_, _karte_+13, i-&gt;second) == _karte_+13) throw std::logic_error("Neispravna lista!");
+    for (auto j(i); ++j != spil.end(); ++i)
+        if (std::find(_karte_, _karte_+13, j-&gt;second) == _karte_+13 || manji(*j, *i) || *j == *i) throw std::logic_error("Neispravna lista!");
+}
+Spil KreirajSpil()
+{
+    Spil spil;
+    for (int i(0); i &lt; 4; ++i)
+        for (int j(0); j &lt; 13; ++j)
+            spil.push_back({ Boje(i), _karte_[j] });
+    return spil;
+}
+void IzbaciKarte(Spil &amp;spil, std::multimap&lt;Boje, std::string&gt; &amp;m)
+{
+    provjeri_spil(spil);
+    for (auto i(spil.begin()); i != spil.end(); )
+    {
+        auto j(std::find(m.begin(), m.end(), std::pair&lt;const Boje, std::string&gt;(*i)));
+        if (j != m.end())
+        {
+            i = spil.erase(i);
+            auto x(*j);
+            for (auto k(j = m.erase(j)); k != m.end() &amp;&amp; (k = std::find(k, m.end(), x)) != m.end();) k = m.erase(k);
+        }
+        else ++i;
+    }
+}
+std::queue&lt;std::pair&lt;std::string, std::string&gt;&gt; IzbaciKarteRazbrajanjem(Spil &amp;spil, const short int &amp;r, const int &amp;b)
+{
+    if (r &lt; 1 || r &gt; 52 || b &lt; 1) throw std::logic_error("Neispravni elementi za izbacivanje!");
+    provjeri_spil(spil);
+    std::queue&lt;std::pair&lt;std::string, std::string&gt;&gt; red;
+    if (spil.empty()) return red;
+    auto it(spil.begin());
+    int pozicija(0), br(b);
+    for (int i((r-1) % spil.size()); br &gt; 0; --br, i = (i + r-1) % spil.size())
+    {
+        if (i &gt; pozicija)
+            for (; pozicija &lt; i; ++pozicija) ++it;
+        else if (i &lt; pozicija)
+            for (pozicija = 0, it = spil.begin(); pozicija &lt; i; ++pozicija, ++it);
+        red.push({ _boje_[int(it-&gt;first)], it-&gt;second });
+        it = spil.erase(it);
+        if (spil.empty()) break;
+    }
+    return red;
+}
+//?Kako provjeriti jesu li ispravne karte bez modifikacije reda, a bez koristenja pomocnih kontejnera?
+void VratiPrvihNKarata(Spil &amp;spil, std::queue&lt;std::pair&lt;std::string, std::string&gt;&gt; &amp;red, int n)
+{
+    if (n &lt; 0) throw std::domain_error("Broj n je besmislen!");
+    else if (n &gt; red.size()) throw std::range_error("Nedovoljno karata u redu!");
+    provjeri_spil(spil);
+    for (int i(0); i &lt; n; ++i)
+    {
+        if (std::find(_boje_, _boje_+4, red.front().first) == _boje_+4 || std::find(_karte_, _karte_+13, red.front().second) == _karte_+13)
+            throw std::logic_error("Neispravne karte!");
+        auto par(std::make_pair(Boje(std::find(_boje_, _boje_+4, red.front().first) - _boje_), red.front().second));
+        if (std::find(spil.begin(), spil.end(), par) == spil.end())
+            for (auto it(spil.begin()); ; ++it)
+                if (it == spil.end() || manji(par, *it)) { spil.insert(it, par); break; }
+        red.pop();
+    }
+}
+void ispisi(const Spil &amp;spil)
+{
+    std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; spil.size() &lt;&lt; " karata, i to:";
+    auto it(spil.begin());
+    for (int i(0); i &lt; 4; ++i)
+    {
+        std::cout &lt;&lt; '\n' &lt;&lt; _boje_[i] &lt;&lt; ':';
+        for (; it != spil.end() &amp;&amp; it-&gt;first == Boje(i); ++it) std::cout &lt;&lt; ' ' &lt;&lt; it-&gt;second;
+    }
+}
+int main()
+{
+    int r, b;
+    std::cout &lt;&lt; "Unesite korak razbrajanja: ";
+    std::cin &gt;&gt; r;
+    std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    std::cin &gt;&gt; b;
+    try
+    {
+        Spil spil(KreirajSpil());
+        auto izbacene(IzbaciKarteRazbrajanjem(spil, r, b));
+        ispisi(spil);
+        std::cout &lt;&lt; "\nUnesite broj karata koje zelite vratiti u spil: ";
+        std::cin &gt;&gt; b;
+        VratiPrvihNKarata(spil, izbacene, b);
+        ispisi(spil);
+    }
+    catch (const std::exception &amp;e) { std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what(); }
+    catch (...) {}
+</font>	return 0;
+}</pre>
+</body>
+</html>

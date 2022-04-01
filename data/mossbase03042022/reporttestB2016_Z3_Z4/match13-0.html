@@ -1,0 +1,179 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student2701.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student2701.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match13-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 4
+
+#include &lt;list&gt;
+#include &lt;string&gt;
+#include &lt;cstdio&gt;
+#include &lt;vector&gt;
+#include &lt;new&gt;
+#include &lt;stdexcept&gt;
+#include &lt;set&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;cstring&gt;
+
+using namespace std;
+
+
+string maksimum(set&lt;string&gt; tim){
+   string zadnji;
+   zadnji=*max_element(tim.begin(),tim.end());
+   return zadnji;
+}
+
+
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector&lt;string&gt; djeca, int k)
+{
+    if(k&lt;1 || k&gt;djeca.size()) throw logic_error("Razvrstavanje nemoguce");
+    list&lt;string&gt; children;
+   
+    vector&lt;set&lt;string&gt;&gt; rezultat(k);
+
+    for(int i=0; i&lt;djeca.size(); i++) {
+        children.push_back(djeca[i]);
+    }
+    
+    list&lt;string&gt;::iterator iter(children.begin());
+    rezultat[0].insert(*iter);
+    string kakosezove;
+    kakosezove=*iter;
+    kakosezove.c_str();
+    int brojacc=0;
+    for(int i=0;i&lt;kakosezove.size();i++){
+        if((kakosezove[i]&gt;='0' &amp;&amp; kakosezove[i]&lt;='9') || (kakosezove[i]&gt;='A' &amp;&amp; kakosezove[i]&lt;='Z') || (kakosezove[i]&gt;='a' &amp;&amp; kakosezove[i]&lt;='z'))
+        brojacc++;
+        
+    }
+    int brojslovaimena=brojacc;
+    
+    iter=children.erase(iter);
+    int brojac=0;
+    for(int i=0; i&lt;(djeca.size())%k; i++) {
+
+        int brojacispalih=0;
+        while(iter!=children.end()) {
+
+            brojac++;
+            string imedjeteta=*iter;
+            
+            if(brojac!=brojslovaimena) iter++;
+
+            else{
+                rezultat[i].insert(imedjeteta);
+                brojacispalih++;
+                brojac=0;
+                imedjeteta.c_str();
+                int j=0;
+                int novibrojac=0;
+                while(j&lt;imedjeteta.size()){
+ if((imedjeteta[j]&gt;='0' &amp;&amp; imedjeteta[j]&lt;='9') || (imedjeteta[j]&gt;='A' &amp;&amp; imedjeteta[j]&lt;='Z') || (imedjeteta[j]&gt;='a' &amp;&amp; imedjeteta[j]&lt;='z')){
+     novibrojac++;
+ }
+ j++;
+                }
+                brojslovaimena=novibrojac;
+                iter=children.erase(iter);
+            }
+
+            
+            if(iter==children.end()) iter=children.begin();
+            
+            if(brojacispalih==djeca.size()/k &amp;&amp; i==0 ) break;
+            if(brojacispalih==djeca.size()/k + 1) break;
+
+        }
+    }
+
+
+
+
+    for(int j=(djeca.size())%k; j&lt;k; j++) {
+
+        int brojacispalih=0;
+        while(iter!=children.end()) {
+
+            string imedjeteta=*iter;
+
+            brojac++;
+
+            if(brojac!=brojslovaimena) iter++;
+            else {
+                brojacispalih++;
+                rezultat[j].insert(imedjeteta);
+                imedjeteta.c_str();
+                int brojac2=0;
+                int f=0;
+                while(f&lt;imedjeteta.size()){
+ if((imedjeteta[f]&gt;='0' &amp;&amp; imedjeteta[f]&lt;='9') || (imedjeteta[f]&gt;='A' &amp;&amp; imedjeteta[f]&lt;='Z') || (imedjeteta[f]&gt;='a' &amp;&amp; imedjeteta[f]&lt;='z')){
+     brojac2++;
+ }
+ f++;
+                }
+                
+                
+                brojslovaimena=brojac2;
+                iter=children.erase(iter);
+                brojac=0;}
+
+
+
+            if(iter==children.end()) iter=children.begin();
+            
+            if(j==0 &amp;&amp; brojacispalih==djeca.size()/k-1) break;
+            if(brojacispalih==djeca.size()/k) break;
+
+        }
+    }
+
+
+    return rezultat;
+}
+
+
+int main ()
+{
+    try {
+        cout&lt;&lt;"Unesite broj djece: ";
+        int n;
+        cin&gt;&gt;n;
+        cin.ignore(10000,'\n');
+        cout&lt;&lt;"Unesite imena djece: "&lt;&lt;endl;
+        vector&lt;string&gt; djeca(n);
+
+        for(int i=0; i&lt;n ; i++) {
+        
+            getline(cin,djeca[i]);
+         
+        }
+        cout&lt;&lt;"Unesite broj timova: ";
+        int k;
+        cin&gt;&gt;k;
+        vector&lt;set&lt;string&gt;&gt; poziv;
+        poziv=Razvrstavanje(djeca,k);
+
+        for(int i=0; i&lt;k; i++) {
+           
+            cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+            for(auto x: poziv[i]) {
+                string maks;
+                maks=maksimum(poziv[i]);
+                if (x==maks) cout&lt;&lt;x;
+                else cout&lt;&lt;x&lt;&lt;", ";
+            }
+            cout&lt;&lt;endl;
+        }
+
+
+    } catch(logic_error izuzetak){  cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();}
+    return 0;
+</font>}</pre>
+</body>
+</html>

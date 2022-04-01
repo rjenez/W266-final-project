@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student4108.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student4095.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+
+bool DaLiJeSlovoIliBroj (char znak)
+{
+    if((znak&gt;='a' &amp;&amp; znak&lt;='z') || (znak&gt;='A' &amp;&amp; znak&lt;='Z') || (znak&gt;='0' &amp;&amp; znak&lt;='9'))
+        return true;
+    return false;
+}
+
+int DuzinaImena (std::string ime)
+{
+    int duzina(0);
+    auto it(ime.begin());
+    while (it!=ime.end())
+    {
+        if(DaLiJeSlovoIliBroj(*it))
+            duzina++;
+        it++;
+    }
+    return duzina;
+}
+
+struct Dijete 
+{
+    std::string ime;
+    Dijete* sljedeci;
+};
+
+<a name="2"></a><font color="#0000FF"><a href="match606-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje (std::vector&lt;std::string&gt; imena, int k)
+{
+    if(k&lt;1 || k&gt;imena.size())
+        throw std::logic_error ("Razvrstavanje nemoguce");
+    Dijete* pocetak(nullptr), *prethodni;
+</font>    int n(imena.size());
+    for(int i=0; i&lt;n; i++)
+    {
+        Dijete* novi(new Dijete);
+        novi-&gt;ime=imena[i];
+        novi-&gt;sljedeci=nullptr;
+        if(!pocetak)
+            pocetak=novi;
+        else
+            prethodni-&gt;sljedeci=novi;
+        prethodni=novi;
+    }
+    prethodni-&gt;sljedeci=pocetak;
+    
+    std::vector&lt;int&gt; br_po_timu(k);
+    for(int i=1; i&lt;=k; i++)
+    {
+        if(i&lt;=n%k)
+            br_po_timu[i-1]=n/k+1;
+        else
+            br_po_timu[i-1]=n/k;
+    }
+    std::vector&lt;std::set&lt;std::string&gt;&gt; rezultat(k);
+    int duzina(DuzinaImena(pocetak-&gt;ime));
+    rezultat[0].insert(pocetak-&gt;ime);
+    prethodni-&gt;sljedeci=pocetak-&gt;sljedeci;
+    delete pocetak;
+    pocetak=prethodni-&gt;sljedeci;
+    
+    Dijete *p(pocetak);
+    int i(0), j(1); //vjestacka petlja za unos u vektor
+    for(int l=1; l&lt;n; l++)
+    {
+        for(int m=0; m&lt;duzina-2; m++)
+            p=p-&gt;sljedeci;
+        Dijete* q=p-&gt;sljedeci;
+        duzina=DuzinaImena(q-&gt;ime);
+        p-&gt;sljedeci=q-&gt;sljedeci;
+        if (j&gt;br_po_timu[i]-1)
+        {
+            i++;
+            j=1;
+            rezultat[i].insert(q-&gt;ime);
+        }
+        else
+        {
+            j++;
+            rezultat[i].insert(q-&gt;ime);
+        }
+        p=p-&gt;sljedeci;
+        delete q;
+        
+    }
+    return rezultat;
+}
+
+int main ()
+{
+    int br_djece;
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    std::cin&gt;&gt;br_djece;
+    std::cin.ignore(10000,'\n');
+    std::vector&lt;std::string&gt; imena(br_djece);
+    std::cout&lt;&lt;"Unesite imena djece: ";
+    for (std::string &amp;ime: imena)
+        std::getline(std::cin, ime);
+    int n;
+    std::cout&lt;&lt;std::endl&lt;&lt;"Unesite broj timova: ";
+    std::cin&gt;&gt;n;
+    try{
+        std::vector&lt;std::set&lt;std::string&gt;&gt; timovi(Razvrstavanje(imena, n));
+<a name="1"></a><font color="#00FF00"><a href="match606-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+        for (int i=0; i&lt;timovi.size(); i++)
+        {
+            std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+            for (auto it=timovi[i].begin(); it!=timovi[i].end(); it++)
+            {
+                if (*it==*timovi[i].rbegin())
+</font><a name="0"></a><font color="#FF0000"><a href="match606-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+                    std::cout&lt;&lt;*it;
+                else
+                    std::cout&lt;&lt;*it&lt;&lt;", ";
+            }
+            std::cout&lt;&lt;std::endl;
+        }
+    }
+    catch (std::logic_error e)
+    {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what()&lt;&lt;std::endl;
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

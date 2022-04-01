@@ -1,0 +1,157 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z5/student5287.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z5/student5287.cpp<p></p><pre>
+/B2017/2018: Zadaća 5, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;initializer_list&gt;
+#include &lt;functional&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+
+using std::initializer_list;
+using std::function;
+using std::pair;
+using std::vector;
+
+typedef function&lt;double(int)&gt; funkit;
+typedef function&lt;double(double)&gt; funkd;
+
+//Const
+constexpr double pi = 4 * std::atan(1);
+
+class FourierovRed{
+    int stepen;
+    double period;
+    vector&lt;double&gt; ak, bk;
+    
+    void IzracunajKoef(vector&lt;double&gt; &amp;koefi, int n, double p, double q, funkd f, int M, double periodicna(double));
+public:
+    FourierovRed(double T, initializer_list&lt;double&gt; a, initializer_list&lt;double&gt; b);
+    FourierovRed(int n, double T, funkit f1, funkit f2);
+    FourierovRed(int N, double p, double q, funkd f, int M);
+    
+    double operator ()(double x);
+    pair&lt;double&amp;, double&amp;&gt; operator [](int k);
+    pair&lt;double, double&gt; operator [](int k) const;
+};
+
+FourierovRed::FourierovRed(double T, initializer_list&lt;double&gt; a, initializer_list&lt;double&gt; b){
+    //Ttreba ovo +1, jer vjrv u init_listi prvi clan nije nula
+    int max_size = std::max(a.size(), b.size()+1);
+    
+    ak.resize(max_size);
+    bk.resize(max_size);
+    
+    std::copy(a.begin(), a.end(), ak.begin());
+    std::copy(b.begin(), b.end(), bk.begin()+1);
+    
+    stepen = max_size-1;
+    period = T;
+}
+
+FourierovRed::FourierovRed(int n, double T, funkit f1, funkit f2){
+    if(n &lt;= 0)
+        throw std::domain_error("Stepen mora biti pozitivan");
+    
+    //Iako je nulti stepen, ima slobodni clan!
+    ak.resize(n+1);
+    bk.resize(n+1);
+    
+    stepen = n;
+    period = T;
+    
+    for(int k = 0; k &lt;= n; k++)
+        ak[k] = f1(k);
+    
+    for(int k = 1; k &lt;= n; k++)
+        bk[k] = f2(k);
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match481-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+FourierovRed::FourierovRed(int n, double p, double q, funkd f, int M){
+    if(n &lt;= 0)
+        throw std::domain_error("Stepen mora biti pozitivan");
+    if(M &lt;= 0)
+        throw std::domain_error("Broj podintervala mora biti pozitivan");
+    if(p &gt;= q)
+        throw std::range_error("Neispravan interval");
+</font>    
+    ak.resize(n+1);
+    bk.resize(n+1);
+    
+    stepen = n;
+    period = q - p;
+    
+    IzracunajKoef(ak, n, p, q, f, M, std::cos);
+    IzracunajKoef(bk, n, p, q, f, M, std::sin);
+}
+
+void FourierovRed::IzracunajKoef(vector&lt;double&gt; &amp;koefi, int n, double p, double q, funkd f, int M, double periodicna(double)){
+    double period = p - q;
+    
+    for(int k = 0; k &lt;= n; k++){
+        double sum = 0;
+        
+        for(int i = 1; i &lt; M; i++){
+            sum += f(p + (i*period)/M) * periodicna(2 * k * pi * (p/period + (i*1.)/M));
+        }
+        
+        koefi[k] = ((f(p) + f(q)) / M) * periodicna((2 * k * pi * p)/period) + 2*sum/M;
+    }
+}
+
+double FourierovRed::operator ()(double x){
+    double fourier = ak[0]/2;
+    
+<a name="3"></a><font color="#00FFFF"><a href="match481-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+    for(int k = 1; k &lt;= stepen; k++){
+        fourier += ak[k] * std::cos((2*k*pi*x)/period) + bk[k] * std::sin((2*k*pi*x)/period);
+</font>    }
+    
+    return fourier;
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match481-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+pair&lt;double&amp;, double&amp;&gt; FourierovRed::operator [](int k){
+    if(k &lt; 0 || k &gt; stepen)
+        throw std::range_error("Neispravan indeks");
+    
+    return {ak[k], (k&gt;0)? bk[k] : (bk[0] = 0)};
+</font>}
+
+<a name="0"></a><font color="#FF0000"><a href="match481-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+pair&lt;double, double&gt; FourierovRed::operator [](int k) const {
+    if(k &lt; 0 || k &gt; stepen)
+        throw std::range_error("Neispravan indeks");
+    
+    return std::make_pair(ak[k], (k&gt;0)? bk[k] : 0);
+</font>}
+
+
+
+int main () {
+    
+    auto k1=[](int k) { return (k == 0) ? 8 * pi * pi / 3 : 4. / (k * k); };
+    auto k2=[](int k) { return -4 * pi / k; };
+    auto f=[](double x) { return x * x; };
+    FourierovRed f1(50, 2*pi, k1, k2);
+    FourierovRed f2(50, 0, 2*pi, f, 1000);
+    
+    std::cout &lt;&lt; "FourierovRed: " &lt;&lt; f1(3) &lt;&lt; std::endl;
+    std::cout &lt;&lt; "FourierovRed approx: " &lt;&lt; f2(3) &lt;&lt; std::endl;
+    
+	return 0;
+}
+</pre>
+</body>
+</html>

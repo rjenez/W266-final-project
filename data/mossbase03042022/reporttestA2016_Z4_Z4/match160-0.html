@@ -1,0 +1,199 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z4/student4804.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z4/student4804.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#define E 0.0001
+#include &lt;math.h&gt;
+
+char *stringcpy(char *s, char *r)
+{
+	char *pocs=s;
+	int i;
+	for(i=0; r[i]!='\0'; i++)
+		s[i]=r[i];
+	s[i]='\0';
+	return pocs;
+}
+
+char *obuhvat(char* s,double x1,double y1,double x2,double y2)
+{
+	char *pocs=s,*temp,*pockor,*krajkor,*temp2;
+	double x,y,dec;
+	int minus,brzareza;
+	/*Ispitivanje pravilnosti unosa*/
+
+	if(s[0]!='(')
+		return NULL;
+
+	while(*s!='\0') {
+		if(*s!='(' &amp;&amp; *s!=')' &amp;&amp; *s!='.' &amp;&amp; *s!=',' &amp;&amp; *s!='-' &amp;&amp; !(*s&gt;='0' &amp;&amp; *s&lt;='9'))
+			return NULL;
+
+		if(*(s+1)=='\0') {
+			if(*s!=')')
+				return NULL;
+		}
+
+		if(*s=='(') {
+			temp2=s;
+			brzareza=0;
+			while(*temp2!=')' &amp;&amp; *temp2!='\0') {
+				if(*temp2==',')
+					brzareza++;
+				temp2++;
+			}
+			if(brzareza!=1)
+				return NULL;
+
+			if(*(s+1)!='-' &amp;&amp; !(*(s+1)&gt;='0' &amp;&amp; *(s+1)&lt;='9'))
+				return NULL;
+			if(s!=pocs) {
+				if(*(s-1)!=',')
+					return NULL;
+			}
+		}
+
+		if(*s==')') {
+			if(*(s+1)!=',' &amp;&amp; *(s+1)!='\0')
+				return NULL;
+
+			if(s!=pocs) {
+				if(*(s-1)!='.' &amp;&amp; !(*(s-1)&gt;='0' &amp;&amp; *(s-1)&lt;='9'))
+					return NULL;
+			}
+		}
+
+		if(*s=='.') {
+<a name="0"></a><font color="#FF0000"><a href="match160-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+			if(*(s+1)!=')' &amp;&amp; *(s+1)!=',' &amp;&amp; !(*(s+1)&gt;='0' &amp;&amp; *(s+1)&lt;='9'))
+</font>				return NULL;
+
+			if(s!=pocs) {
+				if(!(*(s-1)&gt;='0' &amp;&amp; *(s-1)&lt;='9'))
+					return NULL;
+			}
+		}
+
+		if(*s==',') {
+			if(*(s+1)!='-' &amp;&amp; *(s+1)!='(' &amp;&amp; !(*(s+1)&gt;='0' &amp;&amp; *(s+1)&lt;='9'))
+				return NULL;
+
+			if(s!=pocs) {
+				if(*(s-1)!='.' &amp;&amp; *(s-1)!=')' &amp;&amp; !(*(s-1)&gt;='0' &amp;&amp; *(s-1)&lt;='9'))
+					return NULL;
+
+				if(*(s-1)==')') {
+					if(*(s+1)!='(')
+						return NULL;
+				}
+			}
+
+		}
+		s++;
+	}
+	s=pocs;
+
+	/*Trazenje brojeva*/
+
+	while(*s!='\0') {
+
+		if(*s&gt;='0' &amp;&amp; *s&lt;='9') {
+			pockor=s-1;
+			if(*pockor=='-')
+				pockor--;
+			minus=0;
+			x=0;
+			y=0;
+<a name="1"></a><font color="#00FF00"><a href="match160-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+			temp=s;
+			if(*(s-1)=='-')
+				minus=1;
+			while(*temp&gt;='0' &amp;&amp; *temp&lt;='9') {
+				x=(*temp-'0')+10*x;
+</font>				temp++;
+			}
+			
+			if(*temp=='.') {
+				temp++;
+				dec=0;
+				while(*temp&gt;='0' &amp;&amp; *temp&lt;='9') {
+					dec=dec+(double)(*temp-'0')/10;
+					temp++;
+				}
+				x=(double)x+dec;
+
+			}
+			if(minus==1)
+				x=-x;
+
+			minus=0;
+
+			if(*temp==',')
+				temp++;
+
+			if(*temp=='-') {
+				minus=1;
+				temp++;
+			}
+
+			while(*temp&gt;='0' &amp;&amp; *temp&lt;='9') {
+				y=(*temp-'0')+10*y;
+				temp++;
+			}
+			if(*temp=='.') {
+				temp++;
+				dec=0;
+				while(*temp&gt;='0' &amp;&amp; *temp&lt;='9') {
+					dec=dec+(double)(*temp-'0')/10;
+					temp++;
+				}
+				y=(double)y+dec;
+			}
+			if(minus==1)
+				y=-y;
+			s=temp;
+
+			/*Izbacivanje koordinata koje nisu unutar pravougaonika*/
+			if(x&lt;x1 || x&gt;x2 || y&lt;y1 || y&gt;y2) {
+				krajkor=temp;
+				krajkor++;
+				if(*krajkor=='\0') {
+					if(*(pockor-1)==',')
+						*(pockor-1)='\0';
+					else
+						*pockor='\0';
+
+				} else if(*krajkor==',') {
+					krajkor++;
+					stringcpy(pockor,krajkor);
+				}
+				s=pocs;
+				if(*s=='\0')
+					return pocs;
+			}
+
+		}
+
+		s++;
+	}
+
+	return pocs;
+}
+
+int main()
+{
+	char s[] = "(0,-3.1),(-15.09,4),(-1.1,217)";
+	char* rez = obuhvat(s, -3, -3, 3, 3);
+	printf("%s %s", rez, s);
+
+	return 0;
+}
+</pre>
+</body>
+</html>

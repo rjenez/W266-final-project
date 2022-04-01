@@ -1,0 +1,116 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student8864.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student8864.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+typedef std::vector&lt;std::set&lt;std::string&gt;&gt; Povratni;
+struct Dijete{
+    std::string ime;
+    Dijete* sljedeci;
+};
+int Slova(std::string s){
+    auto a(s.begin());
+    int brojac(0);
+    while (a!=s.end()){
+        if((*a&gt;='a' &amp;&amp; *a&lt;='z') || (*a&gt;='A' &amp;&amp; *a&lt;='Z') || (*a&gt;='0' &amp;&amp; *a&lt;='9')) brojac++;
+        a++;
+    }
+    return brojac;
+}
+Povratni Razvrstavanje(std::vector&lt;std::string&gt; djeca,int k){
+    Dijete *p1(nullptr),*p2(nullptr),*p3(nullptr);
+    int n(djeca.size());
+    if(k&lt;1 || k&gt;n) throw std::logic_error("Razvrstavanje nemoguce");
+    std::string kraj(djeca[n-1]);
+    Povratni izlaz;
+    for(int i=0;i&lt;n;i++){
+        Dijete*novi(new Dijete);
+        novi-&gt;ime=djeca[i];novi-&gt;sljedeci=nullptr;
+        if(i==n-1){
+            novi-&gt;sljedeci=p1;
+            p3=novi;
+        }
+        if(!p1) p1=novi;
+        else p2-&gt;sljedeci=novi;
+        p2=novi;
+    }
+    auto it(p1);
+    int x,i;
+    for(i=0;i&lt;n%k;i++){
+        std::set&lt;std::string&gt; temp;
+        for(int j=0;j&lt;n/k+1;j++){
+            x=Slova(it-&gt;ime);
+            temp.insert(it-&gt;ime);
+            p3-&gt;sljedeci=it-&gt;sljedeci;
+            delete(it);
+            it=p3-&gt;sljedeci;
+            for(int k=0;k&lt;x-1;k++){
+                it=it-&gt;sljedeci;
+                p3=p3-&gt;sljedeci;
+            }
+        }
+        izlaz.push_back(temp);
+    }
+    for(int a=i;a&lt;k;a++){
+        std::set&lt;std::string&gt; temp;
+        for(int b=0;b&lt;n/k;b++){
+            x=Slova(it-&gt;ime);
+            temp.insert(it-&gt;ime);
+            if(p3-&gt;sljedeci==it-&gt;sljedeci){
+                temp.insert(p3-&gt;ime);
+                delete p3;
+                continue;
+            }
+            p3-&gt;sljedeci=it-&gt;sljedeci;
+            delete(it);
+            it=p3-&gt;sljedeci;
+            for(int c=0;c&lt;x-1;c++){
+                it=it-&gt;sljedeci;
+                p3=p3-&gt;sljedeci;
+            }
+        }
+        izlaz.push_back(temp);
+    }
+    return izlaz;
+}
+int main (){
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    int n;
+    std::cin&gt;&gt;n;
+    if(n&lt;0){ std::cout&lt;&lt;"Pogresan parametar";return 0;}
+    std::cout&lt;&lt;"Unesite imena djece: \n";
+<a name="0"></a><font color="#FF0000"><a href="match944-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+    std::vector&lt;std::string&gt; djeca(n);
+    std::cin.ignore(1000,'\n');
+    for(int i=0;i&lt;n;i++) std::getline(std::cin,djeca[i]);
+    std::cout&lt;&lt;"Unesite broj timova: ";
+    int k;
+    std::cin&gt;&gt;k;
+    Povratni ispis;
+</font>    try{
+        ispis=Razvrstavanje(djeca,k);
+    } catch(std::logic_error a){
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;a.what();
+        return 0;
+    }
+<a name="1"></a><font color="#00FF00"><a href="match944-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_7.gif"/></a>
+
+    for(int i=0;i&lt;k;i++){
+        std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+        auto temp(ispis[i].begin());
+        for(int j=0;j&lt;ispis[i].size()-1;j++) std::cout&lt;&lt;*temp++&lt;&lt;", ";
+</font>        std::cout&lt;&lt;*temp&lt;&lt;std::endl;
+    }
+	return 0;
+}</pre>
+</body>
+</html>

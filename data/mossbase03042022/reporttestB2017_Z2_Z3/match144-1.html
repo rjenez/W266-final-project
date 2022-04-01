@@ -1,0 +1,194 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student6369.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student6594.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 3
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+<a name="0"></a><font color="#FF0000"><a href="match144-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+bool periodicna(vector&lt;int&gt; v, int &amp;per)
+{
+	per=0;
+	
+	for(int i=0; i&lt;v.size()-1; i++)
+	{
+		int pom=1;
+		for(int j=i+1; j&lt;v.size(); j++)
+			if(v.at(j)==v.at(i)) { pom=j-i; break;}
+		bool valja=true;
+		for(int j=0; j&lt;v.size()-pom; j++) if(v.at(j)!=v.at(j+pom)) valja=false;
+		if(valja) {per=pom; return true;}
+	}
+	return false;
+	
+}
+
+void popunifrag(int ** &amp;mat, int &amp;najduzi, vector&lt;int&gt; &amp;v)
+{
+	for(int i=0; i&lt;v.size(); i++)
+		{
+			int pom=najduzi;
+			for(int j=v.at(i)-1; j&gt;=0; j--)
+			{
+				mat[i][j]=najduzi; najduzi--;
+			}
+			najduzi=pom;
+		}
+}
+
+void testperioda(vector&lt;int&gt; &amp;v, int &amp;koliko_puta, int &amp;p)
+{
+	if(periodicna(v,p))
+	{
+		koliko_puta=v.size()/p;
+		if(v.size()%p!=0)
+		{	
+			while(v.size()%p!=0) 
+				v.push_back(v.at(v.size()-p)); 
+			koliko_puta++;
+		}
+	}
+	else {
+		v.resize(v.size()*2);
+		for(int i=0; i&lt;v.size()/2; i++) v.at(i+(v.size()/2))=v.at(i); 
+		
+	}
+}
+
+int **AlocirajFragmentirano(vector&lt;int&gt; &amp;v, int &amp;koliko_puta)
+{
+	if(v.size()==0) throw logic_error("Prazan vektor!");
+	for(int i=0; i&lt;v.size(); i++)
+		if(v.at(i)&lt;=0) throw domain_error("Neispravan vektor!");
+	int p;
+	testperioda(v,koliko_puta,p);
+	int **mat=nullptr;
+	int najduzi=-1;
+	for(int i=0; i&lt;v.size(); i++)
+		if(v.at(i)&gt;najduzi) najduzi=v.at(i);
+	try {
+		mat=new int *[v.size()];
+		for(int i=0; i&lt;v.size(); i++) mat[i]=nullptr;
+		try {
+			
+			for(int i=0; i&lt;v.size(); i++) 
+				mat[i]=new int[v.at(i)];
+			popunifrag(mat,najduzi,v);
+			
+			return mat;
+		}
+		catch(...){
+			for(int i=0; i&lt;v.size(); i++) delete mat[i];
+			throw;
+		}
+	} catch(...)
+	{
+		delete [] mat;
+		throw;
+	}
+}
+
+void popunikont(int ** &amp;mat, vector&lt;int&gt; &amp;v)
+{
+	for(int i=0; i&lt;v.size(); i++)
+	{
+		int pom=0; 
+		for(int j=v.at(i)-1; j&gt;=0; j--) { 
+			mat[i][j]=pom+1; 
+			pom++;
+		}
+	}
+}
+
+int **AlocirajKontinualno(vector&lt;int&gt; &amp;v, int &amp;koliko_puta)
+{
+	if(v.size()==0) throw logic_error("Prazan vektor!");
+	for(int i=0; i&lt;v.size(); i++)
+		if(v.at(i)&lt;=0) throw domain_error("Neispravan vektor!");
+	int p; 
+	int **mat=nullptr;
+	testperioda(v,koliko_puta,p);
+	int suma=0;
+	for(int i=0; i&lt;v.size(); i++) suma+=v.at(i);
+	try{
+		mat=new int *[v.size()];
+		try {
+			mat[0]=new int[suma];
+			for(int i=1; i&lt;v.size(); i++)
+			{
+				int a=v.at(i-1);
+				mat[i]=mat[i-1]+a;
+			}
+			popunikont(mat,v);
+			return mat;
+		}
+		catch(...) { delete [] mat[0]; throw;}
+	}
+	catch(...) {
+		delete [] mat;
+		throw;
+	}
+}
+
+
+int main ()
+{
+	int koliko;
+	int n;
+	vector&lt;int&gt; v;
+	cout&lt;&lt;"Unesite broj elemenata vektora: ";
+	cin&gt;&gt;n;
+	cout&lt;&lt;"Unesite elemente vektora: ";
+	for(int i=0; i&lt;n; i++) {
+		int pom; cin&gt;&gt;pom; v.push_back(pom);
+	}
+	cout&lt;&lt;"Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+	cin&gt;&gt;n;
+	int **mat;
+	mat=nullptr;
+	try{
+		if(n==1) mat=AlocirajFragmentirano(v,koliko);
+		else if(n==0) mat=AlocirajKontinualno(v,koliko);
+		cout&lt;&lt;"Dinamicki alocirana matrica: "&lt;&lt;endl;
+		for(int i=0; i&lt;v.size(); i++)
+		{
+			for(int j=0; j&lt;v.at(i); j++) cout&lt;&lt;setw(3)&lt;&lt;left&lt;&lt;mat[i][j];
+			cout&lt;&lt;endl;
+		}
+		if(n==0)
+		{
+			delete [] mat[0];
+			delete [] mat;
+		}
+		else if(n==1){
+			for(int i=0; i&lt;v.size(); i++) delete [] mat[i];
+			delete [] mat;
+		} 
+	}
+	catch(domain_error d) { cout&lt;&lt;"Izuzetak: "&lt;&lt;d.what();}
+	catch(logic_error s) { cout&lt;&lt;"Izuzetak: "&lt;&lt;s.what();}
+	catch(...) { cout&lt;&lt;"Izuzetak: Problem s memorijom.";}
+</font>	return 0; 
+}</pre>
+</body>
+</html>

@@ -1,0 +1,1428 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z3/student6029.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z3/student3567.cpp<p></p><pre>
+<a name="13"></a><font color="#00FFFF"><a href="match345-0.html#13" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+/B 2016/2017, Zadaća 4, Zadatak 3
+//Napomena: testovi ce biti dostupni dan pred rok!
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+class Datum
+{
+    int Dan, Mjesec, Godina;
+public:
+</font>    Datum(int dan, int mjesec, int godina)
+    {
+        Postavi(dan, mjesec, godina);
+    }
+<a name="7"></a><font color="#0000FF"><a href="match345-0.html#7" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+    void Postavi(int dan, int mjesec, int godina);
+    int DajDan() const
+    {
+        return Dan;
+    }
+    int DajMjesec() const
+    {
+        return Mjesec;
+    }
+    int DajGodinu() const
+    {
+        return Godina;
+    }
+    void Ispisi() const
+    {
+        cout &lt;&lt; Dan &lt;&lt; "/" &lt;&lt; Mjesec &lt;&lt; "/" &lt;&lt; Godina;
+</font>    }
+};
+
+void Datum::Postavi(int dan, int mjesec, int godina)
+{
+    int brojDana[12]
+    {
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
+    if (godina % 4 == 0 &amp;&amp; godina % 100 != 0 || godina % 400 == 0) brojDana[1]++;
+    if (godina &lt; 1 || dan &lt; 1 || mjesec &lt; 1 || mjesec &gt; 12 || dan &gt; brojDana[mjesec - 1])
+        throw domain_error("Neispravan datum");
+    Dan = dan;
+    Mjesec = mjesec;
+    Godina = godina;
+}
+
+class Kupac
+{
+    string imePrezime;
+    Datum datumRodjenja;
+public:
+    Kupac(const std::string &amp; ime_i_prezime,
+          const Datum &amp; datum_rodjenja): datumRodjenja(datum_rodjenja.DajDan(), datum_rodjenja.DajMjesec(), datum_rodjenja.DajGodinu())
+    {
+        bool validan = true;
+        for (int i = 0; i &lt; ime_i_prezime.length(); i++)
+        {
+            if (!(ime_i_prezime[i] &gt;= 'a' &amp;&amp; ime_i_prezime[i] &lt;= 'z' || ime_i_prezime[i] &gt;= 'A' &amp;&amp; ime_i_prezime[i] &lt;= 'Z' || ime_i_prezime[i] &gt;= '0' &amp;&amp; ime_i_prezime[i] &lt;= '9' ||
+                    ime_i_prezime[i] == '-' || ime_i_prezime[i] == '\'' || ime_i_prezime[i] == ' '))
+            {
+                validan = false;
+                break;
+            }
+        }
+
+        if (!validan)
+            throw domain_error("Neispravno ime i prezime");
+
+        imePrezime = ime_i_prezime;
+    }
+    void Postavi(const std::string &amp; ime_i_prezime,
+                 const Datum &amp; datum_rodjenja);
+    std::string DajImePrezime() const
+    {
+        return imePrezime;
+    }
+    Datum DajDatumRodjenja() const
+    {
+        return datumRodjenja;
+    }
+    void Ispisi() const
+    {
+        cout &lt;&lt; imePrezime &lt;&lt; " (";
+        datumRodjenja.Ispisi();
+        cout &lt;&lt; ")";
+    }
+};
+
+void Kupac::Postavi(const std::string &amp; ime_i_prezime,
+                    const Datum &amp; datum_rodjenja)
+{
+    bool validan = true;
+    for (int i = 0; i &lt; ime_i_prezime.length(); i++)
+    {
+        if (!(ime_i_prezime[i] &gt;= 'a' &amp;&amp; ime_i_prezime[i] &lt;= 'z' || ime_i_prezime[i] &gt;= 'A' &amp;&amp; ime_i_prezime[i] &lt;= 'Z' || ime_i_prezime[i] &gt;= '0' &amp;&amp; ime_i_prezime[i] &lt;= '9' ||
+                ime_i_prezime[i] == '-' || ime_i_prezime[i] == '\'' || ime_i_prezime[i] == ' '))
+        {
+            validan = false;
+            break;
+        }
+    }
+
+    if (!validan)
+        throw domain_error("Neispravno ime i prezime");
+
+    move(ime_i_prezime.begin(), ime_i_prezime.end(), imePrezime.begin());
+    datumRodjenja.Postavi(datum_rodjenja.DajDan(), datum_rodjenja.DajMjesec(), datum_rodjenja.DajGodinu());
+}
+
+class Stan
+{
+    string Adresa;
+    int Sprat;
+    int brojSoba;
+    bool Namjesten;
+    double Kvadratura;
+public:
+    Stan(const std::string &amp; adresa, int sprat, int broj_soba, bool namjesten, double kvadratura)
+    {
+        Postavi(adresa, sprat, broj_soba, namjesten, kvadratura);
+    }
+    void Postavi(const std::string &amp; adresa, int sprat, int broj_soba, bool namjesten, double kvadratura);
+    std::string DajAdresu() const
+    {
+        return Adresa;
+    }
+    int DajSprat() const
+    {
+        return Sprat;
+    }
+    int DajBrojSoba() const
+    {
+        return brojSoba;
+    }
+    bool DajNamjesten() const
+    {
+        return Namjesten;
+    }
+    double DajKvadraturu() const
+    {
+        return Kvadratura;
+    }
+    void Ispisi() const;
+};
+
+<a name="1"></a><font color="#00FF00"><a href="match345-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+void Stan::Postavi(const std::string &amp; adresa, int sprat, int broj_soba, bool namjesten, double kvadratura)
+{
+    if (sprat &lt; 0 || broj_soba &lt; 0 || kvadratura &lt; 0)
+        throw domain_error("Neispravan unos podataka");
+    Adresa = adresa;
+    Sprat = sprat;
+    brojSoba = broj_soba;
+    Namjesten = namjesten;
+    Kvadratura = kvadratura;
+}
+
+void Stan::Ispisi() const
+</font>{
+    string n, s;
+
+    if (Namjesten) n = "je namjesten";
+    else n = "nije namjesten";
+
+    if (brojSoba % 10 == 1) s = "sobu";
+    else if (brojSoba % 10 == 2 || brojSoba % 10 == 3 || brojSoba % 10 == 4) s = "sobe";
+    else s = "soba";
+
+    cout &lt;&lt; "Stan se nalazi na adresi " &lt;&lt; Adresa &lt;&lt; " na " &lt;&lt; Sprat &lt;&lt; ". spratu i ima " &lt;&lt; brojSoba &lt;&lt; " " &lt;&lt; s &lt;&lt; ". Kvadratura stana je " &lt;&lt; Kvadratura &lt;&lt; " (m^2) i stan " &lt;&lt; n &lt;&lt; "." &lt;&lt; endl;
+}
+
+class Prodaja
+{
+    string imeAgentaProdaje;
+    double cijenaStana;
+    Datum datumProdaje;
+    Kupac kupacStana;
+    Stan kupljeniStan;
+public:
+    Prodaja(const std::string &amp; ime_agenta_prodaje, double cijena_stana,
+            const Datum &amp; datum_prodaje,
+            const Kupac &amp; kupac_stana,
+            const Stan &amp; kupljeni_stan): imeAgentaProdaje(ime_agenta_prodaje),
+        cijenaStana(cijena_stana), datumProdaje(datum_prodaje.DajDan(), datum_prodaje.DajMjesec(), datum_prodaje.DajGodinu()), kupacStana(kupac_stana.DajImePrezime(), kupac_stana.DajDatumRodjenja()),
+        kupljeniStan(kupljeni_stan.DajAdresu(), kupljeni_stan.DajSprat(), kupljeni_stan.DajBrojSoba(), kupljeni_stan.DajNamjesten(), kupljeni_stan.DajKvadraturu()) {}
+    Prodaja(const std::string &amp; ime_agenta_prodaje, double cijena_stana, int dan_prodaje, int mjesec_prodaje, int godina_prodaje, std::string &amp; ime_kupca,
+            const Datum &amp; datum_rodjenja_kupca,
+            const std::string &amp; adresa_stana, int sprat_stana, int broj_soba, bool namjesten_stan, double broj_kvadrata):
+        imeAgentaProdaje(ime_agenta_prodaje), cijenaStana(cijena_stana), datumProdaje(dan_prodaje, mjesec_prodaje, godina_prodaje), kupacStana(ime_kupca, datum_rodjenja_kupca), kupljeniStan(adresa_stana, sprat_stana, broj_soba, namjesten_stan, broj_kvadrata) {}
+    void PromijeniKupca(const Kupac &amp; novi_kupac)
+    {
+        kupacStana = novi_kupac;
+        //kupacStana.Postavi(novi_kupac.DajImePrezime(), novi_kupac.DajDatumRodjenja());
+    }
+    void PromijeniStan(const Stan &amp; novi_stan)
+    {
+        kupljeniStan = novi_stan;
+    }
+    void PromijeniDatumKupovine(const Datum &amp; novi_datum)
+    {
+        datumProdaje = novi_datum;
+    }
+    void PromijeniCijenuProdaje(const double &amp; nova_cijena)
+    {
+        cijenaStana = nova_cijena;
+    }
+    void PromijeniAgentaProdaje(string noviAgent)
+    {
+        imeAgentaProdaje = noviAgent;
+    }
+    void PomjeriDanUnaprijed();
+    void PomjeriDanUnazad();
+    std::string DajImeAgenta() const
+    {
+        return imeAgentaProdaje;
+    }
+    std::string DajImeKupca() const
+    {
+        return kupacStana.DajImePrezime();
+    }
+    Datum DajDatumProdaje() const
+    {
+        return datumProdaje;
+    }
+    double DajCijenuStana() const
+    {
+        return cijenaStana;
+    }
+    friend bool ProdatPrije(const Prodaja &amp; p1,
+                            const Prodaja &amp; p2);
+    friend bool SkupljiStan(const Prodaja &amp; p1,
+                            const Prodaja &amp; p2);
+    void Ispisi() const;
+};
+
+bool ProdatPrije(const Prodaja &amp; p1,
+                 const Prodaja &amp; p2)
+{
+    int d1, m1, g1, d2, m2, g2;
+    bool prodatPrije = false;
+
+    d1 = p1.DajDatumProdaje().DajDan();
+    m1 = p1.DajDatumProdaje().DajMjesec();
+    g1 = p1.DajDatumProdaje().DajGodinu();
+    d2 = p2.DajDatumProdaje().DajDan();
+    m2 = p2.DajDatumProdaje().DajMjesec();
+    g2 = p2.DajDatumProdaje().DajGodinu();
+
+    if (g1 &lt; g2) prodatPrije = true;
+    else if (g1 == g2)
+    {
+        if (m1 &lt; m2) prodatPrije = true;
+        else if (m1 == m2)
+        {
+            if (d1 &lt; d2) prodatPrije = true;
+        }
+    }
+
+    return prodatPrije;
+}
+
+bool SkupljiStan(const Prodaja &amp; p1,
+                 const Prodaja &amp; p2)
+{
+    return (p1.DajCijenuStana() &lt; p2.DajCijenuStana());
+}
+
+void Prodaja::PomjeriDanUnaprijed()
+{
+    int dan, mjesec, godina;
+
+    dan = datumProdaje.DajDan();
+    mjesec = datumProdaje.DajMjesec();
+    godina = datumProdaje.DajGodinu();
+
+    int brojDana[12]
+    {
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
+    if (godina % 4 == 0 &amp;&amp; godina % 100 != 0 || godina % 400 == 0) brojDana[1]++;
+    dan++;
+    if (dan == brojDana[mjesec - 1] + 1)
+    {
+        dan = 1;
+        mjesec++;
+    }
+    if (mjesec == 13)
+    {
+        mjesec = 1;
+        godina++;
+    }
+
+    datumProdaje.Postavi(dan, mjesec, godina);
+}
+
+void Prodaja::PomjeriDanUnazad()
+{
+    int dan, mjesec, godina;
+
+    dan = datumProdaje.DajDan();
+    mjesec = datumProdaje.DajMjesec();
+    godina = datumProdaje.DajGodinu();
+
+    int brojDana[12]
+    {
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
+    if (godina % 4 == 0 &amp;&amp; godina % 100 != 0 || godina % 400 == 0) brojDana[1]++;
+    dan--;
+    if (dan == 0)
+    {
+        if (mjesec == 1)
+        {
+            mjesec = 12;
+            godina--;
+        }
+        else mjesec--;
+        dan = brojDana[mjesec - 1];
+    }
+
+    datumProdaje.Postavi(dan, mjesec, godina);
+}
+
+void Prodaja::Ispisi() const
+{
+    cout &lt;&lt; setw(32) &lt;&lt; setfill(' ') &lt;&lt; left &lt;&lt; "Ime agenta: " &lt;&lt; imeAgentaProdaje &lt;&lt; endl;
+    cout &lt;&lt; setw(32) &lt;&lt; setfill(' ') &lt;&lt; left &lt;&lt; "Ime kupca: ";
+    kupacStana.Ispisi();
+    cout &lt;&lt; endl;
+    cout &lt;&lt; setw(32) &lt;&lt; setfill(' ') &lt;&lt; left &lt;&lt; "Zakazani datum prodaje:";
+    datumProdaje.Ispisi();
+    cout &lt;&lt; endl;
+    cout &lt;&lt; setw(32) &lt;&lt; setfill(' ') &lt;&lt; left &lt;&lt; "Cijena stana: " &lt;&lt; cijenaStana &lt;&lt; endl;
+    cout &lt;&lt; setw(32) &lt;&lt; setfill(' ') &lt;&lt; left &lt;&lt; "Informacije o stanu:" &lt;&lt; endl;
+    kupljeniStan.Ispisi();
+    cout &lt;&lt; endl;
+}
+
+class Prodaje
+{
+    int brojProdaja, maxProdaja;
+    Prodaja ** sveProdaje;
+public:
+    explicit Prodaje(int max_broj_prodaja): brojProdaja(0), maxProdaja(max_broj_prodaja), sveProdaje(new Prodaja * [max_broj_prodaja]) {}
+    Prodaje(std::initializer_list &lt; Prodaja &gt; spisak_prodaja): brojProdaja(spisak_prodaja.size()), maxProdaja(spisak_prodaja.size()), sveProdaje(new Prodaja * [spisak_prodaja.size()])
+    {
+        auto it = spisak_prodaja.begin();
+        for (int i = 0; i &lt; spisak_prodaja.size(); i++)
+        {
+            sveProdaje[i] = new Prodaja( * it);
+            it++;
+        }
+<a name="14"></a><font color="#FF00FF"><a href="match345-0.html#14" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+    }~Prodaje()
+    {
+        for (int i = 0; i &lt; brojProdaja; i++) delete sveProdaje[i];
+        delete[] sveProdaje;
+    }
+    Prodaje(const Prodaje &amp; prodaje): sveProdaje(new Prodaja * [prodaje.maxProdaja]), maxProdaja(prodaje.maxProdaja), brojProdaja(prodaje.brojProdaja)
+</font>    {
+        for (int i = 0; i &lt; prodaje.brojProdaja; i++) sveProdaje[i] = new Prodaja( * prodaje.sveProdaje[i]);
+    }
+    Prodaje(Prodaje &amp;&amp; prodaje): sveProdaje(prodaje.sveProdaje), maxProdaja(prodaje.maxProdaja), brojProdaja(prodaje.brojProdaja)
+    {
+        prodaje.sveProdaje = nullptr;
+        prodaje.brojProdaja = 0;
+    }
+    Prodaje &amp; operator = (const Prodaje &amp; prodaje)
+    {
+<a name="6"></a><font color="#00FF00"><a href="match345-0.html#6" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+        if ( &amp; prodaje == this) return *this;
+
+        for (int i = 0; i &lt; brojProdaja; i++) delete sveProdaje[i];
+        delete[] sveProdaje;
+        maxProdaja = prodaje.maxProdaja;
+        brojProdaja = prodaje.brojProdaja;
+        sveProdaje = new Prodaja * [prodaje.maxProdaja];
+</font>        for (int i = 0; i &lt; brojProdaja; i++) sveProdaje[i] = new Prodaja( * (prodaje.sveProdaje[i]));
+
+        return *this;
+    }
+    Prodaje &amp; operator = (Prodaje &amp;&amp; prodaje)
+    {
+<a name="5"></a><font color="#FF0000"><a href="match345-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+        if ( &amp; prodaje == this) return *this;
+
+        for (int i = 0; i &lt; brojProdaja; i++) delete sveProdaje[i];
+        delete[] sveProdaje;
+        sveProdaje = prodaje.sveProdaje;
+        brojProdaja = prodaje.brojProdaja;
+        maxProdaja = prodaje.maxProdaja;
+        prodaje.sveProdaje = nullptr;
+</font>        prodaje.brojProdaja = 0;
+
+        return *this;
+    }
+    void RegistrirajProdaju(const std::string &amp; ime_agenta_prodaje, double cijena_stana,
+                            const Datum &amp; datum_prodaje,
+                            const Kupac &amp; kupac_stana,
+                            const Stan &amp; kupljeni_stan);
+    void RegistrirajProdaju(const std::string &amp; ime_agenta_prodaje, double cijena_stana, int dan_prodaje, int mjesec_prodaje, int godina_prodaje, std::string &amp; ime_kupca,
+                            const Datum &amp; datum_rodjenja_kupca,
+                            const std::string &amp; adresa_stana, int sprat_stana, int broj_soba, bool namjesten_stan, double broj_kvadrata);
+    void RegistrirajProdaju(Prodaja * prodaja);
+    int DajBrojProdaja() const
+    {
+        return brojProdaja;
+    }
+    int DajBrojProdajaNaDatum(const Datum &amp; datum) const;
+    int DajBrojProdajaOdAgenta(const std::string &amp; ime_agenta) const;
+    Prodaja &amp; DajNajranijuProdaju();
+    Prodaja DajNajranijuProdaju() const;
+    Prodaja &amp; DajNajskupljuProdaju();
+    Prodaja DajNajskupljuProdaju() const;
+    Prodaja &amp; DajProdaju(int indeks)
+    {
+        if (indeks &lt; 0 || indeks &gt; brojProdaja)
+            throw range_error("Nije ispravan");
+        return *sveProdaje[indeks - 1];
+    }
+    void IsprazniKolekciju();
+    void ObrisiNajranijuProdaju();
+    void ObrisiProdajeAgenta(const std::string &amp; ime_agenta);
+    void ObrisiProdajeNaDatum(const Datum &amp; datum); //
+    void IspisiProdajeNaDatum(const Datum &amp; datum) const;
+    void IspisiSveProdaje() const;
+};
+
+<a name="15"></a><font color="#FF0000"><a href="match345-0.html#15" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+void Prodaje::RegistrirajProdaju(const std::string &amp; ime_agenta_prodaje, double cijena_stana,
+                                 const Datum &amp; datum_prodaje,
+                                 const Kupac &amp; kupac_stana,
+                                 const Stan &amp; kupljeni_stan)
+{
+    if (brojProdaja == maxProdaja)
+        throw range_error("Dostignut maksimalni broj prodaja");
+
+    Prodaja * prodaja = new Prodaja(ime_agenta_prodaje, cijena_stana, datum_prodaje, kupac_stana, kupljeni_stan);
+</font>    sveProdaje[brojProdaja] = prodaja;
+    brojProdaja++;
+}
+
+void Prodaje::RegistrirajProdaju(const std::string &amp; ime_agenta_prodaje, double cijena_stana, int dan_prodaje, int mjesec_prodaje, int godina_prodaje, std::string &amp; ime_kupca,
+                                 const Datum &amp; datum_rodjenja_kupca,
+<a name="16"></a><font color="#00FF00"><a href="match345-0.html#16" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+                                 const std::string &amp; adresa_stana, int sprat_stana, int broj_soba, bool namjesten_stan, double broj_kvadrata)
+{
+    if (brojProdaja == maxProdaja)
+        throw range_error("Dostignut maksimalni broj prodaja");
+
+    Prodaja * prodaja = new Prodaja(ime_agenta_prodaje, cijena_stana, dan_prodaje, mjesec_prodaje, godina_prodaje, ime_kupca, datum_rodjenja_kupca, adresa_stana, sprat_stana, broj_soba, namjesten_stan, broj_kvadrata);
+</font>    sveProdaje[brojProdaja] = prodaja;
+    brojProdaja++;
+}
+
+void Prodaje::RegistrirajProdaju(Prodaja * prodaja)
+{
+    if (brojProdaja == maxProdaja)
+        throw range_error("Dostignut maksimalni broj prodaja");
+
+    sveProdaje[brojProdaja] = prodaja;
+    brojProdaja++;
+}
+
+int Prodaje::DajBrojProdajaNaDatum(const Datum &amp; datum) const
+{
+    int brojac = count_if(sveProdaje, sveProdaje + brojProdaja, [ &amp; ](Prodaja * p)
+    {
+        return (p-&gt; DajDatumProdaje().DajDan() == datum.DajDan() &amp;&amp; p-&gt; DajDatumProdaje().DajMjesec() == datum.DajMjesec() &amp;&amp;
+                p-&gt; DajDatumProdaje().DajGodinu() == datum.DajGodinu());
+    });
+
+    return brojac;
+}
+
+int Prodaje::DajBrojProdajaOdAgenta(const std::string &amp; ime_agenta) const
+{
+    int brojac = count_if(sveProdaje, sveProdaje + brojProdaja, [ &amp; ](Prodaja * p)
+    {
+        return (p-&gt;DajImeAgenta() == ime_agenta);
+    });
+
+    return brojac;
+}
+
+Prodaja &amp; Prodaje::DajNajranijuProdaju()
+{
+    if (brojProdaja == 0)
+        throw domain_error("Nema registriranih prodaja");
+
+    Prodaja * najranija = * min_element(sveProdaje, sveProdaje + brojProdaja, [](Prodaja * p1, Prodaja * p2)
+    {
+        return ProdatPrije( * p1, * p2);
+    });
+    return *najranija;
+}
+
+Prodaja Prodaje::DajNajranijuProdaju() const
+{
+    if (brojProdaja == 0)
+        throw domain_error("Nema registriranih prodaja");
+
+    Prodaja * najranija = * min_element(sveProdaje, sveProdaje + brojProdaja, [](Prodaja * p1, Prodaja * p2)
+    {
+        return ProdatPrije( * p1, * p2);
+    });
+
+    return *najranija;
+}
+
+Prodaja &amp; Prodaje::DajNajskupljuProdaju()
+{
+    if (brojProdaja == 0)
+        throw domain_error("Nema registriranih prodaja");
+
+    Prodaja * najskuplja = * max_element(sveProdaje, sveProdaje + brojProdaja, [](Prodaja * p1, Prodaja * p2)
+    {
+        return SkupljiStan( * p1, * p2);
+    });
+
+    return *najskuplja;
+}
+
+Prodaja Prodaje::DajNajskupljuProdaju() const
+{
+    if (brojProdaja == 0)
+        throw domain_error("Nema registriranih prodaja");
+
+    Prodaja * najskuplja = * max_element(sveProdaje, sveProdaje + brojProdaja, [](Prodaja * p1, Prodaja * p2)
+    {
+        return SkupljiStan( * p1, * p2);
+    });
+
+    return *najskuplja;
+}
+
+void Prodaje::IsprazniKolekciju()
+{
+    for_each(sveProdaje, sveProdaje + brojProdaja, [](Prodaja * p)-&gt;void
+    {
+        delete p;
+    });
+    brojProdaja = 0;
+}
+
+void Prodaje::ObrisiNajranijuProdaju()
+{
+    if (brojProdaja == 0)
+        throw range_error("Prazna kolekcija");
+
+    Prodaja najranija = DajNajranijuProdaju();
+
+    for (int i = 0; i &lt; brojProdaja; i++)
+    {
+<a name="2"></a><font color="#0000FF"><a href="match345-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+        if (sveProdaje[i]-&gt;DajDatumProdaje().DajDan() == najranija.DajDatumProdaje().DajDan() &amp;&amp;
+                sveProdaje[i]-&gt;DajDatumProdaje().DajMjesec() == najranija.DajDatumProdaje().DajMjesec() &amp;&amp;
+                sveProdaje[i]-&gt;DajDatumProdaje().DajGodinu() == najranija.DajDatumProdaje().DajGodinu())
+</font>        {
+            delete sveProdaje[i];
+            sveProdaje[i] = nullptr;
+            for (int j = i; j &lt; brojProdaja - 1; j++) * sveProdaje[j] = * sveProdaje[j + 1];
+            brojProdaja--;
+            i--;
+        }
+    }
+}
+
+void Prodaje::ObrisiProdajeAgenta(const std::string &amp; ime_agenta)
+{
+    for (int i = 0; i &lt; brojProdaja; i++)
+    {
+        if (ime_agenta == sveProdaje[i]-&gt;DajImeAgenta())
+        {
+            delete sveProdaje[i];
+            sveProdaje[i] = nullptr;
+            for (int j = i; j &lt; brojProdaja - 1; j++) sveProdaje[j] = sveProdaje[j + 1];
+            brojProdaja--;
+            i--;
+        }
+    }
+}
+
+void Prodaje::ObrisiProdajeNaDatum(const Datum &amp; datum)
+{
+    for (int i = 0; i &lt; brojProdaja; i++)
+    {
+        if (datum.DajDan() == sveProdaje[i]-&gt;DajDatumProdaje().DajDan() &amp;&amp;
+                datum.DajMjesec() == sveProdaje[i]-&gt;DajDatumProdaje().DajMjesec() &amp;&amp;
+                datum.DajGodinu() == sveProdaje[i]-&gt;DajDatumProdaje().DajGodinu())
+        {
+            delete sveProdaje[i];
+            sveProdaje[i] = nullptr;
+            for (int j = i; j &lt; brojProdaja - 1; j++) sveProdaje[j] = sveProdaje[j + 1];
+            brojProdaja--;
+            i--;
+        }
+    }
+}
+
+void Prodaje::IspisiProdajeNaDatum(const Datum &amp; datum) const
+{
+    sort(sveProdaje, sveProdaje + brojProdaja, [](Prodaja * p1, Prodaja * p2)
+    {
+        int a = p1-&gt;DajImeKupca().compare(p2-&gt;DajImeKupca());
+        if (a &lt; 0) return true;
+        else return false;
+    });
+
+    for (int i = 0; i &lt; brojProdaja; i++)
+    {
+        if (datum.DajDan() == sveProdaje[i]-&gt;DajDatumProdaje().DajDan() &amp;&amp;
+                datum.DajMjesec() == sveProdaje[i]-&gt;DajDatumProdaje().DajMjesec() &amp;&amp;
+                datum.DajGodinu() == sveProdaje[i]-&gt;DajDatumProdaje().DajGodinu())
+            sveProdaje[i]-&gt;Ispisi();
+    }
+}
+void Prodaje::IspisiSveProdaje() const
+{
+    sort(sveProdaje, sveProdaje + brojProdaja, [](Prodaja * p1, Prodaja * p2)
+    {
+        int a = p1-&gt;DajImeKupca().compare(p2-&gt;DajImeKupca());
+        if (a &lt; 0) return true;
+        else return false;
+    });
+    
+    sort(sveProdaje, sveProdaje + brojProdaja, [](Prodaja * p1, Prodaja * p2)
+    {
+        return ProdatPrije( * p1, * p2);
+    });
+
+    for (int i = 0; i &lt; brojProdaja; i++)
+        sveProdaje[i]-&gt;Ispisi();
+}
+
+int main()
+{
+    int izbor, podIzbor, podPodIzbor, sprat, brojSoba, namjesten, izborStana, danRodjenja, mjesecRodjenja, godinaRodjenja, izborKupca, danProdaje, mjesecProdaje, godinaProdaje, izborProdaje, podPodPodIzbor;
+    double kvadratura, cijenaStana;
+    char znak;
+    bool Namjesten = false;
+    string adresa, imeKupca, imeAgenta;
+    vector&lt;Stan&gt; stanovi;
+    vector&lt;Kupac&gt; kupci;
+    Prodaje prodaje(20);
+
+
+    cout &lt;&lt; "Dobrodosli!" &lt;&lt; endl &lt;&lt; endl;
+    for (;;)
+    {
+        cout &lt;&lt; "Izaberite opciju:" &lt;&lt; endl &lt;&lt; " 0 - kraj" &lt;&lt; endl &lt;&lt; " 1 - uredjivanje stanova" &lt;&lt; endl &lt;&lt; " 2 - uredjivanje kupaca" &lt;&lt; endl &lt;&lt; " 3 - uredjivanje prodaja" &lt;&lt; endl;
+        cin &gt;&gt; izbor;
+
+        Namjesten = false;
+
+        if (izbor == 0) break;
+        else if (izbor == 1)
+        {
+            cin.ignore(10000, '\n');
+            for (;;)
+            {
+                Namjesten = false;
+                cout &lt;&lt; "Izaberite opciju:" &lt;&lt; endl &lt;&lt; " 0 - nazad" &lt;&lt; endl &lt;&lt; " 1 - dodavanje stana" &lt;&lt; endl &lt;&lt; " 2 - uredjivanje stanova" &lt;&lt; endl &lt;&lt; " 3 - ispis svih stanova" &lt;&lt; endl &lt;&lt; " 4 - kraj" &lt;&lt; endl;
+                cin &gt;&gt; podIzbor;
+
+                if (podIzbor == 0)
+                    break;
+                else if (podIzbor == 1)
+                {
+                    //cin.ignore(10000, '\n');
+                    for (;;)
+                    {
+                        cin.ignore(10000, '\n');
+<a name="8"></a><font color="#00FFFF"><a href="match345-0.html#8" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+                        cout &lt;&lt; "Unesite adresu: ";
+                        getline(cin, adresa);
+                        //cin.ignore(10000, '\n');
+                        cout &lt;&lt; "Unesite sprat: ";
+                        cin &gt;&gt; sprat;
+                        cout &lt;&lt; "Unesite broj soba: ";
+                        cin &gt;&gt; brojSoba;
+                        cout &lt;&lt; "Da li je stan namjesten (1 - da, 0 - ne): ";
+                        cin &gt;&gt; namjesten;
+</font>                        cout &lt;&lt; "Unesite kvadraturu: ";
+                        cin &gt;&gt; kvadratura;
+
+                        if (namjesten != 0 &amp;&amp; namjesten != 1)
+                            cout &lt;&lt; "Izuzetak: Neispravan unos podataka. Molimo unesite opet." &lt;&lt; endl;
+                        else
+                        {
+                            try
+                            {
+                                if (namjesten == 1) Namjesten = true;
+                                Stan novi(adresa, sprat, brojSoba, Namjesten, kvadratura);
+                                cout &lt;&lt; "Stan je uspjesno dodan!" &lt;&lt; endl;
+                                stanovi.push_back(novi);
+                                break;
+                            }
+                            catch (domain_error e)
+                            {
+                                cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                            }
+                        }
+                    }
+                }
+                else if (podIzbor == 2)
+                {
+                    cin.ignore(10000, '\n');
+                    cout &lt;&lt; "Odaberite stan. Dostupni stanovi su: " &lt;&lt; endl;
+                    for (int i = 0; i &lt; stanovi.size(); i++)
+                    {
+                        cout &lt;&lt; " " &lt;&lt; i + 1 &lt;&lt; " - ";
+                        stanovi[i].Ispisi();
+                    }
+                    cin &gt;&gt; izborStana;
+
+                    cout &lt;&lt; "Odaberite polje koje zelite urediti: " &lt;&lt; endl &lt;&lt; " 0 - nazad" &lt;&lt; endl &lt;&lt; " 1 - adresa" &lt;&lt; endl &lt;&lt; " 2 - sprat" &lt;&lt; endl &lt;&lt; " 3 - broj soba" &lt;&lt; endl &lt;&lt; " 4 - da li je stan namjesten" &lt;&lt; endl &lt;&lt; " 5 - kvadratura" &lt;&lt; endl &lt;&lt; " 6 - sve" &lt;&lt; endl;
+                    cin &gt;&gt; podPodIzbor;
+
+                    if (podPodIzbor == 0)
+                        break;
+                    else if (podPodIzbor == 1)
+                    {
+                        cin.ignore(10000, '\n');
+                        for (;;)
+                        {
+                            cout &lt;&lt; "Unesite adresu: ";
+                            getline(cin, adresa);
+                            //cin.ignore(10000, '\n');
+                            sprat = stanovi[izborStana - 1].DajSprat();
+                            brojSoba = stanovi[izborStana - 1].DajBrojSoba();
+                            Namjesten = stanovi[izborStana - 1].DajNamjesten();
+                            kvadratura = stanovi[izborStana - 1].DajKvadraturu();
+                            try
+                            {
+                                stanovi[izborStana - 1].Postavi(adresa, sprat, brojSoba, Namjesten, kvadratura);
+                                cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; endl;
+                                break;
+                            }
+                            catch (domain_error e)
+                            {
+<a name="18"></a><font color="#00FFFF"><a href="match345-0.html#18" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+                                cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                            }
+                        }
+                    }
+                    else if (podPodIzbor == 2)
+                    {
+                        for(;;)
+                        {
+                            cout &lt;&lt; "Unesite sprat: ";
+                            cin &gt;&gt; sprat;
+</font>                            adresa = stanovi[izborStana - 1].DajAdresu();
+                            brojSoba = stanovi[izborStana - 1].DajBrojSoba();
+                            Namjesten = stanovi[izborStana - 1].DajNamjesten();
+                            kvadratura = stanovi[izborStana - 1].DajKvadraturu();
+                            try
+                            {
+                                stanovi[izborStana - 1].Postavi(adresa, sprat, brojSoba, Namjesten, kvadratura);
+                                cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; endl;
+                                break;
+                            }
+                            catch (domain_error e)
+                            {
+                                cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                            }
+                        }
+                    }
+                    else if (podPodIzbor == 3)
+                    {
+                        for(;;)
+                        {
+                            cout &lt;&lt; "Unesite broj soba: ";
+                            cin &gt;&gt; brojSoba;
+                            adresa = stanovi[izborStana - 1].DajAdresu();
+                            sprat = stanovi[izborStana - 1].DajSprat();
+                            Namjesten = stanovi[izborStana - 1].DajNamjesten();
+                            kvadratura = stanovi[izborStana - 1].DajKvadraturu();
+                            try
+                            {
+                                stanovi[izborStana - 1].Postavi(adresa, sprat, brojSoba, Namjesten, kvadratura);
+                                cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; endl;
+                                break;
+                            }
+                            catch (domain_error e)
+                            {
+                                cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                            }
+                        }
+                    }
+                    else if (podPodIzbor == 4)
+                    {
+                        for(;;)
+                        {
+                            cout &lt;&lt; "Da li je stan namjesten (1 - da, 0 - ne): ";
+                            cin &gt;&gt; namjesten;
+                            adresa = stanovi[izborStana - 1].DajAdresu();
+                            sprat = stanovi[izborStana - 1].DajSprat();
+                            brojSoba = stanovi[izborStana - 1].DajBrojSoba();
+                            kvadratura = stanovi[izborStana - 1].DajKvadraturu();
+
+                            if (namjesten != 0 &amp;&amp; namjesten != 1)
+                                cout &lt;&lt; "Izuzetak: Neispravan unos podataka. Molimo unesite opet." &lt;&lt; endl;
+                            else
+                            {
+                                try
+                                {
+                                    if (namjesten == 1) Namjesten = true;
+                                    stanovi[izborStana - 1].Postavi(adresa, sprat, brojSoba, Namjesten, kvadratura);
+                                    cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; endl;
+                                    break;
+                                }
+                                catch (domain_error e)
+                                {
+                                    cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                                }
+                            }
+                        }
+                    }
+                    else if (podPodIzbor == 5)
+                    {
+                        for(;;)
+                        {
+                            cout &lt;&lt; "Unesite kvadraturu: ";
+                            cin &gt;&gt; kvadratura;
+                            adresa = stanovi[izborStana - 1].DajAdresu();
+                            sprat = stanovi[izborStana - 1].DajSprat();
+                            Namjesten = stanovi[izborStana - 1].DajNamjesten();
+                            brojSoba = stanovi[izborStana - 1].DajBrojSoba();
+                            try
+                            {
+                                stanovi[izborStana - 1].Postavi(adresa, sprat, brojSoba, Namjesten, kvadratura);
+                                cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; endl;
+                                break;
+                            }
+                            catch (domain_error e)
+                            {
+                                cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                            }
+                        }
+                    }
+                    else if (podPodIzbor == 6)
+                    {
+                        for(;;)
+                        {
+                            cin.ignore(10000, '\n');
+<a name="9"></a><font color="#FF00FF"><a href="match345-0.html#9" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+                            cout &lt;&lt; "Unesite adresu: ";
+                            getline(cin, adresa);
+                            //cin.ignore(10000, '\n');
+                            cout &lt;&lt; "Unesite sprat: ";
+                            cin &gt;&gt; sprat;
+                            cout &lt;&lt; "Unesite broj soba: ";
+                            cin &gt;&gt; brojSoba;
+                            cout &lt;&lt; "Da li je stan namjesten (1 - da, 0 - ne): ";
+                            cin &gt;&gt; namjesten;
+</font>                            cout &lt;&lt; "Unesite kvadraturu: ";
+                            cin &gt;&gt; kvadratura;
+
+                            if (namjesten != 0 &amp;&amp; namjesten != 1)
+                                cout &lt;&lt; "Izuzetak: Neispravan unos podataka. Molimo unesite opet." &lt;&lt; endl;
+                            else
+                            {
+                                try
+                                {
+                                    if (namjesten == 1) Namjesten = true;
+                                    stanovi[izborStana - 1].Postavi(adresa, sprat, brojSoba, Namjesten, kvadratura);
+                                    cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; endl;
+                                    break;
+                                }
+                                catch (domain_error e)
+                                {
+<a name="0"></a><font color="#FF0000"><a href="match345-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+                                    cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (podIzbor == 3)
+                {
+                    for (int i = 0; i &lt; stanovi.size(); i++)
+                    {
+                        cout &lt;&lt; i + 1 &lt;&lt; ". ";
+                        stanovi[i].Ispisi();
+</font>                    }
+                }
+                else if(podIzbor == 4) break;
+
+            }
+        }
+        else if (izbor == 2)
+        {
+            cin.ignore(10000, '\n');
+            for (;;)
+            {
+                cout &lt;&lt; "Izaberite opciju:" &lt;&lt; endl &lt;&lt; " 0 - nazad" &lt;&lt; endl &lt;&lt; " 1 - dodavanje kupca" &lt;&lt; endl &lt;&lt; " 2 - uredjivanje kupaca" &lt;&lt; endl &lt;&lt; " 3 - ispis svih kupaca" &lt;&lt; endl &lt;&lt; " 4 - kraj" &lt;&lt; endl;
+                cin &gt;&gt; podIzbor;
+
+                if (podIzbor == 0) break;
+                else if (podIzbor == 1)
+                {
+                    cin.ignore(1000, '\n');
+                    for (;;)
+                    {
+                        cout &lt;&lt; "Unesite ime i prezime kupca: ";
+                        getline(cin, imeKupca);
+                        //cin.ignore(10000, '\n');
+                        cout &lt;&lt; "Unesite datum rodjenja (formata d/m/g): ";
+                        cin &gt;&gt; danRodjenja &gt;&gt; znak &gt;&gt; mjesecRodjenja &gt;&gt; znak &gt;&gt; godinaRodjenja;
+                        try
+                        {
+                            Datum d(danRodjenja, mjesecRodjenja, godinaRodjenja);
+                            Kupac noviKupac(imeKupca, d);
+                            cout &lt;&lt; "Kupac je uspjesno dodan!" &lt;&lt; endl;
+                            kupci.push_back(noviKupac);
+                            break;
+                        }
+                        catch (domain_error e)
+                        {
+                            cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                            cin.ignore(1000, '\n');
+                        }
+                    }
+                }
+                else if(podIzbor == 2)
+                {
+                    cout &lt;&lt; "Odaberite kupca kojeg zelite urediti. Dostupni kupci su:" &lt;&lt; endl;
+                    for(int i = 0; i &lt; kupci.size(); i++)
+                    {
+                        cout &lt;&lt; " " &lt;&lt; i + 1 &lt;&lt; " - ";
+                        kupci[i].Ispisi();
+                        cout &lt;&lt; endl;
+                    }
+                    cin &gt;&gt; izborKupca;
+                    for(;;)
+                    {
+                        cin.ignore(1000, '\n');
+                        cout &lt;&lt; "Unesite ime i prezime kupca: ";
+                        getline(cin, imeKupca);
+                        //cin.ignore(10000, '\n');
+                        cout &lt;&lt; "Unesite datum rodjenja (formata d/m/g): ";
+                        cin &gt;&gt; danRodjenja &gt;&gt; znak &gt;&gt; mjesecRodjenja &gt;&gt; znak &gt;&gt; godinaRodjenja;
+
+
+                        try
+                        {
+                            Datum d(danRodjenja, mjesecRodjenja, godinaRodjenja);
+                            kupci[izborKupca - 1].Postavi(imeKupca, d);
+                            cout &lt;&lt; "Kupac je uspjesno izmijenjen!" &lt;&lt; endl;
+                            break;
+                        }
+                        catch (domain_error e)
+                        {
+                            cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                            cin.ignore(10000, '\n');
+                        }
+                    }
+                }
+                else if(podIzbor == 3)
+                {
+                    for(int i = 0; i &lt; kupci.size(); i++)
+                    {
+                        kupci[i].Ispisi();
+                        cout &lt;&lt; endl;
+                    }
+                }
+                else if(podIzbor == 4) break;
+            }
+        }
+        else if(izbor == 3)
+        {
+            cin.ignore(10000, '\n');
+            for(;;)
+            {
+                cout &lt;&lt; "Izaberite opciju:" &lt;&lt; endl &lt;&lt; " 0 - nazad" &lt;&lt; endl &lt;&lt; " 1 - dodavanje prodaje" &lt;&lt; endl &lt;&lt; " 2 - uredjivanje prodaje" &lt;&lt; endl &lt;&lt; " 3 - ispis prodaja" &lt;&lt; endl &lt;&lt; " 4 - brisanje prodaja" &lt;&lt; endl &lt;&lt; " 5 - kraj" &lt;&lt; endl;
+                cin &gt;&gt; podIzbor;
+
+                if(podIzbor == 0)
+                    break;
+                else if(podIzbor == 1)
+                {
+                    for(;;)
+                    {
+                        cin.ignore(10000, '\n');
+                        cout &lt;&lt; "Izaberite opciju:" &lt;&lt; endl &lt;&lt; " 0 - nazad" &lt;&lt; endl &lt;&lt; " 1 - dodavanje potpuno nove prodaje" &lt;&lt; endl &lt;&lt; " 2 - dodavanje nove prodaje na osnovu arhive" &lt;&lt; endl &lt;&lt; " 3 - kraj" &lt;&lt; endl;
+                        cin &gt;&gt; podPodIzbor;
+
+                        if(podPodIzbor == 0)
+                            break;
+                        else if(podPodIzbor == 1)
+                        {
+                            for(;;)
+                            {
+                                Namjesten = false;
+                                cin.ignore(10000, '\n');
+                                cout &lt;&lt; "Unesite ime i prezime agenta prodaje: ";
+                                getline(cin, imeAgenta);
+                                cout &lt;&lt; "Unesite datum prodaje (formata d/m/g): ";
+                                cin &gt;&gt; danProdaje &gt;&gt; znak &gt;&gt; mjesecProdaje &gt;&gt; znak &gt;&gt; godinaProdaje;
+                                cout &lt;&lt; "Unesite cijenu stana: ";
+                                cin &gt;&gt; cijenaStana;
+                                cin.ignore(10000, '\n');
+                                cout &lt;&lt; "Unesite ime kupca: ";
+                                getline(cin, imeKupca);
+                                //cin.ignore(10000, '\n');
+                                cout &lt;&lt; "Unesite datum rodjenja kupca (formata d/m/g): ";
+                                cin &gt;&gt; danRodjenja &gt;&gt; znak &gt;&gt; mjesecRodjenja &gt;&gt; znak &gt;&gt; godinaRodjenja;
+                                cin.ignore(10000, '\n');
+<a name="10"></a><font color="#FF0000"><a href="match345-0.html#10" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+                                cout &lt;&lt; "Unesite adresu: ";
+                                getline(cin, adresa);
+                                //cin.ignore(10000, '\n');
+                                cout &lt;&lt; "Unesite sprat: ";
+                                cin &gt;&gt; sprat;
+                                cout &lt;&lt; "Unesite broj soba: ";
+                                cin &gt;&gt; brojSoba;
+                                cout &lt;&lt; "Da li je stan namjesten (1 - da, 0 - ne): ";
+                                cin &gt;&gt; namjesten;
+</font>                                cout &lt;&lt; "Unesite kvadraturu: ";
+                                cin &gt;&gt; kvadratura;
+
+                                if (namjesten != 0 &amp;&amp; namjesten != 1)
+                                    cout &lt;&lt; "Izuzetak: Neispravan unos podataka. Molimo unesite opet." &lt;&lt; endl;
+                                else
+                                {
+                                    try
+                                    {
+                                        if (namjesten == 1) Namjesten = true;
+                                        Datum dr(danRodjenja, mjesecRodjenja, godinaRodjenja), dp(danProdaje, mjesecProdaje, godinaProdaje);
+                                        Stan novi(adresa, sprat, brojSoba, Namjesten, kvadratura);
+                                        stanovi.push_back(novi);
+                                        Kupac noviKupac(imeKupca, dr);
+                                        kupci.push_back(noviKupac);
+                                        prodaje.RegistrirajProdaju(imeAgenta, cijenaStana, dp, noviKupac, novi);
+                                        cout &lt;&lt; "Prodaja uspjesno dodana!" &lt;&lt; endl;
+                                        break;
+                                    }
+                                    catch (domain_error e)
+                                    {
+                                        cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                                    }
+                                }
+                            }
+                        }
+                        else if(podPodIzbor == 2)
+                        {
+                            cin.ignore(10000, '\n');
+                            for(;;)
+                            {
+                                cout &lt;&lt; "Unesite ime i prezime agenta prodaje: ";
+                                getline(cin, imeAgenta);
+                                cout &lt;&lt; "Unesite datum prodaje (formata d/m/g): ";
+                                cin &gt;&gt; danProdaje &gt;&gt; znak &gt;&gt; mjesecProdaje &gt;&gt; znak &gt;&gt; godinaProdaje;
+<a name="11"></a><font color="#00FF00"><a href="match345-0.html#11" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+                                cout &lt;&lt; "Unesite cijenu stana: ";
+                                cin &gt;&gt; cijenaStana;
+                                cout &lt;&lt; "Odaberite kupca. Dostupni kupci su:" &lt;&lt; endl;
+                                for(int i = 0; i &lt; kupci.size(); i++)
+                                {
+                                    cout &lt;&lt; " " &lt;&lt; i + 1 &lt;&lt; " - ";
+</font>                                    kupci[i].Ispisi();
+                                    cout &lt;&lt; endl;
+                                }
+<a name="21"></a><font color="#00FF00"><a href="match345-0.html#21" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+                                cin &gt;&gt; izborKupca;
+
+                                cout &lt;&lt; "Odaberite stan. Dostupni stanovi su: " &lt;&lt; endl;
+                                for (int i = 0; i &lt; stanovi.size(); i++)
+                                {
+                                    cout &lt;&lt; " " &lt;&lt; i + 1 &lt;&lt; " - ";
+</font>                                    stanovi[i].Ispisi();
+                                }
+                                cin &gt;&gt; izborStana;
+
+                                try
+                                {
+                                    Datum dp(danProdaje, mjesecProdaje, godinaProdaje);
+                                    Stan stan = stanovi[izborStana - 1];
+                                    Kupac kupac = kupci[izborKupca - 1];
+                                    prodaje.RegistrirajProdaju(imeAgenta, cijenaStana, dp, kupac, stan);
+                                    cout &lt;&lt; "Prodaja uspjesno dodana!" &lt;&lt; endl;
+                                    break;
+                                }
+                                catch (domain_error e)
+                                {
+                                    cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                                }
+                            }
+                        }
+                        else if(podPodIzbor == 3)
+                            break;
+                    }
+
+                }
+<a name="19"></a><font color="#FF00FF"><a href="match345-0.html#19" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+                else if(podIzbor == 2)
+                {
+                    cout &lt;&lt; "Odaberite prodaju koju želite urediti. Dostupne prodaje su:" &lt;&lt; endl;
+                    for(int i = 1; i &lt;= prodaje.DajBrojProdaja(); i++)
+                    {
+                        cout &lt;&lt; i  &lt;&lt; "." &lt;&lt; endl;
+</font>                        prodaje.DajProdaju(i).Ispisi();
+                    }
+                    cin &gt;&gt; izborProdaje;
+
+
+                    cout &lt;&lt; "Izaberite opciju:" &lt;&lt; endl &lt;&lt; " 0 - nazad" &lt;&lt; endl &lt;&lt; " 1 - izmjena agenta" &lt;&lt; endl &lt;&lt; " 2 - izmjena datuma prodaje" &lt;&lt; endl &lt;&lt; " 3 - izmjena kupca" &lt;&lt; endl &lt;&lt;" 4 - izmjena stana" &lt;&lt; endl &lt;&lt; " 5 - izmjena cijene stana" &lt;&lt; endl;
+                    cin &gt;&gt; podPodIzbor;
+
+
+                    if(podPodIzbor == 0)
+                        break;
+                    else if(podPodIzbor == 1) // popravit
+                    {
+                        cin.ignore(1000, '\n');
+                        cout &lt;&lt; "Unesite ime i prezime agenta prodaje: ";
+                        getline(cin, imeAgenta);
+                        //cin.ignore(10000, '\n');
+                        prodaje.DajProdaju(izborProdaje).PromijeniAgentaProdaje(imeAgenta);
+                        cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; endl;
+                    }
+                    else if(podPodIzbor == 2)
+                    {
+                        for(;;)
+                        {
+                            cout &lt;&lt; "Unesite datum prodaje (formata d/m/g): ";
+                            cin &gt;&gt; danProdaje &gt;&gt; znak &gt;&gt; mjesecProdaje &gt;&gt; znak &gt;&gt; godinaProdaje;
+                            try
+                            {
+                                Datum dp(danProdaje, mjesecProdaje, godinaProdaje);
+                                prodaje.DajProdaju(izborProdaje).PromijeniDatumKupovine(dp);
+                                cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; endl;
+                                break;
+                            }
+                            catch(domain_error e)
+                            {
+<a name="3"></a><font color="#00FFFF"><a href="match345-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+                                cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                            }
+                        }
+                    }
+                    else if(podPodIzbor == 3)
+                    {
+
+
+                        cout &lt;&lt; "Izaberite opciju:" &lt;&lt; endl &lt;&lt; " 0 - nazad" &lt;&lt; endl &lt;&lt; " 1 - odabir postojeceg kupca" &lt;&lt; endl &lt;&lt; " 2 - dodavanje novog kupca" &lt;&lt; endl;
+</font>                        cin &gt;&gt; podPodPodIzbor;
+
+                        if(podPodPodIzbor == 0)
+                            break;
+<a name="22"></a><font color="#0000FF"><a href="match345-0.html#22" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+                        else if(podPodPodIzbor == 1)
+                        {
+                            cout &lt;&lt; "Odaberite kupca. Dostupni kupci su:" &lt;&lt; endl;
+                            for(int i = 0; i &lt; kupci.size(); i++)
+                            {
+                                cout &lt;&lt; " " &lt;&lt; i + 1 &lt;&lt; " - ";
+</font>                                kupci[i].Ispisi();
+                                cout &lt;&lt; endl;
+                            }
+                            cin &gt;&gt; izborKupca;
+                            prodaje.DajProdaju(izborProdaje).PromijeniKupca(kupci[izborKupca - 1]);
+                            cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; endl;
+                        }
+                        else if(podPodPodIzbor == 2)
+                        {
+                            for(;;)
+                            {
+                                cin.ignore(10000, '\n');
+                                cout &lt;&lt; "Unesite ime i prezime kupca: ";
+                                getline(cin, imeKupca);
+                                //cin.ignore(10000, '\n');
+                                cout &lt;&lt; "Unesite datum rodjenja (formata d/m/g): ";
+                                cin &gt;&gt; danRodjenja &gt;&gt; znak &gt;&gt; mjesecRodjenja &gt;&gt; znak &gt;&gt; godinaRodjenja;
+                                try
+                                {
+                                    Datum dr(danRodjenja, mjesecRodjenja, godinaRodjenja);
+                                    Kupac novi(imeKupca, dr);
+                                    prodaje.DajProdaju(izborProdaje).PromijeniKupca(novi);
+                                    cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; endl;
+                                    break;
+                                }
+                                catch(domain_error e)
+                                {
+<a name="4"></a><font color="#FF00FF"><a href="match345-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+                                    cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                                }
+                            }
+                        }
+
+                    }
+                    else if(podPodIzbor == 4)
+                    {
+
+                        cout &lt;&lt; "Izaberite opciju: " &lt;&lt; endl &lt;&lt; " 0 - nazad" &lt;&lt; endl &lt;&lt; " 1 - odabir postojeceg stana" &lt;&lt; endl &lt;&lt; " 2 - dodavanje novog stana" &lt;&lt; endl;
+</font>                        cin &gt;&gt; podPodPodIzbor;
+
+                        if(podPodPodIzbor == 0)
+                            break;
+<a name="23"></a><font color="#00FFFF"><a href="match345-0.html#23" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+                        else if(podPodPodIzbor == 1)
+                        {
+                            cout &lt;&lt; "Odaberite stan. Dostupni stanovi su: " &lt;&lt; endl;
+                            for (int i = 0; i &lt; stanovi.size(); i++)
+                            {
+                                cout &lt;&lt; " " &lt;&lt; i + 1 &lt;&lt; " - ";
+</font>                                stanovi[i].Ispisi();
+                            }
+                            cin &gt;&gt; izborStana;
+                            prodaje.DajProdaju(izborProdaje).PromijeniStan(stanovi[izborStana - 1]);
+                            cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; endl;
+                        }
+                        else if(podPodPodIzbor == 2)
+                        {
+                            for(;;)
+                            {
+                                Namjesten = false;
+                                cin.ignore(10000, '\n');
+<a name="12"></a><font color="#0000FF"><a href="match345-0.html#12" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+                                cout &lt;&lt; "Unesite adresu: ";
+                                getline(cin, adresa);
+                                //cin.ignore(10000, '\n');
+                                cout &lt;&lt; "Unesite sprat: ";
+                                cin &gt;&gt; sprat;
+                                cout &lt;&lt; "Unesite broj soba: ";
+                                cin &gt;&gt; brojSoba;
+                                cout &lt;&lt; "Da li je stan namjesten (1 - da, 0 - ne): ";
+                                cin &gt;&gt; namjesten;
+</font>                                cout &lt;&lt; "Unesite kvadraturu: ";
+                                cin &gt;&gt; kvadratura;
+
+                                if (namjesten != 0 &amp;&amp; namjesten != 1)
+                                    cout &lt;&lt; "Izuzetak: Neispravan unos podataka. Molimo unesite opet." &lt;&lt; endl;
+                                else
+                                {
+                                    try
+                                    {
+                                        if (namjesten == 1) Namjesten = true;
+                                        Stan novi(adresa, sprat, brojSoba, Namjesten, kvadratura);
+                                        prodaje.DajProdaju(izborProdaje).PromijeniStan(novi);
+                                        cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; endl;
+                                        break;
+                                    }
+                                    catch (domain_error e)
+                                    {
+                                        cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; endl;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    else if(podPodIzbor == 5)
+                    {
+                        cout &lt;&lt; "Unesite cijenu stana: ";
+                        cin &gt;&gt; cijenaStana;
+                        prodaje.DajProdaju(izborProdaje).PromijeniCijenuProdaje(cijenaStana);
+                        cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; endl;
+                        break;
+                    }
+                }
+                else if(podIzbor == 3)
+                {
+                    for(;;)
+                    {
+                        cout &lt;&lt; "Izaberite opciju:" &lt;&lt; endl &lt;&lt; " 0 - nazad" &lt;&lt; endl &lt;&lt; " 1 - ispis svih prodaja" &lt;&lt; endl &lt;&lt;  " 2 - ispis prodaja na datum" &lt;&lt; endl &lt;&lt; " 3 - ispis najranije prodaje" &lt;&lt; endl &lt;&lt; " 4 - ispis najskuplje prodaje" &lt;&lt; endl &lt;&lt; " 5 - ispis broja prodaja" &lt;&lt; endl &lt;&lt;" 6 - ispis broja prodaja po datumu" &lt;&lt; endl &lt;&lt; " 7 - ispis broja prodaja po agentu"&lt;&lt; endl &lt;&lt; " 8 - kraj" &lt;&lt; endl;
+                        cin &gt;&gt; podPodIzbor;
+
+                        if(podPodIzbor == 0)
+                            break;
+                        else if(podPodIzbor == 1)
+                        {
+                            prodaje.IspisiSveProdaje();
+                        }
+                        else if(podPodIzbor == 2)
+                        {
+                            cout &lt;&lt; "Unesite datum (d/m/g): ";
+                            cin &gt;&gt; danProdaje &gt;&gt; znak &gt;&gt; mjesecProdaje &gt;&gt; znak &gt;&gt; godinaProdaje;
+<a name="24"></a><font color="#FF00FF"><a href="match345-0.html#24" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+                            Datum dp(danProdaje, mjesecProdaje, godinaProdaje);
+                            cout &lt;&lt; "Prodaje na datum " &lt;&lt; danProdaje &lt;&lt; "/" &lt;&lt; mjesecProdaje &lt;&lt; "/" &lt;&lt; godinaProdaje &lt;&lt; " su:" &lt;&lt; endl;
+</font>                            prodaje.IspisiProdajeNaDatum(dp);
+                        }
+                        else if(podPodIzbor == 3)
+                        {
+                            try
+                            {
+<a name="20"></a><font color="#FF0000"><a href="match345-0.html#20" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+                                prodaje.DajNajranijuProdaju().Ispisi();
+                            }
+                            catch(domain_error e)
+                            {
+                                cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; "." &lt;&lt; endl;
+                            }
+                        }
+                        else if(podPodIzbor == 4)
+                        {
+                            try
+                            {
+                                prodaje.DajNajskupljuProdaju().Ispisi();
+</font>                            }
+                            catch(domain_error e)
+                            {
+                                cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; "." &lt;&lt; endl;
+                            }
+                        }
+                        else if(podPodIzbor == 5)
+                        {
+                            cout &lt;&lt; "Broj prodaja: " &lt;&lt; prodaje.DajBrojProdaja() &lt;&lt; endl;
+                        }
+                        else if(podPodIzbor == 6)
+                        {
+                            cout &lt;&lt; "Unesite datum (d/m/g): ";
+                            cin &gt;&gt; danProdaje &gt;&gt; znak &gt;&gt; mjesecProdaje &gt;&gt; znak &gt;&gt; godinaProdaje;
+                            Datum dp(danProdaje, mjesecProdaje, godinaProdaje);
+                            cout &lt;&lt; "Broj ponuda na uneseni datum: " &lt;&lt; prodaje.DajBrojProdajaNaDatum(dp) &lt;&lt; endl;
+                        }
+                        else if(podPodIzbor == 7)
+                        {
+                            cin.ignore(10000, '\n');
+                            cout &lt;&lt; "Unesite ime agenta: ";
+                            getline(cin, imeAgenta);
+                            cout &lt;&lt; "Broj prodaja: " &lt;&lt; prodaje.DajBrojProdajaOdAgenta(imeAgenta) &lt;&lt; endl;
+                        }
+                        else if(podPodIzbor == 8)
+                            break;
+                    }
+                }
+                else if(podIzbor == 4)
+                {
+                    for(;;)
+                    {
+                        cout &lt;&lt; "Izaberite opciju:" &lt;&lt; endl &lt;&lt;" 0 - nazad" &lt;&lt; " 1 - brisanje najranije prodaje" &lt;&lt; endl &lt;&lt; " 2 - brisanje prodaja agenta" &lt;&lt; endl &lt;&lt; " 3 - brisanje prodaja po datumu" &lt;&lt; endl &lt;&lt; " 4 - brisanje svih prodaja" &lt;&lt; endl;
+                        cin &gt;&gt; podPodIzbor;
+
+                        if(podPodIzbor == 0)
+                            break;
+                        else if(podPodIzbor == 1)
+                        {
+                            try
+                            {
+                                prodaje.ObrisiNajranijuProdaju();
+<a name="17"></a><font color="#0000FF"><a href="match345-0.html#17" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+                                cout &lt;&lt; "Najranija prodaja je obrisana!" &lt;&lt; endl;
+                            }
+                            catch(range_error e)
+                            {
+                                cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; "." &lt;&lt; endl;
+                            }
+                        }
+                        else if(podPodIzbor == 2)
+</font>                        {
+                            cin.ignore(10000, '\n');
+                            cout &lt;&lt; "Unesite ime agenta: ";
+                            getline(cin, imeAgenta);
+                            prodaje.ObrisiProdajeAgenta(imeAgenta);
+                            cout &lt;&lt; "Sve prodaje tog agenta su obrisane." &lt;&lt; endl;
+                        }
+                        else if(podPodIzbor == 3)
+                        {
+                            cout &lt;&lt; "Unesite datum (d/m/g): ";
+                            cin &gt;&gt; danProdaje &gt;&gt; znak &gt;&gt; mjesecProdaje &gt;&gt; znak &gt;&gt; godinaProdaje;
+                            Datum dp(danProdaje, mjesecProdaje, godinaProdaje);
+                            prodaje.ObrisiProdajeNaDatum(dp);
+                            cout &lt;&lt; "Sve prodaje na taj datum su obrisane." &lt;&lt; endl;
+                        }
+                        else if(podPodIzbor == 4)
+                        {
+                            prodaje.IsprazniKolekciju();
+                            cout &lt;&lt; "Sve prodaje su obrisane." &lt;&lt; endl;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(podIzbor == 4 || podIzbor == 5) break; // provjerit
+    }
+
+    cout &lt;&lt; endl &lt;&lt; endl &lt;&lt; "Dovidjenja!";
+
+
+    return 0;
+}
+</pre>
+</body>
+</html>

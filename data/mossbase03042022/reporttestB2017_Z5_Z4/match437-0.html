@@ -1,0 +1,233 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z4/student7582.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z4/student7582.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;initializer_list&gt;
+#include &lt;functional&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+#include &lt;utility&gt;
+using namespace std;
+const double PI=3.14159265359;
+class FourierovRed{
+    int stepen;
+    double *koef_a=nullptr;
+    double *koef_b=nullptr;
+    double period;
+    static constexpr double PI=3.14159265359;
+    public:
+    FourierovRed(double t,const initializer_list&lt;double&gt; &amp;l1, const initializer_list&lt;double&gt; &amp;l2);
+    FourierovRed(int n, double t, function&lt;double(int)&gt; f1, function&lt;double(int)&gt; f2);
+    FourierovRed(int n, double p, double q, function&lt;double(double)&gt; f, long int m);
+    /*void IspisiKoef() const{
+        for(int i=0;i&lt;stepen+1;i++){
+            cout&lt;&lt;fixed&lt;&lt;setprecision(3)&lt;&lt;koef_a[i]&lt;&lt;" "&lt;&lt;koef_b[i]&lt;&lt;endl;
+        }
+    }*/
+    double operator()(double x);
+    pair&lt;double&amp;, double&amp;&gt; operator[](int k);
+    pair&lt;double, double&gt; operator[](int k) const;
+<a name="1"></a><font color="#00FF00"><a href="match437-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+    FourierovRed(const FourierovRed &amp;f);
+    FourierovRed(FourierovRed &amp;&amp;f);
+    FourierovRed &amp;operator=(const FourierovRed &amp;f);
+    FourierovRed &amp;operator=(FourierovRed &amp;&amp;f);
+    ~FourierovRed(){delete[] koef_a; delete[] koef_b;}
+</font>};
+FourierovRed::FourierovRed(double t,const initializer_list&lt;double&gt; &amp;l1, const initializer_list&lt;double&gt; &amp;l2){
+    if(l1.size()&gt;=l2.size()){
+        try{
+        koef_a=new double[l1.size()]{};//da svi budu nule
+        koef_b=new double[l1.size()]{};
+        }
+        catch(...){
+            delete[] koef_a;
+            delete[] koef_b;
+            throw;
+        }
+        period=t;
+        stepen=l1.size()-1;
+        int i(0);
+        for(auto it=l1.begin();it!=l1.end();it++){
+            koef_a[i]=*it;
+            i++;
+        }
+        i=1;
+        for(auto it=l2.begin();it!=l2.end();it++){
+            koef_b[i]=*it;
+            i++;
+        }
+    }
+      if(l2.size()&gt;l1.size()){
+        try{
+        koef_a=new double[l2.size()+1]{};//da svi budu nule
+        koef_b=new double[l2.size()+1]{};
+        }
+        catch(...){
+            delete[] koef_a;
+            delete[] koef_b;
+            throw;
+        }
+        period=t;
+        stepen=l2.size();
+        int i(0);
+        for(auto it=l1.begin();it!=l1.end();it++){
+            koef_a[i]=*it;
+            i++;
+        }
+        i=1;
+        for(auto it=l2.begin();it!=l2.end();it++){
+            koef_b[i]=*it;
+            i++;
+        }
+    }
+}
+FourierovRed::FourierovRed(int n, double t, function&lt;double(int)&gt; f1, function&lt;double(int)&gt; f2){
+    if(n&lt;=0) throw domain_error("Stepen mora biti pozitivan");
+    try{
+        koef_a=new double[n+1]{};//da svi budu nule
+        koef_b=new double[n+1]{};
+        }
+        catch(...){
+            delete[] koef_a;
+            delete[] koef_b;
+            throw;
+        }
+        stepen=n;
+        period=t;
+        for(int i=0;i&lt;stepen+1;i++){
+            koef_a[i]=f1(i);
+        }
+        for(int i=1;i&lt;stepen+1;i++){
+            koef_b[i]=f2(i);
+        }
+        
+}
+FourierovRed::FourierovRed(int n, double p, double q, function&lt;double(double)&gt; f, long int m){
+    if(n&lt;=0) throw domain_error("Stepen mora biti pozitivan");
+    if(m&lt;=0) throw domain_error("Broj podintervala mora biti pozitivan");
+    if(!(p&lt;q)) throw range_error("Neispravan interval");
+    try{
+        koef_a=new double[n+1]{};//da svi budu nule
+        koef_b=new double[n+1]{};
+        }
+        catch(...){
+            delete[] koef_a;
+            delete[] koef_b;
+            throw;
+        }
+        stepen=n;
+        period=q-p;
+        for(int i=0;i&lt;stepen+1;i++){
+            double suma(0);
+            for(int j=1;j&lt;m;j++){
+                suma+=f(p+(j*period/m))*cos(2*PI*i*(p/period+double(j)/m));
+            }
+            koef_a[i]=((f(p)+f(q))/m)*cos(2*i*PI*p/period)+(2./m)*suma;
+        }
+        for(int i=1;i&lt;stepen+1;i++){
+            double suma(0);
+            for(int j=1;j&lt;m;j++){
+                suma+=f(p+(j*period/m))*sin(2*PI*i*(p/period+double(j)/m));
+            }
+            koef_b[i]=((f(p)+f(q))/m)*sin(2*i*PI*p/period)+(2./m)*suma;
+        }
+}
+double FourierovRed::operator()(double x){
+    double suma(0);
+<a name="0"></a><font color="#FF0000"><a href="match437-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+    for(int i=1;i&lt;=stepen;i++){
+        suma+=koef_a[i]*cos((2*x*PI*i)/period)+koef_b[i]*sin((2*x*PI*i)/period);
+</font>    }
+    return koef_a[0]/2+suma;
+}
+pair&lt;double &amp;, double &amp;&gt; FourierovRed::operator[](int k){
+    if(k&lt;0 || k&gt;stepen) throw range_error("Neispravan indeks");
+    pair&lt;double &amp;, double &amp;&gt; p(koef_a[k],koef_b[k]);
+    return p;
+}
+pair&lt;double, double&gt; FourierovRed::operator[](int k) const{
+    if(k&lt;0 || k&gt;stepen) throw range_error("Neispravan indeks");
+    return make_pair(koef_a[k],koef_b[k]);
+}
+FourierovRed::FourierovRed(const FourierovRed &amp;f){
+    try {
+        koef_a=new double[f.stepen+1]{};//da svi budu nule
+        koef_b=new double[f.stepen+1]{};
+    }
+    catch (...) {
+        delete[] koef_a;
+        delete[] koef_b;
+        throw;
+    }
+    stepen=f.stepen;
+<a name="2"></a><font color="#0000FF"><a href="match437-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+    period=f.period;
+    for(int i=0;i&lt;=stepen;i++){
+        koef_a[i]=f.koef_a[i];
+        koef_b[i]=f.koef_b[i];
+</font>    }
+}
+FourierovRed::FourierovRed(FourierovRed &amp;&amp;f):stepen(f.stepen),period(f.period){
+    koef_a=f.koef_a;
+    koef_b=f.koef_b;
+    f.koef_a=nullptr;
+    f.koef_b=nullptr;
+}
+FourierovRed &amp;FourierovRed::operator=(const FourierovRed &amp;f){
+    if(stepen&lt;f.stepen){
+        double* novi_a(nullptr);
+        double* novi_b(nullptr);
+        try{
+          novi_a=new double[stepen+1]{};
+          novi_b=new double[stepen+1]{};
+        }
+        catch(...){
+            delete[] novi_a;
+            delete[] novi_b;
+            throw;
+        }
+        delete[] koef_a;
+        delete[] koef_b;
+        koef_a=novi_a;
+        koef_b=novi_b;
+    }
+    for(int i=0;i&lt;=stepen;i++){
+        koef_a[i]=f.koef_a[i];
+        koef_b[i]=f.koef_b[i];
+    }
+    stepen=f.stepen;
+    period=f.period;
+    return *this;
+}
+FourierovRed &amp;FourierovRed::operator=(FourierovRed &amp;&amp;f){
+    swap(stepen,f.stepen);
+    swap(period,f.period);
+    swap(koef_a,f.koef_a);
+    swap(koef_b,f.koef_b);
+    return *this;
+}
+int main ()
+{
+
+FourierovRed f1(10,0,2*PI,[](double x){return x*x;},10000);
+FourierovRed f2(10, 2*PI, [](int k){return k==0 ? 8*PI*PI/3 : 4./(k*k);}, [](int k){return -4*PI/k;});
+cout&lt;&lt;f1(3)&lt;&lt;endl;
+cout&lt;&lt;f2(3)&lt;&lt;endl;
+cout&lt;&lt;f1[3].first&lt;&lt;" "&lt;&lt;f1[3].second&lt;&lt;endl;
+f1[3]=make_pair(3,3);
+cout&lt;&lt;f1[3].first&lt;&lt;" "&lt;&lt;f1[3].second;
+	return 0;
+}
+</pre>
+</body>
+</html>

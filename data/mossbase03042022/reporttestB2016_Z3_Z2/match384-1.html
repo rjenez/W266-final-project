@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student5536.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student2965.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+#include &lt;iterator&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+<a name="4"></a><font color="#FF00FF"><a href="match384-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_5.gif"/></a>
+
+std::map&lt;std::string,std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string s) {
+    std::map&lt;std::string,std::set&lt;int&gt;&gt; rjecnik;
+    int indeks;
+</font>    for(int i=0;i&lt;s.size();i++) {
+        if(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') s[i]+=32;
+    }
+    for(int i=0;i&lt;s.size();i++) {
+        if(s[i]==' ') {
+            if(i!=s.size()) i++;
+        }
+        indeks=i;
+        std::string novi;
+        while (s[i]!=' ' &amp;&amp; i!=s.size()) {
+            novi+=s[i];
+            i++;
+        }
+        if(!rjecnik.count(novi)) {
+            std::set&lt;int&gt; sk{indeks};
+            rjecnik.insert(std::make_pair(novi,sk));
+        }
+        else {
+            auto it=rjecnik.find(novi);
+<a name="1"></a><font color="#00FF00"><a href="match384-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+            it-&gt;second.insert(indeks);
+        }
+        novi.clear();
+    }
+    return rjecnik;
+}
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string s, std::map&lt;std::string,std::set&lt;int&gt;&gt; rjecnik) {
+</font>    if(!rjecnik.count(s)) throw std::logic_error("Unesena rijec nije nadjena!\n");
+    else {
+        auto it=rjecnik.find(s);
+        return it-&gt;second;
+    }
+}
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;int&gt;&gt; rjecnik) {
+<a name="2"></a><font color="#0000FF"><a href="match384-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+    for(auto it=rjecnik.begin();it!=rjecnik.end();it++) {
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        int br(1);
+        for(auto broj:it-&gt;second) {
+</font>            if(br&lt;it-&gt;second.size()) {
+                std::cout&lt;&lt;broj&lt;&lt;",";
+                br++;
+            }
+            else {
+                std::cout&lt;&lt;broj;
+            }
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+}
+  
+int main()  {
+    std::string s;
+    std::cout&lt;&lt;"Unesite tekst: ";
+<a name="3"></a><font color="#00FFFF"><a href="match384-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_5.gif"/></a>
+
+    std::getline(std::cin,s);
+    std::map&lt;std::string,std::set&lt;int&gt;&gt; rjecnik;
+    rjecnik=KreirajIndeksPojmova(s);
+    IspisiIndeksPojmova(rjecnik);
+    std::string neki_s;
+</font>    for(;;) {
+        std::cout&lt;&lt;"Unesite rijec: ";
+        std::getline(std::cin,neki_s);
+        if(neki_s==".") break;
+        try {
+<a name="0"></a><font color="#FF0000"><a href="match384-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+            std::set&lt;int&gt; skup;
+            skup=PretraziIndeksPojmova(neki_s,rjecnik);
+            for(auto broj:skup) {
+                std::cout&lt;&lt;broj&lt;&lt;" ";
+            }
+            std::cout&lt;&lt;std::endl;
+</font>        }
+        catch(std::logic_error izuzetak) {
+            std::cout&lt;&lt;izuzetak.what();
+        }
+    }
+	return 0;
+}</pre>
+</body>
+</html>

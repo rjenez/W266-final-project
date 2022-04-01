@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z1/student3133.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z1/student9388.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match838-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+enum class Polje {
+ Prazno, Posjeceno, Mina, BlokiranoPrazno, BlokiranoPosjeceno, BlokiranoMina
+};
+enum class Smjerovi {
+ GoreLijevo, Gore, GoreDesno, Desno, DoljeDesno, Dolje, DoljeLijevo, Lijevo
+};
+enum class Status {
+ NijeKraj, KrajPoraz, KrajPobjeda
+};
+typedef std::vector&lt;std::vector&lt;Polje&gt;&gt; Tabla;
+
+
+
+
+Tabla KreirajIgru(int n, const std::vector&lt;std::vector&lt;int&gt;&gt; &amp;mine){
+	for (int i = 0; i &lt; mine.size(); i++) {
+		if(mine[i].size()!=2) throw domain_error("Ilegalan format zadavanja mina");
+		if(mine[i][0]&lt;0|| mine[i][0]&gt;=n || mine[i][1]&lt;0|| mine[i][1]&gt;=n)
+		throw domain_error("Ilegalne pozicije mina");
+	}
+	
+	Tabla t(n,vector&lt;Polje&gt;(n,Polje::Prazno));
+	
+	for (int i = 0; i &lt; mine.size(); i++) {
+		t[mine[i][0] ][mine[i][1]] = Polje::Mina;
+	}
+	
+	return t;
+}
+template&lt;typename T&gt;
+bool ispravniIndeksi(const std::vector&lt;std::vector&lt;T&gt; &gt;&amp; M,int x, int y){
+	return x&gt;=0&amp;&amp;x&lt;M.size()&amp;&amp;y&gt;=0&amp;&amp;y&lt;M[0].size(); 
+}
+
+int sumirajSusjede(const Tabla&amp; polja,int x,int y ){
+	int suma=0;
+	for (int i = -1; i &lt;=1 ; i++) {
+		for (int j = -1; j &lt;= 1; j++) {
+			if(i==0&amp;&amp;j==0)continue;
+			int xt=x+i,yt=y+j;
+			if(ispravniIndeksi(polja,xt,yt) &amp;&amp; polja[xt][yt]==Polje::Mina){
+				suma++;
+			}
+		}
+	}
+	
+	return suma;
+}
+
+
+
+string int2string(int x){
+  string tekstualniBroj;
+  if(x==0) return "0";
+  while(x!=0){
+    int cifra = x%10;
+    
+    tekstualniBroj.push_back('0'+cifra);
+    x/=10;
+  }
+  
+  return tekstualniBroj;
+}
+std::vector&lt;std::vector&lt;int&gt;&gt; PrikaziOkolinu(const Tabla &amp;polja, int x, int y){
+	if(!ispravniIndeksi(polja,x,y)){
+		throw domain_error("Polje ( "+int2string(x)+","+int2string(y)+" ) ne postoji");
+	}
+	vector&lt;vector&lt;int&gt; &gt; rezultat(3);
+	
+	for (int i = -1; i &lt;=1 ; i++) {
+		for (int j = -1; j &lt;= 1; j++) {
+			int xt=x+i,yt=y+j;
+			if(ispravniIndeksi(polja,xt,yt)){
+				int suma = sumirajSusjede(polja,xt,yt);
+				rezultat[i+1].push_back(suma);
+			}
+			else{
+				rezultat[i+1].push_back(0);	
+			}
+		}
+	}
+	return rezultat;
+}
+void BlokirajPolje(Tabla &amp;polja, int x, int y){
+	
+	
+	
+}
+void DeblokirajPolje(Tabla &amp;polja, int x, int y);
+Status Idi(Tabla &amp;polja, int &amp;x, int &amp;y, Smjerovi smjer);
+Status Idi(Tabla &amp;polja, int &amp;x, int &amp;y, int novi_x, int novi_y);
+std::vector&lt;std::vector&lt;int&gt;&gt; PrikaziOkolinu(const Tabla &amp;polja, int x, int y);
+
+void ispisi(const Tabla&amp; polja){
+	for (int i = 0; i &lt; polja.size(); i++) {
+		for (int j = 0; j &lt; polja[i].size(); j++) {
+			if(polja[i][j]==Polje::Prazno)
+				cout&lt;&lt;"0 ";
+			else if(polja[i][j]==Polje::Mina){
+				cout&lt;&lt;"1 ";
+			}
+		}
+		cout&lt;&lt;endl;
+	}
+}
+
+
+
+int main ()
+{
+	try{
+		vector&lt;vector&lt;int&gt;&gt;mine={{1,2},{4,4},{3,4}};
+		Tabla tabla = KreirajIgru(5,mine);
+		
+		ispisi(tabla);
+		cout&lt;&lt;"OK"&lt;&lt;endl;
+		std::vector&lt;std::vector&lt;int&gt;&gt; M = PrikaziOkolinu(tabla,4,4);
+		for (int i = 0; i &lt; M.size(); i++) {
+			for (int j = 0; j &lt; M[i].size(); j++) {
+				cout&lt;&lt;M[i][j]&lt;&lt;" ";
+			}
+			cout&lt;&lt;endl;
+		}
+	}
+	catch(domain_error e){
+		cout&lt;&lt;e.what()&lt;&lt;endl;
+</font>	}
+	
+	
+	return 0;
+}</pre>
+</body>
+</html>

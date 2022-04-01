@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student7346.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student7346.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match260-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+
+using std::cin;
+using std::cout;
+using std::endl;
+typedef std::pair&lt;double, double&gt; Par;
+
+std::function &lt;double(double)&gt; LinearnaInterpolacija (std::vector&lt;Par&gt; parovi)
+{
+    std::sort (parovi.begin(), parovi.end(), [](Par prvi, Par drugi) {
+        return prvi.first &lt; drugi.first ;
+    });
+
+    auto FunckijaZaSortiranje = [](Par prvi, Par drugi) {
+        return prvi.first &lt; drugi.first;
+    };
+
+    for (auto pocetak(parovi.begin()); pocetak != parovi.end(); pocetak++) {
+        int brojac(0);
+        for (auto pocetak2(parovi.begin()); pocetak2!= parovi.end(); pocetak2++) {
+            if(pocetak2-&gt;first == pocetak-&gt;first) brojac++;
+            if (brojac&gt;=2) throw std::domain_error ("Neispravni cvorovi");
+        }
+    }
+    return [parovi, FunckijaZaSortiranje] (double arg) -&gt; double {
+        if (arg &lt; parovi.at(0).first || arg &gt; parovi.at(parovi.size()-1).first) throw std::range_error ("Argument izvan opsega");
+        auto poredbeni = std::make_pair(arg, arg);
+        auto ggi = std::lower_bound(parovi.begin(), parovi.end(), poredbeni, FunckijaZaSortiranje);
+        if (ggi-&gt;first == arg)
+            return ggi-&gt;second; // SPECIJALNI SLUCAJ (X = Xn)
+
+        auto dgi = ggi-1;
+        auto vrijednost_po_formuli = dgi-&gt;second+((ggi-&gt;second-dgi-&gt;second)/(ggi-&gt;first-dgi-&gt;first))*(arg-dgi-&gt;first);
+        return vrijednost_po_formuli;
+    };
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::function&lt;double(double)&gt; funkcija, double x_min, double x_max, double dx)
+{
+    if(dx&lt;=0 || x_max&lt;x_min) throw std::domain_error ("Nekorektni parametri");
+    int korak(0);
+    std::vector&lt;Par&gt; parametri;
+    for (;;) {
+        auto element = korak*dx + x_min;
+        if(element &gt; x_max) break;
+        parametri.push_back(std::make_pair(element, funkcija(element)));
+        korak++;
+    }
+
+    return LinearnaInterpolacija(parametri);
+}
+
+
+int main ()
+{
+    cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    int opcija;
+    cin &gt;&gt; opcija;
+    if(opcija == 1) {
+        cout &lt;&lt; "Unesite broj cvorova: ";
+        int n;
+        cin &gt;&gt; n;
+        std::vector&lt;Par&gt; cvorovi;
+        cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+        for(int i(0); i&lt;n; i++) {
+            int x, y;
+            cin &gt;&gt; x &gt;&gt; y;
+            cvorovi.push_back(std::make_pair(x, y));
+        }
+
+        try {
+            auto Aproksimacija = LinearnaInterpolacija(cvorovi);
+            for(;;) {
+                cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                double arg;
+                cin &gt;&gt; arg;
+                if (!cin) break;
+                try {
+                    cout &lt;&lt; "f(" &lt;&lt; arg &lt;&lt; ") = " &lt;&lt; Aproksimacija(arg) &lt;&lt; endl;
+                } catch(std::exception &amp;poruka) {
+                    cout &lt;&lt; poruka.what() &lt;&lt; endl;
+                }
+            }
+        } catch(std::exception &amp;poruka) {
+            cout &lt;&lt; poruka.what() &lt;&lt; endl;
+        }
+    }
+
+    else {
+        cout &lt;&lt; "Unesite krajeve intervala i korak: " ;
+        double x_min, x_max, dx;
+        cin &gt;&gt; x_min &gt;&gt; x_max &gt;&gt; dx;
+        try {
+            auto Aproksimacija = LinearnaInterpolacija([](double arg) {
+                return arg*arg + std::sin(arg);
+            }, x_min, x_max, dx);
+            for (;;) {
+                cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                double arg;
+                cin &gt;&gt; arg;
+                if(!cin) break;
+                try {
+                    cout &lt;&lt; "f(" &lt;&lt; arg &lt;&lt; ") = " &lt;&lt; arg*arg + std::sin(arg) &lt;&lt; " fapprox(" &lt;&lt; arg &lt;&lt; ") = " &lt;&lt; Aproksimacija(arg) &lt;&lt; endl;
+                } catch(std::exception &amp;poruka) {
+                    cout &lt;&lt; poruka.what() &lt;&lt; endl;
+                }
+            }
+        } catch (std::exception &amp;poruka) {
+            cout &lt;&lt; poruka.what() &lt;&lt; endl;
+        }
+    }
+    return 0;
+</font>}
+</pre>
+</body>
+</html>

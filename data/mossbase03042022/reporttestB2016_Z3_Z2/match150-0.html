@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4903.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4903.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match150-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_96.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+
+std::map&lt;std::string,std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string s)
+{
+    for(int i(0); i&lt;s.length();i++)
+        if(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') s[i]+=('a'-'A'); //samo se mala slova gledaju
+    std::map&lt;std::string,std::set&lt;int&gt;&gt; indeks;
+    bool razmak(true);
+    for(int i(0);i&lt;s.length();i++)
+    {
+        if(!((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9'))) razmak=true; //ako nije ni slovo ni broj onda je razmak
+        else if(razmak)
+        {
+            razmak=false;
+            int j(i);
+            std::string rijec;
+            while(j&lt;s.length() &amp;&amp; ((s[j]&gt;='a' &amp;&amp; s[j]&lt;='z') || (s[j]&gt;='0' &amp;&amp; s[j]&lt;='9')))
+            {
+                rijec.push_back(s[j]);
+                j++;
+            }
+            auto it(indeks.find(rijec));
+            if(it==indeks.end()) indeks.insert(std::make_pair(rijec,std::set&lt;int&gt;{i})); //ako nema vec rijeci unosi se novi par
+            else (it-&gt;second).insert(i);
+        }
+    }
+    return indeks;
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string rijec, std::map&lt;std::string, std::set&lt;int&gt;&gt; indeks)
+{
+    auto it(indeks.find(rijec));
+    if(it==indeks.end()) throw std::logic_error("Pojam nije nadjen");
+    return it-&gt;second;
+}
+
+void IspisiIndeksPojmova(std::map &lt;std::string, std::set&lt;int&gt;&gt; indeks)
+{
+    for(auto it(indeks.begin());it!=indeks.end();it++)
+    {
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        int brojac(0);
+        for(int x : it-&gt;second)
+        {
+            std::cout&lt;&lt;x;
+            if(brojac&lt;(it-&gt;second).size()-1) std::cout&lt;&lt;",";
+            brojac++;
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+}
+
+int main ()
+{
+    std::cout&lt;&lt;"Unesite tekst: ";
+    std::string tekst;
+    std::getline(std::cin,tekst);
+    auto indeks (KreirajIndeksPojmova(tekst));
+    IspisiIndeksPojmova(indeks);
+    for(;;)
+    {
+        std::cout&lt;&lt;"Unesite rijec: ";
+        std::string rijec;
+        std::getline(std::cin,rijec);
+         for(int i(0); i&lt;rijec.length();i++)
+            if(rijec[i]&gt;='A' &amp;&amp; rijec[i]&lt;='Z') rijec[i]+=('a'-'A');
+        if(rijec==".") break;
+        try
+        {
+            auto skup(PretraziIndeksPojmova(rijec,indeks));
+            for(int x: skup) std::cout&lt;&lt;x&lt;&lt;" ";
+            std::cout&lt;&lt;std::endl;
+        }
+        catch(std::logic_error izuzetak)
+        {
+            std::cout&lt;&lt;"Unesena rijec nije nadjena!"&lt;&lt;std::endl;
+</font>        }
+    }
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z1/student3411.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z1/student8780.c<p></p><pre>
+#include &lt;stdio.h&gt;
+<a name="0"></a><font color="#FF0000"><a href="match41-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+struct Student {
+	char ime[20], prezime[20];
+	int ocjene[50];
+	int br_ocjena;
+};
+//funckija koja vrši leksikografsko uporedjivanje karaktera
+int strcmp(const char *s1, const char *s2){
+	while(*s1!='\0' &amp;&amp; *s2!='\0'){
+		if(*s1&lt;*s2) return -1;
+		else if(*s1&gt;*s2) return 1;
+		else if(*(s1+1)=='\0' &amp;&amp; *(s2+1)!='\0') return -1;
+		else if(*(s2+1)=='\0' &amp;&amp; *(s1+1)!='\0') return 1;
+		else if(*(s1+1)=='\0' &amp;&amp; *(s2+1)=='\0') return 0;
+		else{
+			s1++;
+			s2++;
+		}
+	}
+	if ((*s1)=='\0' &amp;&amp; (*s2)=='\0') return 0;
+		else if ((*s1)=='\0' &amp;&amp; (*s2)!='\0') return -1;
+		else return 1;
+}
+int genijalci(struct Student *p, int velicina, double prosjek){
+	struct Student *pocetak=p;
+	int n=0,i=0,broj_ocjena, pao,j,izbaceni=0, vel=velicina,n1=0,br=0,tmp;
+	double prosjek_ocjena[50]={0}, prosjek_studenta=0,max[3]={0}, max_lokalni=0;
+	while(n&lt;velicina){
+		prosjek_studenta=0;
+		broj_ocjena=p-&gt;br_ocjena;
+		//studentu ciji je broj ocjena=0, prosjek postaje 5.0 
+		if(broj_ocjena&lt;=0) prosjek_ocjena[n]=5.0;
+		else {
+			i=0;
+			//blok naredbi koji ispituje da li student ima ijednu ocjenu 5, te racuna prosjek njegovih ocjena
+			while (i&lt;broj_ocjena) {
+				pao=0;
+				if(p-&gt;ocjene[i]==5) {
+					prosjek_ocjena[n]=5.0;
+					pao=1;
+					break;
+				}
+				prosjek_studenta=prosjek_studenta + p-&gt;ocjene[i];
+				i++;
+			}
+			if(pao==0){
+				prosjek_studenta=prosjek_studenta/broj_ocjena;
+				prosjek_ocjena[n]=prosjek_studenta;
+			}
+		}
+		//if uslov ispituje da li je prosjek ocjena studenta manji od referentog prosjeka
+		//ukoliko je uslov ispunjen, vrši se izbacivanje tog studenta iz niza
+		if (prosjek_ocjena[n]&lt;prosjek){
+			struct Student *q=p;
+			n1=n;
+			while (n1&lt;velicina-1) {
+				*q = *(q+1);
+				q++;
+				n1++;
+			}
+			velicina--;
+			n--;
+			izbaceni++;
+			p--;
+			
+		}
+		n++;
+		p++;
+	}
+	p=pocetak;
+	//2 ugnijezdene petlje koje prosjek ocjena i-tog studenta spremaju na i-to mjesto niza koji sadrzi prosjecne ocjene svih preostalih studenata 
+	for(i=0; i&lt;velicina; i++){
+		j=0;
+		prosjek_studenta=0;
+		while(j&lt;p-&gt;br_ocjena){
+			prosjek_studenta=prosjek_studenta + p-&gt;ocjene[j];
+			j++;
+		}
+		prosjek_studenta=prosjek_studenta/p-&gt;br_ocjena;
+		prosjek_ocjena[i]=prosjek_studenta;
+		p++;
+	}
+	p=pocetak;
+	int velicina1=velicina;
+	//blok naredbi sadrzanih u while-petlji koje sluze za selekciju studenata cija imena trebaju biti ispisana
+	while(velicina&gt;0 &amp;&amp; br&lt;3){
+		max_lokalni=0;
+		//for-petlja koja prolazi kroz niz prosjek_ocjena svih studenata. 
+		//trazi se najveci maksimum u nizu
+		for(i=0; i&lt;velicina1; i++){
+			if(prosjek_ocjena[i]&gt;max_lokalni) {
+				max_lokalni=prosjek_ocjena[i];
+				tmp=i;
+			}
+			//ukoliko je prosjek ocjena kod dva studenta isti, prelazi se na poredjenje prezimena po leksikografskom poretku
+			else if(prosjek_ocjena[i]==max_lokalni){
+				if(strcmp((p+tmp)-&gt;prezime,(p+i)-&gt;prezime)==-1) continue;
+				else if(strcmp((p+tmp)-&gt;prezime,(p+i)-&gt;prezime)==1){
+					max_lokalni=prosjek_ocjena[i];
+					tmp=i;
+				}
+				//leksikografsko poredjenje imena(u slucaju da su sva dosadasnja poredjenja bila nedovoljna za utvrdjivanje koji se treba ispisati)
+				else if(strcmp((p+tmp)-&gt;prezime,(p+i)-&gt;prezime)==0){
+					if(strcmp((p+tmp)-&gt;ime,(p+i)-&gt;ime)==-1 || strcmp((p+tmp)-&gt;ime,(p+i)-&gt;ime)==0) continue;
+					else if(strcmp((p+tmp)-&gt;ime,(p+i)-&gt;ime)==1){
+						max_lokalni=prosjek_ocjena[i];
+						tmp=i;
+					}
+				}
+			}
+		}
+		//redni broj studenata koji trebaju biti ispisani sprema se u niz int max[3]
+		max[br]=tmp;
+		//prosjek ocjena studenta koji je vec selektovan za ispis se postavlja na nulu
+		///razlog: da bi se omogucio pronalazak narednog studenta sa najboljim prosjekom
+		prosjek_ocjena[tmp]=0;
+		br++; 
+		velicina--;
+	}
+	j=0;
+	p=pocetak;
+	//while petlja koja sluzi za ispis odabranih studenata(maksimalno 3)
+	while(j&lt;br){
+		tmp=max[j];
+		printf("%s %s\n", (p+tmp)-&gt;prezime, (p+tmp)-&gt;ime);
+		j++;
+	}
+	return(vel-izbaceni);		
+}
+int main() {
+	
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

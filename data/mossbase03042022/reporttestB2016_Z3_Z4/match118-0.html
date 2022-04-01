@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student4290.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student4290.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+<a name="1"></a><font color="#00FF00"><a href="match118-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_13.gif"/></a>
+
+std::list&lt;std::string&gt; VektorUListu(const std::vector&lt;std::string&gt; &amp;v){
+    std::list&lt;std::string&gt; lista;
+    for(int i=0;i&lt;v.size();i++)lista.push_back(v[i]);
+    return lista;
+}
+int DuzinaString(std::string s){
+    int br(0);
+    for(int i=0;i&lt;s.length();i++)if((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')||(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z')||(s[i]&gt;='0' &amp;&amp; s[i]&lt;='9'))br++;
+</font><a name="0"></a><font color="#FF0000"><a href="match118-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_78.gif"/></a>
+
+    return br;
+}
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(const std::vector&lt;std::string&gt; &amp;v,int k){
+    if(k&lt;0 &amp;&amp; k&gt;v.size()) throw std::logic_error("Razvrstavanje nemoguce");
+    std::list&lt;std::string&gt; lista(VektorUListu(v));
+    std::vector&lt;std::set&lt;std::string&gt;&gt; timovi(k);
+    auto it=lista.begin();
+    timovi[0].insert(*it);
+    int s(DuzinaString(*(lista.begin())));
+    it=lista.erase(it);
+    for(int l=0;l&lt;k;){
+        for(int j=0;j&lt;s;j++){
+            if(it==lista.end()){
+                it=lista.begin();
+                j--;
+            }
+            it++;
+        } 
+        timovi[l].insert(*it);
+        s=DuzinaString(*it);
+        it=lista.erase(it);
+        if(l&lt;v.size()%k)if(timovi[l].size()==(v.size()%k+1))l++;
+        else if(l&gt;=v.size()%k &amp;&amp; l&lt;v.size())if(timovi[l].size()==v.size()%k)l++;
+    }    
+    return timovi;
+}
+void Ispisi(const std::vector&lt;std::set&lt;std::string&gt;&gt; &amp;v){
+    for(int i=0;i&lt;v.size();i++){
+        std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+        for(auto j=v[i].begin();j!=--v[i].end();j++)std::cout&lt;&lt;*j&lt;&lt;" ,";
+        std::cout&lt;&lt;*(--v[i].end())&lt;&lt;std::endl;
+    }
+}
+int main (){
+    try{
+        std::cout&lt;&lt;"Unesite broj djece: ";
+        int br;
+        std::cin&gt;&gt;br;
+        std::vector&lt;std::string&gt; v(br);
+        std::cin.ignore(100,'\n');
+        std::cout&lt;&lt;"Unesite imena djece: ";
+        for(int i=0;i&lt;br;i++)
+            std::getline(std::cin,v[i]);
+    
+        std::cout&lt;&lt;"Unesite broj timova: ";
+        std::cin&gt;&gt;br;
+        std::vector&lt;std::set&lt;std::string&gt;&gt; s=Razvrstavanje(v,br);
+        Ispisi(s);
+    }
+    catch(std::logic_error izuzetak){
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+    }
+	return 0;
+</font>}</pre>
+</body>
+</html>

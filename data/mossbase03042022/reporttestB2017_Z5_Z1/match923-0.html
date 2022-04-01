@@ -1,0 +1,303 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z1/student5154.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z1/student5154.cpp<p></p><pre>
+/B2017/2018: Zadaća 5, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;map&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+class Student {
+    int index;
+    string imePrezime;
+    string adresa;
+    string telefon;
+    string godinaStudija;
+    static string DajBezExtraSpejsova(const string &amp;input) {
+        string vrati;
+        unique_copy(input.begin(), input.end(), back_inserter&lt;string&gt;(vrati),[](char a, char b) {
+            return(a==' ' &amp;&amp; b==' ');});
+        if(vrati[0]==' ') vrati.erase(vrati.begin());
+        return vrati;
+    }
+    static bool ValidirajTelefon (string telefon) {
+        if(telefon[0]&lt;'0' or telefon[0]&gt;'9') return false;
+        int i(0);
+        while(i&lt;telefon.length() and telefon[i]&gt;='0' and telefon[i]&lt;='9') i++;
+        if(i==telefon.length() or telefon[i]!='/') return false;
+        i++;
+        while(i&lt;telefon.length() and telefon[i]&gt;='0' and telefon[i]&lt;='9') i++;
+        if(i==telefon.length() and telefon[i]!='-') return false;
+        i++;
+        while(i&lt;telefon.length() and telefon[i]&gt;='0' and telefon[i]&lt;='9') i++;
+        if(i!=telefon.length()) return false;
+        else return true;
+    }
+    public:
+    Student(int index, string godinaStudija, string imePrezime, string adresa, string telefon) {
+        if(index&lt;10000 or index&gt; 99999) throw domain_error("Neispravni parametri");
+        else this-&gt;index=index;
+        this-&gt;imePrezime=Student::DajBezExtraSpejsova(imePrezime);
+        this-&gt;adresa=Student::DajBezExtraSpejsova(adresa);
+        if(godinaStudija.length()==1) {
+            if(godinaStudija[0]&gt;='1' or godinaStudija[0]&lt;='3') this-&gt;godinaStudija=godinaStudija;
+            else throw domain_error("Neispravni parametri");
+        }
+        else if(godinaStudija.length()==3) {
+            if(godinaStudija[0]&lt;'1' or godinaStudija[0]&gt;'3') throw domain_error("Neispravni parametri");
+            if(godinaStudija[1]!='/') throw domain_error("Neispravni parametri");
+            if(godinaStudija[2]!='B' and godinaStudija[2]!='M' and godinaStudija[2]!='D') throw domain_error("Neispravni parametri");
+            this-&gt;godinaStudija=godinaStudija;
+        }
+        else throw domain_error("Neispravni parametri");
+        if(ValidirajTelefon(telefon)) this-&gt;telefon=telefon;
+        else throw domain_error("Neispravni parametri");
+    }
+    int DajIndeks() const  {return index;}
+    string DajGodinuStudija() const {
+        if(godinaStudija.length()!=1) return godinaStudija;
+        else return godinaStudija+"/B";
+    }
+    string DajImePrezime() const {return imePrezime;}
+    string DajAdresu() const {return adresa;}
+    string DajTelefon() const {return telefon;}
+    
+    void Ispisi() const {
+        cout&lt;&lt;"Broj indeksa: "&lt;&lt;DajIndeks()&lt;&lt;endl;
+        cout&lt;&lt;"Godina studija: "&lt;&lt;DajGodinuStudija()&lt;&lt;endl;
+        cout&lt;&lt;"Ime i prezime: "&lt;&lt;DajImePrezime()&lt;&lt;endl;
+        cout&lt;&lt;"Adresa: "&lt;&lt;DajAdresu()&lt;&lt;endl;
+        cout&lt;&lt;"Telefon: "&lt;&lt;DajTelefon()&lt;&lt;endl;
+    }
+};
+
+class Laptop {
+    int ev_broj;
+    string naziv;
+    string karakteristike;
+    Student* kod_koga_je;
+    public:
+    Laptop (int ev, string name, string kar) {
+        if(ev&lt;0) throw domain_error("Neispravni parametri");
+        ev_broj=ev;
+        naziv=name;
+        karakteristike=kar;
+        kod_koga_je=nullptr;
+    }
+    int DajEvidencijskiBroj() const {return ev_broj;}
+    string DajNaziv() const {return naziv;}
+    string DajKarakteristike() const {return karakteristike;}
+    void Zaduzi(Student &amp;s) {
+        if(DaLiJeZaduzen()) throw domain_error("Laptop vec zaduzen");
+        kod_koga_je=&amp;s;
+    }
+    void Razduzi() {
+        kod_koga_je=nullptr;
+    }
+    bool DaLiJeZaduzen() const {
+        if(kod_koga_je==nullptr) return false;
+        else return true;
+    }
+    Student DajKodKogaJe() const {
+        if(DaLiJeZaduzen()) return *kod_koga_je;
+        else throw domain_error("Laptop nije zaduzen");
+    }
+    Student *DajPokKodKogaJe() const {return kod_koga_je;}
+    void Ispisi() const {
+        cout&lt;&lt;"Evidencijski broj: "&lt;&lt;DajEvidencijskiBroj()&lt;&lt;endl;
+        cout&lt;&lt;"Naziv: "&lt;&lt;DajNaziv()&lt;&lt;endl;
+        cout&lt;&lt;"Karakteristike: "&lt;&lt;DajKarakteristike()&lt;&lt;endl; 
+    }
+};
+
+class Administracija {
+    map&lt;int,Student*&gt; studenti;
+    map&lt;int,Laptop*&gt; laptopi;
+    public:
+    Administracija() {}
+    Administracija &amp;operator=(const Administracija &amp;adm) {
+        if(this!=&amp;adm) {
+<a name="4"></a><font color="#FF00FF"><a href="match923-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+            for(auto it=studenti.begin();it!=studenti.end();it++) delete it-&gt;second;
+            for(auto it=laptopi.begin();it!=laptopi.end();it++) delete it-&gt;second;
+            studenti=adm.studenti;
+</font>            laptopi=adm.laptopi;
+<a name="3"></a><font color="#00FFFF"><a href="match923-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+            for(auto it=studenti.begin();it!=studenti.end();it++) it-&gt;second=nullptr;
+</font><a name="0"></a><font color="#FF0000"><a href="match923-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+            for(auto it=laptopi.begin();it!=laptopi.end();it++) it-&gt;second=nullptr;
+            try {
+                for(auto it=adm.studenti.begin();it!=adm.studenti.end();it++) studenti[it-&gt;first]=new Student(*(it-&gt;second));
+                for(auto it=adm.laptopi.begin();it!=adm.laptopi.end();it++) laptopi[it-&gt;first]=new Laptop(*(it-&gt;second));
+</font>                
+                for(auto it=adm.laptopi.begin();it!=adm.laptopi.end();it++) {
+                    Student *kodKoga=laptopi[it-&gt;first]-&gt;DajPokKodKogaJe();
+                    if(kodKoga!=nullptr) {
+                        laptopi[it-&gt;first]-&gt;Razduzi();
+                        laptopi[it-&gt;first]-&gt;Zaduzi(*studenti[kodKoga-&gt;DajIndeks()]);
+                    }
+                }
+            }
+            catch(...) {
+                for(auto it=adm.studenti.begin();it!=adm.studenti.end();it++) delete studenti[it-&gt;first];
+                for(auto it=adm.laptopi.begin();it!=adm.laptopi.end();it++) delete laptopi[it-&gt;first];
+            }
+        }
+        return *this;
+    }
+    Administracija (const Administracija &amp;adm) {
+        laptopi=adm.laptopi;
+        for(auto it=studenti.begin();it!=studenti.end();it++) it-&gt;second=nullptr;
+            for(auto it=laptopi.begin();it!=laptopi.end();it++) it-&gt;second=nullptr;
+            studenti=adm.studenti;
+            laptopi=adm.laptopi;
+            for(auto it=studenti.begin();it!=studenti.end();it++) it-&gt;second=nullptr;
+<a name="1"></a><font color="#00FF00"><a href="match923-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+            for(auto it=laptopi.begin();it!=laptopi.end();it++) it-&gt;second=nullptr;
+            try {
+                for(auto it=adm.studenti.begin();it!=adm.studenti.end();it++) studenti[it-&gt;first]=new Student(*(it-&gt;second));
+                for(auto it=adm.laptopi.begin();it!=adm.laptopi.end();it++) laptopi[it-&gt;first]=new Laptop(*(it-&gt;second));
+</font>                
+                for(auto it=adm.laptopi.begin();it!=adm.laptopi.end();it++) {
+                    Student *kodKoga=laptopi[it-&gt;first]-&gt;DajPokKodKogaJe();
+                    if(kodKoga!=nullptr) {
+                        laptopi[it-&gt;first]-&gt;Razduzi();
+                        laptopi[it-&gt;first]-&gt;Zaduzi(*studenti[kodKoga-&gt;DajIndeks()]);
+                    }
+                }
+            }
+            catch(...) {
+                for(auto it=adm.studenti.begin();it!=adm.studenti.end();it++) delete studenti[it-&gt;first];
+                for(auto it=adm.laptopi.begin();it!=adm.laptopi.end();it++) delete laptopi[it-&gt;first];
+            }
+    }
+    Administracija (Administracija &amp;&amp;adm) {
+        studenti=adm.studenti;
+<a name="2"></a><font color="#0000FF"><a href="match923-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+        laptopi=adm.laptopi;
+        for(auto it=adm.studenti.begin();it!=adm.studenti.end();it++) it-&gt;second=nullptr;
+        for(auto it=adm.laptopi.begin();it!=adm.laptopi.end();it++) it-&gt;second=nullptr;
+    }
+    Administracija &amp;operator=(Administracija &amp;&amp;adm) {
+</font>        if(this!=&amp;adm) {
+            for(auto it=studenti.begin();it!=studenti.end();it++) delete it-&gt;second;
+            for(auto it=laptopi.begin();it!=laptopi.end();it++) delete it-&gt;second;
+            studenti=adm.studenti;
+            laptopi=adm.laptopi;
+            for(auto it=adm.studenti.begin();it!=adm.studenti.end();it++) it-&gt;second=nullptr;
+            for(auto it=adm.laptopi.begin();it!=adm.laptopi.end();it++) it-&gt;second=nullptr;
+        }
+        return *this;
+    }
+    ~Administracija() {
+        for(auto it=studenti.begin();it!=studenti.end();it++) it-&gt;second;
+        for(auto it=laptopi.begin();it!=laptopi.end();it++) it-&gt;second;
+    }
+    void RegistrirajNovogStudenta(int index, string godinaStudija, string imePrezime, string adresa, string telefon) {
+        if(studenti.count(index)==0) {
+            studenti[index]=new Student(index,godinaStudija,imePrezime,adresa,telefon);
+        }
+        else throw domain_error("Student s tim indeksom vec postoji");
+    }
+    void RegistrirajNoviLaptop(int ev, string name, string kar) {
+        if(laptopi.count(ev)==0) {
+            laptopi[ev]=new Laptop(ev,name,kar);
+        }
+        else throw domain_error("Laptop s tim evidencijskim brojem vec postoji");
+    }
+    Student &amp;NadjiStudenta(int index) {
+        if(studenti.count(index)!=0) return *studenti[index];
+        else throw domain_error("Student nije nadjen");
+    }
+    Student NadjiStudenta(int index) const {
+        bool ima=false;
+        for(auto it=studenti.begin();it!=studenti.end();it++) {
+            if(it-&gt;first==index) {
+                ima=true;
+                return *(it-&gt;second);
+            }
+        }
+        if(!ima) throw domain_error("Student nije nadjen");
+    }
+    Laptop &amp;NadjiLaptop(int ev) {
+        if(laptopi.count(ev)!=0) return *laptopi[ev];
+        else throw domain_error("Laptop nije nadjen");
+    }
+    Laptop NadjiLaptop(int ev) const {
+        bool ima=false;
+        for(auto it=laptopi.begin();it!=laptopi.end();it++) {
+            if(it-&gt;first==ev) {
+                ima=true;
+                return *(it-&gt;second);
+            }
+        }
+        if(!ima) throw domain_error("Laptop nije nadjen");
+    }
+    void IzlistajStudente() const {
+        for(auto it=studenti.begin();it!=studenti.end();it++) {
+            it-&gt;second-&gt;Ispisi();
+            cout&lt;&lt;endl;
+        }
+    }
+    void IzlistajLaptope() const {
+        for(auto it=laptopi.begin();it!=laptopi.end();it++) {
+            it-&gt;second-&gt;Ispisi();
+            Student *tmp=it-&gt;second-&gt;DajPokKodKogaJe();
+            if(tmp!=nullptr) {
+                cout&lt;&lt;"Zaduzio(la): "&lt;&lt;tmp-&gt;DajImePrezime()&lt;&lt;" ("&lt;&lt;tmp-&gt;DajIndeks()&lt;&lt;") \n";
+            }
+            cout&lt;&lt;endl;
+        }
+    }
+    void ZaduziLaptop(int index, int ev) {
+        if(studenti.count(index)==0) throw domain_error("Student nije nadjen");
+        if(laptopi.count(ev)==0) throw domain_error("Laptop nije nadjen");
+        if(laptopi[ev]-&gt;DaLiJeZaduzen()==true) throw domain_error("Laptop vec zaduzen");
+        Student *tmp=studenti[index];
+        for(auto it=laptopi.begin();it!=laptopi.end();it++) {
+            if(it-&gt;second-&gt;DajPokKodKogaJe()==tmp) throw domain_error("Student je vec zaduzio laptop");
+        }
+        laptopi[ev]-&gt;Zaduzi(*tmp);
+    }
+    int NadjiSlobodniLaptop() const {
+        for(auto it=laptopi.begin();it!=laptopi.end();it++) {
+            if(it-&gt;second-&gt;DajPokKodKogaJe()==nullptr) return it-&gt;first;
+        }
+        throw domain_error("Nema slobodnih laptopa");
+    }
+    void RazduziLaptop(int ev) {
+        if(laptopi.count(ev)==0) throw domain_error("Laptop nije nadjen");
+        if(laptopi[ev]-&gt;DaLiJeZaduzen()==false) throw domain_error("Laptop nije zaduzen");
+        else laptopi[ev]-&gt;Razduzi();
+    }
+    void PrikaziZaduzenja() const {
+        bool imaZaduzenja=false;
+        for(auto it=laptopi.begin();it!=laptopi.end();it++) {
+            Student *kodKoga=it-&gt;second-&gt;DajPokKodKogaJe();
+            if(kodKoga!=nullptr) {
+                imaZaduzenja=true;
+                cout&lt;&lt;"Student "&lt;&lt;kodKoga-&gt;DajImePrezime()&lt;&lt;" ("&lt;&lt;kodKoga-&gt;DajIndeks()&lt;&lt;") zaduzio/la laptop broj"&lt;&lt;it-&gt;first&lt;&lt;endl;
+            }
+        }
+        if(imaZaduzenja==false) cout&lt;&lt;"Nema zaduzenja";
+    }
+};
+int main ()
+{
+	return 0;
+}
+</pre>
+</body>
+</html>

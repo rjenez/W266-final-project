@@ -1,0 +1,178 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student7597.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student7597.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;iomanip&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match122-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::vector;
+using std::deque;
+
+enum class SmjerKretanja { NaprijedNazad, NazadNaprijed, 
+GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo };
+
+template&lt;typename kontejner&gt;
+	void Ispravan(const kontejner &amp;kont) {
+		
+		int dimenzija = kont.size();    // Broj 2D ploha
+		
+		for(int i=0;i&lt;dimenzija;i++) {
+			if(kont.at(i).size()!=dimenzija)  // Ako ploha ima razlicit broj redova od broja ploha
+				throw std::domain_error("3D matrica nema oblik kocke");
+			for(int j=0;j&lt;dimenzija;j++) {
+				if(kont.at(i).at(j).size()!=dimenzija)  // Ako ploha nije kvadratna
+					throw std::domain_error("3D matrica nema oblik kocke");
+			}
+		}
+		if(dimenzija%2==0) throw std::length_error("3D kontejner ne zadovoljava uvjet neparnosti");
+	}
+	
+template&lt;typename kontejner&gt;
+	auto napraviPjescani(const kontejner &amp;kont)-&gt;kontejner {  // PO DEFAULTU PRAVI GORE-DOLJE PJESCANI SAT
+		int duzina = kont.size();
+		kontejner pjescani(duzina);
+		for(int i=0;i&lt;duzina;i++) {  // Prolazi kroz sve 2D matrice
+				pjescani.at(i).resize(duzina);
+				for(int j=0;j&lt;duzina;j++) {  
+					for(int k=j;k&lt;duzina-j;k++) {  
+						pjescani.at(i).at(j).push_back(kont.at(i).at(j).at(k));  		// PRAVI GORNJU POLU PJESCANOG SATA
+						if(j!=duzina/2)  											// Da ne ubaci dva puta sredisnji element
+							pjescani.at(i).at(duzina-j-1).push_back(kont.at(i).at(duzina-j-1).at(k));	// PRAVI DONJU POLU PJESCANOG SATA
+					}	
+				}
+			}
+		return pjescani;
+	}
+template&lt;typename kontejner&gt;
+	auto rotirajUlijevo(const kontejner &amp;kont) -&gt;kontejner {
+		int duzina = kont.size();
+		kontejner rez(duzina);
+		for(int i=0;i&lt;duzina;i++) {
+			rez.at(i).resize(duzina);
+			// Transponiranje matrice
+			for(int j=0;j&lt;duzina;j++) {
+				for(int k=0;k&lt;duzina;k++) {
+					rez.at(i).at(j).push_back(kont.at(i).at(k).at(duzina-j-1));
+				}
+			}
+		}
+		return rez;
+	}
+
+template&lt;typename kontejner&gt;
+	void Izvrni(kontejner &amp;kont) {
+		int duzina = kont.size();
+		for(int i=0;i&lt;duzina;i++) 
+			std::reverse(kont.at(i).begin(),kont.at(i).end());
+	}
+
+template&lt;typename kontejner&gt;
+	auto PjescaniSat(const kontejner &amp;kont,SmjerKretanja smjer) -&gt;kontejner {
+		
+		Ispravan(kont); // Provjera ispravnosti kontejnera
+		
+		kontejner pjescani;
+		if(smjer == SmjerKretanja::GoreDolje || smjer==SmjerKretanja::DoljeGore ) {  // GoreDolje , DoljeGore
+			pjescani = napraviPjescani(kont);  // Ovo je GoreDolje
+			if(smjer==SmjerKretanja::DoljeGore)   // Ako hocemo DoljeGore , treba izvrnuti samo
+				Izvrni(pjescani);
+		}
+		else if(smjer==SmjerKretanja::LijevoDesno || smjer==SmjerKretanja::DesnoLijevo ) { // LijevoDesno , DesnoLijevo
+			pjescani = rotirajUlijevo(kont);    // Rotira sve podmatrice u "lijevo"
+			pjescani = napraviPjescani(pjescani);
+			
+			if(smjer==SmjerKretanja::LijevoDesno )  //  Ako ipak treba LijevoDesno samo izvrni matrice
+				Izvrni(pjescani);
+		}
+		else if(smjer == SmjerKretanja::NaprijedNazad || smjer==SmjerKretanja::NazadNaprijed ) {
+			int duzina = kont.size();
+			pjescani.resize(duzina);			// Pripremam kontejner da napravim pjescani od njega
+			for(int i=0;i&lt;duzina;i++) {           
+				pjescani.at(i).resize(duzina);
+				for(int j=0;j&lt;duzina;j++) {
+					for(int k=0;k&lt;duzina;k++) {  // Prvi redovi svih matrica iz "kont" idu u prvu matricu pjecanog sata,drugi idu u drugu itd...
+						pjescani.at(i).at(j).push_back(kont.at(j).at(i).at(k));
+					}
+				}
+			}
+			pjescani = napraviPjescani(pjescani);  // NaprijedNazad
+			if(smjer==SmjerKretanja::NazadNaprijed)
+				Izvrni(pjescani);
+		}
+		return pjescani;
+	}
+	
+int main ()
+{
+	try {
+		std::cout&lt;&lt;"Unesite dimenziju (x/y/z): ";
+		int n;
+		std::cin&gt;&gt;n;
+		while(!(std::cin) || n&lt;1) {
+			std::cout&lt;&lt;"Dimenzija nije ispravna, unesite opet: ";
+			std::cin&gt;&gt;n;
+		}
+			
+		vector&lt;deque&lt;deque&lt;int&gt;&gt;&gt; kont3D(n);
+		std::cout&lt;&lt;"Unesite elemente kontejnera: ";
+		for(int i=0;i&lt;n;i++) {
+			kont3D.at(i).resize(n);
+			for(int j=0;j&lt;n;j++) {
+				kont3D.at(i).at(j).resize(n);
+				for(int k=0;k&lt;n;k++)
+					std::cin&gt;&gt;kont3D[i][j][k];
+			}
+		}
+		
+		std::cout&lt;&lt;"Unesite smjer kretanja [0 - 5]: ";
+		int izbor;
+		while(!(std::cin&gt;&gt;izbor) || izbor&lt;0 || izbor&gt;5) {
+			std::cout&lt;&lt;"Smjer nije ispravan, unesite opet: ";
+		}
+		auto pjescani = PjescaniSat(kont3D , SmjerKretanja(izbor));
+		std::cout&lt;&lt;"\nPjescani sat unesene matrice je:\n\n";
+		for(int i=0;i&lt;n;i++) {
+			for(int j=0;j&lt;n;j++) {
+				if(j&lt;=n/2)
+					std::cout&lt;&lt;std::setw(j*4)&lt;&lt;"";
+				else	
+					std::cout&lt;&lt;std::setw((n-j-1)*4)&lt;&lt;"";
+				for(int k=0;k&lt;pjescani.at(i).at(j).size();k++) {
+					std::cout&lt;&lt;std::setw(4)&lt;&lt;pjescani.at(i).at(j).at(k);
+				}
+				std::cout&lt;&lt;"\n";
+			}
+			std::cout&lt;&lt;"\n";
+		}
+		return 0;
+	}
+	catch(std::domain_error e ) {
+		std::cout&lt;&lt;"\nIzuzetak: "&lt;&lt;e.what();
+	}
+	catch(std::length_error e ) {
+		std::cout&lt;&lt;"\nIzuzetak: "&lt;&lt;e.what();
+</font>	}
+}</pre>
+</body>
+</html>

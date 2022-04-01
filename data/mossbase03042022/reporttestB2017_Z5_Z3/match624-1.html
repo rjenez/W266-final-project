@@ -1,0 +1,325 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z3/student4128.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z3/student6743.cpp<p></p><pre>
+/B2017/2018: Zadaća 5, Zadatak 3
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+class Datum
+{
+    int dan,mjesec,godina;
+    int DajBrojDanaUMjesecu()const; //pomoćne funkcije
+    int DajBrojDanaUGodini()const;
+    int DajDanUGodini()const;
+public:
+    enum Mjeseci {Januar = 1, Februar, Mart, April, Maj, Juni, Juli, August, Septembar, Oktobar, Novembar, Decembar};
+    enum Dani {Ponedjeljak = 1, Utorak, Srijeda, Cetvrtak, Petak, Subota, Nedjelja};
+    Datum(int d,int m,int g) {
+        this-&gt;Postavi(d,m,g);
+    }
+    Datum(int d, Mjeseci m, int g) {
+        this-&gt;Postavi(d,m,g);
+    }
+    void Postavi(int d,int m, int g);
+    void Postavi(int d, Mjeseci mjesec, int g);
+    int DajDan()const {
+        return dan;
+    }
+    int DajGodinu() const {
+        return godina;
+    }
+    Mjeseci DajMjesec()const;
+    const char* DajImeMjeseca()const;
+    const char* DajImeDanaUSedmici()const;
+    Dani DanUSedmici()const;
+    Datum &amp;operator ++();
+    Datum &amp;operator ++(int);
+    Datum &amp;operator --();
+    Datum &amp;operator --(int);
+    friend Datum operator+(Datum d,int n);
+<a name="1"></a><font color="#00FF00"><a href="match624-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+    friend Datum operator-(Datum d,int n);
+    Datum &amp;operator +=(int n) ;
+    Datum &amp;operator -=(int n) ;
+    friend int operator -(const Datum &amp;d1, const Datum &amp;d2);
+    friend bool operator ==(const Datum &amp;d1, const Datum &amp;d2);
+    friend bool operator &gt;(const Datum &amp;d1, const Datum &amp;d2);
+</font>    friend bool operator &lt;(const Datum &amp;d1, const Datum &amp;d2);
+    friend bool operator !=(const Datum &amp;d1, const Datum &amp;d2);
+<a name="0"></a><font color="#FF0000"><a href="match624-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+    friend bool operator &gt;=(const Datum &amp;d1, const Datum &amp;d2);
+    friend bool operator &lt;=(const Datum &amp;d1, const Datum &amp;d2);
+    friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, const Datum &amp;d) ;
+    friend std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, Datum &amp;d);
+</font>};
+int Datum::DajBrojDanaUGodini()const
+{
+    int broj(365);
+    if((godina % 4 == 0 &amp;&amp; godina % 100 != 0) || godina % 400 == 0) broj++;
+    return broj;
+}
+int Datum::DajBrojDanaUMjesecu()const
+{
+    int broj_dana[12] {31,28,31,30,31,30,31,31,30,31,30,31};
+    if((godina%4==0 &amp;&amp; godina%100!=0) || (godina%400==0)) broj_dana[1]++;
+    return broj_dana[mjesec-1];
+}
+int Datum::DajDanUGodini()const
+{
+    Datum temp(dan,mjesec,godina);
+    int suma(0);
+    for(int i(0); i!=DajMjesec(); i++) {
+        temp.Postavi(1,mjesec-i,godina);
+        suma+=temp.DajBrojDanaUMjesecu();
+    }
+    return suma+dan;
+}
+void Datum::Postavi(int d,int m,int g)
+{
+    int broj_dana[12] {31,28,31,30,31,30,31,31,30,31,30,31};
+    if((g%4==0 &amp;&amp; g%100!=0) || (g%400==0)) broj_dana[1]++;
+    if(g&lt;1800 || d&lt;=0 || m&lt;=0 || m&gt;=13 || d&gt;broj_dana[m-1]) throw std::domain_error("Nelegalan datum");
+    dan=d;
+    mjesec=m;
+    godina=g;
+}
+void Datum::Postavi(int d, Mjeseci mjesec, int g)
+{
+    try {
+        Postavi(d,int(mjesec),g);
+    } catch(...) {
+        throw;
+    }
+}
+<a name="2"></a><font color="#0000FF"><a href="match624-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+const char* Datum::DajImeMjeseca()const
+{
+    const char* mjeseci_imena[] {"Januar","Februar","Mart","April","Maj","Juni","Juli","August","Septembar","Oktobar","Novembar","Decembar"};
+    return mjeseci_imena[this-&gt;DajMjesec()-1];
+</font><a name="4"></a><font color="#FF00FF"><a href="match624-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+}
+
+const char* Datum::DajImeDanaUSedmici() const
+{
+    const char* sedmica_imena[] {"Nedjelja","Ponedjeljak","Utorak","Srijeda","Cetvrtak","Petak","Subota"};
+</font>    static int t[]= {0,3,2,5,0,3,5,1,4,6,2,4};
+    int temp=godina;
+    temp-=mjesec&lt;3;
+    return sedmica_imena[(temp+temp/4-temp/100+temp/400+t[mjesec-1]+dan)%7];
+}
+
+Datum::Dani Datum::DanUSedmici()const
+{
+    static int t[]= {0,3,2,5,0,3,5,1,4,6,2,4};
+    int temp(godina);
+    temp-=mjesec&lt;3;
+    int temp2=((temp+temp/4-temp/100+temp/400+t[mjesec-1]+dan)%7);
+    if(temp2==0) temp2=7;
+    return Dani(temp2);
+}
+
+Datum::Mjeseci Datum::DajMjesec() const
+{
+    Mjeseci m;
+    m=Mjeseci(this-&gt;mjesec);
+    return m;
+}
+Datum &amp;Datum::operator ++()
+{
+    dan++;
+    if(dan&gt;DajBrojDanaUMjesecu()) {
+        mjesec++;
+        dan=1;
+    }
+    if(mjesec&gt;12) {
+        godina++;
+        mjesec=1;
+    }
+    Postavi(dan,mjesec,godina);
+    return *this;
+}
+
+Datum &amp;Datum::operator ++(int)
+{
+    ++(*this);
+    return *this;
+}
+
+Datum &amp;Datum::operator --()
+{
+    dan--;
+    int broj_dana[12] {31,28,31,30,31,30,31,31,30,31,30,31};
+    if((godina%4==0 &amp;&amp; godina%100!=0) || (godina%400==0)) broj_dana[1]++;
+    if(dan&lt;1) {
+        mjesec--;
+        if(mjesec!=0) {
+            Postavi(1,mjesec,godina);
+            dan=broj_dana[mjesec-1];
+        }
+    }
+    if(mjesec==0) {
+        godina--;
+        mjesec=12;
+        Postavi(1,mjesec,godina);
+        dan=broj_dana[mjesec-1];
+    }
+    Postavi(dan,mjesec,godina);
+    return *this;
+}
+
+Datum &amp;Datum::operator --(int)
+{
+    --(*this);
+    return *this;
+}
+
+Datum operator +(Datum d, int n)
+{
+    if(n&lt;0) d-n;
+    else {
+        for(int i=0; i&lt;n; i++) d++;
+    }
+    return d;
+}
+
+Datum operator -(Datum d,int n)
+{
+    if(n&lt;0) d+n;
+    if(n==0) return d;
+    for(int i=0; i&lt;n; i++) d--;
+    return d;
+}
+
+Datum &amp;Datum::operator +=(int n)
+{
+    for(int i=0; i&lt;n; i++)(*this)++;
+    return *this;
+}
+
+Datum &amp;Datum::operator -=(int n)
+{
+    for(int i=0; i&lt;n; i++)(*this)--;
+    return *this;
+}
+
+int operator -(const Datum &amp;d1, const Datum &amp;d2)
+{
+    int suma(0);
+    Datum temp1(d1);
+    Datum temp2(d2);
+    if(d1.godina&gt;d2.godina) {
+        temp1=d2;
+        temp2=d1;
+    }
+    suma+=temp1.DajBrojDanaUGodini()-temp1.DajDanUGodini();
+    temp1.Postavi(1,1,temp1.godina+1);
+    while(temp1.godina&lt;temp2.godina) {
+        suma+=temp1.DajBrojDanaUGodini();
+        temp1.Postavi(1,1,temp1.godina+1);
+    }
+    suma+=temp2.DajDanUGodini();
+    if(d1.godina&lt;d2.godina) suma*=-1;
+    return suma;
+}
+
+bool operator ==(const Datum &amp;d1, const Datum &amp;d2)
+{
+    return (d1.godina==d2.godina &amp;&amp; d1.mjesec==d2.mjesec &amp;&amp; d1.dan==d2.dan);
+}
+
+bool operator !=(const Datum &amp;d1, const Datum &amp;d2)
+{
+    return !(d1==d2);
+}
+bool operator &gt;(const Datum &amp;d1, const Datum &amp;d2)
+{
+    if(d1.godina==d2.godina) return d1.DajDanUGodini()&gt;d2.DajDanUGodini();
+    else return d1.godina&gt;d2.godina;
+}
+
+bool operator &lt;(const Datum &amp;d1, const Datum &amp;d2)
+{
+    if(d1.godina==d2.godina) return d1.DajDanUGodini()&gt;d2.DajDanUGodini();
+    else return d1.godina&lt;d2.godina;
+}
+bool operator &gt;=(const Datum &amp;d1, const Datum &amp;d2)
+{
+    return d1.godina==d2.godina || d1.godina&gt;d2.godina;
+}
+
+bool operator &lt;=(const Datum &amp;d1, const Datum &amp;d2)
+{
+    return d1.godina==d2.godina || d1.godina&lt;d2.godina;
+}
+
+<a name="3"></a><font color="#00FFFF"><a href="match624-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, const Datum &amp;d)
+{
+    tok&lt;&lt;d.DajDan()&lt;&lt;"."&lt;&lt;d.DajImeMjeseca()&lt;&lt;" "&lt;&lt;d.DajGodinu()&lt;&lt;".("&lt;&lt;d.DajImeDanaUSedmici()&lt;&lt;") "&lt;&lt;std::endl;
+</font>    return tok;
+}
+
+std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, Datum &amp;d)
+{
+    char znak1,znak2;
+    tok&gt;&gt;d.dan&gt;&gt;znak1&gt;&gt;d.mjesec&gt;&gt;znak2&gt;&gt;d.godina;
+    if(znak1!='/' || znak2!='/') tok.setstate(std::ios::failbit);
+    int broj_dana[] {31,28,31,30,31,30,31,31,30,31,30,31};
+    if((d.godina%4==0 &amp;&amp; d.godina%100!=0) || (d.godina%400==0)) broj_dana[1]++;
+    if(d.godina&lt;1800 || d.mjesec&lt;1 || d.mjesec&gt;12 || d.dan&lt;1 || d.dan&gt;broj_dana[d.mjesec-1]) tok.setstate(std::ios::failbit);
+    return tok;
+}
+int main ()
+{
+    /*try {
+        Datum d1(16, 2, 2007);
+        Datum d2(26, 8, 1998);
+        d2.Postavi(22, 11, 1998);
+        std::cout &lt;&lt; d1.DajDan() &lt;&lt; std::endl;
+        std::cout &lt;&lt; d1.DajMjesec() &lt;&lt; std::endl;
+        std::cout &lt;&lt; d1.DajGodinu() &lt;&lt; std::endl;
+        std::cout &lt;&lt; d1.DajImeMjeseca() &lt;&lt; std::endl;
+        std::cout &lt;&lt; d1.DajImeDanaUSedmici() &lt;&lt; std::endl;
+        std::cout &lt;&lt; d1.DanUSedmici() &lt;&lt; std::endl;
+        d1++;
+        ++d1;
+        std::cout &lt;&lt; d1 &lt;&lt; std::endl;
+        d1--;
+        --d1;
+        std::cout &lt;&lt; d1 &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Unesite datum: ";
+        Datum d3(1,1,1800);
+        std::cin &gt;&gt; d3;
+        if (!std::cin) std::cout &lt;&lt; "Greska pri unosu" &lt;&lt; std::endl;
+        std::cout &lt;&lt; d3;
+        if (d1==d2) std::cout &lt;&lt; "Jednaki su"  &lt;&lt; std::endl;
+        if (d1!=d2) std::cout &lt;&lt; "Nisu jednaki"  &lt;&lt; std::endl;
+        if (d1&lt;d2) std::cout &lt;&lt; "d1 je manji od d2"  &lt;&lt; std::endl;
+        if (d1&lt;=d2) std::cout &lt;&lt; "d1 je manji ili jednak d2"  &lt;&lt; std::endl;
+        if (d1&gt;d2) std::cout &lt;&lt; "d1 je veci od d2"  &lt;&lt; std::endl;
+        if (d1&gt;=d2) std::cout &lt;&lt; "d1 je veci ili jednak d2"  &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Proslo je " &lt;&lt; d1-d2 &lt;&lt; " dana između " &lt;&lt; d1 &lt;&lt; " i " &lt;&lt; d2 &lt;&lt; std::endl;
+        std::cout &lt;&lt; d2;
+        d2-=44;
+        std::cout &lt;&lt; d2;
+        --d2;
+        std::cout &lt;&lt; d2;
+        d1+=8;
+        std::cout &lt;&lt; d1;
+    } catch(std::exception &amp;iz) {
+        std::cout &lt;&lt; iz.what();
+    }*/
+    return 0;
+
+}</pre>
+</body>
+</html>

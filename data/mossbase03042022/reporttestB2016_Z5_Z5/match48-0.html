@@ -1,0 +1,225 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student7162.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student7162.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+#include &lt;iterator&gt;
+#include &lt;list&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match48-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+class Temperature {
+private:
+    int minimalna, maksimalna;
+    std::list&lt;int&gt; temperature_lista;
+        
+public:
+    // radi
+    Temperature(int x, int y) {
+        if (x &gt; y) throw std::range_error("Nekorektne temperature");
+        else {
+            minimalna = x;
+            maksimalna = y; 
+        }
+    }
+    
+    // radi -&gt; PREPRAVITI: pair !!!!
+    void RegistrirajTemperature(std::pair&lt;int,int&gt; temp_za_upis) {
+        if (temp_za_upis.first&gt;temp_za_upis.second){
+            throw std::range_error("“Nekorektne temperature");
+        } else{
+            temperature_lista.push_back(temp_za_upis.first);
+            temperature_lista.push_back(temp_za_upis.second);
+        } 
+    }
+    
+    // radi
+    int DajBrojRegistriranihTemperatura() const {
+        return temperature_lista.size();
+    }
+    
+    // radi
+    void BrisiSve() {
+        temperature_lista.resize(0);
+    }
+    
+    // radi
+    int DajMinimalnuTemperaturu() const {
+        if (temperature_lista.size() == 0) throw std::range_error("Nema registriranih temperatura");
+        return *(std::min_element(temperature_lista.begin(), temperature_lista.end(), std::less&lt;int&gt;()));
+    }
+    
+    // radi
+    int DajMaksimalnuTemperaturu() const {
+        if (temperature_lista.size() == 0) throw std::range_error("Nema registriranih temperatura");
+        return *(std::max_element(temperature_lista.begin(), temperature_lista.end(), std::less&lt;int&gt;()));
+    }
+    
+    int DajBrojTemperaturaVecihOd (int x) const {
+        if (temperature_lista.size() == 0) throw std::range_error("Nema registriranih temperatura");
+        return std::count_if(temperature_lista.begin(), temperature_lista.end(), std::bind(std::greater&lt;int&gt;(), std::placeholders::_1, x));
+    }
+    
+    // OSTALE Fcije:
+    bool operator !() const;
+    int operator [](int n) const;
+    Temperature &amp;operator += (int x);
+    Temperature &amp;operator -= (int x);
+    Temperature &amp;operator -= (const Temperature &amp;x);
+    friend bool operator == (const Temperature &amp;x, const Temperature &amp;y);
+    friend bool operator != (const Temperature &amp;x, const Temperature &amp;y);
+    friend Temperature operator - (const Temperature &amp;x, const Temperature &amp;y);
+    friend Temperature operator + (const Temperature &amp;x, int y);
+    friend Temperature operator - (const Temperature &amp;x, int y);
+    friend Temperature operator + (int x, const Temperature &amp;y);
+    friend Temperature operator - (int x, const Temperature &amp;y);
+    friend Temperature operator - (const Temperature &amp;x);
+    friend Temperature operator ++ (Temperature &amp;x, int);
+    friend Temperature operator -- (Temperature &amp;x, int);
+    friend Temperature &amp;operator ++ (Temperature &amp;x);
+    friend Temperature &amp;operator -- (Temperature &amp;x);
+};
+
+bool Temperature::operator !()  const{
+    if (temperature_lista.size() == 0) return true;
+    else return false;
+}
+
+int Temperature::operator [](int n) const {
+    std::list&lt;int&gt;::iterator it;
+    if (n &gt; temperature_lista.size() || n &lt; 0) throw std::range_error("Neispravan indeks");
+    for(int i=0; i&lt;n; i++){
+        it++;
+    }
+    return *it;
+}
+
+Temperature &amp;Temperature::operator += (int x) {
+    *this = *this + x;
+    return *this;
+}
+
+Temperature &amp;Temperature::operator -= (int x) {
+    *this = *this - x;
+    return *this;
+}
+
+Temperature &amp;Temperature::operator -= (const Temperature &amp;x) {
+    Temperature pom = *this;
+    if (x.temperature_lista.size() == temperature_lista.size()) {
+        std::transform(pom.temperature_lista.begin(), pom.temperature_lista.end(), x.temperature_lista.begin(), pom.temperature_lista.begin(), std::bind(std::minus&lt;int&gt;(), std::placeholders::_1, std::placeholders::_2));
+        int h = std::count_if(pom.temperature_lista.begin(), pom.temperature_lista.end(), std::bind(std::greater&lt;int&gt;(), std::placeholders::_1, this-&gt;maksimalna));
+        int j = std::count_if(pom.temperature_lista.begin(), pom.temperature_lista.end(), std::bind(std::less&lt;int&gt;(), std::placeholders::_1, this-&gt;minimalna));
+        if (h &gt; 0 || j &gt; 0) throw std::domain_error ("Prekoracen dozvoljeni opseg temperatura");
+        else *this = pom;
+    }   
+    return *this;
+}
+
+Temperature operator - (const Temperature &amp;x) {
+    Temperature pom = x;
+    std::transform(pom.temperature_lista.begin(), pom.temperature_lista.end(), pom.temperature_lista.begin(), std::bind(std::minus&lt;int&gt;(), pom.maksimalna + pom.minimalna, std::placeholders::_1));
+    return pom;
+}
+
+Temperature operator + (const Temperature &amp;x, int y) {
+    Temperature pom = x;
+    int h = std::count_if(x.temperature_lista.begin(), x.temperature_lista.end(), std::bind(std::greater&lt;int&gt;(), std::bind(std::plus&lt;int&gt;(), std::placeholders::_1 , y), x.maksimalna));
+    int j = std::count_if(x.temperature_lista.begin(), x.temperature_lista.end(), std::bind(std::less&lt;int&gt;(), std::bind(std::plus&lt;int&gt;(), std::placeholders::_1 , y), x.minimalna));
+    if (h &gt; 0 || j &gt; 0) throw std::domain_error ("Prekoracen dozvoljeni opseg temperatura");
+    std::transform(pom.temperature_lista.begin(), pom.temperature_lista.end(), pom.temperature_lista.begin(), std::bind(std::plus&lt;int&gt;(), std::placeholders::_1, y));
+    return pom;
+}
+
+Temperature operator - (const Temperature &amp;x, int y) {
+    Temperature pom = x;
+    int h = std::count_if(x.temperature_lista.begin(), x.temperature_lista.end(), std::bind(std::greater&lt;int&gt;(), std::bind(std::minus&lt;int&gt;(), std::placeholders::_1 , y), x.maksimalna));
+    int j = std::count_if(x.temperature_lista.begin(), x.temperature_lista.end(), std::bind(std::less&lt;int&gt;(), std::bind(std::minus&lt;int&gt;(), std::placeholders::_1 , y), x.minimalna));
+    if (h &gt; 0 || j &gt; 0) throw std::domain_error ("Prekoracen dozvoljeni opseg temperatura");
+    std::transform(pom.temperature_lista.begin(), pom.temperature_lista.end(), pom.temperature_lista.begin(), std::bind(std::minus&lt;int&gt;(), std::placeholders::_1, y));
+    return pom;
+
+}
+
+Temperature operator + (int x, const Temperature &amp;y) {
+    return y + x;
+}
+
+Temperature operator - (int x, const Temperature &amp;y) {
+    Temperature pom = y;
+    int h = std::count_if(y.temperature_lista.begin(), y.temperature_lista.end(), std::bind(std::greater&lt;int&gt;(), std::bind(std::minus&lt;int&gt;(), x, std::placeholders::_1), y.maksimalna));
+    int j = std::count_if(y.temperature_lista.begin(), y.temperature_lista.end(), std::bind(std::less&lt;int&gt;(), std::bind(std::minus&lt;int&gt;(), x, std::placeholders::_1), y.minimalna));
+    if (h &gt; 0 || j &gt; 0) throw std::domain_error ("Prekoracen dozvoljeni opseg cijena");
+    std::transform(pom.temperature_lista.begin(), pom.temperature_lista.end(), pom.temperature_lista.begin(), std::bind(std::minus&lt;int&gt;(), x, std::placeholders::_1));
+    return pom;
+}
+
+Temperature operator - (const Temperature &amp;x, const Temperature &amp;y) {
+    if (x.temperature_lista.size() == y.temperature_lista.size() || x.maksimalna == y.maksimalna || y.minimalna == y.minimalna)
+        throw std::domain_error("Nesaglasni operandi");
+        auto pom = x;
+        pom -= y;
+        return pom;
+}
+
+bool operator == (const Temperature &amp;x, const Temperature &amp;y) {
+    if (x.temperature_lista.size() != y.temperature_lista.size()) return false;
+    bool brojac = std::equal(x.temperature_lista.begin(), x.temperature_lista.end(), y.temperature_lista.begin(), std::bind(std::equal_to&lt;int&gt;(), std::placeholders::_1, std::placeholders::_2));
+    if (brojac) return true;
+    else return false;
+}
+
+bool operator != (const Temperature &amp;x, const Temperature &amp;y) {
+    if (x == y) return false;
+    else return true;
+}
+
+Temperature &amp;operator ++(Temperature &amp;x) {
+    try {
+        x = x + 100.;
+        return x;
+    }
+    catch(std::domain_error) {
+        throw std::range_error ("Prekoracen dozvoljeni opseg cijena");
+    }
+}
+
+Temperature &amp;operator --(Temperature &amp;x) {
+    try {
+        x = x - 100.;
+        return x;
+    }
+    catch(std::domain_error) {
+        throw std::range_error ("Prekoracen dozvoljeni opseg cijena");
+    }
+}
+
+Temperature operator ++(Temperature &amp;x, int) {
+    Temperature pomocni = x;
+    ++x;
+    return pomocni;
+}
+
+Temperature operator --(Temperature &amp;x, int) {
+    Temperature pomocni = x;
+    --x;
+    return pomocni;
+}
+    
+// GLAVNA FCIJA    
+int main() {
+    try {
+        std::cout &lt;&lt; "Kompajlira se!";
+        Temperature(10, 20);
+    } catch (std::range_error Izuzetak){
+        std::cout &lt;&lt; Izuzetak.what();
+</font>    }
+    return 0;
+}</pre>
+</body>
+</html>

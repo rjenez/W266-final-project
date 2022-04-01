@@ -1,0 +1,162 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student7438.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student5129.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match652-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 1
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;functional&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+
+using std::vector;
+using std::pair;
+using std::function;
+using std::cin;
+using std::cout;
+</font><a name="3"></a><font color="#00FFFF"><a href="match652-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_5.gif"/></a>
+
+
+function&lt;double(double)&gt; BaricentricnaInterpolacija(vector&lt;pair&lt;double, double&gt;&gt; cvorovi, int d){
+    // Bacanje izuzetka
+    if(d&lt;0 || d&gt;cvorovi.size()) throw std::domain_error("Nedozvoljen red");
+</font>    for(int i=0; i&lt;cvorovi.size(); i++){
+        for(int j=i; j&lt;cvorovi.size(); j++){
+            if(cvorovi[i].first == cvorovi[j].first) throw std::domain_error("Neispravni cvorovi");
+        }
+    }
+    
+    // Funkcija koju vracamo, uz potrebne parametre unutar lambda zatvorenja
+    return [cvorovi, d](double x){
+        double brojnik(0), nazivnik(0);
+        int vrh, k, n(cvorovi.size());
+        for(int i=0; i&lt;n; i++){
+            // Racuna Max za tezinski koeficijent
+            if(i-d &gt; 1) k=i-d;
+            else k=1;
+            // Racuna Min za tezinski koeficijent
+            if(n-d &lt; i) vrh=n-d;
+            else vrh=i;
+            
+            // Sumiranje tezinskog koeficijenta
+            double tk(0);
+            for(; k&lt;=vrh; k++){
+                double produkt(1);
+                // Racuna produkt koji se sumira
+                for(int j=k; j&lt;k+d; j++){
+                    // Uslov proizvoda tako da nazivnik ne bude nula
+                    if(j==i) continue;
+                    
+                    produkt*= 1/(cvorovi[i].first - cvorovi[j].first);
+                }
+                
+                // Jedinica ispred produkta koja ulazi u sumu
+                int jedinica(1);
+                if((k-1)%2) jedinica=-1;
+                tk += jedinica*produkt;
+            }
+            
+            nazivnik += tk/(x-cvorovi[i].first);
+<a name="0"></a><font color="#FF0000"><a href="match652-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+            brojnik += nazivnik * cvorovi[i].second;
+        }
+        return brojnik/nazivnik;
+    };
+    
+}
+
+function&lt;double(double)&gt; BaricentricnaInterpolacija(function&lt;double(double)&gt; f, double xmin, double xmax, double dx, int d){
+    // Izuzetak
+    if(xmin&gt;xmax || dx&lt;=0) throw std::domain_error("Nekorektni parametri");
+    
+    vector&lt;pair&lt;double, double&gt;&gt; cvorovi;
+</font>    pair&lt;double, double&gt; par;
+    for(;;){
+        // Formira par clana i vrijednosti funkcije za taj clan, i ubacuje ih u vektor
+        par = std::make_pair(xmin, f(xmin));
+        cvorovi.push_back(par);
+        // Prekida petlju da ne prekoraci
+        if(xmin+dx &gt; xmax) break;
+        // Povecava se za korak interpolacije DX
+        xmin+=dx;
+    }
+    
+    // Vraca aproksimativnu funkciju koja je ista kao i obicna, samo sto joj proslijedimo drugacije cvorove
+    return BaricentricnaInterpolacija(cvorovi, d);
+}
+
+int main (){
+    cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 -aproksimacija): ";
+    int opcija;
+    cin &gt;&gt; opcija;
+    
+    if(opcija==1){
+        try{
+            cout &lt;&lt; "Unesite broj cvorova: ";
+            int n;
+            cin &gt;&gt; n;
+            
+            cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+            vector&lt;pair&lt;double, double&gt;&gt; cvorovi;
+            for(int i=0; i&lt;n; i++){
+                double x, y;
+                cin &gt;&gt; x &gt;&gt; y;
+                auto par(std::make_pair(x, y));
+                cvorovi.push_back(par);
+            }
+            
+            cout &lt;&lt; "Unesite red interpolacije";
+            int d;
+            cin &gt;&gt; d;
+            
+            for(;;){
+                cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                double arg;
+                cin &gt;&gt; arg;
+                if(!cin) break;
+                cout &lt;&lt; "f(" &lt;&lt; arg &lt;&lt; ") = " &lt;&lt; BaricentricnaInterpolacija(cvorovi, d)(arg);
+            }
+        } catch(std::domain_error greska){
+            cout &lt;&lt; greska.what();
+        }
+    }
+    
+    if(opcija==2){
+        try{
+            cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+<a name="2"></a><font color="#0000FF"><a href="match652-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+            int xmin, xmax, dx;
+            cin &gt;&gt; xmin &gt;&gt; xmax &gt;&gt; dx;
+            
+            cout &lt;&lt; "Unesite red interpolacije";
+            int d;
+            cin &gt;&gt; d;
+            
+            for(;;){
+                cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                double arg;
+                cin &gt;&gt; arg;
+                if(!cin) break;
+</font>                auto fun(BaricentricnaInterpolacija([](double x){return x*x + sin(x);} ,xmin, xmax, dx, d));
+                cout &lt;&lt; "f(" &lt;&lt; arg &lt;&lt; ") = " &lt;&lt; BaricentricnaInterpolacija(fun, xmin, xmax, dx, d)(arg);
+                cout &lt;&lt; "fapprox(" &lt;&lt; arg &lt;&lt; ") = " &lt;&lt; fun(arg) &lt;&lt; std::endl;
+            }
+        } catch(std::domain_error greska){
+            cout &lt;&lt; greska.what();
+        }
+    }
+    
+    
+	return 0;
+}</pre>
+</body>
+</html>

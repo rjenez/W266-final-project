@@ -1,0 +1,290 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z1/student7802.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z1/student7802.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match110-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 1)
+//Autotestovi by Eldar Kurtic (mail: ekurtic3@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;new&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;cstring&gt;
+using std::string;
+using std::cin;
+using std::cout;
+using std::endl;
+
+struct Korisnik{
+    
+    string ime, prezime,adresa,telefon;
+};
+
+class Knjiga{ 
+    const string nasl,imep,zanr;
+    const int godina;
+    Korisnik *zaduzen;
+   
+    public:
+   
+    Knjiga(string n,string i,string z, int g) : nasl(n),imep(i),zanr(z), godina(g), zaduzen(nullptr){}
+    string DajNaslov() const {
+        return nasl;
+    }
+    
+    string DajAutora()const{
+        return imep;
+    }
+    string DajZanr() const{
+        return zanr;
+    }
+    int DajGodinuIzdavanja()const{
+        return godina;
+    }
+    Korisnik* DajKodKogaJe() const {
+        return zaduzen;
+    }
+    void ZaduziKnjigu(Korisnik &amp;a){
+        zaduzen=&amp;a;
+    }
+    void RazduziKnjigu(){
+        zaduzen=nullptr;
+    }
+    bool DaLiJeZaduzena()const{
+        return zaduzen!=nullptr;
+    }
+  
+};
+
+
+class Biblioteka{
+    std::map&lt;int,Knjiga *&gt; kn;
+    std::map&lt;int,Korisnik*&gt;ko;
+    public:
+    Biblioteka(){}
+    /*Biblioteka(const Biblioteka &amp;a): kn-&gt;second(new Knjiga[a.kn.size()]),ko-&gt;second(new Korisnik[a.ko.size()]){
+        kn.reize(a.kn.size());
+        ko.reize(a.ko.size());
+        auto it1(kn.begin());
+        for(auto it(a.kn.begin();it!=a.kn.end();it++){
+            it1-&gt;first=it-&gt;first;
+            it1++;
+        }
+        std::copy(a.kn.second,a.kn.second+a.kn.size(),kn.second);
+        
+        std::copy(a.ko.second,a.ko.second+a.k0.size(),ko.second);
+        
+    }*/
+    
+    
+    ~Biblioteka(){
+        for(auto i(kn.begin());i!=kn.end();i++){
+            delete i-&gt;second;
+        }
+        for(auto i(ko.begin());i!=ko.end();i++){
+            delete i-&gt;second;
+        }
+    }
+    
+    bool ProvjeriClanskiBroj(int clb)const{
+        if(ko.find(clb)!=ko.end()) return true;
+        return false;
+    }
+    bool ProvjeriClanskiBroj1(int clb)const{
+        return ko.find(clb)==ko.end();
+        
+    }
+    bool ProvjeriEvidenciskiBroj(int clb)const{
+        if(kn.find(clb)!=kn.end()) return true;
+        return false;
+    }
+    bool ProvjeriEvidenciskiBroj1(int clb)const{
+        return kn.find(clb)==kn.end();
+        
+        
+    }
+    bool ProvjeriEvidenciskiBroj2(int clb)const{
+          auto it(kn.find(clb));
+          return it-&gt;second-&gt;DaLiJeZaduzena();
+    }
+    void RegistrirajNovogKorisnika(int clbroj,string ime,string prezime,string adresa,string brojtel){
+        if(ProvjeriClanskiBroj(clbroj)) throw std::logic_error("Korisnik vec postoji");
+        Korisnik kor;
+        kor.ime=ime;kor.prezime=prezime;kor.adresa=adresa;kor.telefon=brojtel;
+        ko.insert(std::make_pair(clbroj,new Korisnik(kor)));
+       
+    }
+    void RegistrirajNovuKnjigu(int evbroj,string naslov,string pisac,string zanr,int god){
+        if(ProvjeriEvidenciskiBroj(evbroj)) throw std::logic_error("Knjiga vec postoji");
+        kn.insert(std::make_pair(evbroj,new Knjiga(naslov,pisac,zanr,god)));
+    }
+    Korisnik&amp; NadjiKorisnika(int clanski)const{
+        auto it(ko.find(clanski));
+        if(it==ko.end()) throw std::logic_error("Korisnik nije nadjen");
+        return *(it-&gt;second);
+    }
+    Knjiga&amp; NadjiKnjigu(int evbroj)const{
+        auto it(kn.find(evbroj));
+        if(it==kn.end()) throw std::logic_error("Knjiga nije nadjena");
+        return *(it-&gt;second);
+        
+    }
+    void IzlistajKorisnike()const{
+        for(auto i(ko.begin());i!=ko.end();i++){
+        cout &lt;&lt;endl;
+        cout &lt;&lt; "Clanski broj: " &lt;&lt;i-&gt;first;
+        cout &lt;&lt; "\nIme i prezime: " &lt;&lt;i-&gt;second-&gt;ime&lt;&lt;" "&lt;&lt;i-&gt;second-&gt;prezime;
+        cout &lt;&lt; "\nAdresa: " &lt;&lt;i-&gt;second-&gt;adresa;
+        cout &lt;&lt; "\nBroj telefona: " &lt;&lt;i-&gt;second-&gt;telefon&lt;&lt; endl;
+        
+    }}
+    void IzlistajKnjige()const{
+        for(auto i(kn.begin());i!=kn.end();i++){
+        cout &lt;&lt;endl;
+        cout &lt;&lt; "Evidencijski broj: " &lt;&lt;i-&gt;first;
+        cout &lt;&lt; "\nNaslov: " &lt;&lt;i-&gt;second-&gt; DajNaslov();
+        cout &lt;&lt; "\nPisac: " &lt;&lt;i-&gt;second-&gt;DajAutora();
+        cout &lt;&lt; "\nZanr: " &lt;&lt;i-&gt;second-&gt; DajZanr(); 
+        cout &lt;&lt; "\nGodina izdavanja: " &lt;&lt;i-&gt;second-&gt;DajGodinuIzdavanja();
+        if(i-&gt;second-&gt;DaLiJeZaduzena())
+            cout&lt;&lt;"\nZaduzena kod korisnika: "&lt;&lt;i-&gt;second-&gt;DajKodKogaJe()-&gt;ime&lt;&lt;" "&lt;&lt;i-&gt;second-&gt;DajKodKogaJe()-&gt;prezime;
+        cout&lt;&lt;endl;
+    }}
+    void ZaduziKnjigu(int evbroj,int clbroj){
+        if(ProvjeriEvidenciskiBroj1(evbroj)) throw std::logic_error("Knjiga nije nadjena");
+        if(ProvjeriEvidenciskiBroj2(evbroj)) throw std::logic_error("Knjiga vec zaduzena");
+        if(ProvjeriClanskiBroj1(clbroj)) throw std::logic_error("Korisnik nije nadjen");
+        auto it1(kn.find(evbroj));
+        auto it2(ko.find(clbroj));
+        it1-&gt;second-&gt;ZaduziKnjigu(*(it2-&gt;second));
+    }
+    void RazduziKnjigu(int evbroj){
+        if(ProvjeriEvidenciskiBroj1(evbroj)) throw std::logic_error("Knjiga nije nadjena");
+        if(!(ProvjeriEvidenciskiBroj2(evbroj))) throw std::logic_error("Knjiga nije zaduzena");
+        auto it1(kn.find(evbroj));
+        it1-&gt;second-&gt;Knjiga::RazduziKnjigu();
+    }
+    void PrikaziZaduzenja(int clbroj)const{
+        if(ProvjeriClanskiBroj1(clbroj)) throw std::logic_error("Korisnik nije nadjen");
+        
+        bool dal_je(false);
+        
+        auto it(ko.find(clbroj));
+        string ime1(it-&gt;second-&gt;ime);
+        for(auto it1(kn.begin());it1!=kn.end();it1++){
+            if(it1-&gt;second-&gt;DaLiJeZaduzena()==true){
+                if(it1-&gt;second-&gt;DajKodKogaJe()-&gt;ime==ime1){
+                    cout &lt;&lt; "Evidencijski broj: " &lt;&lt;it1-&gt;first;
+                    cout &lt;&lt; "\nNaslov: " &lt;&lt;it1-&gt;second-&gt; DajNaslov();
+                    cout &lt;&lt; "\nPisac: " &lt;&lt;it1-&gt;second-&gt;DajAutora();
+                    cout &lt;&lt; "\nZanr: " &lt;&lt;it1-&gt;second-&gt; DajZanr(); 
+                    cout &lt;&lt; "\nGodina izdavanja: " &lt;&lt;it1-&gt;second-&gt;DajGodinuIzdavanja()&lt;&lt;endl;
+                    dal_je=true;
+                }
+            }
+        }
+        if(!dal_je) cout&lt;&lt;"Nema zaduzenja za tog korisnika!";
+    }
+};
+
+
+int main ()
+{
+    Biblioteka b1;
+    int n(10);
+    while(n!=0){
+        cout&lt;&lt;"Unesite komandu: "&lt;&lt;endl&lt;&lt;"1 - Za registraciju novog korisnika"&lt;&lt;endl&lt;&lt;"2 - Za registraciju nove knjige"&lt;&lt;endl&lt;&lt;"3 - Za izlistavanje svih njiga"&lt;&lt;endl;
+        cout&lt;&lt;"4 - Za izlistavanje svih korisnika"&lt;&lt;endl&lt;&lt;"5 - Za zaduziti knjigu"&lt;&lt;endl&lt;&lt;"6 - Za razduziti knjigu"&lt;&lt;endl&lt;&lt;"7 - Za gledanje zaduzenja korisnika"&lt;&lt;endl;
+        cout&lt;&lt;"0 - Za zavrsetak programa"&lt;&lt;endl;
+        cin&gt;&gt;n;
+   if(n==1){
+        int clbroj;
+        string ime,prezime,adresa,brojtel;
+        cout&lt;&lt;"Clanski broj: ";
+        cin&gt;&gt;clbroj;
+        cout&lt;&lt;"Ime i prezime: ";
+        cin.ignore(10000,'\n');
+        cin&gt;&gt;ime;
+        cin&gt;&gt;prezime;
+        cout&lt;&lt;"Adresa: ";
+        cin.ignore(10000,'\n');
+        std::getline(cin,adresa);
+        cout&lt;&lt;"Broj telefona: ";
+        std::getline(cin,brojtel);
+        try{
+            b1.RegistrirajNovogKorisnika(clbroj,ime,prezime,adresa,brojtel);
+        }catch(std::logic_error e){
+            cout&lt;&lt;e.what()&lt;&lt;endl;
+        }
+    }
+    else if(n==2){
+        int evbroj;
+        string naslov,pisac,zanr;
+        cout&lt;&lt;"Evidencijski broj: ";
+        cin&gt;&gt;evbroj;
+        cout&lt;&lt;"Naslov: ";
+        cin.ignore(10000,'\n');
+        cin&gt;&gt;naslov;
+        cout&lt;&lt;"Pisac: ";
+        cin.ignore(10000,'\n');
+        std::getline(cin,pisac);
+        cout&lt;&lt;"Zanr: ";
+        std::getline(cin,zanr);
+        cout&lt;&lt;endl;
+        cout&lt;&lt;"Godina izdavanja: ";
+        int god;
+        cin&gt;&gt;god;
+        try{
+           b1.RegistrirajNovuKnjigu(evbroj,naslov,pisac,zanr,god); 
+        }catch(std::logic_error e){
+        cout&lt;&lt;e.what()&lt;&lt;endl;
+        }
+    }
+    else if(n==3){
+        b1.IzlistajKnjige();
+    }else if(n==4){
+        b1.IzlistajKorisnike();
+    }else if(n==5){
+        cout&lt;&lt;"Unesite evidenciski broj knjige koj zelite zaduziti: ";
+        int ev;
+        cin&gt;&gt;ev;
+        cout&lt;&lt;"Unesite clanski broj korisnika koji zaduzuje knjigu: ";
+        int cb;
+        cin&gt;&gt;cb;
+        try{
+            b1.ZaduziKnjigu(ev,cb);
+        }catch(std::logic_error e){
+        cout&lt;&lt;e.what()&lt;&lt;endl;
+        }
+    }
+    else if(n==6){
+        cout&lt;&lt;"Unesite evidenciski broj knjige koju zelite razduziti: ";
+        int ev;
+        cin&gt;&gt;ev;
+        try{
+            b1.RazduziKnjigu(ev);
+        }catch(std::logic_error e){
+        cout&lt;&lt;e.what()&lt;&lt;endl;
+        }
+    }else if(n==7){
+      cout&lt;&lt;"Unesite clanski broj korisnika cija zaduzenja zelite pogledati: ";
+      int cb;
+      cin&gt;&gt;cb;
+      try{
+         b1.PrikaziZaduzenja(cb); 
+      }catch(std::logic_error e){
+        cout&lt;&lt;e.what()&lt;&lt;endl;
+    }
+    }else if(n==0) break;
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

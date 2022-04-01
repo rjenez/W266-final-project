@@ -1,0 +1,256 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8986.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8006.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;cstring&gt;
+
+using std::cin;
+using std::cout;
+
+<a name="3"></a><font color="#00FFFF"><a href="match355-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+int PotencijalniKrivci(char **&amp;refKrivci, std::vector&lt;std::string&gt; optuzeni){
+    
+    char ** krivci(nullptr);
+    try{
+        krivci = new char*[optuzeni.size()];
+</font>    }
+    catch(...){
+        delete[] krivci;
+        throw std::bad_alloc();
+    }
+    try{
+<a name="0"></a><font color="#FF0000"><a href="match355-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+        for(int i = 0; i &lt; optuzeni.size(); i++)
+            krivci[i] = nullptr;
+        for(int i = 0; i &lt; optuzeni.size(); i++){
+            krivci[i] = new char[optuzeni[i].length() + 1];
+            for(int j = 0; j &lt; optuzeni[i].length(); j++){
+</font>                krivci[i][j] = optuzeni[i][j];
+            }
+<a name="4"></a><font color="#FF00FF"><a href="match355-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+            krivci[i][optuzeni[i].length()] = '\0';
+        }
+    }
+    catch(...){
+        for(int i = 0; i &lt; optuzeni.size(); i++)
+            delete[] krivci[i];
+        delete[] krivci;
+</font>        throw std::bad_alloc();
+    }
+    refKrivci = krivci;
+    return optuzeni.size();
+}
+
+int OdbaciOptuzbu(char **&amp;refKrivci, int velicina, std::string nevini){
+    bool isti;
+    for(int i = 0; i &lt; velicina; i++){
+        isti = false;
+//        cout &lt;&lt; i &lt;&lt; "--" &lt;&lt; sizeof(refKrivci[i]) &lt;&lt; "--" &lt;&lt; nevini.length() &lt;&lt; std::endl;
+        if(strlen(refKrivci[i]) != nevini.length()) continue;
+        for(int j = 0; j &lt; nevini.length(); j++){
+            if(refKrivci[i][j] != nevini[j]){
+                 isti = false;
+                 break;
+            }
+            else isti = true;
+        }
+        if(isti == true){
+             refKrivci[i] = nullptr;
+             break;
+        }
+    }
+    if(!isti){
+        std::string ispis("Osoba sa imenom  nije bila optuzena");
+        throw std::domain_error(ispis.substr(0, 16) + nevini + ispis.substr(16, 19));
+    }
+    
+    int brojNull(0);
+    for(int i = 0; i &lt; velicina; i++)
+        if(refKrivci[i] == nullptr)
+            brojNull++;
+    if(brojNull &lt;= 10) return velicina;
+    else{
+        char ** noviKrivci = nullptr;
+        try{
+            noviKrivci = new char*[velicina - brojNull];
+        }
+        catch(...){
+            delete[] noviKrivci;
+            throw std::bad_alloc();
+        }
+        int br(0);
+        for(int i = 0; i &lt; velicina - brojNull; i++){
+            while (refKrivci[br] == nullptr) br++;
+            noviKrivci[i] = refKrivci[br];
+            br++;
+        }
+        delete[] refKrivci;
+        refKrivci = noviKrivci;
+    }
+    return velicina - brojNull;
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match355-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+int DodajOptuzbu(char **&amp;refKrivci, int velicina, std::string krivac){
+    
+    char *noviKrivac(nullptr);
+    try{
+        noviKrivac = new char [krivac.length() + 1];
+    }
+    catch(...){
+        delete[] noviKrivac;
+</font>        for(int i = 0; i &lt; velicina; i++)
+            delete[] refKrivci[i];
+<a name="2"></a><font color="#0000FF"><a href="match355-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+        delete[] refKrivci;
+        throw std::bad_alloc();
+    }
+    int i;
+    for(i = 0; i &lt; krivac.length(); i++)
+        noviKrivac[i] = krivac[i];
+    noviKrivac[i] = '\0';
+</font>    bool ima_nullptr;
+    for(int i = 0; i &lt; velicina; i++){
+        if(i == velicina - 1 &amp;&amp; refKrivci[i] != nullptr)
+            ima_nullptr = false;
+        if(refKrivci[i] == nullptr){
+            refKrivci[i] = noviKrivac;
+            ima_nullptr = true;
+            break;
+        }
+    }
+    if(ima_nullptr) return velicina;
+    
+    char **konacniKrivci(nullptr);
+    try{
+        konacniKrivci = new char*[++velicina];
+    }
+    catch(...){
+        delete[] konacniKrivci;
+        throw std::bad_alloc();
+    }
+    try{
+        for(int i = 0; i &lt; velicina; i++){
+            if(i == velicina - 1){
+                konacniKrivci[i] = new char [krivac.length() + 1];
+                break;
+            }
+            try{
+                konacniKrivci[i] = new char [strlen(refKrivci[i]) + 1];
+                for(int j = 0; j &lt; strlen(refKrivci[i]) + 1; j++){
+                    konacniKrivci[i][j] = refKrivci[i][j];
+                }
+            }
+            catch(...){
+                delete[] konacniKrivci[i];
+                konacniKrivci[i] = nullptr;
+                throw std::bad_alloc();
+            }
+        }
+        for(int i = 0; i &lt; krivac.length() + 1; i++){
+            konacniKrivci[velicina - 1][i] = noviKrivac[i];
+        }
+    }
+    catch(...){
+        for(int i = 0; i &lt; velicina; i++)
+            delete[] konacniKrivci[i];
+        delete[] konacniKrivci;    
+        throw std::bad_alloc();
+    }
+    for(int i = 0; i &lt; velicina - 1; i++)
+        delete[] refKrivci[i];
+    delete[] refKrivci;
+    refKrivci = konacniKrivci;
+    
+    return velicina;
+}
+
+void IzlistajOptuzbu(char **Krivci, int velicina){
+    for(int i = 0; i &lt; velicina; i++){
+        if(Krivci[i] != nullptr){
+            for(int j = 0; j &lt; strlen(Krivci[i]); j++)
+                cout &lt;&lt; Krivci[i][j];
+            cout &lt;&lt; std::endl;
+        }
+    }
+}
+
+int main ()
+{
+    int velicina;
+    char **pokKrivci;
+    cout &lt;&lt; "Koliko potencijalnih krivaca zelite unijeti? " &lt;&lt; std::endl;
+    cin &gt;&gt; velicina;
+    try{    
+        std::vector&lt;std::string&gt; krivci(velicina);
+        cin.ignore(10000, '\n');
+        cout &lt;&lt; "Unesite potencijalne krivce: " &lt;&lt; std::endl;
+        for(std::string &amp;x : krivci){
+            std::getline(cin, x);
+        }
+        velicina = PotencijalniKrivci(pokKrivci, krivci);
+        int opcija(1);
+        while(opcija != 0){
+            cout &lt;&lt; "Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: " &lt;&lt; std::endl;
+            cin &gt;&gt; opcija;
+            std::string novi;
+            switch(opcija){
+                case 1 :
+                    try{
+                        cout &lt;&lt; "Unesite ime novog optuzenog: " &lt;&lt; std::endl;
+                        cin.ignore(10000, '\n');
+                        std::getline(cin, novi);
+                        velicina = DodajOptuzbu(pokKrivci, velicina, novi);
+                        break;
+                    }
+                    catch(...){
+                        cout &lt;&lt; "Memorijska greska";
+                        return 0;
+                    }
+                case 2 :
+                    try{
+                        cout &lt;&lt; "Unesite ime koje zelite izbaciti: " &lt;&lt; std::endl;
+                        cin.ignore(10000, '\n');
+                        std::getline(cin, novi);
+                        velicina = OdbaciOptuzbu(pokKrivci, velicina, novi);
+                        break;
+                    }
+                    catch(std::domain_error x){
+                        cout &lt;&lt; x.what();
+                        for(int i = 0; i &lt; velicina; i++)
+                            delete[] pokKrivci[i];
+                        delete[] pokKrivci;
+                        return 0;
+                    }
+                    catch(...){
+                        cout &lt;&lt; "Memorijska greska";
+                        return 0;
+                    }
+                case 3 :
+                    IzlistajOptuzbu(pokKrivci, velicina);
+                    break;
+            }
+        }
+    }
+    catch(...){
+        cout &lt;&lt; "Memorijska greska";
+    }
+    for(int i = 0; i &lt; velicina; i++)
+        delete[] pokKrivci[i];
+    delete[] pokKrivci;
+	return 0;
+}</pre>
+</body>
+</html>

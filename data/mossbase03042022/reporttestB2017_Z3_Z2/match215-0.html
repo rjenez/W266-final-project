@@ -1,0 +1,143 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student2664.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student2664.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match215-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;tuple&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+
+using std::logic_error;
+using std::make_tuple;
+using std::make_pair;
+using std::tolower; //??
+using std::getline;
+using std::string;
+using std::vector;
+using std::tuple;
+using std::cout;
+using std::endl;
+using std::cin;
+using std::map;
+using std::set;
+using std::get;
+typedef map&lt;string, vector&lt;string&gt;&gt; Knjiga;
+typedef map&lt;string, set&lt;tuple&lt;string, int, int&gt;&gt;&gt; Pojmovi;
+typedef set&lt;tuple&lt;string, int, int&gt;&gt; Skup;
+
+bool SlovoCifra(char c){
+    if((c &gt;= 'A' &amp;&amp; c &lt;= 'Z') || (c &gt;= 'a' &amp;&amp; c &lt;= 'z') || (c &gt;= '0' &amp;&amp; c &lt;= '9')) return true;
+    return false;
+}
+void PretvoriUMala(string &amp;s){
+    for(char &amp;c : s) c = tolower(c);
+}
+Pojmovi KreirajIndeksPojmova(const Knjiga &amp;k){
+    Pojmovi p;
+    for(auto it=k.begin(); it != k.end(); it++){
+        string poglavlje(it-&gt;first);
+        for(int j=0; j &lt; it-&gt;second.size(); j++){
+            const string tekst((it-&gt;second)[j]);
+            
+            int neslovonecifra(1), l(0);
+            while(l&lt;tekst.size()){
+                if(!SlovoCifra(tekst[l])) neslovonecifra=1;
+                else if(neslovonecifra == 1){
+                    neslovonecifra = 0;
+                    int duzina(1);
+                    l++;
+                    while(SlovoCifra(tekst[l]) &amp;&amp; l&lt;tekst.size()){
+                        l++;
+                        duzina++;
+                    }
+                    string rijec(tekst.substr(l-duzina, duzina));
+                    PretvoriUMala(rijec);
+                    p[rijec].insert(make_tuple(poglavlje, j+1, l-duzina));
+                    l--; 
+                }
+                l++;
+            }
+            
+        }
+    }
+    return p;
+}
+Skup PretraziIndeksPojmova(string rijec, Pojmovi p){
+    if(!p.count(rijec)) throw logic_error("Pojam nije nadjen");
+    return p[rijec];
+}
+void IspisiTapl(const tuple&lt;string, int, int&gt; &amp;tapl){
+    cout &lt;&lt; get&lt;0&gt; (tapl) &lt;&lt; "/" &lt;&lt; get&lt;1&gt; (tapl) &lt;&lt; "/" &lt;&lt; get&lt;2&gt; (tapl);
+}
+void IspisiIndeksPojmova(const Pojmovi &amp;p){
+    for(auto par : p){
+        cout &lt;&lt; par.first &lt;&lt; ": ";
+        auto skup(par.second);
+        int i=0;
+        for(auto it = skup.begin(); it != skup.end(); it++, i++){
+            IspisiTapl(*it);
+            if(i == skup.size() - 1) cout &lt;&lt; " ";
+            else cout &lt;&lt; ", ";
+  
+        }
+        cout &lt;&lt; endl;
+    }
+}
+
+int main (){
+    Knjiga k;
+    do{
+        string poglavlje, sadrzaj;
+        cout &lt;&lt; "Unesite naziv poglavlja: ";
+        getline(cin, poglavlje);
+        if(poglavlje == ".") break;
+        int i(0);
+        vector&lt;string&gt; vec;
+        do{
+            cout &lt;&lt; "Unesite sadrzaj stranice " &lt;&lt; i+1 &lt;&lt; ": ";
+            getline(cin, sadrzaj);
+            if(sadrzaj == ".") break;
+            vec.push_back(sadrzaj);
+            i++;
+        }while(1);
+        k.insert(make_pair(poglavlje, vec));
+    }while(1);
+    
+    
+    Pojmovi pojmovi(KreirajIndeksPojmova(k));
+    cout &lt;&lt; "\nKreirani indeks pojmova: " &lt;&lt; endl;
+    IspisiIndeksPojmova(pojmovi);
+    
+    do{
+        string rijec;
+        cout &lt;&lt; "\nUnesite rijec: ";
+        getline(cin, rijec);
+        if(rijec == ".") break;
+        try{
+            Skup skup(PretraziIndeksPojmova(rijec, pojmovi));
+            for(auto tapl : skup){
+                IspisiTapl(tapl);
+                cout &lt;&lt; " ";
+            }
+        }
+        catch(logic_error){
+            cout &lt;&lt; "Unesena rijec nije nadjena!";
+        }
+    }while(1);
+</font>    
+    
+	return 0;
+}
+</pre>
+</body>
+</html>

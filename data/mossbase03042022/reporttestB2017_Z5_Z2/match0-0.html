@@ -1,0 +1,472 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z2/student1688.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z2/student1688.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match0-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+struct Uposlenik {
+ char ime[20], adresa[50];
+ int telefon;
+};
+class Imenik {
+ Uposlenik *uposlenici;
+ int kapacitet, br_uposlenika;
+public:
+ explicit Imenik(int kapacitet): kapacitet(kapacitet), br_uposlenika(0),
+ uposlenici(new Uposlenik[kapacitet]) {}
+ ~Imenik() {
+ delete[] uposlenici;
+ }
+ Imenik(const Imenik &amp;);
+ Imenik &amp;operator =(const Imenik &amp;);
+ void DodajUposlenika(const char*, const char*, int);
+ void DodajUposlenika(const Uposlenik &amp;u) {
+ if(kapacitet==br_uposlenika) throw "Nema mjesta!";
+ uposlenici[br_uposlenika++]=u;
+ }
+ void DodajUposlenika(Uposlenik *u) {
+ if(kapacitet==br_uposlenika) throw "Nema mjesta!";
+ uposlenici[br_uposlenika++]=*u;
+ }
+ void IspisiUposlenika(const char*) const;
+ void IspisiSveNaSlovo(char) const;
+ void IspisiImenik();
+ int &amp;operator [](const char*);
+ int operator [](const char*) const;
+ bool operator !() const {
+ return br_uposlenika==0;
+ }
+ friend Imenik operator +(const Imenik &amp;, const Imenik &amp;);
+ void Sacuvaj(const char*);
+ void Obnovi(const char*);
+};
+void Imenik::Obnovi(const char* ime_datoteke) {
+ ifstream ulaz(ime_datoteke, ios::in | ios::binary);
+ if(!ulaz) throw "Datoteka ne postoji!";
+ delete[] uposlenici;
+ ulaz.read((char*)this, sizeof *this);
+ uposlenici=new Uposlenik[kapacitet];
+ ulaz.read((char*)uposlenici, br_uposlenika*sizeof(Uposlenik));
+ if(!ulaz) throw "Problem sa citanjem iz datoteke!";
+}
+void Imenik::Sacuvaj(const char* ime_datoteke) {
+ ofstream izlaz(ime_datoteke, ios::out | ios::binary);
+ izlaz.write((char*)this, sizeof *this);
+ izlaz.write((char*)uposlenici, br_uposlenika*sizeof(Uposlenik));
+ if(!izlaz) throw "Problem sa upisom u datoteku!";
+}
+Imenik operator +(const Imenik &amp;i1, const Imenik &amp;i2) {
+ Imenik i3(i1.kapacitet+i2.kapacitet);
+ for(int i(0); i&lt;i1.br_uposlenika; i++) i3.DodajUposlenika(i1.uposlenici[i]);
+ for(int i(0); i&lt;i2.br_uposlenika; i++) i3.DodajUposlenika(i2.uposlenici[i]);
+ return i3;
+}
+int Imenik::operator [](const char *ime) const {
+ for(int i(0); i&lt;br_uposlenika; i++)
+ if(strcmp(uposlenici[i].ime, ime)==0) return uposlenici[i].telefon;
+ throw "Nepostojeci korisnik!";
+}
+int &amp;Imenik::operator [](const char *ime) {
+ for(int i(0); i&lt;br_uposlenika; i++)
+ if(strcmp(uposlenici[i].ime, ime)==0) return uposlenici[i].telefon;
+ throw "Nepostojeci korisnik!";
+}
+void Imenik::IspisiImenik() {
+ sort(uposlenici, uposlenici+br_uposlenika, [](const Uposlenik &amp;u1, const Uposlenik &amp;
+u2) {
+ return strcmp(u1.ime, u2.ime)&lt;=0;
+ });
+ for(int i(0); i&lt;br_uposlenika; i++)
+ cout &lt;&lt; uposlenici[i].ime &lt;&lt; endl &lt;&lt; uposlenici[i].adresa &lt;&lt; endl &lt;&lt; uposlenici[i].
+telefon &lt;&lt; endl;
+}
+void Imenik::IspisiSveNaSlovo(char s) const {
+ for(int i(0); i&lt;br_uposlenika; i++)
+ if(uposlenici[i].ime[0]==s)
+ cout &lt;&lt; uposlenici[i].ime &lt;&lt; endl &lt;&lt; uposlenici[i].adresa &lt;&lt; endl &lt;&lt;
+uposlenici[i].telefon &lt;&lt; endl;
+}
+void Imenik::IspisiUposlenika(const char* ime) const {
+ for(int i(0); i&lt;br_uposlenika; i++)
+ if(strcmp(uposlenici[i].ime, ime)==0) {
+ cout &lt;&lt; uposlenici[i].ime &lt;&lt; endl &lt;&lt; uposlenici[i].adresa &lt;&lt; endl &lt;&lt;
+uposlenici[i].telefon &lt;&lt; endl;
+ return;
+ }
+ throw "Uposlenik nije pronadjen!";
+}
+void Imenik::DodajUposlenika(const char* ime, const char* adresa, int telefon) {
+ if(br_uposlenika==kapacitet) throw "Nema mjesta!";
+ if(strlen(ime)&gt;20 || strlen(adresa)&gt;50) throw "Predugacko ime ili prezime!";
+ strcpy(uposlenici[br_uposlenika].ime,ime);
+ strcpy(uposlenici[br_uposlenika].adresa,adresa);
+ uposlenici[br_uposlenika++].telefon=telefon;
+}
+Imenik &amp;Imenik::operator =(const Imenik &amp;im) {
+ if(&amp;im==this) return *this;
+ delete[] uposlenici;
+ kapacitet=im.kapacitet;
+ br_uposlenika=im.br_uposlenika;
+ uposlenici=new Uposlenik[kapacitet];
+ copy(im.uposlenici, im.uposlenici+br_uposlenika, uposlenici);
+ return *this;
+}
+Imenik::Imenik(const Imenik &amp;im) {
+ kapacitet=im.kapacitet;
+ br_uposlenika=im.br_uposlenika;
+ uposlenici=new Uposlenik[kapacitet];
+ copy(im.uposlenici, im.uposlenici+br_uposlenika, uposlenici);
+//! ZADATAK 2
+struct Uposlenik {
+ char ime[20], adresa[50];
+ int telefon;
+};
+class Imenik {
+ Uposlenik **uposlenici;
+ int kapacitet, br_uposlenika;
+public:
+ explicit Imenik(int kapacitet): kapacitet(kapacitet), br_uposlenika(0),
+ uposlenici(new Uposlenik*[kapacitet]) {}
+ ~Imenik() {
+ for(int i(0); i&lt;br_uposlenika; i++) delete uposlenici[i];
+ delete[] uposlenici;
+ }
+ Imenik(const Imenik &amp;);
+ Imenik &amp;operator =(const Imenik &amp;);
+ void DodajUposlenika(const char*, const char*, int);
+ void DodajUposlenika(const Uposlenik &amp;u) {
+ if(kapacitet==br_uposlenika) throw "Nema mjesta!";
+ uposlenici[br_uposlenika++]=new Uposlenik(u);
+ }
+ void DodajUposlenika(Uposlenik *u) {
+ if(kapacitet==br_uposlenika) throw "Nema mjesta!";
+ uposlenici[br_uposlenika++]=new Uposlenik(*u);
+ }
+ void IspisiUposlenika(const char*) const;
+ void IspisiSveNaSlovo(char) const;
+ void IspisiImenik();
+ int &amp;operator [](const char*);
+ int operator [](const char*) const;
+ bool operator !() const {
+ return br_uposlenika==0;
+ }
+ friend Imenik operator +(const Imenik &amp;, const Imenik &amp;);
+ void Sacuvaj(const char*);
+ void Obnovi(const char*);
+};
+void Imenik::Obnovi(const char* ime_datoteke) {
+ ifstream ulaz(ime_datoteke, ios::in | ios::binary);
+ if(!ulaz) throw "Datoteka ne postoji!";
+ for(int i(0); i&lt;br_uposlenika; i++) delete uposlenici[i];
+ delete[] uposlenici;
+ ulaz.read((char*)this, sizeof *this);
+ uposlenici=new Uposlenik*[kapacitet];
+ for(int i(0); i&lt;br_uposlenika; i++) {
+ uposlenici[i]=new Uposlenik;
+ ulaz.read((char*)uposlenici, br_uposlenika*sizeof(Uposlenik));
+ }
+ if(!ulaz) throw "Problem sa citanjem iz datoteke!";
+}
+void Imenik::Sacuvaj(const char* ime_datoteke) {
+ ofstream izlaz(ime_datoteke, ios::out | ios::binary);
+ izlaz.write((char*)this, sizeof *this);
+ for(int i(0); i&lt;br_uposlenika; i++)
+ izlaz.write((char*)uposlenici[i], sizeof(Uposlenik));
+ if(!izlaz) throw "Problem sa upisom u datoteku!";
+}
+Imenik operator +(const Imenik &amp;i1, const Imenik &amp;i2) {
+ Imenik i3(i1.kapacitet+i2.kapacitet);
+ for(int i(0); i&lt;i1.br_uposlenika; i++) i3.DodajUposlenika(i1.uposlenici[i]);
+  for(int i(0); i&lt;i2.br_uposlenika; i++) i3.DodajUposlenika(i2.uposlenici[i]);
+ return i3;
+}
+int Imenik::operator [](const char *ime) const {
+ for(int i(0); i&lt;br_uposlenika; i++)
+ if(strcmp(uposlenici[i]-&gt;ime, ime)==0) return uposlenici[i]-&gt;telefon;
+ throw "Nepostojeci korisnik!";
+}
+int &amp;Imenik::operator [](const char *ime) {
+ for(int i(0); i&lt;br_uposlenika; i++)
+ if(strcmp(uposlenici[i]-&gt;ime, ime)==0) return uposlenici[i]-&gt;telefon;
+ throw "Nepostojeci korisnik!";
+}
+void Imenik::IspisiImenik() {
+ sort(uposlenici, uposlenici+br_uposlenika, [](Uposlenik *u1, Uposlenik *u2) {
+ return strcmp(u1-&gt;ime, u2-&gt;ime)&lt;=0;
+ });
+ for(int i(0); i&lt;br_uposlenika; i++)
+ cout &lt;&lt; uposlenici[i]-&gt;ime &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;adresa &lt;&lt; endl &lt;&lt; uposlenici
+[i]-&gt;telefon &lt;&lt; endl;
+}
+void Imenik::IspisiSveNaSlovo(char s) const {
+ for(int i(0); i&lt;br_uposlenika; i++)
+ if(uposlenici[i]-&gt;ime[0]==s)
+ cout &lt;&lt; uposlenici[i]-&gt;ime &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;adresa &lt;&lt; endl &lt;&lt;
+uposlenici[i]-&gt;telefon &lt;&lt; endl;
+}
+void Imenik::IspisiUposlenika(const char* ime) const {
+ for(int i(0); i&lt;br_uposlenika; i++)
+ if(strcmp(uposlenici[i]-&gt;ime, ime)==0) {
+ cout &lt;&lt; uposlenici[i]-&gt;ime &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;adresa &lt;&lt; endl &lt;&lt;
+uposlenici[i]-&gt;telefon &lt;&lt; endl;
+ return;
+ }
+ throw "Uposlenik nije pronadjen!";
+}
+void Imenik::DodajUposlenika(const char* ime, const char* adresa, int telefon) {
+ if(br_uposlenika==kapacitet) throw "Nema mjesta!";
+ if(strlen(ime)&gt;20 || strlen(adresa)&gt;50) throw "Predugacko ime ili prezime!";
+ uposlenici[br_uposlenika]=new Uposlenik;
+ strcpy(uposlenici[br_uposlenika]-&gt;ime,ime);
+ strcpy(uposlenici[br_uposlenika]-&gt;adresa,adresa);
+ uposlenici[br_uposlenika++]-&gt;telefon=telefon;
+}
+Imenik &amp;Imenik::operator =(const Imenik &amp;im) {
+ if(&amp;im==this) return *this;
+ for(int i(0); i&lt;br_uposlenika; i++) delete uposlenici[i];
+ delete[] uposlenici;
+ kapacitet=im.kapacitet;
+ br_uposlenika=im.br_uposlenika;
+ uposlenici=new Uposlenik*[kapacitet];
+ for(int i(0); i&lt;br_uposlenika; i++) uposlenici[i]=new Uposlenik(*im.uposlenici[i]);
+ return *this;
+}
+Imenik::Imenik(const Imenik &amp;im) {
+ kapacitet=im.kapacitet;
+ br_uposlenika=im.br_uposlenika;
+ uposlenici=new Uposlenik*[kapacitet];
+ for(int i(0); i&lt;br_uposlenika; i++) uposlenici[i]=new Uposlenik(*im.uposlenici[i]);
+ class Uposlenik {
+ string ime, adresa;
+ int telefon;
+public:
+ Uposlenik(string ime, string adresa, int telefon):
+ ime(ime), adresa(adresa), telefon(telefon) {}
+ string DajIme() const {
+ return ime;
+ }
+ string DajAdresu() const {
+ return adresa;
+ }
+ int DajTelefon() const {
+ return telefon;
+ }
+ int &amp;DajTelefon() { //potrebno za operator [] koji vraca referencu
+ return telefon;
+ }
+};
+class Imenik {
+ vector&lt;Uposlenik&gt; uposlenici;
+public:
+ void DodajUposlenika(string, string, int);
+ void DodajUposlenika(const Uposlenik &amp;u) {
+ uposlenici.push_back(u);
+ }
+ void DodajUposlenika(Uposlenik *u) {
+ uposlenici.push_back(*u);
+ }
+ void IspisiUposlenika(string) const;
+ void IspisiSveNaSlovo(char) const;
+ void IspisiImenik();
+ int &amp;operator [](string);
+ int operator [](string) const;
+ bool operator !() const {
+ return uposlenici.size();
+ }
+ friend Imenik operator +(const Imenik &amp;, const Imenik &amp;);
+ void Sacuvaj(const char*);
+ void Obnovi(const char*);
+};
+void Imenik::Obnovi(const char* ime_datoteke) {
+ ifstream ulaz(ime_datoteke);
+ if(!ulaz) throw "Datoteka ne postoji!";
+ string ime, adresa;
+ int telefon;
+ for(;;) {
+ getline(ulaz, ime);
+ if(!ulaz) break;
+ getline(ulaz, adresa);
+ ulaz &gt;&gt; telefon;
+ ulaz.ignore(10000, '\n');
+ DodajUposlenika(ime, adresa, telefon);
+ }
+}
+void Imenik::Sacuvaj(const char* ime_datoteke) {
+ ofstream izlaz(ime_datoteke);
+ if(!izlaz) throw "Problem sa upisom u datoteku!";
+ for(int i(0); i&lt;uposlenici.size(); i++) {
+ izlaz &lt;&lt; uposlenici[i].DajIme() &lt;&lt; endl &lt;&lt; uposlenici[i].DajAdresu()
+ &lt;&lt; endl &lt;&lt; uposlenici[i].DajTelefon() &lt;&lt; endl;
+ }
+}
+Imenik operator +(const Imenik &amp;i1, const Imenik &amp;i2) {
+ Imenik i3;
+ for(int i(0); i&lt;i1.uposlenici.size(); i++) i3.uposlenici.push_back(i1.uposlenici[i]);
+ for(int i(0); i&lt;i2.uposlenici.size(); i++) i3.uposlenici.push_back(i2.uposlenici[i]);
+ return i3;
+}
+int Imenik::operator [](string ime) const {
+ for(int i(0); i&lt;uposlenici.size(); i++)
+ if(uposlenici[i].DajIme()==ime) return uposlenici[i].DajTelefon();
+ throw "Nepostojeci korisnik!";
+}
+int &amp;Imenik::operator [](string ime) {
+ for(int i(0); i&lt;uposlenici.size(); i++)
+ if(uposlenici[i].DajIme()==ime) return uposlenici[i].DajTelefon();
+ throw "Nepostojeci korisnik!";
+}
+void Imenik::IspisiImenik() {
+ sort(uposlenici.begin(), uposlenici.end(), [](const Uposlenik &amp;u1, const Uposlenik &amp;
+u2) {
+ return u1.DajIme() &lt; u2.DajIme();
+ });
+ for(int i(0); i&lt;uposlenici.size(); i++)
+ cout &lt;&lt; uposlenici[i].DajIme() &lt;&lt; endl &lt;&lt; uposlenici[i].DajAdresu()
+ &lt;&lt; endl &lt;&lt; uposlenici[i].DajTelefon() &lt;&lt; endl;
+}
+void Imenik::IspisiSveNaSlovo(char s) const {
+ for(int i(0); i&lt;uposlenici.size(); i++)
+ if(uposlenici[i].DajIme()[0]==s)
+ cout &lt;&lt; uposlenici[i].DajIme() &lt;&lt; endl &lt;&lt; uposlenici[i].DajAdresu()
+ &lt;&lt; endl &lt;&lt; uposlenici[i].DajTelefon() &lt;&lt; endl;
+}
+void Imenik::IspisiUposlenika(string ime) const {
+ for(int i(0); i&lt;uposlenici.size(); i++)
+ if(uposlenici[i].DajIme()==ime) {
+ cout &lt;&lt; uposlenici[i].DajIme() &lt;&lt; endl &lt;&lt; uposlenici[i].DajAdresu()
+ &lt;&lt; endl &lt;&lt; uposlenici[i].DajTelefon() &lt;&lt; endl;
+ return;
+ }
+ throw "Uposlenik nije pronadjen!";
+}
+void Imenik::DodajUposlenika(string ime, string adresa, int telefon) {
+ uposlenici.push_back(Uposlenik(ime, adresa, telefon));
+}
+//! ZADATAK 4
+class Uposlenik {
+ string ime, adresa;
+ int telefon;
+public:
+ Uposlenik(string ime, string adresa, int telefon):
+ ime(ime), adresa(adresa), telefon(telefon) {}
+ string DajIme() const {
+ return ime;
+ }
+ string DajAdresu() const {
+ return adresa;
+ }
+ int DajTelefon() const {
+ return telefon;
+ }
+ int &amp;DajTelefon() { //potrebno za operator [] koji vraca referencu
+ return telefon;
+ }
+};
+class Imenik {
+ vector&lt;Uposlenik*&gt; uposlenici;
+public:
+ Imenik() {}
+ Imenik(const Imenik &amp;);
+ ~Imenik();
+ Imenik &amp;operator =(const Imenik &amp;);
+ void DodajUposlenika(string, string, int);
+ void DodajUposlenika(const Uposlenik &amp;u) {
+ uposlenici.push_back(new Uposlenik(u));
+ }
+ void DodajUposlenika(Uposlenik *u) {
+ uposlenici.push_back(new Uposlenik(*u));
+ }
+ void IspisiUposlenika(string) const;
+ void IspisiSveNaSlovo(char) const;
+ void IspisiImenik() const;
+ int &amp;operator [](string);
+ int operator [](string) const;
+ bool operator !() const {
+ return uposlenici.size();
+ }
+ friend Imenik operator +(const Imenik &amp;, const Imenik &amp;);
+ void Sacuvaj(const char*);
+ void Obnovi(const char*);
+};
+void Imenik::Obnovi(const char* ime_datoteke) {
+ ifstream ulaz(ime_datoteke);
+ if(!ulaz) throw "Datoteka ne postoji!";
+ string ime, adresa;
+ int telefon;
+ for(;;) {
+ getline(ulaz, ime);
+ if(!ulaz) break;
+ getline(ulaz, adresa);
+ ulaz &gt;&gt; telefon;
+ ulaz.ignore(10000, '\n');
+ DodajUposlenika(ime, adresa, telefon);
+ }
+}
+void Imenik::Sacuvaj(const char* ime_datoteke) {
+ ofstream izlaz(ime_datoteke);
+ if(!izlaz) throw "Problem sa upisom u datoteku!";
+ for(int i(0); i&lt;uposlenici.size(); i++) {
+ izlaz &lt;&lt; uposlenici[i]-&gt;DajIme() &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;DajAdresu()
+ &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;DajTelefon() &lt;&lt; endl;
+ }
+}
+Imenik operator +(const Imenik &amp;i1, const Imenik &amp;i2) {
+ Imenik i3;
+ for(int i(0); i&lt;i1.uposlenici.size(); i++) i3.DodajUposlenika(*i1.uposlenici[i]);
+ for(int i(0); i&lt;i2.uposlenici.size(); i++) i3.DodajUposlenika(*i2.uposlenici[i]);
+ return i3;
+}
+int Imenik::operator [](string ime) const {
+ for(int i(0); i&lt;uposlenici.size(); i++)
+ if(uposlenici[i]-&gt;DajIme()==ime) return uposlenici[i]-&gt;DajTelefon();
+ throw "Nepostojeci korisnik!";
+}
+int &amp;Imenik::operator [](string ime) {
+ for(int i(0); i&lt;uposlenici.size(); i++)
+ if(uposlenici[i]-&gt;DajIme()==ime) return uposlenici[i]-&gt;DajTelefon();
+ throw "Nepostojeci korisnik!";
+}
+void Imenik::IspisiImenik() const {
+ sort(uposlenici.begin(), uposlenici.end(), [](Uposlenik *u1, Uposlenik *u2) {
+ return u1-&gt;DajIme() &lt; u2-&gt;DajIme();
+ });
+ for(int i(0); i&lt;uposlenici.size(); i++)
+ cout &lt;&lt; uposlenici[i]-&gt;DajIme() &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;DajAdresu()
+ &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;DajTelefon() &lt;&lt; endl;
+}
+void Imenik::IspisiSveNaSlovo(char s) const {
+ for(int i(0); i&lt;uposlenici.size(); i++)
+ if(uposlenici[i]-&gt;DajIme()[0]==s)
+ cout &lt;&lt; uposlenici[i]-&gt;DajIme() &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;DajAdresu()
+ &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;DajTelefon() &lt;&lt; endl;
+}
+void Imenik::IspisiUposlenika(string ime) const {
+ for(int i(0); i&lt;uposlenici.size(); i++)
+ if(uposlenici[i]-&gt;DajIme()==ime) {
+ cout &lt;&lt; uposlenici[i]-&gt;DajIme() &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;DajAdresu()
+ &lt;&lt; endl &lt;&lt; uposlenici[i]-&gt;DajTelefon() &lt;&lt; endl;
+ return;
+ }
+ throw "Uposlenik nije pronadjen!";
+}
+void Imenik::DodajUposlenika(string ime, string adresa, int telefon) {
+ uposlenici.push_back(new Uposlenik(ime, adresa, telefon));
+}
+Imenik &amp;Imenik::operator =(const Imenik &amp;im) {
+ if(&amp;im==this) return *this;
+ for(int i(0); i&lt;uposlenici.size(); i++) delete uposlenici[i];
+ uposlenici.resize(0);
+ for(int i(0); i&lt;im.uposlenici.size(); i++)
+ uposlenici.push_back(new Uposlenik(*im.uposlenici[i]));
+}
+Imenik::~Imenik() {
+ for(int i(0); i&lt;uposlenici.size(); i++) delete uposlenici[i];
+}
+Imenik::Imenik(const Imenik &amp;im) {
+ for(int i(0); i&lt;im.uposlenici.size(); i++)
+ uposlenici.push_back(new Uposlenik(*im.uposlenici[i]));</font></pre>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student1793.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student7980.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+#include &lt;iterator&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match225-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace::std;
+
+char tlc(char in){
+  if(in&lt;='Z' &amp;&amp; in&gt;='A')
+    return in-('Z'-'z');
+  return in;
+} 
+
+bool JeZnak(char x)
+{
+    return((x&lt;='z' &amp;&amp; x&gt;='a') || (x&lt;='9' &amp;&amp; x&gt;='0'));
+}
+map&lt;string,set&lt;int&gt;&gt; KreirajIndeksPojmova(string recenica)
+{
+    string temp(recenica);
+    transform(temp.begin(),temp.end(),temp.begin(),tlc);
+    map&lt;string,set&lt;int&gt;&gt; index;
+    for(int i = 0;i &lt; temp.length();i++)
+    {
+        int j = i;
+        bool JeRijec(false);
+        while(JeZnak(temp[j]))
+        {
+            JeRijec = true;
+            if(j &gt;= temp.length())
+                break;
+            j++;
+        }
+        if(JeRijec)
+            index[temp.substr(i,j-i)].insert(i);
+        if(j &gt;= temp.length())
+            break;
+        i = j;
+    }
+    return index;
+}
+set&lt;int&gt; PretraziIndeksPojmova(string rijec,map&lt;string,set&lt;int&gt;&gt; index)
+{
+    map&lt;string,set&lt;int&gt;&gt;::iterator it;
+    it = index.find(rijec);
+    if(it == index.end())
+        throw logic_error("Pojam nije nadjen");
+    return it-&gt;second;
+}
+
+void IspisiIndeksPojmova(map&lt;string,set&lt;int&gt;&gt; f)
+{
+    for(map&lt;string,set&lt;int&gt;&gt;::iterator it = f.begin();it != f.end();it++)
+    {
+        cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+        set&lt;int&gt; a = it-&gt;second;
+        set&lt;int&gt;::iterator it1 = a.begin();
+        int k(0);
+        for(;it1 != a.end();it1++)
+        {
+            k++;
+            if(k == a.size())
+                break;
+            cout &lt;&lt; *it1 &lt;&lt; ",";
+        }
+        cout &lt;&lt; *it1;
+        cout &lt;&lt; endl;
+    }
+}
+int main()
+{
+    string recenica;
+    cout &lt;&lt; "Unesite tekst: ";
+    getline(cin,recenica);
+    auto f = KreirajIndeksPojmova(recenica);
+    IspisiIndeksPojmova(f);
+    while(true)
+    {
+        string rijec;
+        cout &lt;&lt; "Unesite rijec: ";
+        getline(cin,rijec);
+        if(rijec == ".")
+            return 0;
+        try
+        {
+            auto st = PretraziIndeksPojmova(rijec,f);
+            set&lt;int&gt;::iterator it1 = st.begin();
+            for(;it1 != st.end();it1++)
+            {
+                cout &lt;&lt; *it1 &lt;&lt;  " ";
+            }
+            cout &lt;&lt; endl;
+            }
+        catch(exception e)
+        {
+            cout &lt;&lt; "Unesena rijec nije nadjena!" &lt;&lt; endl;
+</font>        }
+    }
+}</pre>
+</body>
+</html>

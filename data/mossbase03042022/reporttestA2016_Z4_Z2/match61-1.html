@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z2/student2464.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z2/student2676.c<p></p><pre>
+#include &lt;stdio.h&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match61-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_98.gif"/></a>
+
+char* dekodiraj(char* s, char* tablica)
+{
+    char *p=s;
+    int i, pomjer;
+    while(*p!='\0')
+    {
+        for(i=0;i&lt;127;i++)
+        {
+            // Trazimo karakter u tablici jednak nasem karakteru
+            if(*p==126-i) pomjer=i;
+        }
+        *p=(*(tablica+pomjer));
+        p++;
+    }
+    return s;
+}
+
+char* kodiraj(char* s, char* tablica)
+{
+    char *p, *t;
+    int brojputa[128]={0}, vecbilo[128]={0}, i, dodanoclanova=0, brmax=0, maxindeks, pozicija;
+    p=s;
+    t=tablica;
+    
+    //Prvo izbrojimo koliko se koji karakter puta pojavljuje u stringu
+    
+    while(*p!='\0')
+    {
+        brojputa[*p]++;
+        p++;
+    }
+    
+    //Pravljenje tablice
+    
+    while(dodanoclanova&lt;95)
+    {
+        brmax=0;
+        i=32;
+        while(i&lt;127 &amp;&amp; vecbilo[i]) i++;
+        brmax=brojputa[i];
+        maxindeks=i;
+        for(i=32;i&lt;127;i++)
+        {
+            if(brojputa[i]&gt;brmax &amp;&amp; !vecbilo[i])
+            {
+                brmax=brojputa[i];
+                maxindeks=i;
+            }
+            if(brojputa[i]==brmax &amp;&amp; !vecbilo[i])
+            {
+                // Ako je broj puta ponavljanja jednak za dva karaktera, poredimo njihove ASCII vrijednosti
+                
+                if(i&lt;maxindeks)
+                {
+                    brmax=brojputa[i];
+                    maxindeks=i;
+                }
+            }
+        }
+        *t=maxindeks;
+        t++;
+        vecbilo[maxindeks]=1;
+        dodanoclanova++;
+    }
+    *t='\0';
+    
+    // Kodiranje
+    
+    p=s;
+    while(*p!='\0')
+    {
+        t=tablica;
+        pozicija=0;
+        while(*t!='\0')
+        {
+            pozicija++;
+            if(*p==*t) 
+            {
+                *p=127-pozicija;
+                break;
+            }
+            t++;
+        }
+        p++;
+    }
+
+    return s;
+}
+
+int main() 
+{
+    char t[100], s[100]="Ovo je neki testni tekst";
+	printf("%s\n", kodiraj(s, t));
+	printf("%s\n", t);
+	printf("%s\n", dekodiraj(s, t));
+</font>	return 0;
+}
+</pre>
+</body>
+</html>

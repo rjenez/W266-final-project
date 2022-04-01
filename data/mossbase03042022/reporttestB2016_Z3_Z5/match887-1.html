@@ -1,0 +1,173 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student4647.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student4780.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;iterator&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+
+struct Dijete{
+<a name="0"></a><font color="#FF0000"><a href="match887-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+    std::string ime;
+    Dijete* sljedeci;
+    
+};
+
+int Broji(std::string ime){
+    int br=0;
+    for(int i=0; i&lt;ime.size(); i++) 
+    if((ime[i]&gt;='0' &amp;&amp; ime[i]&lt;='9') || (ime[i]&gt;='a' &amp;&amp; ime[i]&lt;='z')|| (ime[i]&gt;='A' &amp;&amp; ime[i]&lt;='Z'))
+</font><a name="2"></a><font color="#0000FF"><a href="match887-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+    br++;
+    return br;
+}
+
+std::vector&lt;int&gt;Djeca(std::vector&lt;std::string&gt;s, int n){
+</font>    int m=s.size()/n;
+    std::vector&lt;int&gt;ret(n);
+    int p=s.size();
+    for(int i=0; i&lt;n; i++){
+        ret[i]=m;
+        if(p%n!=0){
+            ret[i]=m+1;
+            p--;
+        }
+    }
+    return ret;
+}
+
+
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt;par1, int par2){
+    
+    if(par2&lt;=0 || par2&gt;par1.size()) throw std::logic_error("Razvrstavanje nije moguce");
+    
+    
+    std::vector&lt;std::set&lt;std::string&gt;&gt;ret;
+    std::set&lt;std::string&gt;umetni_skup;
+    std::vector&lt;int&gt;n=Djeca(par1,par2);
+    
+    Dijete *pocetak(nullptr), *prethodni;
+    for(int i=0; i&lt;par1.size(); i++){
+        Dijete *novi(new Dijete);
+        novi-&gt;ime=par1[i]; novi-&gt;sljedeci=nullptr;
+        if(!pocetak) pocetak=novi;
+        else if(i==par1.size()-1){
+            prethodni-&gt;sljedeci=novi;
+            novi-&gt;sljedeci=pocetak-&gt;sljedeci;
+            break;
+        }
+        else prethodni-&gt;sljedeci=novi;
+        prethodni=novi;
+    }
+    
+    
+    int granica=par1.size();
+    int brojac=0,br=0;
+    
+    for(Dijete *p=pocetak; p!=nullptr; p=p-&gt;sljedeci){
+    
+    for(int i=0; i&lt;par2; i++){
+        for(int j=0; j&lt;n[i]; j++){
+            if(granica==0)break;
+            if(i==0 &amp;&amp; j==0){
+                umetni_skup.insert(p-&gt;ime);
+                j++;
+                brojac=Broji(p-&gt;ime);
+                prethodni-&gt;sljedeci=p-&gt;sljedeci;
+                delete p;
+                granica--;
+                if(j==n[i])break;
+            }
+            
+            if(i==0){
+                for(int k=0; k&lt;brojac-1; k++){
+                    p=p-&gt;sljedeci;
+                }
+            }
+            
+            else{
+               for(int k=0; k&lt;br-1; k++){
+                   
+                   p=p-&gt;sljedeci;
+               } 
+            }
+            
+            
+            brojac=Broji(p-&gt;ime);
+            umetni_skup.insert(p-&gt;ime);
+            br=brojac;
+            prethodni-&gt;sljedeci=p-&gt;sljedeci;
+            delete p;
+           granica--;
+                
+        }
+         ret.push_back(umetni_skup);
+         std::set&lt;std::string&gt;::iterator k=umetni_skup.begin();
+         while(umetni_skup.begin()!=umetni_skup.end())
+         k=umetni_skup.erase(k);
+         if(granica==0)break;
+    }}
+    
+    return ret;
+    
+}
+        
+
+
+int main ()
+{
+    int broj;
+    int n;
+    std::vector&lt;std::string&gt; djeca;
+    
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    std::cin&gt;&gt;broj;
+    
+    
+    std::cout&lt;&lt;"Unesite imena djece: ";
+    std::cin.ignore(10000, '\n');
+    for(int i=0; i&lt;broj; i++){
+        std::string ime;
+        std::getline(std::cin, ime);
+        djeca.push_back(ime);
+    }
+    
+    std::cout&lt;&lt;"\nUnesite broj timova: ";
+    std::cin&gt;&gt;n;
+    
+    
+    try{
+<a name="1"></a><font color="#00FF00"><a href="match887-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+        std::vector&lt;std::set&lt;std::string&gt;&gt;ret(Razvrstavanje(djeca,n));
+        for(int i=0; i&lt;ret.size(); i++){
+            std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;"; ";
+</font>            int c=0;
+            for(std::set&lt;std::string&gt;::iterator k=ret[i].begin(); k!=ret[i].end(); k++){
+                if(c==ret[i].size()-1)
+                std::cout&lt;&lt;*k;
+                else std::cout&lt;&lt;*k&lt;&lt;", ";
+                c++;
+            }
+            std::cout&lt;&lt;std::endl;
+        }
+    }
+    
+    catch(std::logic_error l){
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;l.what();
+    }
+            
+            return 0;
+}</pre>
+</body>
+</html>

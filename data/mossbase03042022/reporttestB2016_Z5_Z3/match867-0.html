@@ -1,0 +1,195 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student6303.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student6303.cpp<p></p><pre>
+/B16/17 (Zadaća 5, Zadatak 3)
+//Autotestovi by Enil Pajic (mail: epajic1@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cctype&gt;
+#include &lt;limits&gt;
+using namespace std;
+#define M numeric_limits&lt;long long&gt;::max()
+#define m numeric_limits&lt;long long&gt;::min()
+
+class Razlomak
+{
+    long long int gore;
+    long long int dolje;
+    static long long int s(long long int p, long long int q)
+    {
+        while(q!=0)
+        {
+            long long int pom=p;
+            p=q;
+            q=pom%q;
+        }
+        return p;
+    }
+public:
+<a name="4"></a><font color="#FF00FF"><a href="match867-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+    Razlomak(long long int p=0, long long int q=1)
+    {
+        if(q==0) throw logic_error("Nekorektan razlomak");
+        if(q&lt;0)
+        {
+            p=-p;
+</font>            long long int pom=2*q;
+            q-=pom;
+        }
+        gore=p/s(p,q);
+        dolje=q/s(p,q);
+    }
+    long long int DajNazivnik() const { return dolje;}
+    long long int DajBrojnik() const { return gore;}
+<a name="1"></a><font color="#00FF00"><a href="match867-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+    friend Razlomak operator-(Razlomak r1,Razlomak r2)
+    {
+        long long int r=s(r1.dolje,r2.dolje);
+        long long int g=r1.gore*(r2.dolje/r)-r2.gore*(r1.dolje/r), d=r1.dolje*(r2.dolje/r);
+</font><a name="3"></a><font color="#00FFFF"><a href="match867-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+        if(g&gt;m &amp;&amp; d&gt;m &amp;&amp; g&lt;M &amp;&amp; d&lt;M) { Razlomak a(g,d); return a;}
+</font>        else throw overflow_error("Nemoguce dobiti tacan rezultat");
+    }
+    friend Razlomak &amp;operator +(Razlomak &amp;r) { return r;}
+    friend Razlomak &amp;operator -(Razlomak &amp;r)
+    {
+        Razlomak r1(r.DajBrojnik(),-r.DajNazivnik());
+        r=r1;
+        return r;
+    }
+    friend Razlomak operator+(Razlomak r1,Razlomak r2)
+    {
+        Razlomak r=r1-(-r2);
+        return r;
+    }
+    friend Razlomak &amp;operator +=(Razlomak &amp;r1, Razlomak r2)
+    {
+        r1=r1-(-r2); return r1;
+    }
+    friend Razlomak &amp;operator -=(Razlomak &amp;r1, Razlomak &amp;r2)
+    {
+        r1=r1-r2;
+        return r1;
+    }
+<a name="0"></a><font color="#FF0000"><a href="match867-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+    friend Razlomak operator*(Razlomak r1,Razlomak r2)
+    {
+        long long int e=s(r1.gore,r2.dolje);
+        long long int t=s(r1.dolje,r2.gore);
+        long long int p=(r1.gore/e)*(r2.gore/t), q=(r1.dolje/t)*(r2.dolje/e);
+</font><a name="2"></a><font color="#0000FF"><a href="match867-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+        if(p&gt;m &amp;&amp; q&gt;m &amp;&amp; p&lt;M &amp;&amp; q&lt;M)
+            return Razlomak(p,q);
+        else throw overflow_error("Nemoguce dobiti tacan rezultat");
+    }
+    friend Razlomak operator/(Razlomak r1,Razlomak r2)
+</font>    {
+        Razlomak pom(r2.DajNazivnik(), r2.DajBrojnik());
+        Razlomak rez=r1*pom;
+        return rez;
+    }
+     friend Razlomak &amp;operator *=(Razlomak &amp;r1, Razlomak &amp;r2)
+     {
+         r1=r1*r2;
+         return r1;
+     }
+     friend Razlomak &amp;operator /=(Razlomak &amp;r1, Razlomak &amp;r2)
+     {
+         r1=r1/r2;
+         return r1;
+     }
+     operator long double() const { return (long double) gore/dolje;}
+     friend Razlomak &amp;operator++(Razlomak &amp;r1)
+    {
+        Razlomak jed(1,1);
+        r1=r1+jed;
+        return r1;
+    }
+    friend Razlomak &amp;operator--(Razlomak &amp;r1)
+    {
+        Razlomak jed(-1,1);
+        r1=r1+jed;
+        return r1;
+    }
+    friend Razlomak operator++(Razlomak &amp;r1,int)
+    {   
+        Razlomak r(r1.DajBrojnik(),r1.DajNazivnik()), jed(1,1);
+        r1+=jed;
+        return r;
+    }
+    friend Razlomak operator--(Razlomak &amp;r1,int)
+    {
+        Razlomak r(r1.DajBrojnik(),r1.DajNazivnik()), jed(-1,1);
+        r1-=jed;
+        return r;
+    }
+    friend ostream &amp;operator&lt;&lt;(ostream &amp;cout,Razlomak r1)
+    {
+        cout&lt;&lt;r1.DajBrojnik();
+        if(r1.DajNazivnik()!=1 &amp;&amp; r1.DajBrojnik()!=0)
+<a name="5"></a><font color="#FF0000"><a href="match867-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+            cout&lt;&lt;"/"&lt;&lt;r1.DajNazivnik();
+        return cout;
+    }
+    friend istream &amp;operator&gt;&gt;(istream &amp;cin,Razlomak &amp;r1)
+    {
+        r1.gore=0;r1.dolje=1;
+</font>        long long int a,b=1;
+        cin&gt;&gt;a;
+        if(cin.peek()!='\n' &amp;&amp; cin.peek()!=' ')
+        {
+            char c;
+            cin&gt;&gt;c; if(c=='/') cin&gt;&gt;b;
+            
+        }
+        Razlomak z(a,b);
+        r1=z;
+        return cin;
+    }
+    friend bool operator ==(Razlomak r1, Razlomak r2)
+    {
+ if( r1.gore==r2.gore &amp;&amp; r1.dolje!=r2.dolje) return true;
+ return false;
+    }
+    friend bool operator !=(Razlomak r1, Razlomak r2)
+    {
+        return (r1.gore!=r2.gore || r1.dolje!=r2.dolje);
+    }
+    friend bool operator &gt;(Razlomak r1, Razlomak r2)
+    {
+        return (long double)r1.gore/r1.dolje &gt; (long double)r2.gore/r2.dolje;
+    }
+    friend bool operator &lt;(Razlomak r1, Razlomak r2) { return (long double) r1.gore/r1.dolje &lt; (long double) r2.gore/r2.dolje; }
+    friend bool operator &gt;=(Razlomak r1, Razlomak r2) { return !(r1&lt;r2) || r1==r2; }
+    friend bool operator &lt;=(Razlomak r1, Razlomak r2) { return !(r1&gt;r2) || r1==r2; }
+};
+
+int main ()
+{
+	Razlomak r, p, q;
+	    cout&lt;&lt;"dhht";
+        std::cin &gt;&gt; r; //5/17
+        cout&lt;&lt;"DSSD";
+        std::cout &lt;&lt; r &lt;&lt; std::endl;
+        std::cin.clear(); std::cin.ignore (100, '\n');
+        //tri zaredom
+        std::cin &gt;&gt; r &gt;&gt; p &gt;&gt; q; //10 20 30 -&gt; 10/1 20/1 30/1
+        std::cout &lt;&lt; r &lt;&lt; " " &lt;&lt; p &lt;&lt; " " &lt;&lt; q &lt;&lt; std::endl;
+        std::cin.clear(); std::cin.ignore (100, '\n');
+        std::cin &gt;&gt; r;
+        std::cout &lt;&lt; r;
+	return 0;
+}</pre>
+</body>
+</html>

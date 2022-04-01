@@ -1,0 +1,163 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student8006.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student8006.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+enum class SmjerKretanja {
+	NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo
+};
+
+template &lt;typename KontTip&gt;
+KontTip Red(const KontTip &amp;red, int x) {
+	KontTip sat_red;
+	for (int i = x; i &lt; red.size() - x; i++) sat_red.push_back(red.at(i));
+	return sat_red;
+}
+
+template &lt;typename KontTip&gt;
+KontTip Sat_Matrica(const KontTip &amp;matrica) {
+	KontTip sat_matrica;
+	int i(0);
+	for (; i &lt; (matrica.size()+1)/2; i++) sat_matrica.push_back(Red(matrica.at(i), i));
+	for (; i &lt; matrica.size(); i++) sat_matrica.push_back(Red(matrica.at(i), matrica.size() - i - 1));
+	return sat_matrica;
+}
+
+template &lt;typename KontTip&gt;
+KontTip Matrica(const KontTip &amp;matrica) {
+	KontTip mat;
+	for (int i = 0; i &lt; matrica.size(); i++) mat.push_back(Red(matrica.at(i), 0));
+	return mat;
+}
+
+template &lt;typename KontTip&gt;
+KontTip Preslikaj(const KontTip &amp;matrica) {
+	auto preslikana(Matrica(matrica));
+	for (int i = 0; i &lt; (preslikana.size()+1)/2; i++)
+		for (int j = 0; j &lt; preslikana.size(); j++) {
+			auto t(preslikana.at(i).at(j));
+			preslikana.at(i).at(j) = preslikana.at(preslikana.size()-i-1).at(j);
+			preslikana.at(preslikana.size()-i-1).at(j) = t;
+		}
+	return preslikana;
+}
+
+template &lt;typename KontTip&gt;
+KontTip Rotiraj(const KontTip &amp;matrica) {
+	auto rotirano(Matrica(matrica));
+	for (int i = 0; i &lt; rotirano.size(); i++) 
+		for (int j = i+1; j &lt; rotirano.size(); j++) {
+				auto t(rotirano.at(i).at(j));
+				rotirano.at(i).at(j) = rotirano.at(j).at(i);
+				rotirano.at(j).at(i) = t;
+		}
+	return rotirano;
+}
+
+template &lt;typename KontTip&gt;
+void NpNz(const KontTip &amp;kocka, KontTip &amp;pjescani, SmjerKretanja smjer = SmjerKretanja::NaprijedNazad) {
+	for (int i = 0; i &lt; kocka.size(); i++) {
+		decltype(Matrica(kocka.at(i))) matrica;
+		for (int j = 0; j &lt; kocka.size(); j++) 
+			matrica.push_back(kocka.at(j).at(i));
+		if (smjer == SmjerKretanja::NazadNaprijed) matrica = Preslikaj(matrica);
+		pjescani.push_back(Sat_Matrica(matrica));
+	}
+}
+
+template &lt;typename KontTip&gt;
+bool IspravanFormat(const KontTip &amp;matrica, int n) {
+	if (matrica.size() != n) return false;
+	for (int i = 0; i &lt; matrica.size(); i++) 
+		if (matrica.at(i).size() != n) return false;
+	return true;
+}
+
+template &lt;typename KontTip&gt;
+KontTip PjescaniSat(const KontTip &amp;kont, SmjerKretanja smjer) {
+	for (int i = 0; i &lt; kont.size(); i++) 
+		if (!IspravanFormat(kont.at(i), kont.size())) throw std::domain_error("3D matrica nema oblik kocke");
+	if (kont.size() % 2 == 0) throw std::length_error("3D kontejner ne zadovoljava uvjet neparnosti");
+	KontTip pjescani;
+	switch (smjer) {
+		case SmjerKretanja::DesnoLijevo :
+			for (int i = 0; i &lt; kont.size(); i++) pjescani.push_back(Sat_Matrica(Preslikaj(Rotiraj(kont.at(i)))));
+			break;
+		case SmjerKretanja::LijevoDesno :
+			for (int i = 0; i &lt; kont.size(); i++) pjescani.push_back(Sat_Matrica(Rotiraj(kont.at(i))));
+			break;
+		case SmjerKretanja::GoreDolje :
+			for (int i = 0; i &lt; kont.size(); i++) pjescani.push_back(Sat_Matrica(kont.at(i)));
+			break;
+		case SmjerKretanja::DoljeGore :
+			for (int i = 0; i &lt; kont.size(); i++) pjescani.push_back(Sat_Matrica(Preslikaj(kont.at(i))));
+			break;
+		case SmjerKretanja::NaprijedNazad :
+			NpNz (kont, pjescani);
+			break;
+		case SmjerKretanja::NazadNaprijed :
+			NpNz (kont, pjescani, SmjerKretanja::NazadNaprijed);
+			break;
+	}
+	return pjescani;
+}
+
+int main ()
+{
+	try {
+		int n;
+		std::cout &lt;&lt; "Unesite dimenziju (x/y/z): ";
+		while (std::cin &gt;&gt; n, n &lt; 1) std::cout &lt;&lt; "Dimenzija nije ispravna, unesite opet: ";
+		std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt; vdd(n, std::deque&lt;std::deque&lt;int&gt;&gt; (n, std::deque&lt;int&gt;(n)));
+		std::cout &lt;&lt; "Unesite elemente kontejnera: ";
+<a name="2"></a><font color="#0000FF"><a href="match548-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+		for (int i = 0; i &lt; n; i++)
+			for (int j = 0; j &lt; n; j++)
+				for (int k = 0; k &lt; n; k++)
+					std::cin &gt;&gt; vdd.at(i).at(j).at(k);
+</font>		int smjer;
+		std::cout &lt;&lt; "Unesite smjer kretanja [0 - 5]:";
+		while (std::cin &gt;&gt; smjer, smjer &lt; 0 || smjer &gt; 5) std::cout &lt;&lt; " Smjer nije ispravan, unesite opet: ";
+		std::cout &lt;&lt; std::endl;
+		auto pjescani(PjescaniSat(vdd, SmjerKretanja(smjer)));
+<a name="0"></a><font color="#FF0000"><a href="match548-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+		std::cout &lt;&lt; "Pjescani sat unesene matrice je:" &lt;&lt; std::endl &lt;&lt; std::endl;
+		for (int i = 0; i &lt; pjescani.size(); i++) {
+			for (int j = 0; j &lt; pjescani.at(i).size(); j++) {
+				for (int k = 0; k &lt; pjescani.at(i).at(j).size(); k++) {
+</font>					for (int l = 0; l &lt; (n - pjescani.at(i).at(j).size())/2; l++) std::cout &lt;&lt; "    ";
+<a name="1"></a><font color="#00FF00"><a href="match548-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+					std::cout &lt;&lt; std::setw(4) &lt;&lt; pjescani.at(i).at(j).at(k);
+				}
+				std::cout &lt;&lt; std::endl;
+			}
+			std::cout &lt;&lt; std::endl;
+		}
+	}
+	catch(std::domain_error izuzetak) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+</font>	}
+	catch(std::length_error izuzetak) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+	}
+	catch(std::overflow_error izuzetak) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+	}
+	catch(std::bad_alloc) {
+		std::cout &lt;&lt; "Izuzetak: Alokacija nije uspjela"; 
+	}
+	return 0;
+}</pre>
+</body>
+</html>

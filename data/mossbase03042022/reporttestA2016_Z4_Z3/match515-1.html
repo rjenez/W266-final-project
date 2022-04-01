@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z3/student8797.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z3/student1146.c<p></p><pre>
+#include &lt;stdio.h&gt;
+
+int strlen_moj(char *x) {
+	int len = 0;
+<a name="0"></a><font color="#FF0000"><a href="match515-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_11.gif"/></a>
+
+	while (*x++) len++;
+	return len;
+}
+
+char *zamjena_rijeci(char *tekst, char **rijeci, char **zamjene, int broj_rijeci) {
+	int i, j, k, len, len_rijeci, za_pomjeriti;
+</font>	char *p;
+	
+	for (p = tekst; *p; ) {
+		while (*p &amp;&amp; *p == ' ') p++; /* idemo do pocetka sljedece rijeci */	
+		if (!*p) break;
+		for (i = 0; i &lt; broj_rijeci; i++) {
+			for (j = 0; p[j] &amp;&amp; rijeci[i][j]; j++) /* idemo do prvog razlicitog znaka */
+				if (p[j] != rijeci[i][j]) break;
+			
+			if ((p[j] == '\0' || p[j] == ' ') &amp;&amp; rijeci[i][j] == '\0') { /* ako je taj znak kraj prve i druge rijeci */
+				len = strlen_moj(p);
+				len_rijeci = strlen_moj(zamjene[i]);
+				za_pomjeriti = len_rijeci - j;
+				
+				if (za_pomjeriti &gt; 0) 
+					for (k = len; k &gt;= 0; k--) /* pravimo prostor za novu rijec */
+						p[k + za_pomjeriti] = p[k];
+				else if (za_pomjeriti &lt; 0) 
+					for (k = 0; k &lt;= len + za_pomjeriti; k++) /* brisemo dio koji je viska */
+						p[k] = p[k - za_pomjeriti];
+
+				for (k = 0; k &lt; len_rijeci; k++) /* upisujemo novu rijec */
+					p[k] = zamjene[i][k];
+				
+				p += len_rijeci;
+				break;
+			}
+		}
+		
+		while (*p &amp;&amp; *p != ' ') p++; /* idemo dalje */
+	}
+	
+	return tekst;
+}
+
+int main() {
+	char *rijeci[] = { "test", "jedan" };
+    char *zamjene[] = { "", "oooooooooooooo" };
+    char tekst[100] = " a c test jedan  b ";
+    printf("'%s'", zamjena_rijeci(tekst, rijeci, zamjene, 2));
+    
+    return 0;
+}
+</pre>
+</body>
+</html>

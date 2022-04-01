@@ -1,0 +1,160 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student2886.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student2950.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrix;
+
+Matrix NajvecaPlaninaMatrice(Matrix x)
+{
+	Matrix mali;
+	if(x.size()==0 || x.at(0).size()==0)return mali;
+	int duzinaReda(x.at(0).size());
+	for(int i=0; i&lt;x.size(); i++)
+		if(x.at(i).size()!=duzinaReda)throw std::domain_error("Matrica nije korektna");
+	if(x.size()&lt;3) {
+		mali.resize(1);
+		double max(x.at(0).at(0));
+		for(int i=0; i&lt;x.size(); i++)
+			for(int j=0; j&lt;x.at(i).size(); j++)
+				if(x.at(i).at(j)&gt;max)max=x.at(i).at(j);
+		mali.at(0).push_back(max);
+		return mali;
+	}
+	Matrix Final;
+	int prekidac(1);
+	double vrhStart(0);
+	int indexPrvi(0),indexDrugi(0),indexTreci(0),indexCetvrti(0);
+	int index1(0),index2(0),index3(0),index4(0);
+	int duzina1(0),duzina2(0),IndexVrha(0),JndexVrha(0);
+	for(int i=0; i&lt;x.size(); i++) {
+		for(int j=0; j&lt;x.at(i).size(); j++) {
+			if(i!=0 &amp;&amp; j!=0 &amp;&amp; i!=x.size()-1 &amp;&amp; j!=x.at(i).size()-1) {
+<a name="0"></a><font color="#FF0000"><a href="match920-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+				double suma(x.at(i-1).at(j-1)+x.at(i-1).at(j)+x.at(i-1).at(j+1)+x.at(i).at(j-1)+x.at(i).at(j+1)+x.at(i+1).at(j-1)+x.at(i+1).at(j)+x.at(i+1).at(j+1)  );
+</font>				if(x.at(i).at(j)&gt;suma) {
+					suma=x.at(i).at(j);
+					for(int z=1;; z++) {
+						if(((i-z)&lt;0) || ((j-z)&lt;0) || ((j+z)&gt;x.at(i).size()-1) || ((i+z)&gt;x.size()-1)) {
+							break;
+						}
+						if(prekidac) {
+							vrhStart=x.at(i).at(j);
+							indexPrvi=i-z;
+							indexDrugi=j-z;
+							indexTreci=i-z;
+							indexCetvrti=j+z;
+							duzina1=indexCetvrti-indexDrugi;
+							IndexVrha=i;
+							JndexVrha=j;
+							prekidac=0;
+						}
+						double novaSuma	(x.at(i-z).at(j-z)+x.at(i-z).at(j)+x.at(i-z).at(j+z)
+						                 +x.at(i).at(j-z)+x.at(i).at(j+z)
+						                 +x.at(i+z).at(j-z)+x.at(i+z).at(j)+x.at(i+z).at(j+z));
+						if(suma&gt;novaSuma) {
+							index1=i-z;
+							index2=j-z;
+							index3=i+z;
+							index4=j+z;
+							duzina2=index3-index1;
+							suma=novaSuma;
+						} else break;
+					}
+					if(duzina1&lt;duzina2) {
+						vrhStart=x.at(i).at(j);
+						indexPrvi=index1;
+						indexDrugi=index2;
+						indexTreci=index3;
+						indexCetvrti=index4;
+						duzina1=duzina2;
+					} else if(duzina1==duzina2) {
+						if(vrhStart&gt;x.at(i).at(j)) {
+							continue;
+						} else if(vrhStart&lt;x.at(i).at(j)) {
+							vrhStart=x.at(i).at(j);
+							indexPrvi=index1;
+							indexDrugi=index2;
+							indexTreci=index3;
+							indexCetvrti=index4;
+							duzina1=duzina2;
+						} else {
+							if(indexPrvi==index1) {
+								if(i!=IndexVrha) {
+									if(i&lt;IndexVrha) {
+										IndexVrha=i;
+										vrhStart=x.at(i).at(j);
+										indexPrvi=index1;
+										indexDrugi=index2;
+										indexTreci=index3;
+										indexCetvrti=index4;
+										duzina1=duzina2;
+									}
+								} else if(j&lt;JndexVrha) {
+									JndexVrha=j;
+									vrhStart=x.at(i).at(j);
+									indexPrvi=index1;
+									indexDrugi=index2;
+									indexTreci=index3;
+									indexCetvrti=index4;
+									duzina1=duzina2;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if(duzina1==0)return Final;
+	Final.resize(duzina1+1);
+	for(int i=0;i&lt;duzina1+1;i++)
+	Final.at(i).resize(duzina1+1);
+	for(int i=0; i&lt;=duzina1; i++) {
+		for(int j=0; j&lt;=duzina1; j++) {
+			Final.at(i).at(j)=std::move(x.at(indexPrvi+i).at(indexDrugi+j));
+		}
+	}
+<a name="1"></a><font color="#00FF00"><a href="match920-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+	return Final;
+}
+
+int main ()
+{
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m i n): ";
+	int red,kolona;
+	std::cin&gt;&gt;red&gt;&gt;kolona;
+	if(red&lt;0 || kolona&lt;0) {
+</font>		std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+		return 0;
+	}
+	
+	std::cout&lt;&lt;"Unesite elemente matrice:";
+	Matrix PocetniMatrix(red,std::vector&lt;double&gt; (kolona));
+	for(int i=0; i&lt;red; i++)
+		for(int j=0; j&lt;kolona; j++)
+			std::cin&gt;&gt;PocetniMatrix.at(i).at(j);
+	Matrix NeoMatrix;
+	try{
+		NeoMatrix=(NajvecaPlaninaMatrice(PocetniMatrix));
+		std::cout&lt;&lt;"\nNajveca planina unesene matrice je:"&lt;&lt;std::endl;
+		for(int i=0; i&lt;NeoMatrix.size(); i++){
+			for(int j=0; j&lt;NeoMatrix.at(i).size(); j++)
+				std::cout&lt;&lt;std::setw(6)&lt;&lt;NeoMatrix.at(i).at(j);
+			std::cout&lt;&lt;std::endl;
+		}
+	} catch(std::domain_error izuzetak) {
+		std::cout&lt;&lt;izuzetak.what();
+	}
+	return 0;
+}</pre>
+</body>
+</html>

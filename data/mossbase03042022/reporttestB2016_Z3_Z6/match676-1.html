@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student3899.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student6720.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt;
+
+int BrojSlova(std::string ime){
+    int broj_slova{};
+    for(int i=0;i&lt;ime.size();i++)
+<a name="0"></a><font color="#FF0000"><a href="match676-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_9.gif"/></a>
+
+        if((ime[i]&gt;='A' &amp;&amp; ime[i]&lt;='Z') || (ime[i]&gt;='a' &amp;&amp; ime[i]&lt;='z') || (ime[i]&gt;='0' &amp;&amp; ime[i]&lt;='9'))
+            broj_slova++;
+    return broj_slova;
+}
+
+struct Dijete {
+    std::string ime;
+    std::shared_ptr&lt;Dijete&gt; sljedeci;
+};
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; imena, int broj_timova){
+</font>    if(broj_timova&lt;1 || broj_timova&gt;imena.size())
+        throw std::logic_error("Razvrstavanje nemoguce");
+    
+<a name="2"></a><font color="#0000FF"><a href="match676-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+    std::shared_ptr&lt;Dijete&gt; pocetak, prethodni;
+    try{
+    for(int i=0; i&lt;imena.size();i++){
+        std::shared_ptr&lt;Dijete&gt; novi(new Dijete);
+        novi-&gt;ime= imena[i];
+</font>        if(!pocetak) pocetak= novi;
+        else prethodni-&gt;sljedeci=novi;
+        prethodni=novi;
+    }
+    prethodni-&gt;sljedeci=pocetak;
+    }catch(std::bad_alloc){
+        throw std::bad_alloc();
+    }
+    std::vector&lt;std::set&lt;std::string&gt;&gt; razvrstana_djeca;
+    int broj_prvih_timova= (int)imena.size()%broj_timova;
+    int broj_clanova=(int)imena.size()/broj_timova;
+    auto it=pocetak;
+    
+    int broj_slova{};
+    for(int i=0;i&lt;broj_timova;i++){
+        razvrstana_djeca.push_back({});
+        for(int clan=0;clan&lt;broj_clanova+(int)(i&lt;broj_prvih_timova);clan++){
+            for(int slovo=0;slovo&lt;broj_slova;slovo++){
+               it=it-&gt;sljedeci; 
+               prethodni=prethodni-&gt;sljedeci;
+            }
+            razvrstana_djeca[i].insert(it-&gt;ime);
+            broj_slova=BrojSlova(it-&gt;ime);
+            if(it==prethodni){it-&gt;sljedeci=nullptr; continue;}
+            prethodni-&gt;sljedeci=it-&gt;sljedeci;
+            it=prethodni-&gt;sljedeci;
+            broj_slova--;
+        }
+    }
+    
+    return razvrstana_djeca;
+}
+
+int main (){
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    int broj_djece;
+    std::cin&gt;&gt;broj_djece;
+    std::cin.ignore(1000,'\n');
+    std::cout&lt;&lt;"Unesite imena djece: "&lt;&lt;std::endl;
+<a name="1"></a><font color="#00FF00"><a href="match676-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_8.gif"/></a>
+
+    std::vector&lt;std::string&gt; imena;
+    for(int i=0;i&lt;broj_djece;i++){
+        std::string ime;
+        std::getline(std::cin, ime);
+        imena.push_back(ime);
+    }
+    
+    std::cout&lt;&lt;"Unesite broj timova: ";
+    int broj_timova;
+    std::cin&gt;&gt;broj_timova;
+</font>    
+    try{
+        int i=1;
+        for(auto tim: Razvrstavanje(imena, broj_timova)){
+            std::cout&lt;&lt;"Tim "&lt;&lt;i++&lt;&lt;": ";
+            auto ime=tim.begin();
+            for(;ime!=--(tim.end());ime++)
+                std::cout&lt;&lt;*ime&lt;&lt;", ";
+            std::cout&lt;&lt;*ime&lt;&lt;std::endl;
+        }
+    }catch(std::logic_error izuzetak){std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();}
+    catch(std::bad_alloc){}
+    
+	return 0;
+}</pre>
+</body>
+</html>

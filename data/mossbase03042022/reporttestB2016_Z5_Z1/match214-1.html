@@ -1,0 +1,212 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z1/student3736.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z1/student9352.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match214-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_54.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 1)
+//Autotestovi by Eldar Kurtic (mail: ekurtic3@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iterator&gt;
+
+using namespace std;
+
+
+struct Korisnik
+{
+    string ime;
+    string prezime;
+    string adresa;
+    string telefon;
+};
+
+class Knjiga
+{
+    string naslov;
+    string imePisca;
+    string zanr;
+    int godinaIzdavanja;
+    Korisnik* zaduzivac = nullptr;
+    
+  public:
+    Knjiga(string _naslov, string _imePisca, string _zanr, int _godIzd) : naslov(_naslov), imePisca(_imePisca), zanr(_zanr), godinaIzdavanja(_godIzd) {}
+    
+    string DajNaslov() const { return naslov; }
+    string DajAutora() const { return imePisca; }
+    string DajZanr() const { return zanr; }
+    int DajGodinuIzdavanja() const { return godinaIzdavanja; }
+    Korisnik* DajKodKogaJe() const { return zaduzivac; }
+    
+    void ZaduziKnjigu(Korisnik &amp;kojiZaduzuje) { zaduzivac = &amp;kojiZaduzuje; }
+    void RazduziKnjigu()   {  zaduzivac = nullptr; }
+    bool DaLiJeZaduzena() const { return zaduzivac!=nullptr;  }
+};
+
+class Biblioteka
+{
+    map&lt;int, Korisnik*&gt;  korisnici;  
+    map&lt;int, Knjiga*&gt;    knjige;
+    
+  public:
+    Biblioteka() { }
+    
+    void RegistrirajNovogKorisnika(int clanskiBroj, string ime, string prezime, string adresa, string telefon)
+    {
+        auto nadjiKorisnika = korisnici.find(clanskiBroj);
+        if(nadjiKorisnika!=korisnici.end())
+        {
+            throw logic_error("Korisnik vec postoji");
+        }
+        korisnici[clanskiBroj] = new Korisnik{ime, prezime, adresa, telefon};
+    }
+    
+    void RegistrirajNovuKnjigu(int brojKnjige, string naslov, string imePisca, string zanr, int godIzd)
+    {
+        auto nadjiKnjigu = knjige.find(brojKnjige);
+        if(nadjiKnjigu!=knjige.end())
+        {
+            throw logic_error("Knjiga vec postoji");
+        }
+        knjige[brojKnjige] = new Knjiga(naslov, imePisca, zanr, godIzd);
+    }
+    
+    Korisnik &amp;NadjiKorisnika(int clanskiBroj)
+    {
+        auto nadjiKorisnika = korisnici.find(clanskiBroj);
+        if(nadjiKorisnika==korisnici.end())
+        {
+            throw logic_error("Korisnik nije nadjen");
+        }
+        return *korisnici[clanskiBroj];
+    }
+    
+    Knjiga &amp;NadjiKnjigu(int evidencijskiBroj)
+    {
+        auto nadjiKnjigu = knjige.find(evidencijskiBroj);
+        if(nadjiKnjigu==knjige.end())
+        {
+            throw logic_error("Knjiga nije nadjena");
+        }
+        return *knjige[evidencijskiBroj];
+    }
+    
+    void IzlistajKorisnike() const
+    {
+        for(auto p : korisnici)
+        {
+            cout&lt;&lt;"Clanski broj: "&lt;&lt;p.first&lt;&lt;endl;
+            cout&lt;&lt;"Ime i prezime: "&lt;&lt;p.second-&gt;ime&lt;&lt;" "&lt;&lt;p.second-&gt;prezime&lt;&lt;endl;
+            cout&lt;&lt;"Adresa: "&lt;&lt;p.second-&gt;adresa&lt;&lt;endl;
+            cout&lt;&lt;"Broj telefona: "&lt;&lt;p.second-&gt;telefon&lt;&lt;endl;
+            cout&lt;&lt;endl;
+        }
+    }
+    
+    void IzlistajKnjige() const
+    {
+        for(auto p : knjige)
+        {
+            cout&lt;&lt;"Evidencijski broj: "&lt;&lt;p.first&lt;&lt;endl;
+            cout&lt;&lt;"Naslov: "&lt;&lt;p.second-&gt;DajNaslov()&lt;&lt;endl;
+            cout&lt;&lt;"Pisac: "&lt;&lt;p.second-&gt;DajAutora()&lt;&lt;endl;
+</font><a name="1"></a><font color="#00FF00"><a href="match214-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_29.gif"/></a>
+
+            cout&lt;&lt;"Zanr: "&lt;&lt;p.second-&gt;DajZanr()&lt;&lt;endl;
+            cout&lt;&lt;"Godina izdavanja: "&lt;&lt;p.second-&gt;DajGodinuIzdavanja()&lt;&lt;endl;
+            if(p.second-&gt;DaLiJeZaduzena())
+            {
+                Korisnik* kor = p.second-&gt;DajKodKogaJe();
+                cout&lt;&lt;"Zaduzena kod korisnika: "&lt;&lt;kor-&gt;ime&lt;&lt;" "&lt;&lt;kor-&gt;prezime&lt;&lt;endl;
+            }
+            cout&lt;&lt;endl;
+        }
+    }
+    
+    void ZaduziKnjigu(int evidBrojKnjige, int clanskiBrojKorisnik)
+    {
+        if(knjige.find(evidBrojKnjige)==knjige.end())
+        {
+            throw logic_error("Knjiga nije nadjena");
+        }
+        if(korisnici.find(clanskiBrojKorisnik)==korisnici.end())
+        {
+            throw logic_error("Korisnik nije nadjen");
+        }
+        if(knjige[evidBrojKnjige]-&gt;DaLiJeZaduzena())
+        {
+            throw logic_error("Knjiga je vec zaduzena");
+        }
+        
+        knjige[evidBrojKnjige]-&gt;ZaduziKnjigu(*(korisnici[clanskiBrojKorisnik]));
+    }
+    
+    void RazduziKnjigu(int evidBrojKnjige)
+    {
+        if(knjige.find(evidBrojKnjige)==knjige.end())
+        {
+            throw logic_error("Knjiga nije nadjena");
+        }
+        if(!knjige[evidBrojKnjige]-&gt;DaLiJeZaduzena())
+        {
+            throw logic_error("Knjiga nije zaduzena");
+        }
+        
+        knjige[evidBrojKnjige]-&gt;RazduziKnjigu();
+    }
+    
+    void PrikaziZaduzivanja(int clanskiBrojKorisnik) const
+    {
+        if(korisnici.find(clanskiBrojKorisnik)==korisnici.end())
+        {
+            throw domain_error("Korisnik nije nadjen");
+        }
+        
+        int brojac{0};
+        
+        for(auto knj : knjige)
+        {
+            if(knj.second-&gt;DajKodKogaJe()==korisnici.at(clanskiBrojKorisnik))
+            {
+                cout&lt;&lt;"Evidencijski broj: "&lt;&lt;knj.first&lt;&lt;endl;
+                cout&lt;&lt;"Naslov: "&lt;&lt;knj.second-&gt;DajNaslov()&lt;&lt;endl;
+                cout&lt;&lt;"Pisac: "&lt;&lt;knj.second-&gt;DajAutora()&lt;&lt;endl;
+</font><a name="2"></a><font color="#0000FF"><a href="match214-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_10.gif"/></a>
+
+                cout&lt;&lt;"Zanr: "&lt;&lt;knj.second-&gt;DajZanr()&lt;&lt;endl;
+                cout&lt;&lt;"Godina izdavanja: "&lt;&lt;knj.second-&gt;DajGodinuIzdavanja()&lt;&lt;endl;
+                cout&lt;&lt;endl;
+                brojac++;
+            }
+        }
+        
+        if(brojac==0)
+        {
+            cout&lt;&lt;"Nema zaduzenja za tog korisnika"&lt;&lt;endl;
+        }
+    }
+    ~Biblioteka ()
+    {
+        for(auto it=korisnici.begin(); it != korisnici.end(); it++)
+            delete it-&gt;second;
+        for(auto it=knjige.begin(); it != knjige.end(); it++ )
+            delete it-&gt;second;
+    }
+    
+};
+
+
+
+int main ()
+{
+	return 0;
+</font>}</pre>
+</body>
+</html>

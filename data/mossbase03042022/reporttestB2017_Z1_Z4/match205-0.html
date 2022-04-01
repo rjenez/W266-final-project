@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student8993.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student8993.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match205-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+bool DaLiJeSlovo (char znak) {
+	return ((znak&gt;='a' &amp;&amp; znak&lt;='z') || (znak&gt;='A' &amp;&amp; znak&lt;='Z'));
+}
+
+
+// Funkcija koja pronalazi rijeci sa popisa unutar recenice, te ukoliko je pronadje na kraj te rijeci u recenici
+// dodaje palindrom pronadjene rijeci
+std::string NapraviPalindrom (std::string recenica, std::vector&lt;std::string&gt; popis) {
+	for (int i=0; i&lt;popis.size(); i++) {
+		for (int j=0; j&lt;recenica.length(); j++) {
+			if (popis.at(i)==recenica.substr(j, popis.at(i).length()) &amp;&amp; ((j+popis.at(i).length()==recenica.length()) ||  (!DaLiJeSlovo(recenica.at(j+popis.at(i).length()))))  &amp;&amp; ((j==0) || (recenica.at(j-1)==' '))) {
+				std::string pomocni;
+				int duzina_rijeci(popis.at(i).length());
+				for (int k=duzina_rijeci-1; k&gt;=0; k--) {
+					pomocni.push_back(popis.at(i).at(k));
+				}
+				recenica.insert(j+duzina_rijeci,pomocni);
+			}
+		}
+	}
+	return recenica;
+}
+
+// Funkcija koja takodjer pronalazi  rijeci sa popisa unutar recenice, te ukoliko je pronadje od te rijeci formira polupalindrom
+std::string NapraviPolupalindrom (std::string recenica, std::vector&lt;std::string&gt; popis) {
+for (int i=0; i&lt;popis.size(); i++) {
+		for (int j=0; j&lt;recenica.length(); j++) {
+			if (popis.at(i)==recenica.substr(j, popis.at(i).length()) &amp;&amp; ((j+popis.at(i).length()==recenica.length()) || (!DaLiJeSlovo(recenica.at(j+popis.at(i).length())))) &amp;&amp; ((j==0) || (recenica.at(j-1)==' '))) {
+				int k(j), duzina_rijeci(popis.at(i).length());
+				
+				if (duzina_rijeci%2!=0) {
+					k+=(duzina_rijeci/2); 
+					std::string pomocni;
+					for (int l=(k-1); l&gt;=j; l--) {
+						pomocni.push_back(recenica.at(l));
+					}
+					recenica.insert(k+1,pomocni);
+					int vel(pomocni.length());
+					recenica.erase(k+vel+1,vel);
+				}
+				
+				if (duzina_rijeci%2==0) {
+					k+=(duzina_rijeci/2); 
+					std::string pomocni;
+					for (int l=(k-1); l&gt;=j; l--) {
+						pomocni.push_back(recenica.at(l));
+					}
+					recenica.insert(k,pomocni);
+					int vel(pomocni.length());
+					recenica.erase(k+vel,vel);
+				}
+				
+			}
+		}
+	}
+	return recenica;
+}
+
+int main () {
+	std::string recenica;
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	std::getline (std::cin, recenica, '\n');
+	
+	std::cout&lt;&lt;"Unesite fraze: ";
+	std::string pomocni;
+	
+	std::vector&lt;std::string&gt; fraze;
+	while (std::cin.peek()!='\n') {
+		std::getline(std::cin, pomocni);
+		fraze.push_back(pomocni);
+	}
+	std::cin.ignore(10000,'\n');
+	std::cout&lt;&lt;"Recenica nakon Palindrom transformacije: ";
+	std::cout&lt;&lt;NapraviPalindrom(recenica,fraze)&lt;&lt;std::endl;
+
+	std::cout&lt;&lt;"Recenica nakon PoluPalindrom transformacije: ";
+	std::cout&lt;&lt;NapraviPolupalindrom(recenica,fraze)&lt;&lt;std::endl;
+
+	std::cout&lt;&lt;std::endl;
+</font>
+	return 0;
+}
+</pre>
+</body>
+</html>

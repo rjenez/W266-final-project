@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student5774.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student5774.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;functional&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+//Provjereno, poslano
+<a name="0"></a><font color="#FF0000"><a href="match162-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::vector&lt;std::pair&lt;double, double&gt;&gt; v)
+{
+    for (int i(0); i &lt; v.size(); ++i)
+        for (int j(i+1); j &lt; v.size(); ++j)
+            if (v.at(i).first == v.at(j).first) throw std::domain_error("Neispravni cvorovi");
+    std::sort(v.begin(), v.end());
+    return [v](double x)
+    {
+        if (v.empty() || x &lt; v.at(0).first || x &gt; v.at(v.size()-1).first) throw std::range_error("Argument izvan opsega");
+        auto it(std::upper_bound(v.begin(), v.end(), std::pair&lt;double, double&gt;(x, 0), [](const std::pair&lt;double, double&gt; &amp;a, const std::pair&lt;double, double&gt; &amp;b) { return a.first &lt; b.first; }));
+        if (it == v.end() || (it-1)-&gt;first == x) return (it-1)-&gt;second;
+        return (it-1)-&gt;second + (it-&gt;second - (it-1)-&gt;second) / (it-&gt;first - (it-1)-&gt;first) * (x - (it-1)-&gt;first);
+    };
+}
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::function&lt;double(double)&gt; f, double xmin, double xmax, double dx)
+{
+    if (xmin &gt; xmax || dx &lt;= 0) throw std::domain_error("Nekorektni parametri");
+    std::vector&lt;std::pair&lt;double, double&gt;&gt; v((xmax - xmin) / dx + 1);
+    for (int i(0); i &lt; v.size(); ++i) v.at(i) = { xmin + i * dx, f(xmin + i * dx) };
+    return [v](double x)
+    {
+        if (v.empty() || x &lt; v.at(0).first || x &gt; v.at(v.size()-1).first) throw std::range_error("Argument izvan opsega");
+        auto it(std::upper_bound(v.begin(), v.end(), std::pair&lt;double, double&gt;(x, 0), [](const std::pair&lt;double, double&gt; &amp;a, const std::pair&lt;double, double&gt; &amp;b) { return a.first &lt; b.first; }));
+        if (it == v.end() || (it-1)-&gt;first == x) return (it-1)-&gt;second;
+        return (it-1)-&gt;second + (it-&gt;second - (it-1)-&gt;second) / (it-&gt;first - (it-1)-&gt;first) * (x - (it-1)-&gt;first);
+    };
+}
+int main()
+{
+    int n, o;
+    double a, b, c;
+    std::vector&lt;std::pair&lt;double, double&gt;&gt; v;
+    std::cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    std::cin &gt;&gt; o;
+    if (o == 1)
+    {
+        std::cout &lt;&lt; "Unesite broj cvorova: ";
+        v.resize((std::cin &gt;&gt; n, n));
+        std::cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+        for (auto &amp;p : v) std::cin &gt;&gt; p.first &gt;&gt; p.second;
+    }
+    else if (o == 2)
+    {
+        std::cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+        std::cin &gt;&gt; a &gt;&gt; b &gt;&gt; c;
+    }
+    else return 0;
+    try
+    {
+        auto f(o == 1 ? LinearnaInterpolacija(v) : LinearnaInterpolacija([](double x) { return x*x + std::sin(x); }, a, b, c));
+        while (std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ", std::cin &gt;&gt; a)
+            try
+            {
+                if (o == 1) std::cout &lt;&lt; "f(" &lt;&lt; a &lt;&lt; ") = " &lt;&lt; f(a) &lt;&lt; '\n';
+                else std::cout &lt;&lt; "f(" &lt;&lt; a &lt;&lt; ") = " &lt;&lt; a*a + std::sin(a) &lt;&lt; " fapprox(" &lt;&lt; a &lt;&lt; ") = " &lt;&lt; f(a) &lt;&lt; '\n';
+            }
+            catch (const std::range_error &amp;e) { std::cout &lt;&lt; e.what() &lt;&lt; '\n'; }
+    }
+    catch (const std::exception &amp;e) { std::cout &lt;&lt; e.what(); }
+</font>	return 0;
+}</pre>
+</body>
+</html>

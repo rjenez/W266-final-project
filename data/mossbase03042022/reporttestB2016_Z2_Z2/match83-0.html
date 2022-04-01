@@ -1,0 +1,167 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student5961.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student5961.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+#include &lt;cstdio&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;type_traits&gt;
+#include &lt;string&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match83-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum class SmjerKretanja {
+    NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo
+};
+std::string SmjerKretanjaTekst[] {
+        "NaprijedNazad", "NazadNaprijed", "GoreDolje", "DoljeGore", "LijevoDesno", "DesnoLijevo"
+};
+template &lt;typename Kontejner3D&gt;
+auto IzdvojiDijagonale3D(Kontejner3D ludara, SmjerKretanja smjer) -&gt; typename std::remove_reference&lt;decltype(ludara.at(0))&gt;::type {
+    typedef typename std::remove_reference&lt;decltype(ludara.at(0))&gt;::type MatTip;
+    MatTip dijagonale;
+    // Provjera
+    if(!ludara.size()) return dijagonale;
+    int broj_redova(-1), broj_kolona(-1);
+    for(int i(0); i &lt; ludara.size(); i++){
+        //Provjera da li matrice imaju isti broj redova
+        if(broj_redova == -1) broj_redova = ludara.at(i).size();
+        if(ludara.at(i).size() != broj_redova) throw std::domain_error("Plohe nemaju isti broj redova");
+        int broj_kolona_matrice(-1);
+        //Provjera da je matrica pravilna
+        for(int j(0); j &lt; ludara.at(i).size(); j++){
+            if(broj_kolona_matrice == -1) broj_kolona_matrice = ludara.at(i).at(j).size();
+            if(broj_kolona_matrice != ludara.at(i).at(j).size()) throw std::domain_error("Redovi nemaju isti broj elemenata");
+        }
+        //Provjera da li matrice imaju isti broj kolona
+        if (broj_kolona == -1) broj_kolona = broj_kolona_matrice;
+        if(broj_kolona != broj_kolona_matrice) throw std::domain_error("Redovi nemaju isti broj elemenata");
+    }
+    //////////////////////////////////////
+    if(!broj_redova || !broj_kolona) return dijagonale;
+    int index_dijagonale(0);
+    int index_kolone(0);
+    int index_reda(0);
+    switch(int(smjer)){
+        case 0:
+            dijagonale.resize(ludara.size());
+            for(int i(0); i &lt; ludara.size(); i++){
+                for(int j(0); j &lt; ludara.at(0).size(); j++){
+                    if(j &gt;= ludara.at(i).at(j).size()) break;
+                    dijagonale.at(i).push_back(ludara.at(i).at(j).at(j));
+                }
+            }
+            break;
+        case 1:
+            dijagonale.resize(ludara.size());
+            for(int i(ludara.size()-1); i &gt;= 0; i--){
+                index_kolone = broj_kolona-1;
+                for(int j(0); j &lt; ludara.at(i).size(); j++){
+                    if(index_kolone &lt; 0) break;
+                    dijagonale.at(index_dijagonale).push_back(ludara.at(i).at(j).at(index_kolone));
+                    index_kolone--;
+                }
+                index_dijagonale++;
+            }
+            break;
+        case 2:
+            dijagonale.resize(broj_redova);
+            index_kolone = 0;
+            for(int i(ludara.size()-1); i &gt;= 0; i--){
+                if(index_kolone &gt;= broj_kolona) break;
+                for(int j(0); j &lt; ludara.at(i).size(); j++){
+                    dijagonale.at(j).push_back(ludara.at(i).at(j).at(index_kolone));
+                }
+                index_kolone++;
+            }
+            break;
+        case 3:
+            dijagonale.resize(broj_redova);
+            index_kolone = broj_kolona-1;
+            for(int i(ludara.size()-1); i &gt;= 0; i--){
+                if(index_kolone &lt; 0) break;
+                index_dijagonale = 0;
+                for(int j(broj_redova - 1); j &gt;= 0; j--){
+                    dijagonale.at(index_dijagonale).push_back(ludara.at(i).at(j).at(index_kolone));
+                    index_dijagonale++;
+                }
+                index_kolone--;
+            }
+            break;
+        case 4:
+            dijagonale.resize(broj_kolona);
+            index_reda = 0;
+            for(int i(ludara.size()-1); i &gt;= 0; i--){
+                if(index_reda &gt;= broj_redova) break;
+                for(int j(0); j &lt; broj_kolona; j++){
+                    dijagonale.at(j).push_back(ludara.at(i).at(index_reda).at(j));
+                }
+                index_reda++;
+            }
+            break;
+        case 5:
+            dijagonale.resize(broj_kolona);
+            for(int i(0); i &lt; ludara.size(); i++){
+                index_dijagonale = 0;
+                if(i &gt;= broj_redova) break;
+                for(int j(broj_kolona-1); j &gt;= 0; j--){
+                    dijagonale.at(index_dijagonale).push_back(ludara.at(i).at(i).at(j));
+                    index_dijagonale++;
+                }
+            }
+            break;
+    }
+    return dijagonale;
+}
+int main () {
+    std::deque&lt;std::vector&lt;std::vector&lt;int&gt;&gt;&gt; ludara;
+    std::cout &lt;&lt; "Unesite dimenzije (x y z): ";
+    int x, y, z;
+    std::cin &gt;&gt; x &gt;&gt; y &gt;&gt; z;
+    // validiraj dimenzije kontejnera
+    if (x &lt; 1 || y &lt; 1 || z &lt; 1) {
+        std::cout &lt;&lt; "Neispravne dimenzije kontejnera!" &lt;&lt; std::endl;
+        return 0;
+    }
+    // unesi elemente kontejnera
+    ludara.resize(x);
+    std::cout &lt;&lt; "Unesite elemente kontejnera:";
+    for(int i(0); i &lt; x; i++){
+        ludara.at(i).resize(y);
+        for(int j(0); j &lt; y; j++){
+            ludara.at(i).at(j).resize(z);
+            for(int k(0); k &lt; z; k++){
+                std::cin &gt;&gt; ludara.at(i).at(j).at(k);
+            }
+        }
+    }
+    // unesi smjer
+    std::cout &lt;&lt; std::endl &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+    int smjer;
+    std::cin &gt;&gt; smjer;
+    // validiraj smjer
+    if (smjer &gt; 5 || smjer &lt; 0) {
+        std::cout &lt;&lt; "Smjer kretanja nije ispravan!" &lt;&lt; std::endl;
+        return 0;
+    }
+    // pozovi funkciju
+    auto dijagonale(IzdvojiDijagonale3D(ludara, SmjerKretanja(smjer)));
+    // ispisi rezultat
+    std::cout &lt;&lt; SmjerKretanjaTekst[smjer] &lt;&lt; ":" &lt;&lt; std::endl;
+    for(int i(0); i &lt; dijagonale.size(); i++){
+        for(int j(0); j &lt; dijagonale.at(i).size(); j++){
+            std::cout &lt;&lt; std::setw(4) &lt;&lt; dijagonale.at(i).at(j);
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+    return 0;
+</font>}</pre>
+</body>
+</html>

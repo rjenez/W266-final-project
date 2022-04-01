@@ -1,0 +1,91 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student7977.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student7977.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match127-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_64.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+
+std::string PretvoriUMalaSlova(std::string s){
+    for(int i=0; i&lt;s.length(); i++){
+        if(s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z') s[i] += 32;
+    }
+    return s;
+}
+
+std::map&lt; std::string, std::set&lt;int&gt; &gt; KreirajIndeksPojmova(std::string s){
+    std::map&lt; std::string, std::set&lt;int&gt; &gt; m;
+    bool a(true);
+    for(int i=0; i&lt;s.length(); i++){
+        if(!((s[i] &gt;= 'a' &amp;&amp; s[i] &lt;= 'z')||(s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z')||(s[i]&gt;='1' &amp;&amp; s[i]&lt;='9'))){
+            a = true;
+        }else if(a==true){
+            a = false;
+            int j;
+            for(j=i; j&lt;s.length(); j++){
+                if(!((s[j] &gt;= 'a' &amp;&amp; s[j] &lt;= 'z') || (s[j] &gt;= 'A' &amp;&amp; s[j] &lt;= 'Z') || (s[j]&gt;='1' &amp;&amp; s[j]&lt;='9'))) break;
+            }
+            std::string pomocni(s.substr(i, j-i));
+            pomocni = PretvoriUMalaSlova(pomocni);
+            m[pomocni].insert(i);
+            i = j-1;
+        }
+    }
+    return m;
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string s, std::map&lt;std::string, std::set&lt;int&gt;&gt; m){
+    auto it(m.begin());
+    while(it != m.end()){
+        if(it-&gt;first == s) break;
+        it++;
+    }
+    if(it == m.end()) throw std::logic_error("Pojam nije nadjen");
+    return it-&gt;second;
+}
+
+void IspisiIndeksPojmova(std::map&lt; std::string, std::set&lt;int&gt; &gt; m){
+    for(auto it = m.begin(); it != m.end(); it++){
+</font><a name="1"></a><font color="#00FF00"><a href="match127-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_31.gif"/></a>
+
+        std::cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+        for(auto p = it-&gt;second.begin(); p != it-&gt;second.end(); p++){
+            if(p != --it-&gt;second.end()) std::cout &lt;&lt; *p &lt;&lt; ",";
+            else std::cout &lt;&lt; *p;
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+    
+}
+
+int main ()
+{
+    std::cout &lt;&lt; "Unesite tekst: ";
+    std::string s;
+    std::getline(std::cin, s);
+    std::map &lt; std::string, std::set&lt;int&gt; &gt; m(KreirajIndeksPojmova(s));
+    IspisiIndeksPojmova(m);
+    while(true){
+        try{
+            std::cout &lt;&lt; "Unesite rijec: ";
+            std::string s1;
+            std::getline(std::cin, s1);
+            if(s1 == ".") break;
+            std::set&lt;int&gt; skup(PretraziIndeksPojmova(s1, m));
+            for(int x : skup) std::cout &lt;&lt; x &lt;&lt; " ";
+        }catch(std::logic_error){
+            std::cout &lt;&lt; "Unesena rijec nije nadjena!";
+        }
+        std::cout &lt;&lt; std::endl;
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

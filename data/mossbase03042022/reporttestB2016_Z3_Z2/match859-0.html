@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student6707.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student6707.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+void PretvaraUMalaSlova(std::string &amp;s)
+{
+<a name="1"></a><font color="#00FF00"><a href="match859-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+    for(int i=0; i&lt;s.length(); i++)
+        {
+           if(s[i]&gt;=65 &amp;&amp; s[i]&lt;=90) s[i]+=32;
+</font>        }
+}
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string tekst)
+{
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; pojmovi;
+    
+    auto it1=tekst.begin();
+    auto it2 =tekst.end();
+     
+     while(it1&lt;it2)
+     {
+         while((*it1&lt;48 || (*it1&gt;57 &amp;&amp; *it1&lt;65) || (*it1&gt;90 &amp;&amp; *it1&lt;97) || *it1&gt;123)) it1++;
+         
+         auto pomocni=it1;
+         while(((*pomocni&gt;47 &amp;&amp; *pomocni&lt;58) || (*pomocni&gt;64 &amp;&amp; *pomocni&lt;91) || (*pomocni&gt;96 &amp;&amp; *pomocni&lt;123)))pomocni++;
+         if(pomocni&lt;=it2){
+         std::string s=tekst.substr(it1-tekst.begin(), pomocni-it1);
+         PretvaraUMalaSlova(s);
+         pojmovi[s].insert(it1-tekst.begin());
+        it1=pomocni;
+         }
+     }
+    return pojmovi;
+    
+}
+std::set&lt;int&gt; PretraziIndeksPojmova (std::string s,std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa)
+{
+    std::set&lt;int&gt; skup;
+    PretvaraUMalaSlova(s);
+    auto it(mapa.find(s));
+    if(it == mapa.end()) throw std::logic_error("Unesena rijec nije nadjena!");
+    for(auto x=mapa.begin(); x!=mapa.end(); x++)
+    {
+        if(s==x-&gt;first) {
+            skup=x-&gt;second;
+    }
+  }
+ return skup;
+}
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa)
+{
+    for(auto x=mapa.begin(); x!=mapa.end(); x++)
+    {
+        std::cout&lt;&lt;x-&gt;first&lt;&lt;": ";
+      auto skupovi=x-&gt;second;
+        for(auto it1=skupovi.begin(); it1!=skupovi.end(); it1++) {
+            if(it1!=(--(skupovi.end())))
+            std::cout &lt;&lt; *it1 &lt;&lt; ",";
+            else std::cout &lt;&lt; *it1;
+        }
+        
+        std::cout &lt;&lt; std::endl; 
+
+    
+       
+    }
+     std::cout&lt;&lt;std::endl;
+}
+
+int main (){
+    std::string tekst;
+    std::cout&lt;&lt;"Unesite tekst: ";
+    std::getline(std::cin,tekst);
+<a name="0"></a><font color="#FF0000"><a href="match859-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_15.gif"/></a>
+
+    auto mapa=KreirajIndeksPojmova(tekst);
+    IspisiIndeksPojmova(mapa);
+    for(;;)
+    {
+        std::cout&lt;&lt;"Unesite rijec: ";
+        std::string s;
+        std::cin&gt;&gt;s;
+        
+        if(s==".") break;
+        try{
+           
+        auto skup=PretraziIndeksPojmova(s,mapa);
+        for(auto x: skup) std::cout&lt;&lt;x&lt;&lt;" ";
+        std::cout&lt;&lt;std::endl;
+        }
+        catch(std::logic_error y)
+        {
+            std::cout&lt;&lt;y.what()&lt;&lt;std::endl;
+        }
+    }
+	return 0;
+</font>}</pre>
+</body>
+</html>

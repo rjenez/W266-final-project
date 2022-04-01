@@ -1,0 +1,182 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student2830.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student8025.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match48-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_94.gif"/></a>
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; matrica;
+matrica horizontalna(matrica m){
+    double b,x;
+    matrica v=m;
+    for(int i=0; i&lt;v.size(); i++){
+        b=v[i].size()-1;
+        for(int j=0; j&lt;b; j++){
+            for(int z=b; z&gt;j; z--){
+                x=v[i][j];
+                v[i][j]=v[i][z];
+                v[i][z]=x;
+                b--;
+                break;
+            }
+            
+        }
+    }
+    return v;
+}
+matrica vertikalna(matrica m){
+    matrica v=m;
+    std::vector&lt;double&gt; temp;
+    int h=v.size()-1;
+    for(int i=0; i&lt;h; i++){
+        for(int j=h; j&gt;i; j--){
+            temp=v[i];
+            v[i]=v[j];
+            v[j]=temp;
+            h--;
+            break;
+        }
+    }
+    return v;
+}
+matrica hv(matrica m){
+    matrica v=m;
+    matrica a;
+    a=vertikalna(v);
+    a=horizontalna(a);
+    return a;
+}
+matrica OgledaloMatrica( matrica m){
+    int a,b(0),c(0);
+    matrica original=m;
+    a=m.size();
+    if(a&lt;0) throw std::domain_error("Matrica nije korektna");
+    matrica konacna(3*a);
+    if(a==0 || m[0].size()==0) return konacna;
+    std::vector&lt;double&gt;glavni[10];
+    std::vector&lt;double&gt;gornji[10];
+    std::vector&lt;double&gt;donji[10];
+    std::vector&lt;double&gt;zadnji[10];
+    std::vector&lt;double&gt;zavrsni[10];
+    std::vector&lt;double&gt;drugi[10];
+    for(int i=0; i&lt;m.size(); i++){
+    int d=m[0].size();
+    if(d!=m[i].size()) throw std::domain_error("Matrica nije korektna");
+    }
+    for(int i=0; i&lt;original.size(); i++){
+        for(int j=0; j&lt;original[i].size(); j++){
+            glavni[i].push_back(original[i][j]);
+        }
+    }
+    original=hv(m);
+    for(int i=0; i&lt;original.size(); i++){
+        for(int j=0; j&lt;original[i].size(); j++){
+            gornji[i].push_back(original[i][j]);
+        }
+    }
+    original=vertikalna(m);
+    for(int i=0; i&lt;original.size(); i++){
+        for(int j=0; j&lt;original[i].size(); j++){
+            donji[i].push_back(original[i][j]);
+        }
+    }
+    original=horizontalna(m);
+for(int i=0; i&lt;original.size(); i++){
+        for(int j=0; j&lt;original[i].size(); j++){
+            zadnji[i].push_back(original[i][j]);
+        }
+    }  
+ for(int i=0; i&lt;m.size(); i++){
+     for(int j=0; j&lt;m[i].size(); j++){
+         zavrsni[i].push_back((gornji[i])[j]);
+     }
+ }   
+    for(int i=0; i&lt;m.size(); i++){
+     for(int j=0; j&lt;m[i].size(); j++){
+         zavrsni[i].push_back((donji[i])[j]);
+     }
+ }   
+ for(int i=0; i&lt;m.size(); i++){
+     for(int j=0; j&lt;m[i].size(); j++){
+         zavrsni[i].push_back((gornji[i])[j]);
+     }
+ } 
+ for(int i=0; i&lt;m.size(); i++){
+     for(int j=0; j&lt;m[i].size(); j++){
+         drugi[i].push_back((zadnji[i])[j]);
+     }
+ }   
+ for(int i=0; i&lt;m.size(); i++){
+     for(int j=0; j&lt;m[i].size(); j++){
+         drugi[i].push_back((glavni[i])[j]);
+     }
+ } 
+ for(int i=0; i&lt;m.size(); i++){
+     for(int j=0; j&lt;m[i].size(); j++){
+         drugi[i].push_back((zadnji[i])[j]);
+     }
+ }   
+ for(int i=0; i&lt;3*a; i++){
+     if(i&lt;a){
+     konacna[i]=zavrsni[i];
+     } else if(i&gt;=a &amp;&amp; i&lt;2*a){
+         
+         for(int j=b; j&lt;a; j++){
+             konacna[i]=drugi[j];
+             b++;
+             break;
+         }
+     } else if(i&gt;=2*a &amp;&amp; i&lt;3*a){
+          for(int j=c; j&lt;a; j++){
+             konacna[i]=zavrsni[j];
+             c++;
+             break;
+         }
+     }    
+ }
+ return konacna;
+}
+
+int main ()
+{
+    int m,n;
+    try{
+ std::cout&lt;&lt;"Unesite dimenzije matrice (m n): ";
+ std::cin&gt;&gt;m&gt;&gt;n;
+ if(m&lt;0 || n&lt;0){
+     std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+     return 0;
+ }
+ matrica ispis;
+ matrica prva(m,std::vector&lt;double&gt;(n));
+ std::cout&lt;&lt;"Unesite elemente matrice: ";
+ for(int i=0; i&lt;m; i++){
+     for(int j=0; j&lt;n; j++){
+         std::cin&gt;&gt;prva[i][j];
+     }
+ }
+ 
+ std::cout&lt;&lt;std::endl;
+ ispis=OgledaloMatrica(prva);
+ std::cout&lt;&lt;"Rezultantna matrica: ";
+ std::cout&lt;&lt;std::endl;
+ for(int i=0; i&lt;ispis.size(); i++){
+     for(int j=0; j&lt;ispis[i].size(); j++){
+</font>         std::cout&lt;&lt;std::setw(4)&lt;&lt;ispis[i][j];
+     }
+     std::cout&lt;&lt;std::endl;
+ }
+ 
+    } catch(std::domain_error izuzetak){
+        std::cout&lt;&lt;izuzetak.what();
+    }
+	return 0;
+}</pre>
+</body>
+</html>

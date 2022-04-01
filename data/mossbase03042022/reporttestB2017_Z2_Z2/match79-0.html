@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student5695.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student5695.cpp<p></p><pre>
+#include &lt;deque&gt;
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match79-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+enum SmjerKretanja:int { NaprijedNazad=0, NazadNaprijed=1, GoreDolje=2, DoljeGore=3, LijevoDesno=4, DesnoLijevo=5 };
+
+typedef vector&lt;deque&lt;deque&lt;int&gt;&gt;&gt; vddi;
+
+template &lt;typename tip_kont&gt; 
+void ImaIzac(tip_kont kont) {
+    int n(kont.size());
+    for(int i=0;i&lt;n;i++) {
+        if(kont.at(i).size()!=n) throw domain_error ("3D matrica nema oblik kocke");
+        for(int j=0;j&lt;kont.at(i).size();j++) if(kont.at(i).at(j).size()!=n) throw domain_error ("3D matrica nema oblik kocke");
+    }
+    if(n%2==0) throw length_error ("3D kontejner ne zadovoljava uvjet neparnosti");
+}
+
+void Ispis(vddi kont) {
+    cout &lt;&lt; endl &lt;&lt; "Pjescani sat unesene matrice je:" &lt;&lt; endl &lt;&lt; endl;
+    for(int i=0;i&lt;kont.size();i++) {
+	    for(int j=0;j&lt;kont.size();j++) {
+	        if(j&lt;=kont.size()/2) cout &lt;&lt; setfill(' ') &lt;&lt; setw(4*j) &lt;&lt; "";
+	        else cout &lt;&lt; setfill(' ') &lt;&lt; setw(4*(kont.size()-j-1)) &lt;&lt; "";
+	        for(int k=0;k&lt;kont.at(i).at(j).size();k++) {
+	            if(k==0 &amp;&amp; (j==0 || j==kont.size()-1)) cout &lt;&lt; setw(4) &lt;&lt; right &lt;&lt; kont.at(i).at(j).at(k);
+	            else cout &lt;&lt;  setw(4) &lt;&lt; right &lt;&lt; kont.at(i).at(j).at(k);
+	        }
+	        cout &lt;&lt; endl;
+	    }
+	    cout &lt;&lt; endl;
+	}
+}
+
+template &lt;typename tip_kont&gt;
+tip_kont PjescaniSat(tip_kont kont, SmjerKretanja smjer) {
+    ImaIzac(kont);
+    if(smjer==4 || smjer==5) {
+        for(int i=0;i&lt;kont.size();i++) {
+            for(int j=0;j&lt;kont.size();j++) {
+                for(int k=j;k&lt;kont.size();k++) {
+                    auto pom(kont.at(i).at(j).at(k));
+                    kont.at(i).at(j).at(k)=kont.at(i).at(k).at(j);
+                    kont.at(i).at(k).at(j)=pom;
+                }
+            }
+        }
+    }
+    else if(smjer==0 || smjer==1) {
+        tip_kont pom_kont(kont);
+        for(int i=0;i&lt;kont.size();i++) {
+            for(int j=0;j&lt;kont.size();j++) {
+                for(int k=0;k&lt;kont.size();k++) {
+                    kont.at(i).at(j)=pom_kont.at(j).at(i);
+                }
+            }
+        }
+    }
+    if(smjer==1 || smjer==3 || smjer==5) {
+        for(int i=0;i&lt;kont.size();i++) {
+            for(int j=0;j&lt;kont.size()/2;j++) {
+                auto pomocni_dek=kont.at(i).at(j);
+                kont.at(i).at(j)=kont.at(i).at(kont.size()-j-1);
+                kont.at(i).at(kont.size()-j-1)=pomocni_dek;
+            }
+        } 
+    }
+    for(int i=0;i&lt;kont.size();i++) {
+        for(int j=0;j&lt;kont.size();j++) {
+            int n(kont.size()-j-1);
+            if(j&lt;=kont.size()/2 &amp;&amp; j!=0) {
+                for(int k=0;k&lt;kont.size()-j;k++) kont.at(i).at(j).at(k)=kont.at(i).at(j).at(k+j);
+            }
+            else if(j&gt;(int)kont.size()/2 &amp;&amp; j!=kont.size()-1) {
+                for(int k=0;k&lt;=j;k++) kont.at(i).at(j).at(k)=kont.at(i).at(j).at(k+n);
+                
+            }
+        }
+        for(int l=0;l&lt;kont.size()/2+1;l++) {
+            auto pomocni=kont.at(i).at(l);
+            pomocni.resize(kont.size()-2*l);
+            kont.at(i).at(l)=pomocni;
+        }
+        for(int l=kont.size()/2+1;l&lt;kont.size();l++) {
+            auto pomocni=kont.at(i).at(l);
+            pomocni.resize(kont.size()-2*(kont.size()-l-1));
+            kont.at(i).at(l)=pomocni;
+        }
+    }
+    return kont;
+}
+
+int main() {
+	cout &lt;&lt; "Unesite dimenziju (x/y/z): ";
+	int dim;
+	cin &gt;&gt; dim;
+	while(!cin || dim&lt;0) {
+		cout &lt;&lt; "Dimenzija nije ispravna, unesite opet: ";
+		cin &gt;&gt; dim;
+	}
+	vddi kont(dim);
+	cout &lt;&lt; "Unesite elemente kontejnera: ";
+	for(int i=0;i&lt;dim;i++) {
+	    kont.at(i).resize(dim);
+	    for(int j=0;j&lt;dim;j++) {
+	        for(int k=0;k&lt;dim;k++) {
+	            int p;
+	            cin &gt;&gt; p;
+	            kont.at(i).at(j).push_back(p);
+	        }
+	    }
+	}
+	cout &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+	int a(-1);
+	for(;;) {
+	    cin &gt;&gt; a;
+	    if(a&gt;5 || a&lt;0 || int(a)!=a) cout &lt;&lt; "Smjer nije ispravan, unesite opet: ";
+	    else break;
+	}
+	SmjerKretanja s=SmjerKretanja(a);
+	try {
+		kont=PjescaniSat(kont,s);
+		Ispis(kont);
+	}
+    catch (domain_error izuzetak) {
+    	cout &lt;&lt; endl &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+    }
+    catch (length_error izuzetak) {
+    	cout &lt;&lt; endl &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

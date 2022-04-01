@@ -1,0 +1,200 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z6/student5562.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z6/student7673.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match104-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 5, Zadatak 6
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+#include &lt;functional&gt;
+using namespace std;
+
+class Berza{
+    vector&lt;int&gt; v;
+    int mincijena, makscijena;
+public:
+    Berza(int nm, int nv){
+        if(nm&lt;0 || nv&lt;0) throw range_error("Ilegalne granice cijene");
+        mincijena=nm; makscijena=nv;
+    }
+    explicit Berza(int nv=0){
+        if(nv&lt;0) throw range_error("Ilegalne granice cijene");
+        mincijena=0; makscijena=nv;
+    }
+    void RegistrirajCijenu(int n);
+    int DajBrojRegistriranihCijena() const;
+    void BrisiSve();
+    int DajMinimalnuCijenu();
+    int DajMaksimalnuCijenu();
+    friend bool operator !(Berza b);
+    int DajBrojCijenaVecihOd(int n);
+    void Ispisi() const;
+     friend Berza operator + (Berza b, int n);
+    friend Berza operator - (Berza b, int n);
+    friend Berza operator - (int n, Berza b);
+    friend bool operator == (Berza b1, Berza b2);
+    friend bool operator !=(Berza b1, Berza b2);
+    friend Berza &amp;operator +=(Berza &amp;b, int n);
+    friend Berza &amp;operator -= (Berza &amp;b, int n);
+    friend Berza &amp;operator ++ (Berza &amp;b);
+    friend Berza operator ++ (Berza &amp;b, int);
+    friend Berza operator - (Berza &amp;b);
+    int operator [] (int ind) const;
+};
+
+void Berza::BrisiSve(){
+        v.resize(0);
+    }
+
+int Berza::DajBrojRegistriranihCijena() const
+    {
+        return v.size();
+    }
+
+int Berza::DajMinimalnuCijenu(){
+        if(v.size()==0) throw range_error("Nema registriranih cijena");
+        auto it = v.begin(); auto it1=v.end();
+        int n= *min_element(it, it1, [](int a, int b){return a&lt;b;});
+        return n;
+
+    }
+
+int Berza::DajMaksimalnuCijenu()
+    {
+        if(v.size()==0) throw range_error("Nema registriranih cijena");
+        auto it = v.begin(); auto it1=v.end();
+        int n= *min_element(it, it1, [](int a, int b){return a&gt;b;});
+        return n;
+    }
+
+bool operator !(Berza b){ return b.v.size()==0;}
+
+int Berza::DajBrojCijenaVecihOd(int n){
+        if(v.size()==0) throw range_error("Nema registriranih cijena");
+        return count_if(&amp;v[0], &amp;v[v.size()], bind(greater&lt;int&gt;(), placeholders::_1, n));
+
+    }
+
+void Berza::Ispisi() const{
+        vector&lt;int&gt; v1 = v;
+        auto it=v1.begin(); auto it1=v1.end();
+        sort(it, it1, greater&lt;int&gt;());
+        for(int i=0; i&lt;v1.size(); i++)
+        {
+            double n=v1[i];
+            cout&lt;&lt;setprecision(2)&lt;&lt;fixed&lt;&lt;n/100&lt;&lt;endl;
+        }
+    }
+
+Berza operator + (Berza b, int n)
+    {
+        Berza b1(0, b.makscijena);
+        vector&lt;int&gt; v1(b.v.size(), n);
+        b1.v=v1;
+        transform(&amp;b.v[0], &amp;b.v[b.v.size()], &amp;b1.v[0], &amp;b.v[0], plus&lt;int&gt;());
+        if(count_if(&amp;b.v[0], &amp;b.v[b.v.size()-1], bind(greater&lt;int&gt;(), placeholders::_1, b.makscijena))&gt;0) throw domain_error("Prekoracen dozvoljeni opseg cijena");
+        return b;
+    }
+
+Berza operator + (int n, Berza b)
+    {
+        return b+n;
+    }
+
+Berza operator - (Berza b, int n)
+    {
+        Berza b1(0, b.makscijena);
+        vector&lt;int&gt; v1(b.v.size(), n);
+        b1.v=v1;
+        transform(&amp;b.v[0], &amp;b.v[b.v.size()], &amp;b1.v[0], &amp;b.v[0], minus&lt;int&gt;());
+        if(count_if(&amp;b.v[0], &amp;b.v[b.v.size()-1], bind(less&lt;int&gt;(), placeholders::_1, b.mincijena))&gt;0) throw domain_error("Prekoracen dozvoljeni opseg cijena");
+        return b;
+    }
+
+Berza operator - (int n, Berza b)
+    {
+        Berza b1(0, 99999999);
+        vector&lt;int&gt; v1(b.v.size(), n);
+        b1.v=v1;
+        transform(&amp;b1.v[0], &amp;b1.v[b1.v.size()], &amp;b.v[0], &amp;b1.v[0], minus&lt;int&gt;());
+        b1.mincijena=b.mincijena; b1.makscijena=b.makscijena;
+        if(count_if(&amp;b1.v[0], &amp;b1.v[b1.v.size()-1], bind(less&lt;int&gt;(), placeholders::_1, b1.mincijena))&gt;0) throw domain_error("Prekoracen dozvoljeni opseg cijena");
+        return b1;
+    }
+
+bool operator == (Berza b1, Berza b2)
+    {
+        if(b1.v.size() != b2.v.size()) return false;
+        return equal(&amp;b1.v[0], &amp;b1.v[b1.v.size()-1], &amp;b2.v[0], equal_to&lt;int&gt;());
+    }
+
+bool operator !=(Berza b1, Berza b2){
+        return !(b1==b2);
+    }
+
+Berza &amp;operator +=(Berza &amp;b, int n){
+        b=b+n; return b;
+    }
+
+Berza &amp;operator -= (Berza &amp;b, int n)
+    {
+        b=b-n;
+        return b;
+    }
+
+Berza &amp;operator ++ (Berza &amp;b)
+    {
+        Berza b1(0, b.makscijena);
+        vector&lt;int&gt; v1(b.v.size(), 100);
+        b1.v=v1;
+        transform(&amp;b.v[0], &amp;b.v[b.v.size()], &amp;b1.v[0], &amp;b.v[0], plus&lt;int&gt;());
+        if(count_if(&amp;b.v[0], &amp;b.v[b1.v.size()-1], bind(greater&lt;int&gt;(), placeholders::_1, b.makscijena))&gt;0) throw range_error("Prekoracen dozvoljeni opseg cijena");
+        return b;
+    }
+
+Berza operator ++ (Berza &amp;b, int)
+    {
+        Berza pom(b.mincijena, b.makscijena);
+        pom.v.resize(b.v.size());
+        copy(&amp;b.v[0],&amp;b.v[b.v.size()], &amp;pom.v[0]);
+        ++b;
+        return pom;
+    }
+
+void Berza::RegistrirajCijenu(int n)
+    {
+        if(n&lt;mincijena || n&gt;makscijena) throw range_error("Ilegalna cijena");
+        v.push_back(n);
+    }
+int Berza::operator [] (int ind) const
+    {
+        if(ind&lt;1 || ind&gt;v.size()) throw range_error("Neispravan indeks");
+        return v[ind-1];
+    }
+    
+Berza operator - (Berza &amp;b)
+    {
+        int n= b.mincijena+b.makscijena;
+        Berza b1(0, b.makscijena*2);
+        vector&lt;int&gt; v1(b.v.size(), n);
+        b1.v=v1;
+        transform(&amp;b1.v[0], &amp;b1.v[b1.v.size()], &amp;b.v[0], &amp;b1.v[0], minus&lt;int&gt;());
+        b1.makscijena=b.makscijena; b1.mincijena=b.makscijena;
+        return b1;
+</font>    }
+
+int main ()
+{
+    
+	return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student8004.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student7180.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+#include &lt;set&gt;
+#include&lt;cstring&gt;
+
+bool DaLiJeDobro(char a)
+{
+    if((a&gt;='A' &amp;&amp; a&lt;='Z') || (a&gt;='a' &amp;&amp; a&lt;='z') || (a&gt;='0' &amp;&amp; a&lt;='9')) return true;
+    return false;
+}
+
+std::map&lt;std::string,std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string s)
+{
+    for(int i=0; i&lt;s.size(); i++)
+        if((s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') || (s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')) s[i]=tolower(s[i]);
+    
+<a name="0"></a><font color="#FF0000"><a href="match343-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; m;
+    for(int k=0; k&lt;s.size(); k++)
+    {
+        if(DaLiJeDobro(s[k]))
+        {
+            int pom1=k;
+            while(k!=s.size() &amp;&amp; DaLiJeDobro(s[k])) {k++;}
+            int pom2=k;
+</font>            std::string s1=s.substr(pom1, pom2-pom1);
+<a name="1"></a><font color="#00FF00"><a href="match343-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+            std::set&lt;int&gt;p;
+            for(int j=0; j&lt;s.size(); j++)
+                if(s.substr(j, s1.size())==s1 &amp;&amp; (j==0 || !DaLiJeDobro(s[j-1])) &amp;&amp; (s1.size()==s.size() || !DaLiJeDobro(s[j+s1.size()]))) p.insert(j);
+</font><a name="3"></a><font color="#00FFFF"><a href="match343-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_4.gif"/></a>
+
+                m.insert(make_pair(s1, p));
+        }
+    }
+    return m;
+</font>}
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string s, std::map&lt;std::string, std::set&lt;int&gt;&gt; m)
+{
+    for(int i=0; i&lt;s.size(); i++)
+<a name="2"></a><font color="#0000FF"><a href="match343-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_6.gif"/></a>
+
+        if((s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') || (s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')) s[i]=tolower(s[i]);
+    
+    for(auto it=m.begin(); it!=m.end(); it++)
+        if(it-&gt;first==s) return it-&gt;second;
+</font>    throw std::logic_error("Pojam nije nadjen");
+}
+
+void IspisiIndeksPojmova (std::map&lt;std::string, std::set&lt;int&gt; &gt; m)
+{
+   for(auto it=m.begin(); it!=m.end(); it++)
+   {
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        int br=it-&gt;second.size();
+        for(auto x: it-&gt;second)
+        {
+            if(br!=1) std::cout&lt;&lt;x&lt;&lt;",";
+            else std::cout&lt;&lt;x;
+            br--;
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+}
+
+int main ()
+{
+	std::string s;
+	std::cout&lt;&lt;"Unesite tekst: ";
+	std::getline(std::cin,s);
+	auto m=KreirajIndeksPojmova(s);
+	IspisiIndeksPojmova(m);
+	for(;;)
+	{
+	    std::cout&lt;&lt;"Unesite rijec: ";
+	    std::string p;
+	    std::getline(std::cin,p);
+	    if(p==".") break;
+	    try{
+	        std::set&lt;int&gt; pom=PretraziIndeksPojmova(p,m);
+	        for(auto x: pom) std::cout&lt;&lt;x&lt;&lt;" ";
+	        std::cout&lt;&lt;std::endl;
+	    }
+	    catch(std::logic_error)
+	    {
+	        std::cout&lt;&lt;"Unesena rijec nije nadjena!";
+	        std::cout&lt;&lt;std::endl;
+        }
+	}
+	return 0;
+}
+</pre>
+</body>
+</html>

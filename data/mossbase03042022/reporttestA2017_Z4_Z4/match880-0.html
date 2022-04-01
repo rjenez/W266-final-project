@@ -1,0 +1,162 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z4/Z4/student9175.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z4/Z4/student9175.c<p></p><pre>
+#include &lt;stdio.h&gt;
+
+int provjeri(char * s){
+    char * cita = s; 
+    char *pocetak_rijeci = s;
+    int brojac = 0;
+    int brojac_2 = 0;
+    int otvorene = 0;
+    int zatvorene = 0;
+    char *pom;
+    char *pomocni_pocetak;
+    int help = 0;
+    while(*cita != '\0'){
+        
+        if(*cita == '&lt;'){
+            
+            cita++;
+            //ako poslije &lt; procita nesto drugo sto nije slovo ili cifra ili / ne valja jer onda nije tag kako treba
+            if(!((*cita &gt;= 'A' &amp;&amp; *cita &lt;= 'Z') ||  (*cita &gt;= 'a' &amp;&amp; *cita &lt;= 'z') || (*cita &gt;= '0' &amp;&amp; *cita &lt;= '9') || *cita== '/')) {return 0;}
+            //ako je naisao na &lt;/ zatvoren tag da preskoci ovo dole sve
+            if(*cita == '/') {
+                cita++;
+                continue;
+            }
+            
+            pocetak_rijeci = cita;
+        
+            brojac = 0;
+            
+            //sve dok unutar taga cita slova ili brojeve da ih izbroji radi kasnijeg poredjenja sa zatvorenim tagom 
+<a name="0"></a><font color="#FF0000"><a href="match880-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+            while((*cita &gt;= 'A' &amp;&amp; *cita &lt;= 'Z') ||  (*cita &gt;= 'a' &amp;&amp; *cita &lt;= 'z') || (*cita &gt;= '0' &amp;&amp; *cita &lt;= '9')){
+                brojac++;
+                cita++;
+</font>            }
+            //treba da preskoci sve sto se nalazi unutar tog taga tipa atribute i sl href = "hjdhjsj"
+            while(*cita != '&gt;' &amp;&amp; *cita != '\0') {
+                cita++;
+            }
+            
+            //ako je dosao do kraja a nije nasao &gt; znaci da ne valja
+            if(*cita == '\0') {return 0;}
+            
+            //sve dok ne nadje prvo slovo koje odgovara prvom slovu ovog taga kojeg posmatramo da se pomjera
+            while(*cita != *pocetak_rijeci &amp;&amp; *cita != '\0'){
+                
+                //ako nadjemo &lt; znaci da zapocinje novi tag 
+                if(*cita == '&lt;'){
+                    if(*(cita++) == '\0') {return 0;}
+                     
+                    if(*(cita) == '/'){
+                        if(*(cita+1) == *pocetak_rijeci) {cita++;break;}
+                        
+                        while(*cita != '&gt;' &amp;&amp; *cita != '\0') cita++;
+                        if(*cita == '\0') {
+                           
+                            return 0;
+                        }
+                        zatvorene++;
+                    }
+                    else if((*cita &gt;= 'A' &amp;&amp; *cita &lt;= 'Z') ||  (*cita &gt;= 'a' &amp;&amp; *cita &lt;= 'z') || (*cita &gt;= '0' &amp;&amp; *cita &lt;= '9')){
+                        
+                        while(*cita != '&gt;' &amp;&amp; *cita != '\0') cita++;
+                        if(*cita == '\0') {
+                        return 0;}
+                        otvorene++;
+                    }
+                }
+                
+                cita++;
+            }
+          
+            pomocni_pocetak = pocetak_rijeci;
+            pom = cita;
+            if(*cita == *pomocni_pocetak){
+                
+                brojac_2=0;
+                while(*cita == *pomocni_pocetak &amp;&amp; *pomocni_pocetak != '\0' &amp;&amp; *cita != '\0' &amp;&amp; *cita != '&gt;'){
+                    brojac_2++;
+                   
+                    cita++;
+                    pomocni_pocetak++;
+                }
+            
+                if(brojac_2 != brojac) { help = 1; continue;}
+                
+                else{
+                 
+                    
+                    if(*(pom-1)!= '/' || zatvorene != otvorene){
+                      
+                           return 0; 
+                    } 
+                       
+                }
+                
+                    
+            }
+            
+            if(help == 1) cita = pocetak_rijeci-1;
+        }
+        cita++;
+    }
+    //if(nasao == 0)return 0;
+    return 1;
+    
+   /* char *cita = s;
+    char *niz_otvorenih[25];
+    char *niz_zatvorenih[25];
+    int i=0;
+    int j =0;
+    int k, l;
+    int nasao = 0;
+    while(*cita != '\0'){
+        if(*cita == '&lt;'){
+            cita++;
+            if(*cita == '/') niz_zatvorenih[j] = ++cita;
+            else if (((*cita &gt;= 'A' &amp;&amp; *cita &lt;= 'Z') ||  (*cita &gt;= 'a' &amp;&amp; *cita &lt;= 'z') || (*cita &gt;= '0' &amp;&amp; *cita &lt;= '9') || *cita== '/')) niz_otvorenih[i]=cita;
+            else return 0;
+        }
+        cita++;
+    }
+    if(i!=j) return 0;
+    
+    for(k = 0; k &lt;= i; k++){
+        nasao = 0;
+        for(l = 0; l &lt;= j; l++){
+           if(*niz_otvorenih[k] == *niz_zatvorenih[l]){
+               char *otvoreni = niz_otvorenih[k];
+               char *zatvoreni = niz_zatvorenih[l];
+           while(*otvoreni == *zatvoreni &amp;&amp; *otvoreni != '\0' &amp;&amp; *zatvoreni !='\0' &amp;&amp; *otvoreni != ' ' &amp;&amp; *otvoreni != '&gt;'){
+                   otvoreni++;
+                   zatvoreni++;
+                   
+               }
+               if((*otvoreni == ' ' || *otvoreni == '&gt;') &amp;&amp; *zatvoreni=='&gt;') {
+                   nasao = 1;
+                   break;
+               }
+           }
+        }
+        if(nasao == 0) return 0;
+    }
+    return 1;*/
+}
+int main(){
+char tekst1[] = "&lt;div id=\"tekst\"&gt;&lt;h2&gt;Naslov&lt;/h2&gt;&lt;p&gt;Ovo je &lt;b&gt;cetvrti&lt;/b&gt; i &lt;i&gt;posljednji&lt;/i&gt; zadatak iz &lt;a href=\"zadaca4\"&gt;zadace 4&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;";
+char tekst2[] = "&lt;b&gt;&lt;a&gt;proba&lt;/b&gt;&lt;/a&gt;";
+printf("%d ", provjeri(tekst1));
+printf("%d ", provjeri(tekst2));
+    return 0;
+}</pre>
+</body>
+</html>

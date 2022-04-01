@@ -1,0 +1,239 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z1/student3512.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z1/student3512.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 1 */
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+
+// ako se fciji da nesto sto ne treba PAZITI
+// PRAZAN VEKTOR
+// STRINGOVI KAO UNOS I DOUBLE
+
+bool JeLiProst (int broj){
+	int apsolutna_vrijednost_broja = std::abs(broj);
+	for(int i=2; i&lt;=sqrt(apsolutna_vrijednost_broja); i++){
+		if(apsolutna_vrijednost_broja % i == 0){
+			return false;
+		}
+	}
+	return true;
+}
+std::vector&lt;int&gt; CiscenjeDuplihBrojeva (std::vector&lt;int&gt; SPREMNIK){
+	for(int i=0; i&lt;SPREMNIK.size()-1; i++){
+		for(int j=i+1; j&lt;SPREMNIK.size(); j++){
+			if(SPREMNIK.at(i) == SPREMNIK.at(j)){
+				SPREMNIK.erase(SPREMNIK.begin()+j);
+			}
+		}
+	}
+	return SPREMNIK;
+}
+int KonvertujUTrinarne (int broj){
+	// Ako je broj negativan
+	bool negativan_broj(false);
+	if(broj&lt;0){
+		negativan_broj = true;
+	}
+	int dekatni_broj = std::abs(broj);
+	// RACUN
+	std::vector&lt;int&gt; ternarne_cifre;
+	int cifra(0);
+	while(dekatni_broj != 0){
+		cifra = dekatni_broj % 3;
+		dekatni_broj = dekatni_broj / 3;
+		ternarne_cifre.push_back(cifra);
+	}
+	int ternarni_broj(0);
+	for(int i=0; i&lt;ternarne_cifre.size(); i++){
+		ternarni_broj = ternarni_broj + (ternarne_cifre[i] * pow(10, i));
+	}
+	// Ako je broj bio negativan
+	if(negativan_broj == true){
+		ternarni_broj = ternarni_broj*(-1);
+	}
+	return ternarni_broj;
+}
+bool JeLiSimetrican (int broj){
+	// Ako je negativan
+	if(broj&lt;0){
+		broj = std::abs(broj);
+	}
+	std::vector&lt;int&gt; cifre;
+	int cifra;
+	while(broj != 0){
+		cifra = broj%10;
+		cifre.push_back(cifra);
+		broj = broj/10;
+	}
+	for(int i=0, j=cifre.size()-1; i&lt;cifre.size()/2; i++, j--){
+		if(cifre.at(i) != cifre.at(j)){
+			return false;
+		}
+	}
+	return true;
+}
+<a name="2"></a><font color="#0000FF"><a href="match527-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+std::vector&lt;int&gt; KonvertujUDekadne (std::vector&lt;int&gt; SPREMNIK){
+	std::vector&lt;int&gt; BROJEVI;
+	for(int i=0; i&lt;SPREMNIK.size(); i++){
+</font>		int broj, cifra, dekatni_broj=0;
+		std::vector&lt;int&gt; cifre;
+		bool negativan(false);
+		if(SPREMNIK.at(i)&lt;0){
+			negativan = true;
+		}
+		broj = std::abs(SPREMNIK[i]);
+		while(broj!=0){
+			cifra = broj%10;
+			cifre.push_back(cifra);
+			broj = broj/10;
+		}
+		for(int j=0; j&lt;cifre.size(); j++){
+			dekatni_broj = dekatni_broj + (cifre.at(j) * pow(3, j));
+		}
+		if(negativan == true){
+			dekatni_broj = dekatni_broj * -1;
+		}
+<a name="3"></a><font color="#00FFFF"><a href="match527-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+		BROJEVI.push_back(dekatni_broj);
+	}
+	return BROJEVI;
+}
+
+std::vector&lt;int&gt; IzdvojiSimetricneTernarne (std::vector&lt;int&gt; SPREMNIK, bool OPCIJA){
+	std::vector&lt;int&gt; BROJEVI, OCISCENI_BROJEVI, TRINARNI, DEKATNI;
+</font>	std::vector&lt;int&gt; prazan(0);
+	if(SPREMNIK.size()==0){
+		return prazan;
+	}
+	// ***** PROSTI *****
+	if(OPCIJA == true){
+		// Zapis PROSTIH brojeva
+		for(int i=0; i&lt;SPREMNIK.size(); i++){
+			if(JeLiProst(SPREMNIK.at(i)) == true){
+				BROJEVI.push_back(SPREMNIK.at(i));
+			} else {
+				continue;
+			}
+		}
+		// CISCENJE duplih brojeva
+		std::vector&lt;int&gt; tmp = CiscenjeDuplihBrojeva(BROJEVI);
+		OCISCENI_BROJEVI = tmp;
+		// KONVERTOVANJE u trinarne
+		for(int i=0; i&lt;OCISCENI_BROJEVI.size(); i++){
+			int tmp = KonvertujUTrinarne(OCISCENI_BROJEVI.at(i));
+			TRINARNI.push_back(tmp);
+		}
+		// CISCENJE ONIH KOJI NISU SIMETRICNI
+		for(int i=0; i&lt;TRINARNI.size(); i++){
+			if(JeLiSimetrican(TRINARNI.at(i)) == false){
+				TRINARNI.erase(TRINARNI.begin()+i);
+				i--;
+			}
+		}
+		// KONVERTOVANJE U DEKATNI
+		std::vector&lt;int&gt; konvertovani = KonvertujUDekadne(TRINARNI);
+		for(int i=0; i&lt;konvertovani.size(); i++){
+			DEKATNI.push_back(konvertovani.at(i));
+		}
+		
+	// ***** SLOZENI *****
+	} else if (OPCIJA == false){
+		// Zapis SLOZENIH brojeva
+		for(int i=0; i&lt;SPREMNIK.size(); i++){
+			if(JeLiProst(SPREMNIK.at(i)) == false){
+				BROJEVI.push_back(SPREMNIK.at(i));
+			} else {
+				continue;
+			}
+		}
+		// CISCENJE duplih brojeva
+		std::vector&lt;int&gt; tmp = CiscenjeDuplihBrojeva(BROJEVI);
+		OCISCENI_BROJEVI = tmp;
+		// KONVERTOVANJE u trinarne
+		for(int i=0; i&lt;OCISCENI_BROJEVI.size(); i++){
+			int tmp = KonvertujUTrinarne(OCISCENI_BROJEVI[i]);
+			TRINARNI.push_back(tmp);
+		}
+		// CISCENJE ONIH KOJI NISU SIMETRICNI
+		for(int i=0; i&lt;TRINARNI.size(); i++){
+			if(JeLiSimetrican(TRINARNI.at(i)) == false){
+				TRINARNI.erase(TRINARNI.begin()+i);
+				i--;
+			}
+		}
+		// KONVERTOVANJE U DEKATNI
+		std::vector&lt;int&gt; konvertovani = KonvertujUDekadne(TRINARNI);
+		for(int i=0; i&lt;konvertovani.size(); i++){
+			DEKATNI.push_back(konvertovani.at(i));
+		}
+	}
+	return DEKATNI;
+}
+
+int main (){
+	/* std::vector&lt;int&gt; BROJEVI = {191,233,43,-313,142,13,121,678,-151,23,-12,727,173};
+	std::vector&lt;int&gt; SIMETRICNI = IzdvojiSimetricneTernarne(BROJEVI, true);
+	for(int i=0; i&lt;SIMETRICNI.size(); i++){
+		std::cout &lt;&lt; SIMETRICNI[i] &lt;&lt; " ";
+	} */
+	
+	std::vector&lt;int&gt; BROJEVI;
+	std::cout &lt;&lt; "Unesite elemente vektora (-1 za kraj): ";
+	for(;;){
+		int tmp;
+		std::cin &gt;&gt; tmp;
+		if(tmp == -1){
+			break;
+		}
+		BROJEVI.push_back(tmp);
+	}
+	
+	int opcija;
+	std::cout &lt;&lt; "Unesite: 1 - za proste brojeve, 0 - za slozene brojeve: ";
+	while(1){
+		std::cin &gt;&gt; opcija;
+		if(opcija == 0 || opcija == 1){
+			break;
+		}
+		std::cout &lt;&lt; "Neispravan unos! Unesite ponovo: ";
+	}
+
+<a name="1"></a><font color="#00FF00"><a href="match527-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+	if(opcija == 1){ //prosti
+		std::vector&lt;int&gt; PROSTI = IzdvojiSimetricneTernarne(BROJEVI, opcija);
+		if(PROSTI.size() == 0){
+			std::cout &lt;&lt; "Nema prostih simetricnih brojeva u vektoru.";
+			return 0;
+		}
+		std::cout &lt;&lt; "Prosti simetricni brojevi iz vektora su: ";
+		for(int i=0; i&lt;PROSTI.size()-1; i++){
+</font>			std::cout &lt;&lt; PROSTI.at(i) &lt;&lt; ", ";
+		}
+<a name="0"></a><font color="#FF0000"><a href="match527-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+		std::cout &lt;&lt; PROSTI[PROSTI.size()-1] &lt;&lt; ".";
+	} else if (opcija == 0){ // slozeni
+		std::vector&lt;int&gt; SLOZENI = IzdvojiSimetricneTernarne(BROJEVI, opcija);
+		if(SLOZENI.size() == 0){
+			std::cout &lt;&lt; "Nema slozenih simetricnih brojeva u vektoru.";
+			return 0;
+		}
+		std::cout &lt;&lt; "Slozeni simetricni brojevi iz vektora su: ";
+		for(int i=0; i&lt;SLOZENI.size()-1; i++){
+</font>			std::cout &lt;&lt; SLOZENI.at(i) &lt;&lt; ", ";
+		}
+		std::cout &lt;&lt; SLOZENI[SLOZENI.size()-1] &lt;&lt; ".";
+	} 
+	return 0;
+}</pre>
+</body>
+</html>

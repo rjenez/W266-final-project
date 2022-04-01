@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4659.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4659.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match38-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;utility&gt;
+#include &lt;algorithm&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+void Pretvori(std::string &amp;s){
+    for(auto i=s.begin();i&lt;s.end();i++){
+        if(*i&gt;='A' &amp;&amp; *i&lt;='Z')*i=*i+'a'-'A';
+    }
+}
+
+std::map&lt;std::string,std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string s){
+    std::map&lt;std::string,std::set&lt;int&gt;&gt; m;
+
+    auto poc=s.begin(),kraj=s.begin();
+    while(*poc&lt;'0' || (*poc&gt;'9' &amp;&amp; *poc&lt;'A') || (*poc&gt;'Z' &amp;&amp; *poc&lt;'a') || *poc&gt;'z')poc++;
+    for(auto p=s.begin();p&lt;s.end();p++){
+        if(p!=s.begin() &amp;&amp; (*(p-1)&lt;'0' || (*(p-1)&gt;'9' &amp;&amp; *(p-1)&lt;'A') || (*(p-1)&gt;'Z' &amp;&amp; *(p-1)&lt;'a') || *(p-1)&gt;'z') &amp;&amp; ((*p&gt;='0' &amp;&amp; *p&lt;='9') || (*p&gt;='A' &amp;&amp; *p&lt;='Z') || (*p&gt;='a' &amp;&amp; *p&lt;='z')))poc=p;
+        if(( ((*p&gt;='0' &amp;&amp; *p&lt;='9') || (*p&gt;='A' &amp;&amp; *p&lt;='Z') || (*p&gt;='a' &amp;&amp; *p&lt;='z'))  &amp;&amp; p+1==s.end())   ||   ( ((*p&gt;='A' &amp;&amp; *p&lt;='Z') || (*p&gt;='a' &amp;&amp; *p&lt;='z') || (*p&gt;='0' &amp;&amp; *p&lt;='9'))  &amp;&amp;  (*(p+1)&lt;'0' || (*(p+1)&gt;'9' &amp;&amp; *(p+1)&lt;'A') || (*(p+1)&gt;'Z' &amp;&amp; *(p+1)&lt;'a') || *(p+1)&gt;'z'))){
+            kraj=p;
+                std::string pomocni;
+                pomocni.resize(kraj-poc+1);
+                    std::copy(poc,kraj+1,pomocni.begin());
+                    int x(poc-s.begin());
+                    Pretvori(pomocni);
+                        if(!m.count(pomocni))m.insert(std::make_pair(pomocni,std::set&lt;int&gt;{x}));
+                        else m[pomocni].insert(x);
+        }    
+    }
+    return m;
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string s,std::map&lt;std::string,std::set&lt;int&gt;&gt; m){
+    if(!m.count(s))throw std::logic_error("Pojam nije nadjen");
+    else return m[s];
+}
+
+void IspisiIndeksPojmova(const std::map&lt;std::string,std::set&lt;int&gt;&gt; &amp;m){
+    for(auto it=m.begin(); it!=m.end() ;it++){
+        std::cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+        int br(0);
+        for(auto const i: it-&gt;second){
+            if(br!=it-&gt;second.size()-1)std::cout &lt;&lt; i &lt;&lt;",";
+            else std::cout &lt;&lt; i ;
+            br++;
+        }    
+        std::cout &lt;&lt; std::endl; 
+    }
+}
+
+int main ()
+{
+    std::string s;
+    std::cout &lt;&lt; "Unesite tekst: ";
+    std::getline(std::cin,s);
+        
+        std::map&lt;std::string,std::set&lt;int&gt;&gt; map ;
+        map=KreirajIndeksPojmova(s);
+        
+            IspisiIndeksPojmova(map);
+                
+                while(1){
+                    std::string pomocni;
+                    std::cout &lt;&lt; "Unesite rijec: ";
+                    std::cin &gt;&gt; pomocni;
+                    if(pomocni==".")break;
+                        try{
+                            int br(0);
+                            std::set&lt;int&gt; c;
+                            c=PretraziIndeksPojmova(pomocni,map);
+                            for(int const &amp;i:c){
+                                if(br==c.size()-1)std::cout &lt;&lt; i ;
+                                else std::cout &lt;&lt; i &lt;&lt; " ";
+                                br++;
+                            }    
+                        }
+                        catch(...){
+                            std::cout &lt;&lt; "Unesena rijec nije nadjena!";
+                        }
+                    std::cout &lt;&lt; std::endl;    
+</font>                }
+    return 0;
+}</pre>
+</body>
+</html>

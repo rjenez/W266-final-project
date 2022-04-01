@@ -1,0 +1,194 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student5961.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student7795.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+#include &lt;string&gt;
+#include &lt;type_traits&gt;
+#include &lt;limits&gt;
+
+// predefined for 
+<a name="0"></a><font color="#FF0000"><a href="match61-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using CustomType = unsigned long long;
+
+enum class FillType {Increasing, Decreasing};
+/*   user defined functions  	*/
+/*	validity function		*/
+template &lt;class T&gt;
+void throwCustomException(const std::vector&lt;T&gt; &amp;inputArr) {
+	if(inputArr.empty()) 
+		throw "Prazan vektor!";
+     else if(std::find_if(inputArr.begin(), inputArr.end(), [](T value) -&gt; bool { return value &lt;= T(); }) != inputArr.end() ||
+     		!std::numeric_limits&lt;T&gt;::is_integer) 
+     	throw std::domain_error("Neispravan vektor!");
+}
+/*   funkcija za pronalazak perioda, radjena na Tutorijalu 2, zadatak 2	*/
+template &lt;class T&gt;
+bool TestPerioda(const std::vector&lt;T&gt; &amp;inputArr, const CustomType &amp;p) {
+	/* 	find basic cylce 	*/
+	CustomType cycle ((inputArr.size()-1) / p), pos(0);
+	/* 	check array 	*/
+	for(CustomType i(0); i &lt; p; ++i) {
+		for(CustomType j(0); j &lt;= cycle; ++j) {
+			pos = j * p + i;
+			if(pos &lt; inputArr.size()) 
+				if(inputArr.at(i) != inputArr.at(pos)) return false;
+		}
+	}
+	return true;
+}
+/*	function to return period for an array 	*/
+template &lt;class T&gt;
+CustomType PostaviPeriod(const std::vector&lt;T&gt; &amp;inputArr) {
+    	for(CustomType i(1); i &lt; inputArr.size(); ++i) 
+          if(TestPerioda(inputArr, i)) return i;
+	return -1;
+}
+/*	find array data -&gt; period and koliko_puta 	*/
+template &lt;class T&gt;
+CustomType SetSizeNPeriod(const std::vector&lt;T&gt; &amp;inputArr, int &amp;koliko_puta) {
+     CustomType _period(PostaviPeriod(inputArr));			// set period
+     /*	return values	*/
+     koliko_puta = static_cast&lt;int&gt;(inputArr.size() / _period);
+     if(_period == -1) {							koliko_puta  = 2; _period = inputArr.size(); }
+     else if((inputArr.size() % _period) != 0)		koliko_puta += 1;
+     return _period;
+}
+/*	fill an array with number based on fill type (Increasing - 1 2 3 | Decreasing - 3 2 1)	*/
+template &lt;class T&gt;
+void PopuniRed(T* red, const CustomType &amp;period, const CustomType &amp;velicina, const FillType &amp;nacin, CustomType initialValue = CustomType()) {
+	CustomType _element = (nacin == FillType::Decreasing) ? initialValue-velicina+1 : velicina;
+	CustomType incrType = (nacin == FillType::Decreasing) ? 1:-1;
+	for(CustomType i(0); i &lt; velicina; ++i) {
+		red[i] = _element;
+		_element += incrType;
+	}
+}
+/*                            */
+/*   functions to implement   */
+/*                            */
+template &lt;class T&gt;
+T** AlocirajFragmentirano(const std::vector&lt;T&gt; &amp;inputArr, int &amp;koliko_puta) {
+	throwCustomException(inputArr);					// 	input validity check
+	
+     CustomType period (SetSizeNPeriod(inputArr, koliko_puta));	//   find period and create array with given period
+     T** output (nullptr);
+     try { output = new T*[koliko_puta * period]; }
+     catch (...) { throw; }
+     
+     T _maxElement (*std::max_element(inputArr.begin(), inputArr.end())), _pos(0);
+     /*	kreiraj elemente i popuni matricu	*/
+     for(CustomType i(0); i &lt; period * koliko_puta; ++i) {
+		try {
+     		output[i] = new T[inputArr.at((_pos = i % period))];
+     		PopuniRed(output[i], period, inputArr.at(_pos), FillType::Decreasing, static_cast&lt;CustomType&gt;(_maxElement));
+     	}
+     	catch (std::exception&amp; e) {
+     		for(CustomType k(0); k &lt; i; ++k) 
+     			delete [] output[k];
+     		delete [] output;
+     		throw;
+     	}
+     }
+     return output;
+}
+template &lt;class T&gt;
+T** AlocirajKontinualno(const std::vector&lt;T&gt; &amp;inputArr, int &amp;koliko_puta) {
+	throwCustomException(inputArr);					// 	input validity check
+     
+     CustomType period (SetSizeNPeriod(inputArr, koliko_puta));	//   find period and create array with given period
+     T** output(nullptr);
+     try { output = new T*[koliko_puta * period]{}; }
+     catch (...) { throw; }
+     
+     CustomType _size(0);
+     std::for_each(inputArr.begin(), inputArr.begin()+period, [&amp;_size](T num) { _size += static_cast&lt;CustomType&gt;(num); });
+     _size *= koliko_puta;
+     try { output[0] = new T[_size]; }
+     catch (std::exception&amp; e) { 
+     	delete [] output;
+     	throw; 
+     }
+     
+     for(CustomType i(0); i &lt; koliko_puta * period; ++i) {
+		if(i &gt; 0) output[i] = output[i - 1] + inputArr.at((i - 1) % period);
+		PopuniRed(output[i], period, inputArr.at(i % period), FillType::Increasing);
+	}
+	return output;
+}
+/* 	Unos broja funkcija koju smo pravili na tutorijalu 	*/
+template &lt;class T&gt;
+void UnosBroja(const std::string &amp;promptText, const std::string &amp;errorMessage, 
+			T &amp;var, const T &amp;lowerBound, T upperBound = std::numeric_limits&lt;T&gt;::max()) {
+     T tempInputVar;
+     std::cout &lt;&lt; promptText;
+     for(;;) {
+          std::cin &gt;&gt; tempInputVar;
+          if(!std::cin || tempInputVar &lt; lowerBound || tempInputVar &gt; upperBound) {
+               std::cin.clear();
+               std::cin.ignore(10000, '\n');
+               std::cout &lt;&lt; errorMessage;
+          }
+          else {
+               var = tempInputVar;
+               break;
+          }
+     }
+}
+/*	function to print matrix		*/
+template &lt;class T&gt;
+void IspisiMatricu(const T *const *output, const std::vector&lt;T&gt; &amp;inputArr, const CustomType &amp;period, const int &amp;koliko_puta) {
+     for(CustomType i(0); i &lt; koliko_puta * period; ++i) {
+     	for(CustomType j(0); j &lt; inputArr.at(i % period); ++j)
+     		std::cout &lt;&lt; std::setw(3) &lt;&lt; std::left &lt;&lt; output[i][j];
+     	std::cout &lt;&lt; std::endl;
+     }
+}
+/*   main program logic */
+int main () {
+	int n, alokacija, koliko_puta(0);
+	UnosBroja&lt;int&gt;("Unesite broj elemenata vektora: ", "Greska, unesite ponovo: ", n, 0);
+	
+	std::cout &lt;&lt; "Unesite elemente vektora: ";
+	int period(0);
+	int** output(nullptr);
+	std::vector&lt;int&gt; inputArr(n, 0);
+	std::for_each(inputArr.begin(), inputArr.end(), [](int &amp;num) { std::cin &gt;&gt; num; });
+	
+	UnosBroja&lt;int&gt;("Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ", "Greska, unesite ponovo: ", alokacija, 0, 1);
+	try {
+		output 	=  (alokacija == 0) ? AlocirajKontinualno(inputArr, koliko_puta): AlocirajFragmentirano(inputArr, koliko_puta);
+		period 	=  SetSizeNPeriod(inputArr, koliko_puta);	
+		std::cout &lt;&lt; "Dinamicki alocirana matrica: " &lt;&lt; std::endl;
+		IspisiMatricu(output, inputArr, period, koliko_puta);
+	}
+	catch (const char greska[]) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; greska  &lt;&lt; std::endl;
+		delete [] output;
+		return -1;
+	}
+	catch (std::exception&amp; e) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; std::endl;
+		delete [] output;
+		return -1;
+	}
+	
+	// 	empty taken memory //
+	if(alokacija == 1) 
+		for(int i(0); i &lt; koliko_puta * period; ++i)
+			delete [] output[i];
+	else delete [] output[0];
+		
+	delete [] output;
+	return 0;
+</font>}</pre>
+</body>
+</html>

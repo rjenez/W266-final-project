@@ -1,0 +1,119 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4863.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4863.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;tuple&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;locale&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+<a name="0"></a><font color="#FF0000"><a href="match189-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_92.gif"/></a>
+
+typedef std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; Povratna;
+
+Povratna KreirajIndeksPojmova(Knjiga indeks){
+Povratna krajnji;
+    std::string kratkotrajni;
+    int p(0);
+    for(auto it=indeks.begin(); it!=indeks.end(); it++){
+        auto stringovi=it-&gt;second; //stringovi su sada vektor stringova
+        for(int i=0; i&lt;stringovi.size(); i++){
+            std::string hop=stringovi.at(i);  //hop je sad jedan string iz vektora stringova
+            std::transform(hop.begin(), hop.end(), hop.begin(), ::tolower);
+            for(int j=0; j&lt;hop.size(); j++){
+                    while(hop.at(j)&lt;'0' || (hop.at(j)&gt;'9' &amp;&amp; hop.at(j)&lt;'a') || hop.at(j)&gt;'z'){if(j!=hop.size()-1) j++; else break;}
+                    p=j;
+                    while((hop.at(j)&gt;='0' &amp;&amp; hop.at(j)&lt;='9') || (hop.at(j)&gt;='a' &amp;&amp; hop.at(j)&lt;='z')) {kratkotrajni.push_back(hop.at(j)); if(j==hop.size()-1) break; else j++;}
+                    krajnji[kratkotrajni].insert(std::make_tuple(it-&gt;first, i+1, p));
+                    kratkotrajni.resize(0);
+                    if(j==hop.size()-1) break;
+            }
+        }
+    }
+
+    return krajnji;
+}
+
+std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; PretraziIndeksPojmova(std::string s, Povratna mapa){
+    try{
+    auto it(mapa.find(s));
+    if(it==mapa.end()) throw std::logic_error("Unesena rijec nije nadjena!\n");
+    else return it-&gt;second;
+    }catch(std::logic_error e){
+        throw;
+    }
+}
+
+void IspisiIndeksPojmova(Povratna karina){
+    for(auto it=karina.begin(); it!=karina.end(); it++){
+        auto sett=it-&gt;second;
+        auto zar=sett.begin();
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        for(auto i=0; i&lt;sett.size(); i++){
+            std::cout&lt;&lt;std::get&lt;0&gt;(*zar)&lt;&lt;"/"&lt;&lt;std::get&lt;1&gt;(*zar)&lt;&lt;"/"&lt;&lt;std::get&lt;2&gt;(*zar);
+            if(i!=sett.size()-1) std::cout&lt;&lt;", ";
+            zar++;
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+}
+   
+
+int main ()
+{
+    int n(1);
+    
+    std::string s;
+    std::string poglavlje;
+    std::vector&lt;std::string&gt; vektor_stringova;
+    Knjiga ovo_saljem;
+    for(;;){
+        std::cout&lt;&lt;"Unesite naziv poglavlja: ";
+        std::getline(std::cin, poglavlje);
+        if(poglavlje==".") break;
+        for(;;){
+            std::cout&lt;&lt;"Unesite sadrzaj stranice "&lt;&lt;n&lt;&lt;": "; n++;
+            std::getline(std::cin, s);
+            if(s==".") break;
+            vektor_stringova.push_back(s);
+        }
+        ovo_saljem.insert({poglavlje, vektor_stringova});
+        n=1;
+    }
+    
+    auto karina=KreirajIndeksPojmova(ovo_saljem);
+    std::cout&lt;&lt;"\nKreirani indeks pojmova:"&lt;&lt;std::endl;
+    IspisiIndeksPojmova(karina);
+    for(;;){
+    try{
+        std::string op;
+        
+            std::cout&lt;&lt;"Unesite rijec: ";
+            std::getline(std::cin, op);
+            if(op==".") break;
+    auto k=PretraziIndeksPojmova(op, karina);
+    for(auto x:k){
+        std::cout&lt;&lt;std::get&lt;0&gt;(x)&lt;&lt;"/"&lt;&lt;std::get&lt;1&gt;(x)&lt;&lt;"/"&lt;&lt;std::get&lt;2&gt;(x)&lt;&lt;" ";
+    
+    }
+   std::cout&lt;&lt;std::endl;
+        }
+    catch(std::logic_error e){
+        std::cout&lt;&lt;e.what();
+    }
+    }
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

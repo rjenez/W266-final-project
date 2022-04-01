@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student1336.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student1336.cpp<p></p><pre>
+// B 16/17, Zadaća 2, Zadatak 2
+//	Autotestovi by Enil Pajic (epajic1@etf.unsa.ba | @eon : etf.ba)
+//	NAPOMENA: i javni ATo-vi su dio postavke!	
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;iomanip&gt;
+#include &lt;type_traits&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match78-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum class SmjerKretanja {
+    NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo
+};
+
+template &lt;typename Kontejner&gt;
+auto IzdvojiDijagonale3D ( Kontejner  &amp;kont, SmjerKretanja smjer ) -&gt; typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type   {
+    
+   for(int i(0); i&lt;int(kont.size()); i++){
+       for(int j(0); j&lt;int(kont.at(i).size()); j++){
+           if(int(kont.at(i).at(j).size())!=int(kont.at(0).at(0).size())) throw std::domain_error ("Redovi nemaju isti broj elemenata");
+       }
+       if(int(kont.at(i).size())!=int(kont.at(0).size()) ) throw std::domain_error ("Plohe nemaju isti broj redova");
+   }
+   
+  int n(0);
+  if(smjer==SmjerKretanja::NaprijedNazad || smjer==SmjerKretanja::NazadNaprijed){
+      n=int(kont.size());
+  }
+  if(smjer==SmjerKretanja::GoreDolje || smjer==SmjerKretanja::DoljeGore){
+      n=int(kont.at(0).size());
+  }
+  if(smjer==SmjerKretanja::LijevoDesno || smjer==SmjerKretanja::DesnoLijevo){
+      n=int(kont.at(0).at(0).size());
+  }
+  typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type d(n);
+  if(smjer==SmjerKretanja::NazadNaprijed || smjer==SmjerKretanja::NaprijedNazad ){
+      
+      for(int i(0); i&lt;int(kont.size()); i++){
+          for(int j(0); j&lt;int(kont.at(0).size()) &amp;&amp; j&lt;int(kont.at(i).at(0).size()); j++  ){
+              if(smjer==SmjerKretanja::NaprijedNazad) d.at(i).push_back(kont.at(i).at(j).at(j));
+              if(smjer==SmjerKretanja::NazadNaprijed) d.at(i).push_back(kont.at(int(kont.size())-1-i).at(j).at(int(kont.at(i).size())-j ) );
+          }
+      }
+  }
+  
+  if(smjer==SmjerKretanja::GoreDolje || smjer==SmjerKretanja::DoljeGore){
+      for(int j(0); j&lt;int(kont.at(0).size()); j++ ){
+         
+          for( int i(0); i&lt;int(kont.size()) &amp;&amp; i&lt;int(kont.at(0).at(0).size()); i++ ){
+              if(smjer==SmjerKretanja::GoreDolje) d.at(j).push_back(kont.at(int(kont.size())-1-i ).at(j).at(i));
+              if(smjer==SmjerKretanja::DoljeGore) d.at(j).push_back(kont.at(int(kont.size())-1-i).at(int(kont.at(0).size())-1-j ).at(int(kont.at(0).at(0).size())-1-i)  );
+          }
+      }
+  }
+  if(smjer==SmjerKretanja::LijevoDesno || smjer==SmjerKretanja::DesnoLijevo){
+      for(int k(0); k&lt;int(kont.at(0).at(0).size()); k++){
+           for(int j(0); j&lt;int(kont.size()) &amp;&amp; j&lt;(int(kont.at(0).size())); j++ ){
+              if(smjer==SmjerKretanja::LijevoDesno) d.at(k).push_back( kont.at(int(kont.size())-1-j).at(j).at(k) );
+              if(smjer==SmjerKretanja::DesnoLijevo) d.at(k).push_back( kont.at(j).at(j).at( int(kont.at(0).at(0).size())-k-1 ) );
+          }
+      }
+  }
+    
+    return d;
+}
+
+
+int main ()
+{   
+    try{
+         
+        
+        std::cout&lt;&lt;"Unesite dimenzije (x y z): ";
+        int x, y, z;
+        std::cin&gt;&gt;x&gt;&gt;y&gt;&gt;z;
+        if(x&lt;0 || y&lt;0 || z&lt;0) throw ("Neispravne dimenzije kontejnera!");
+        std::vector&lt;std::vector&lt;std::deque&lt;int&gt;&gt;&gt; kont;
+        kont.resize(x);
+        for(int i(0); i&lt;x; i++){
+            kont.at(i).resize(y);
+        }
+        
+        std::cout&lt;&lt;"Unesite elemente kontejnera: ";
+        for(int i(0); i&lt;x; i++){
+            for(int j(0); j&lt;y; j++){
+                    
+                for(int k(0); k&lt;z; k++){
+                    int n;
+                    std::cin&gt;&gt;n;
+                    kont.at(i).at(j).push_back(n);
+                }
+            }
+        }
+    
+        std::cout&lt;&lt;std::endl&lt;&lt;"Unesite smjer kretanja [0 - 5]: ";
+        int n;
+        std::cin&gt;&gt;n;
+        if(n&lt;0 || n&gt;5) throw ("Smjer kretanja nije ispravan!");
+        SmjerKretanja smjer=SmjerKretanja::NaprijedNazad;
+        smjer=SmjerKretanja(n);
+    
+        std::vector&lt;std::string&gt; s(6);
+        s.at(0)="NaprijedNazad"; s.at(1)="NazadNaprijed"; s.at(2)="GoreDolje"; s.at(3)="DoljeGore";
+        s.at(4)="LijevoDesno"; s.at(5)="DesnoLijevo";
+        std::cout&lt;&lt;s.at(n)&lt;&lt;": "&lt;&lt;std::endl;
+    
+        std::vector&lt;std::deque&lt;int&gt;&gt; d(IzdvojiDijagonale3D(kont,smjer));
+        
+        for(int i(0); i&lt;int(d.size()); i++){
+            for(int j(0); j&lt;int(d.at(i).size()); j++)
+            std::cout&lt;&lt;std::setw(4)&lt;&lt;d.at(i).at(j);
+            std::cout&lt;&lt;std::endl;
+        }
+    }
+    catch(const char izuzetak[]){
+        std::cout&lt;&lt;izuzetak&lt;&lt;std::endl;
+    }
+    catch(std::domain_error izuzetak){
+        std::cout&lt;&lt;izuzetak.what();
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

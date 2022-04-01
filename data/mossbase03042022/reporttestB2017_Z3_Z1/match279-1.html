@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student2806.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student5771.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match279-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_97.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+#include &lt;functional&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+bool Kriterij(std::pair&lt;double, double&gt;p1, std::pair&lt;double, double&gt;p2){
+    return (p1.first&lt;p2.first);
+}
+
+double Funkcija(double x){
+    return x*x+sin(x);
+}
+
+std::function&lt;double(double)&gt;LinearnaInterpolacija(std::vector&lt;std::pair&lt;double, double&gt;&gt; v) {
+    std::sort(v.begin(), v.end(),Kriterij);
+    return [&amp;v](double x){ 
+        if(x&lt;(v.begin()-&gt;first) || (x&gt;(v.end()-1)-&gt;first)) throw std::range_error("Argument izvan opsega");
+        std::pair&lt;double,double&gt;p;
+        p.first=x;
+        p.second=0;
+        auto it1(lower_bound(v.begin(),v.end(), p, Kriterij));
+        it1--;
+        auto it2(upper_bound(v.begin(),v.end(), p, Kriterij));
+        double x1=it1-&gt;first;
+        double x2=it2-&gt;first;
+        double y1=it1-&gt;second;
+        double y2=it2-&gt;second;
+        return (y1+(((y2-y1)/(x2-x1))*(x-x1)));
+    };
+}
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::function&lt;double(double)&gt; f, double x_min, double x_max, double delta_x){
+    if(x_min&gt;x_max || delta_x&lt;=0) throw std::domain_error("Nekorektni parametri");
+    std::vector&lt;std::pair&lt;double, double&gt;&gt; v;
+    for (auto i = x_min; i &lt;= x_max; i+=delta_x) {
+        v.push_back(std::make_pair(i,f(i)));
+    }
+    return LinearnaInterpolacija(v);
+}
+
+void Opcija1(){
+    std::cout&lt;&lt;"Unesite broj cvorova: ";
+        int broj_cvorova;
+        std::cin&gt;&gt;broj_cvorova;
+        std::cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+        std::vector&lt;std::pair&lt;double, double&gt;&gt; v;
+        for(int i=0;i&lt;broj_cvorova;i++){
+            std::pair&lt;double, double&gt; p;
+            std::cin&gt;&gt;p.first;
+            std::cin&gt;&gt;p.second;
+            v.push_back(p);
+        }
+        for(;;){
+            auto f=LinearnaInterpolacija(v);
+            std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+            double argument;
+            std::cin&gt;&gt;argument;
+            if(!std::cin) return;
+            std::cout&lt;&lt;"f("&lt;&lt;argument&lt;&lt;") = "&lt;&lt;f(argument)&lt;&lt;std::endl;
+        }
+}
+
+void Opcija2(){
+    std::cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+        double korak, interval_poc, interval_kraj;
+        std::cin&gt;&gt;interval_poc;
+        std::cin&gt;&gt;interval_kraj;
+        std::cin&gt;&gt;korak;
+        for(;;){
+            std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+            double argument;
+            std::cin&gt;&gt;argument;
+            if(!std::cin) return;
+            auto f(LinearnaInterpolacija([](double x){return ((x*x)+sin(x));},interval_poc,interval_kraj,korak));
+            std::cout&lt;&lt;"f("&lt;&lt;argument&lt;&lt;") = "&lt;&lt;Funkcija(argument)&lt;&lt;" fapprox("&lt;&lt;argument&lt;&lt;") = "&lt;&lt;f(argument)&lt;&lt;std::endl;
+        }
+}
+int main ()
+{
+    try{
+        std::cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+        int opcija;
+        std::cin&gt;&gt;opcija;
+        if(opcija==1) Opcija1();
+        if(opcija==2) Opcija2();	
+    }
+    catch(std::domain_error e){
+        std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+    }
+    catch(std::range_error e){
+        std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+</font>    }
+    return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student4748.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student4748.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match92-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;utility&gt;
+#include &lt;map&gt;
+#include &lt;queue&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+enum class Boje {Pik, Tref, Herc, Karo};
+typedef list&lt;pair&lt;Boje,string&gt;&gt; Spil;
+
+Spil SortirajSpil(Spil sp){
+    Spil SPIL=sp;
+    for(auto it=SPIL.begin();it!=SPIL.end();it++){
+    if(it-&gt;second=="J") it-&gt;second="11";
+    if(it-&gt;second=="Q") it-&gt;second="12";
+    if(it-&gt;second=="K") it-&gt;second="13";
+    if(it-&gt;second=="A") it-&gt;second="14";
+    }
+    for(auto it1=SPIL.begin();it1!=SPIL.end();it1++){
+        for(auto it2=it1;it2!=SPIL.end();it2++){
+            
+            if(it1-&gt;second&gt;it2-&gt;second &amp;&amp; it1-&gt;first==it2-&gt;first &amp;&amp; it2-&gt;second.size()==1){
+                pair&lt;Boje,string&gt; zamjenski;
+                zamjenski=*it1;
+                *it1=*it2;
+                *it2=zamjenski;
+                continue;
+            }
+            if(it1-&gt;second&lt;it2-&gt;second &amp;&amp; it1-&gt;second.size()==2 &amp;&amp; it1-&gt;first==it2-&gt;first){
+                pair&lt;Boje,string&gt; zamjenski;
+                zamjenski=*it1;
+                *it1=*it2;
+                *it2=zamjenski;
+            }
+            if(it1-&gt;second.size()==2 &amp;&amp; it2-&gt;second.size()==2 &amp;&amp; it1-&gt;first==it2-&gt;first){
+                if(it1-&gt;second[1]&gt;it2-&gt;second[1]){
+                pair&lt;Boje,string&gt; zamjenski;
+                zamjenski=*it1;
+                *it1=*it2;
+                *it2=zamjenski;
+                }
+            }
+        }
+    }
+    for(auto it=SPIL.begin();it!=SPIL.end();it++){
+        if(it-&gt;second=="11") it-&gt;second="J";
+        if(it-&gt;second=="12") it-&gt;second="Q";
+        if(it-&gt;second=="13") it-&gt;second="K";
+        if(it-&gt;second=="14") it-&gt;second="A";
+    }
+    return SPIL;
+}
+
+Spil KreirajSpil(){
+    Spil spil;
+    string S[13]{"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+    for(int i=0;i&lt;4;i++){
+        Boje boja=static_cast&lt;Boje&gt;(i); 
+        for(int j=0;j&lt;13;j++){
+            pair&lt;Boje,string&gt; temp;
+            temp.first=boja;
+            temp.second=S[j];
+            spil.push_back(temp);
+        }
+    }
+    return spil;
+}
+
+void IzbaciKarte(Spil &amp;s, multimap&lt;Boje, string&gt; &amp;multimapa){
+    Spil pomocni=s;
+    pomocni=SortirajSpil(pomocni);
+    if(s.size()&gt;52 || pomocni!=s) throw logic_error("Neispravna lista");
+    for(pair&lt;Boje,string&gt; karta: multimapa){
+        for(auto it=s.begin();it!=s.end();it++){
+            if(*it==karta){
+                it=s.erase(it);
+                pair&lt;Boje,string&gt; temp_karta=karta;
+                multimapa.erase(karta.first);
+                for(pair&lt;Boje,string&gt; pomk: multimapa){
+                    if(pomk==temp_karta){
+                        multimapa.erase(pomk.first);
+                    }
+                }
+            }
+        }
+    }
+}
+
+queue&lt;pair&lt;string,string&gt;&gt; IzbaciKarteRazbrajanjem(Spil &amp;S, const short int &amp;r, const int &amp;b){
+    if((r&lt;1 || r&gt;52) || (b&lt;1)) throw logic_error("Neispravni elementi za izbacivanje!");
+    int briz(0),brk(0);
+    queue&lt;pair&lt;string,string&gt;&gt; Red;
+    auto itp=S.end();
+    itp--;
+    for(auto it=S.begin();it!=S.end();it++){
+        brk++;
+        if(brk==r){
+            pair&lt;string,string&gt; priv;
+            if(it-&gt;first==static_cast&lt;Boje&gt;(0)){
+                string s="Pik";
+                priv.first=s;;
+            }
+            else if(it-&gt;first==static_cast&lt;Boje&gt;(1)){
+                string s="Tref";
+                priv.first=s;
+            }
+            else if(it-&gt;first==static_cast&lt;Boje&gt;(2)){
+                    string s="Herc";
+                    priv.first=s;
+            }
+            else{
+                string s="Karo";
+                priv.first=s;
+            }
+            priv.second=it-&gt;second;
+            Red.push(priv);
+            if(S.size()&gt;1){
+                itp=S.end();
+                itp--;
+            }
+            it=S.erase(it);
+            briz++;
+            brk=1;
+            
+        }
+        
+        if(briz==b) break;
+        if(it==itp || it==S.end()){
+            it=S.begin();
+            
+            brk++;
+        }
+    }
+    return Red;
+} 
+
+void VratiPrvihNKarata(Spil &amp;s, queue&lt;pair&lt;string,string&gt;&gt; &amp;red, int n){
+    if(n&lt;0) throw domain_error("Broj n je besmislen!");
+    if(n&gt;red.size()) throw range_error("Nedovoljno karata u redu!");
+    
+    for(int i=0;i&lt;n;i++){
+        pair&lt;string,string&gt; privremeni;
+        privremeni=red.front();
+        for(auto it=s.begin();it!=s.end();it++){
+            if(it-&gt;first==static_cast&lt;Boje&gt;(0) &amp;&amp; privremeni.first=="Pik"){
+                pair&lt;Boje,string&gt; ubaciga;
+                ubaciga.first=static_cast&lt;Boje&gt;(0);
+                ubaciga.second=privremeni.second;
+                while(privremeni.second&gt;it-&gt;second &amp;&amp; it-&gt;second=="Pik"){
+                    it++;
+                  }
+                it++;
+                
+                s.insert (it,ubaciga);
+                
+                break;
+            }
+            if(it-&gt;first==static_cast&lt;Boje&gt;(1) &amp;&amp; privremeni.first=="Tref"){
+                pair&lt;Boje,string&gt; ubaciga;
+                ubaciga.first=static_cast&lt;Boje&gt;(1);
+                ubaciga.second=privremeni.second;
+                while(privremeni.second&gt;it-&gt;second &amp;&amp; it-&gt;second=="Tref"){
+                    it++;
+                }
+                it++;
+                s.insert(it,ubaciga);
+                break;
+            }
+            if(it-&gt;first==static_cast&lt;Boje&gt;(2) &amp;&amp; privremeni.first=="Herc"){
+                pair&lt;Boje,string&gt; ubaciga;
+                ubaciga.first=static_cast&lt;Boje&gt;(2);
+                ubaciga.second=privremeni.second;
+                while(privremeni.second&gt;it-&gt;second &amp;&amp; it-&gt;second=="Herc"){
+                    it++;
+                }
+                it++;
+                s.insert(it,ubaciga);
+                break;
+            }
+            if(it-&gt;first==static_cast&lt;Boje&gt;(3) &amp;&amp; privremeni.first=="Karo"){
+                pair&lt;Boje,string&gt; ubaciga;
+                ubaciga.first=static_cast&lt;Boje&gt;(3);
+                ubaciga.second=privremeni.second;
+                while(privremeni.second&gt;it-&gt;second &amp;&amp; it-&gt;second=="Karo"){
+                    it++;
+                }
+                it++;
+                s.insert(it,ubaciga);
+                break;
+            }
+         }
+        red.pop();
+    }
+    
+}
+
+int main ()
+{
+    Spil karte;
+    queue&lt;pair&lt;string,string&gt;&gt; RED;
+    karte=KreirajSpil();
+    cout&lt;&lt;"Unesite korak razbrajanja: ";
+    int k;
+    cin&gt;&gt;k;
+    cout&lt;&lt;"Unesite broj karata koje zelite izbaciti: ";
+    int p;
+    cin&gt;&gt;p;
+    
+    try{
+    RED=IzbaciKarteRazbrajanjem(karte,k,p);
+    
+    }
+    catch(logic_error izuzetak){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+        return 0;
+    }
+    cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;52-p&lt;&lt;" karata, i to: "&lt;&lt;endl;
+    for(auto it=karte.begin();it!=karte.end();it++){
+        cout&lt;&lt;"Pik: ";
+        while(static_cast&lt;Boje&gt;(0)==it-&gt;first){
+            cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+            it++;
+        }
+        cout&lt;&lt;endl&lt;&lt;"Tref: ";
+        while(static_cast&lt;Boje&gt;(1)==it-&gt;first){
+            cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+            it++;
+        }
+        cout&lt;&lt;endl&lt;&lt;"Herc: ";
+        while(static_cast&lt;Boje&gt;(2)==it-&gt;first){
+            cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+            it++;
+        }
+        cout&lt;&lt;endl&lt;&lt;"Karo: ";
+        while(static_cast&lt;Boje&gt;(3)==it-&gt;first){
+            cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+            it++;
+            if(it==karte.end()) break;
+        }
+       break;
+    }
+    cout&lt;&lt;endl&lt;&lt;"Unesite broj karata koje zelite vratiti u spil: ";
+    int brkarata;
+    cin&gt;&gt;brkarata;
+    try{
+    VratiPrvihNKarata(karte,RED,brkarata);
+    karte=SortirajSpil(karte);
+
+    cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;karte.size()&lt;&lt;" karata, i to:"&lt;&lt;endl;
+    for(auto it=karte.begin();it!=karte.end();it++){
+        cout&lt;&lt;"Pik: ";
+        while(static_cast&lt;Boje&gt;(0)==it-&gt;first){
+            cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+            it++;
+        }
+        cout&lt;&lt;endl&lt;&lt;"Tref: ";
+        while(static_cast&lt;Boje&gt;(1)==it-&gt;first){
+            cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+            it++;
+        }
+        cout&lt;&lt;endl&lt;&lt;"Herc: ";
+        while(static_cast&lt;Boje&gt;(2)==it-&gt;first){
+            cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+            it++;
+        }
+        cout&lt;&lt;endl&lt;&lt;"Karo: ";
+        while(static_cast&lt;Boje&gt;(3)==it-&gt;first){
+            cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+            it++;
+            if(it==karte.end()) break;
+        }
+        break;
+    }
+    }
+    catch(range_error izuzetak){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+    }
+    catch(domain_error izuzetak){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+</font>    }
+	return 0;
+}
+</pre>
+</body>
+</html>

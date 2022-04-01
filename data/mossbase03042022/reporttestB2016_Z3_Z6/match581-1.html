@@ -1,0 +1,136 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student3673.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student5771.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match581-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 6
+#include &lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;string&gt;
+#include&lt;list&gt;
+#include&lt;set&gt;
+#include&lt;stdexcept&gt;
+#include&lt;iterator&gt;
+#include&lt;memory&gt;
+using namespace std;
+struct Dijete{
+  string ime;
+  shared_ptr&lt;Dijete&gt; sljedeci;
+};
+int BrojSlovaImena(string rijec){
+	int n=0;
+</font><a name="3"></a><font color="#00FFFF"><a href="match581-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+	for(int i=0; i&lt;rijec.size(); i++){
+		if((rijec[i]&gt;='A' &amp;&amp; rijec[i]&lt;='Z') || (rijec[i]&gt;='a' &amp;&amp; rijec[i]&lt;='z') || rijec[i]=='1' || rijec[i]=='2' || rijec[i]=='3' 
+</font>        || rijec[i]=='4' || rijec[i]=='5' || rijec[i]=='6' || rijec[i]=='7' || rijec[i]=='8' || rijec[i]=='9' || rijec[i]=='0')n++;
+	}
+	return n;
+}
+int KolikotrebaClanova(int n, int k, int j){
+	int treba;
+	treba=n/k;
+	int nesto=n%k;
+	if(j&lt;=nesto)treba++;
+	return treba;
+}
+shared_ptr&lt;Dijete&gt; KreirajPovezanuListu(vector&lt;string&gt; djeca){
+ shared_ptr&lt;Dijete&gt; pocetak=nullptr;
+    shared_ptr&lt;Dijete&gt; prethodni;
+    for(int i=0; i&lt;djeca.size(); i++){
+        shared_ptr&lt;Dijete&gt;novi(make_shared&lt;Dijete&gt;());//pravi//
+<a name="0"></a><font color="#FF0000"><a href="match581-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+        novi-&gt;ime=djeca[i]; novi-&gt;sljedeci=nullptr;//postavi ih//
+        if(!pocetak)pocetak=novi;
+        else prethodni-&gt;sljedeci=novi;
+        prethodni=novi;
+        if(i==djeca.size()-1)prethodni-&gt;sljedeci=pocetak;}//zadnji cvor//
+</font>    return pocetak;
+}
+<a name="2"></a><font color="#0000FF"><a href="match581-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+vector&lt;set&lt;string&gt;&gt;Razvrstavanje(vector&lt;string&gt; djeca, int n){
+    if(n&lt;1 || n&gt;djeca.size()){
+	   throw logic_error("Razvrstavanje nemoguce ");
+	}
+ vector&lt;set&lt;string&gt;&gt; tim;
+</font>    //razvrstavanje//
+    auto it=KreirajPovezanuListu(djeca);
+    int brojslovaproslog=0; int brojubacenih=0;
+    int brojackrugova=0;
+    for(int i=0; i&lt;n; i++){
+    int brojclanovaskupatrenutno=0;
+    int kolikoclanovatreba=KolikotrebaClanova(djeca.size(), n, i+1);
+    set&lt;string&gt; skup;
+    while(brojclanovaskupatrenutno&lt;kolikoclanovatreba){
+    if(brojackrugova==brojslovaproslog){
+        auto prethodni=it;
+        prethodni=it-&gt;sljedeci;
+        auto treba=it;
+        do{
+            if(prethodni-&gt;sljedeci==it)treba=prethodni;
+             prethodni=prethodni-&gt;sljedeci;
+        }while(prethodni!=it);
+        prethodni=treba;
+        skup.insert(it-&gt;ime);
+        brojubacenih++;
+        brojslovaproslog=BrojSlovaImena(it-&gt;ime)-1;
+        prethodni-&gt;sljedeci=it-&gt;sljedeci;
+        if(it!=prethodni)it=prethodni-&gt;sljedeci;
+    	brojclanovaskupatrenutno++;
+    	brojackrugova=0;
+
+    }
+    	if(brojubacenih!=djeca.size())it=it-&gt;sljedeci;
+    	else{ it-&gt;sljedeci=nullptr;}	brojackrugova++;
+    }
+        if(brojclanovaskupatrenutno==kolikoclanovatreba){tim.push_back(skup); }
+   
+    }
+    return tim;
+}
+void IspisiTimove(vector&lt;set&lt;string&gt;&gt; timovi){
+	for(int i=0; i&lt;timovi.size(); i++){
+		cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+		for(auto it=timovi[i].begin(); it!=timovi[i].end(); it++){
+           if((++it)!=timovi[i].end())cout&lt;&lt;*--it&lt;&lt;", ";
+           else cout&lt;&lt;*--it;
+		}cout&lt;&lt;endl;
+	}
+}
+int main ()
+{
+    cout&lt;&lt;"Unesite broj djece: ";
+    int n;
+    cin&gt;&gt;n;
+    cin.ignore(10000, '\n');
+    cout&lt;&lt;"Unesite imena djece: "&lt;&lt;endl;
+    vector&lt;string&gt; djeca;
+    string dijete;
+    int i=0;
+    do{
+		getline (cin,dijete);
+		djeca.push_back(dijete);
+	
+		i++;
+	}while(i&lt;n);
+	cout&lt;&lt;"Unesite broj timova: ";
+	int m;
+	cin&gt;&gt;m;
+	cin.ignore(10000, '\n');
+	try{
+    vector&lt;set&lt;string&gt;&gt; timovi=Razvrstavanje(djeca,m);
+    IspisiTimove(timovi);}
+    catch(logic_error izuzetak){cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what()&lt;&lt;endl;
+	return 0;
+	}
+	return 0;
+}
+  </pre>
+</body>
+</html>

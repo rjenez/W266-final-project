@@ -1,0 +1,192 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4841.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student8085.cpp<p></p><pre>
+
+#include &lt;iostream&gt;
+#include &lt;tuple&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;cstring&gt;
+#include &lt;map&gt;
+
+using namespace std;
+
+typedef std::map&lt;std::string, std::vector&lt;std:: string&gt;&gt; Knjiga;
+typedef map&lt;string,vector&lt;tuple&lt;string,int,int&gt;&gt;&gt; Ind;
+typedef vector&lt;tuple&lt;string,int,int&gt;&gt; Strana;
+
+int val1(char slovo)
+{
+     return (toupper(slovo)&gt;='A' &amp;&amp; toupper(slovo)&lt;='Z');
+}
+
+void IspisiIndeksPojmova(Ind mapa)
+{
+<a name="3"></a><font color="#00FFFF"><a href="match293-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+     for(auto it=mapa.begin(); it!=mapa.end(); it++)
+     {
+          cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+          for(int i=0; i&lt;it-&gt;second.size(); i++)
+          {
+               auto temp=it-&gt;second.at(i);
+</font><a name="1"></a><font color="#00FF00"><a href="match293-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+               cout&lt;&lt;get&lt;0&gt;(temp)&lt;&lt;"/"&lt;&lt;get&lt;1&gt;(temp)&lt;&lt;"/"&lt;&lt;get&lt;2&gt;(temp);
+               if(i==(it-&gt;second.size())-1) cout&lt;&lt;endl;
+               else cout&lt;&lt;", ";
+</font>          }
+          
+     }
+}
+
+int val2(char slovo)
+{
+     return ((slovo)&gt;='0'&amp;&amp;(slovo)&lt;='9');
+}
+
+
+
+<a name="4"></a><font color="#FF00FF"><a href="match293-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+vector&lt;string&gt; sep(string s)
+{
+     vector&lt;string&gt;v;
+     for(int i=0; i&lt;s.size(); i++) {
+          string s1;
+          while(val1(s[i]) || val2(s[i]))
+</font>          {
+               s1.push_back(s[i]); i++;
+          }
+          if(s1.size()!=0) v.push_back(s1);
+     }
+     return v;
+}
+
+Knjiga smanjislova(Knjiga k){
+    for(auto it=k.begin(); it!=k.end(); it++)
+<a name="2"></a><font color="#0000FF"><a href="match293-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+          for(int i=0; i&lt;it-&gt;second.size(); i++)
+               for(int j=0; j&lt;it-&gt;second.at(i).size(); j++) it-&gt;second.at(i).at(j)=tolower(it-&gt;second.at(i).at(j));
+</font>    return k;
+}
+
+bool dobar(string slovo, string s)
+{
+     if(s.size()==1) return true;
+     for(int i=0; i&lt;s.size()-slovo.size(); i++)
+     {
+          if(s.substr(i,slovo.size())==slovo)
+          {
+               if(i==0) {
+                    if(val1(s[i+slovo.size()])|| val2(s[i+slovo.size()])) return false;
+                    else return true;
+               }
+               else{
+                    if(val1(s[i-1])|| val2(s[i-1] || val1(s[i+slovo.size()])|| val2(s[i+slovo.size()]))) return false;
+                    return true;
+               }
+          }
+     }
+     return true;
+}
+
+void filter(Knjiga &amp;k, vector&lt;string&gt; r, Ind &amp;rez){
+    for(int l=0; l&lt;r.size(); l++)
+     {
+          Strana skup;
+          for(auto it=k.begin(); it!=k.end(); it++)
+<a name="0"></a><font color="#FF0000"><a href="match293-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+            for(int i=0; i&lt;(it-&gt;second).size(); i++)
+                for(int j=0; j&lt;(it-&gt;second).at(i).size(); j++)
+                    if(r[l]==(it-&gt;second).at(i).substr(j,r[l].size()) &amp;&amp; dobar(r[l],it-&gt;second.at(i))) skup.push_back(make_tuple(it-&gt;first,i+1,j));
+</font>          rez[r[l]]=skup;
+     }
+}
+
+bool valja(vector&lt;string&gt; &amp;v, string temp)
+{
+    
+    for(int j=0; j&lt;v.size(); j++) if(v[j]==temp) return false;
+    return true;
+}
+
+Ind KreirajIndeksPojmova(Knjiga k)
+{
+     Ind rez;
+     k=smanjislova(k);
+     
+     vector&lt;string&gt; r;
+     for(auto it=k.begin(); it!=k.end(); it++){
+          for(int i=0; i&lt;it-&gt;second.size(); i++){
+               auto temp=sep(it-&gt;second.at(i));
+               for(int i=0; i&lt;temp.size(); i++)
+               {
+                    if(valja(r,temp[i])) r.push_back(temp[i]);
+               }
+          }
+     }
+     filter(k,r,rez);
+     return rez;
+}
+
+vector&lt;tuple&lt;string,int,int&gt;&gt; PretraziIndPojmova(string s, Ind mapa)
+{
+    for(auto it=mapa.begin(); it!=mapa.end(); it++) if(it-&gt;first==s) return it-&gt;second;
+     throw logic_error("Unesena rijec nije nadjena!");
+}
+
+
+
+int main ()
+{
+     Knjiga k;
+     while(1)
+     {
+          cout&lt;&lt;"Unesite naziv poglavlja: ";
+          string s; getline(cin,s);
+          if(s==".") break;
+          vector&lt;string&gt; v;
+          int br=1;
+          while(1)
+          {
+               cout&lt;&lt;"Unesite sadrzaj stranice "&lt;&lt;br++&lt;&lt;": ";
+               string temp;
+               getline(cin,temp);
+               if(temp==".") break;
+               else v.push_back(temp);
+          }
+          k[s]=v;
+     }
+     Ind ind=KreirajIndeksPojmova(k);
+     cout&lt;&lt;endl&lt;&lt;"Kreirani indeks pojmova: "&lt;&lt;endl;
+     IspisiIndeksPojmova(ind);
+     while(1)
+     {
+          cout&lt;&lt;"Unesite rijec: ";
+          string temp; getline(cin,temp);
+          if(temp==".") break;
+          try{
+          Strana d=PretraziIndPojmova(temp,ind);
+          for(int i=0; i&lt;d.size(); i++)
+               {
+                    auto temp=d.at(i);
+                    cout&lt;&lt;get&lt;0&gt;(temp)&lt;&lt;"/"&lt;&lt;get&lt;1&gt;(temp)&lt;&lt;"/"&lt;&lt;get&lt;2&gt;(temp)&lt;&lt;" ";
+                   if(i==(d.size())-1) cout&lt;&lt;endl;
+               }
+          }catch(logic_error izuz) {cout&lt;&lt;izuz.what()&lt;&lt;endl; }
+     }
+	return 0;
+}
+</pre>
+</body>
+</html>

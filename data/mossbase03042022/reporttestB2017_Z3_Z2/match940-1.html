@@ -1,0 +1,196 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4412.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student3739.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;tuple&gt;
+
+#include &lt;utility&gt;
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+<a name="0"></a><font color="#FF0000"><a href="match940-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+typedef std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; Indeks;
+
+bool Slovo (char znak) {
+    return ((znak&gt;='a' &amp;&amp; znak&lt;='z') || (znak&gt;='A' &amp;&amp; znak&lt;='Z') || (znak&gt;='0' &amp;&amp; znak&lt;='9'));
+</font>}
+
+void PretvoriUMala (std::string &amp;s) {
+    for (int i=0; i&lt;s.length(); i++) {
+        if (s.at(i)&gt;='A' &amp;&amp; s.at(i)&lt;='Z') s.at(i)=s.at(i)+'a'-'A';
+    }
+    return;
+}
+
+Indeks KreirajIndeksPojmova (Knjiga k) {
+    Indeks indeks;
+    
+    for (auto par: k) {
+        for (int m=0; m&lt;par.second.size(); m++) {
+            std::string tekst;
+            tekst=par.second.at(m);
+            
+            
+            for (int b=0; b&lt;tekst.length(); b++) {
+                std::string rijec;
+                std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; skup;
+                
+                while (b&lt;tekst.length()) { if (Slovo(tekst.at(b))) break; b++; }
+                if (b==tekst.length()) continue;
+                
+                while (b&lt;tekst.length()) { if (!Slovo(tekst.at(b))) break; rijec.push_back(tekst.at(b)); b++; }
+                b--;
+                
+                PretvoriUMala(rijec);
+                if (rijec.length() &amp;&amp; indeks.find(rijec)==indeks.end()) {
+                
+                    for (auto it=k.begin(); it!=k.end(); it++) {
+                        for (int i=0; i&lt;it-&gt;second.size(); i++) {
+                            std::string s;
+                            s=(it-&gt;second).at(i);
+                                
+                            bool razmak(true);
+                            for (int k=0; k&lt;s.length(); k++) {
+                                if (!Slovo(s.at(k))) razmak=true;
+                                else if (razmak) {
+                                    std::string str(s.substr(k, rijec.length()));
+                                    PretvoriUMala(str);
+                                        
+                                    if (str==rijec) {
+                                        if (k+rijec.length()==s.length()) { skup.insert(std::make_tuple(it-&gt;first, i+1, k)); }  
+                                        else if (!Slovo(s.at(k+rijec.length()))) { skup.insert(std::make_tuple(it-&gt;first, i+1, k)); }
+                                    }
+                                    razmak=false;
+                                }
+                            }
+                        }
+                    }
+                    indeks.insert({rijec, skup});
+                }
+            }
+        }
+    }
+    return indeks;
+}
+
+void IzbaciRazmake (std::string &amp;s) {
+    
+    std::string pomocni;
+    
+    for (int i=0; i&lt;s.length(); i++) {
+        
+        while (!Slovo(s.at(i))) { 
+            i++; 
+            if (i==s.length()) {
+                s=pomocni; 
+                return;
+            }
+        }
+        while (i!=s.length()) {
+            pomocni.push_back(s.at(i));
+            i++;
+        }
+    }
+    int vel(pomocni.length());
+    do {
+        std::string::iterator it(pomocni.end()-1);
+        if (Slovo(*it)) { s=pomocni; return; }
+        pomocni.resize(vel-1);
+        vel--;
+    } while (vel);
+    s=pomocni;
+    return;
+}
+
+std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; PretraziIndeksPojmova (std::string s, Indeks indeks) {
+    PretvoriUMala(s);
+    IzbaciRazmake(s);
+    if (indeks.find(s)==indeks.end()) throw std::logic_error("Unesena rijec nije nadjena!");
+    auto it(indeks.find(s));
+    
+    return it-&gt;second;
+}
+
+void IspisiTrojku(std::tuple&lt;std::string, int, int&gt; x) {
+    std::cout &lt;&lt; std::get&lt;0&gt;(x) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(x) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(x);
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match940-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+void IspisiIndeksPojmova (Indeks indeks) {
+    
+    for (auto it=indeks.begin(); it!=indeks.end(); it++) {
+        std::cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+        int br_elemenata(1);
+        for (auto trojka: it-&gt;second) {
+</font>            IspisiTrojku(trojka);
+            if (br_elemenata!=it-&gt;second.size()) std::cout &lt;&lt; ", ";
+            br_elemenata++;
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+    return;
+}
+
+int main ()
+{
+    Knjiga k;
+    std::string poglavlje, tekst, s;
+    std::vector&lt;std::string&gt; v;
+    
+    for (;;) {
+        std::cout &lt;&lt; "Unesite naziv poglavlja: ";
+        std::getline(std::cin, poglavlje);
+        if (poglavlje==".") break;
+        
+        int i(1);
+        v.resize(0);
+        for (;;) {
+            std::cout &lt;&lt; "Unesite sadrzaj stranice " &lt;&lt; i++ &lt;&lt; ": ";
+            std::getline(std::cin, tekst);
+            if (tekst==".") break;
+            v.push_back(tekst);
+        }
+<a name="2"></a><font color="#0000FF"><a href="match940-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+        k.insert({poglavlje, v});
+    }
+    
+    auto indeks(KreirajIndeksPojmova(k));
+    std::cout &lt;&lt; std::endl &lt;&lt; "Kreirani indeks pojmova:" &lt;&lt; std::endl;
+    IspisiIndeksPojmova(indeks);
+    
+    for (;;) {
+        std::cout &lt;&lt; "Unesite rijec: ";
+        std::getline(std::cin, s);
+</font>        
+        if (s==".") break;
+        
+        try {
+            auto skup(PretraziIndeksPojmova(s, indeks));
+            
+            for (auto trojka: skup) {
+                IspisiTrojku(trojka);
+                std::cout &lt;&lt; " ";
+            }
+        }
+        catch(std::logic_error &amp;izuzetak) {
+            std::cout &lt;&lt; izuzetak.what();
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+    
+	return 0;
+}
+</pre>
+</body>
+</html>

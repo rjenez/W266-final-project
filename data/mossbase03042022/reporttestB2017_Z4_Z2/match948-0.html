@@ -1,0 +1,216 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student1710.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student1710.cpp<p></p><pre>
+/B2017/2018: Zadaća 4, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+#include &lt;tuple&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;memory&gt;
+
+const double EPSILON = 1e-10;
+const double PI = 4*atan(1);
+
+class NepreklapajucaKugla
+{   
+    static NepreklapajucaKugla *posljednja;
+    NepreklapajucaKugla *prethodni;
+    double x,y,z,poluprecnik;
+    bool DaLiSePreklapaju(const NepreklapajucaKugla &amp;k){
+        for(NepreklapajucaKugla *p = k.posljednja; p != nullptr ; p=p-&gt;prethodni){
+         if (RastojanjeCentara(k, *p) &lt;= (k.poluprecnik + p-&gt;poluprecnik)) return true;
+        }
+    return false;
+    }
+public:
+    NepreklapajucaKugla(const NepreklapajucaKugla &amp;k) = delete;
+    NepreklapajucaKugla &amp;operator = (const NepreklapajucaKugla &amp;k) = delete;
+    explicit NepreklapajucaKugla(double r = 0){
+        x=0; y=0; z=0;
+        if(poluprecnik&lt;0)throw std::domain_error("Ilegalan poluprecnik");
+        poluprecnik=r;
+    }
+    NepreklapajucaKugla(double x, double y, double z, double r = 0){
+        NepreklapajucaKugla::x=x; NepreklapajucaKugla::y=y; NepreklapajucaKugla::z=z; poluprecnik=r;
+        if(DaLiSePreklapaju(*this)) {
+            throw std::logic_error("Nedozvoljeno preklapanje");
+        }
+        prethodni=posljednja;
+        posljednja=this;
+    }
+    explicit NepreklapajucaKugla(const std::tuple&lt;double, double, double&gt; &amp;centar, double r = 0){
+        x=std::get&lt;0&gt;(centar); y=std::get&lt;1&gt;(centar); z=std::get&lt;2&gt;(centar); poluprecnik=r;
+        if(DaLiSePreklapaju(*this)) {
+            throw std::logic_error("Nedozvoljeno preklapanje");
+        }
+<a name="4"></a><font color="#FF00FF"><a href="match948-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+        prethodni=posljednja;
+        posljednja=this;
+    }
+    double DajX() const{ return x;}
+    double DajY() const { return y;}
+    double DajZ() const { return z;}
+    std::tuple&lt;double, double, double&gt; DajCentar() const{
+</font>        std::tuple&lt;double, double, double&gt; pomocni(DajX(), DajY(), DajZ());
+        return pomocni;
+    }
+    double DajPoluprecnik() const{ return poluprecnik;}
+    double DajPovrsinu() const { return 4*PI*pow(poluprecnik, 2);}
+    double DajZapreminu() const { return (3./4)*pow(poluprecnik, 3)*PI;}
+    
+    NepreklapajucaKugla &amp;PostaviX(double x){
+        double pomocna (NepreklapajucaKugla::x);
+        NepreklapajucaKugla::x=x;
+        if(DaLiSePreklapaju(*this)){
+            NepreklapajucaKugla::x = pomocna;
+            throw std::logic_error("Nedozvoljeno preklapanje");
+        }
+        return *this;
+    }
+    NepreklapajucaKugla &amp;PostaviY(double y){
+        double pomocna (NepreklapajucaKugla::y);
+        NepreklapajucaKugla::y=y;
+        if(DaLiSePreklapaju(*this)){
+            NepreklapajucaKugla::y = pomocna;
+            throw std::logic_error("Nedozvoljeno preklapanje");
+        }
+        return *this;
+    }
+    NepreklapajucaKugla &amp;PostaviZ(double z){
+        double pomocna (NepreklapajucaKugla::z);
+        NepreklapajucaKugla::z=z;
+        if(DaLiSePreklapaju(*this)){
+            NepreklapajucaKugla::z = pomocna;
+            throw std::logic_error("Nedozvoljeno preklapanje");
+        }
+        return *this;
+    }
+    NepreklapajucaKugla &amp;PostaviCentar(double x, double y, double z){
+        double pomocna1(NepreklapajucaKugla::x), pomocna2(NepreklapajucaKugla::y), pomocna3(NepreklapajucaKugla::z);
+        NepreklapajucaKugla::x=x;
+        NepreklapajucaKugla::y=y;
+        NepreklapajucaKugla::z=z;
+        if(DaLiSePreklapaju(*this)){
+            NepreklapajucaKugla::x = pomocna1;
+            NepreklapajucaKugla::y = pomocna2;
+            NepreklapajucaKugla::z = pomocna3;
+            throw std::logic_error("Nedozvoljeno preklapanje");
+        }
+<a name="0"></a><font color="#FF0000"><a href="match948-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+        return *this;
+    }
+    NepreklapajucaKugla &amp;PostaviCentar(const std::tuple&lt;double, double, double&gt; &amp;centar){
+        PostaviCentar(std::get&lt;0&gt; (centar), std::get&lt;1&gt; (centar), std::get&lt;2&gt; (centar));
+</font>        return *this;
+    }
+    NepreklapajucaKugla &amp;PostaviPoluprecnik(double r) {
+        double pomocna = poluprecnik;
+        if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+        poluprecnik=r;
+        if(DaLiSePreklapaju(*this)){
+            poluprecnik = pomocna;
+            throw std::logic_error("Nedozvoljeno preklapanje");
+        }
+        return *this;
+    }
+    void Ispisi() const{
+        std::cout &lt;&lt; "{(" &lt;&lt; DajX() &lt;&lt; "," &lt;&lt;DajY() &lt;&lt; "," &lt;&lt;DajZ() &lt;&lt; ")," &lt;&lt; DajPoluprecnik() &lt;&lt; "}" &lt;&lt; std::endl;
+    }
+    void Transliraj(double delta_x, double delta_y, double delta_z){
+        x+=delta_x;
+        y+=delta_y;
+        z+=delta_z;
+        if(DaLiSePreklapaju(*this)){
+            x-=delta_x;
+            y-=delta_y;
+            z-=delta_z;
+            throw std::logic_error("Nedozvoljeno preklapanje");
+        }
+    }
+    friend double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+};
+double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+<a name="5"></a><font color="#FF0000"><a href="match948-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+    return sqrt( (k2.x-k1.x)*(k2.x-k1.x) + (k2.y-k1.y)*(k2.y-k1.y) + (k2.z-k1.z)*(k2.z-k1.z) );
+}
+NepreklapajucaKugla *NepreklapajucaKugla::posljednja=nullptr;
+</font>int main ()
+{   
+    std::cout &lt;&lt; "Unesite broj kugli: ";
+    int broj_kugli;
+
+    for(;;) {
+        std::cin&gt;&gt;broj_kugli;
+<a name="2"></a><font color="#0000FF"><a href="match948-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+        if(!std::cin || broj_kugli &lt;= 0) {
+            std::cout&lt;&lt;"Neispravan broj kugli, unesite ponovo!"&lt;&lt; std::endl;
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+</font>            continue;
+        } else break;
+    }
+<a name="1"></a><font color="#00FF00"><a href="match948-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+    std::vector&lt;std::shared_ptr&lt;NepreklapajucaKugla&gt;&gt; kugle(broj_kugli);
+    for (int i = 0; i &lt; broj_kugli; i++) {
+        std::cout &lt;&lt; "Unesite centar za " &lt;&lt; i+1 &lt;&lt; ". kuglu: ";
+        double x, y, z;
+</font>        for(;;){
+        std::cin&gt;&gt;x&gt;&gt;y&gt;&gt;z;
+        if(!std::cin) {
+            std::cout&lt;&lt;"Neispravan centar, unesite ponovo: "&lt;&lt;std::endl;
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            continue;
+        }
+        break;
+        }
+        std::cout &lt;&lt;"Unesite poluprecnik: ";
+        double r;
+        for(;;){
+        std::cin&gt;&gt;r;
+<a name="3"></a><font color="#00FFFF"><a href="match948-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+        if(!std::cin || r&lt;0) {
+            std::cout&lt;&lt;"Neispravan poluprecnik, unesite ponovo: "&lt;&lt;std::endl;
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+</font>            continue;
+        }
+        break;
+        }
+        try{
+            kugle[i]=std::make_shared&lt;NepreklapajucaKugla&gt;(x,y,z,r);
+        }
+        catch(std::domain_error e){
+            i--;
+            std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+        }
+        catch(std::logic_error e){
+            i--;
+            std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+        }
+        
+        
+    }
+    
+     std::cout &lt;&lt; "\nKugle nakon obavljenog sortiranja: " &lt;&lt; std::endl;
+     sort(kugle.begin(), kugle.end(), [] (std::shared_ptr&lt;NepreklapajucaKugla&gt; k1,std::shared_ptr&lt;NepreklapajucaKugla&gt; k2) {
+        return k1-&gt;DajPovrsinu() &lt; k2-&gt;DajPovrsinu();
+    });
+    for_each(kugle.begin(), kugle.end(), [] (std::shared_ptr&lt;NepreklapajucaKugla&gt; k) {k-&gt;Ispisi();});
+    return 0;
+}
+</pre>
+</body>
+</html>

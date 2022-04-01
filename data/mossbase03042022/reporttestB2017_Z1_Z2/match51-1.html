@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student3867.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student3329.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;limits&gt;
+
+/*** varijable 'x' i 'y' predstavljaju pozicije u vektoru vektora, 'level' najvecu-najmanju odaljenost od rubova, 'vrh' element na poziciji ('x','y') ***/
+<a name="0"></a><font color="#FF0000"><a href="match51-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+struct t_coord { int x, y, level; long double vrh; };
+
+
+int min ( int a, int b ) { return ( a &lt; b ) ? a : b; }
+
+bool isRegular ( std::vector &lt; std::vector &lt; double &gt; &gt; m )
+{
+/*** vraca 'true' ako svaki red ima isti broj elemenata  ***/
+    for ( std::vector &lt; double &gt; x : m )
+        if ( m.at ( 0 ).size () != x.size () )
+            return false;
+    
+    return true;
+}
+
+std::vector &lt; std::vector &lt; double &gt; &gt; makeMatrix (std::vector &lt; std::vector &lt; double &gt; &gt; m, t_coord c )
+{
+/*** vraca vector vectora kreiran iz parametra 'm' ogranicen vrijednostima iz 'c' ***/
+	std::vector &lt; std::vector &lt; double &gt; &gt; pl ( 0 );
+	int k;
+	for ( int i = c.x - c.level, k = 0; i &lt;= c.x + c.level; i++, k++ )
+	{ 
+		pl.push_back ( std::vector &lt; double &gt; ( 0 ) );
+		for ( int j = c.y - c.level; j &lt;= c.y + c.level; j++ )
+			pl.at ( k ).push_back ( m.at ( i ).at ( j ) );
+	}
+	
+	return pl;
+}
+
+int getLevel ( t_coord pos, int ver, int hor )
+{
+/*** vraca vrijednost jednaku minimalnoj udaljenosti pozicije 'pos' od rubova vectora vectora zadanog parametrima 'ver i 'hor' ***/
+	if ( pos.x &lt; ( ( ver % 2 == 0 ) ? ver / 2 : ver / 2 + 1 ) )
+		return ( pos.y &lt; ( ( hor % 2 == 0 ) ? hor / 2 : hor / 2 + 1 ) ) ? min ( pos.x, pos.y ) : min ( pos.x, hor - 1 - pos.y );
+		
+	return ( pos.y &lt; ( ( hor % 2 == 0 ) ? hor / 2 : hor / 2 + 1 ) ) ? min ( ver - 1 - pos.x, pos.y ) : min ( ver - 1 - pos.x, hor - 1 - pos.y );
+}
+
+long double getSum ( std::vector &lt; std::vector &lt; double &gt; &gt; m, t_coord c )
+{
+/*** vraca sumu svih elemenata udaljenih za udaljenost iz 'c' od pozicije iz 'c' ***/
+	long double sum { 0 };
+	for ( int i = c.x - c.level; i &lt;= c.x + c.level; i++ )
+		for ( int j = c.y - c.level; j &lt;= c.y + c.level; j++ )
+			sum += ( i == c.x - c.level or i == c.x + c.level or
+					j == c.y - c.level or j == c.y + c.level ) ? m.at ( i ).at ( j ) : 0;
+			
+	return sum;
+}
+
+bool isMountain ( std::vector &lt; std::vector &lt; double &gt; &gt; m, t_coord pos )
+{
+/*** vraca 'true' ako je pozicija iz parametra 'pos' "planina" u parametru 'm' ***/
+	long double now_sum, pre_sum { m.at ( pos.x ).at ( pos.y ) };
+	
+	for ( int lvl = 1; lvl &lt;= pos.level; lvl++ )
+	{
+		now_sum = getSum ( m, { pos.x, pos.y, lvl } );
+		if ( pre_sum &lt; now_sum ) // ovdje treba da bude '&lt;='
+			return false;
+		pre_sum = now_sum;
+	}
+			
+	return true;
+}
+
+std::vector &lt; std::vector &lt; double &gt; &gt; NajvecaPlaninaMatrice ( std::vector &lt; std::vector &lt; double &gt; &gt; m )
+{
+/*** vraca najdominantniji vector vectora ***/
+    if ( m.size () == 0 or m.at ( 0 ).size () == 0 )
+        return std::vector &lt; std::vector &lt; double &gt; &gt; ( 0 );
+//provjera regularnosti i validnosti
+    if ( !isRegular ( m ) )
+        throw std::domain_error ( "Matrica nije korektna" );
+
+  	t_coord cmax { 0, 0, 0, std::numeric_limits &lt; long double &gt;::min () };
+  	int lvl;
+  	
+  	for ( int i = 0; i &lt; int ( m.size () ); i++ )
+  		for ( int j = 0; j &lt; int ( m.at ( 0 ).size () ); j++ )
+  		{
+  			lvl = getLevel ( { i, j }, m.size (), m.at ( 0 ).size () ); // najmanja udaljenost trenutne pozicije od rubova
+  			for ( int dis = lvl; dis &gt;= 0; dis-- )
+	  			if 
+	  			( // poredjenje velicine elemenata &amp;&amp; udaljenosti od rubova &amp;&amp; planina
+  					( cmax.vrh &gt;= m.at ( i ).at ( j ) and cmax.level &lt; dis and isMountain ( m, { i, j, dis } ) ) or
+  					( cmax.vrh &lt; m.at ( i ).at ( j ) and cmax.level &lt;= dis and isMountain ( m, { i, j, dis } ) )
+  				)
+  					{ cmax = { i, j, dis, m.at ( i ).at ( j ) }; break; }
+  		}
+	
+    return makeMatrix ( m, cmax );
+}
+
+int main ( void )
+{
+	int m, n;
+	std::cout &lt;&lt; "Unesite dimenzije matrice (m i n): ";
+	std::cin &gt;&gt; m &gt;&gt; n;
+	
+	if ( m &lt; 0 or n &lt; 0 )
+	{
+	    std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!";
+	    return 0;
+	}
+	
+	std::vector &lt; std::vector &lt; double &gt; &gt; mat ( m , std::vector &lt; double &gt; ( n ) );
+	std::cout &lt;&lt; "Unesite elemente matrice: ";
+	for ( int i = 0; i &lt; mat.size (); i++ )
+	    for ( int j = 0; j &lt; mat.at ( 0 ).size (); j++ )
+	        std::cin &gt;&gt; mat.at ( i ).at ( j );
+//poziv NPM funkcije, ispis, i provjera validnosti
+	std::vector &lt; std::vector &lt; double &gt; &gt; planina;    
+	try
+	{
+	    planina = NajvecaPlaninaMatrice ( mat );
+	    std::cout &lt;&lt; std::endl &lt;&lt; "Najveca planina unesene matrice je:" &lt;&lt; std::endl;
+	    for ( std::vector &lt; double &gt; x : planina )
+	    {
+	        for ( double y : x )
+	            std::cout &lt;&lt; std::setw ( 6 ) &lt;&lt; y;
+	        std::cout &lt;&lt; std::endl;
+	    }
+	}
+	catch ( std::domain_error msg ) { std::cout &lt;&lt; msg.what () &lt;&lt; std::endl; }
+</font>	
+	return 0;
+}</pre>
+</body>
+</html>

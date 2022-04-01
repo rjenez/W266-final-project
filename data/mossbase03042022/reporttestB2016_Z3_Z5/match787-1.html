@@ -1,0 +1,112 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student7977.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student4647.cpp<p></p><pre>
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+
+struct Dijete {
+    std::string ime;
+    Dijete *sljedeci;
+};
+
+int duzina(std::string s) {
+    int br=0;
+   for(int i=0; i&lt;s.size(); i++)
+   if((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z')  || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9') ) br++;
+   return br;
+}
+
+std::vector&lt;std::multiset&lt;std::string&gt;&gt; Razvrstavanje (std::vector&lt;std::string&gt; djeca, int k) {
+    std::vector&lt;std::multiset&lt;std::string&gt;&gt; tim(k);
+    int n=djeca.size();
+    
+    Dijete *pocetak=nullptr, *prethodni;
+    for(int i=0; i&lt;n; i++) {
+        Dijete *novi=nullptr;
+        novi=new Dijete;
+        novi-&gt;ime=djeca[i]; novi-&gt;sljedeci=nullptr;
+        if(pocetak==nullptr) pocetak=novi;
+        else prethodni-&gt;sljedeci=novi;
+        prethodni=nullptr;
+        prethodni=novi;
+    }
+    
+    prethodni-&gt;sljedeci=pocetak;
+    int vel=duzina(pocetak-&gt;ime);
+    tim[0].insert(pocetak-&gt;ime);
+    auto poc=pocetak;
+    
+    int br=0;
+    int brojac=1;
+    
+    for(int i=0; i&lt;n-1; i++) pocetak=pocetak-&gt;sljedeci;    //pomijeramo do kraja liste da bismo preusmjerili pokazivac sa elementa koji trebamo izbrisati na sljedeci
+    auto next=pocetak-&gt;sljedeci;
+    pocetak-&gt;sljedeci=next-&gt;sljedeci;
+    pocetak=pocetak-&gt;sljedeci;
+    delete poc;
+    int g=n-1;
+    n--;
+    for(int i=0; i&lt;g; i++) {
+        for(int i=0; i&lt;vel-1; i++) pocetak=pocetak-&gt;sljedeci;
+        if(br&lt;(g+1)%k &amp;&amp; brojac==((g+1)/k+1)) {br++; brojac=0;}
+        if(br&gt;=(g+1)%k &amp;&amp; brojac==((g+1)/k)) {br++; brojac=0;}
+        tim[br].insert(pocetak-&gt;ime);
+        brojac++;
+        vel=duzina(pocetak-&gt;ime);
+        poc= pocetak;
+        for(int i=0; i&lt;n-1; i++) pocetak=pocetak-&gt;sljedeci;
+        next=pocetak-&gt;sljedeci;
+        pocetak-&gt;sljedeci=next-&gt;sljedeci;
+        pocetak=pocetak-&gt;sljedeci;
+        delete poc;
+        n--;
+    }
+    return tim;
+}
+
+int main ()
+{ 
+    int n;
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    std::cin&gt;&gt;n;
+    std::cin.ignore(1000, '\n');
+    std::cin.clear();
+<a name="0"></a><font color="#FF0000"><a href="match787-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+    std::vector&lt;std::string&gt; djeca(n);
+    std::cout&lt;&lt;"Unesite imena djece: "&lt;&lt;std::endl;
+    for(int i=0; i&lt;n; i++) std::getline(std::cin, djeca[i]); 
+    int k;
+</font>    try{
+    std::cout&lt;&lt;"Unesite broj timova: ";
+    std::cin&gt;&gt;k;
+    if(k&lt;1 || k&gt;n) throw std::logic_error("Razvrstavanje nemoguce");
+<a name="1"></a><font color="#00FF00"><a href="match787-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+    std::vector&lt;std::multiset&lt;std::string&gt;&gt; tim{Razvrstavanje(djeca, k)};
+    for(int i=0; i&lt;tim.size(); i++) {
+        std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": "; 
+</font>        auto poc=tim[i].begin();
+        int velicina=tim[i].size();
+        for(int j=0; j&lt;velicina-1; j++) {std::cout&lt;&lt;*poc&lt;&lt;", "; poc++;}
+<a name="2"></a><font color="#0000FF"><a href="match787-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+        std::cout&lt;&lt;*poc;
+        std::cout&lt;&lt;std::endl;
+    }
+               
+    }
+    catch(std::logic_error i) {std::cout&lt;&lt;"Izuzetak: "&lt;&lt;i.what();}
+</font>    
+	return 0;
+}</pre>
+</body>
+</html>

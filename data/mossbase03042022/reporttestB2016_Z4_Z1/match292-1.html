@@ -1,0 +1,418 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z1/student7442.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z1/student4736.cpp<p></p><pre>
+/B 2016/2017, Zadaća 4, Zadatak 1
+//Napomena: testovi ce biti dostupni dan pred rok!
+#include &lt;iostream&gt;
+#include &lt;utility&gt;
+#include &lt;cmath&gt;
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+typedef std::pair &lt;double, double&gt; Tacka;
+
+class Trougao{
+    Tacka t1, t2, t3;
+    static double udaljenostIzmedjuDvijeTacke(const Tacka &amp; t1, const Tacka &amp; t2){
+        return sqrt((t2.first-t1.first)*(t2.first-t1.first)+(t2.second-t1.second)(t2.second-t1.second));
+    }
+    static bool JesuLiJednaki(double x, double y, double Eps=1e-10){
+        return std::fabs(x-y)&lt;=Eps*(std::fabs(x)+std::fabs(y));
+    }
+    static bool JesuLiJednakeTacke(const Tacka&amp; t1, const Tacka&amp; t2){
+        return JesuLiJednaki(t1.first, t2.first) &amp;&amp; JesuLiJednaki(t1.second,t2.second);
+    }
+    static Tacka RotirajTacku(Tacka t,Tacka c, double ugao){
+        Tacka r;
+        r.first=c.first+(t.first-c.first)*cos(ugao);
+        return r;
+    }
+    static Tacka SkalirajTacku(Tacka t, Tacka c, double faktor){
+        Tacka s;
+        s.first=c.first+faktor*(t.second-c.second);
+        return s;
+    }
+    static double testiranje(const Tacka &amp; t1, const Tacka &amp; t2, const Tacka &amp; t3){
+        return t1.first*(t2.second-t3.second)-t2.first*(t1.second-t3.second)+t3.first*(t1.second-t2.second);
+        }
+    public:
+<a name="2"></a><font color="#0000FF"><a href="match292-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+    Trougao(const Tacka &amp; t1, const Tacka &amp; t2, const Tacka &amp; t3){
+        Postavi(t1,t2,t3);
+    }
+    void Postavi(const Tacka &amp; t1, const Tacka &amp; t2, const Tacka &amp; t3){
+        if(Orijentacija(t1,t2,t3)==0){
+</font>            throw domain_error("Nekorektne pozicije tjemena");
+        }
+        this-&gt;t1=t1;
+        this-&gt;t2=t2;
+        this-&gt;t3=t3;
+    }
+    void Postavi(int indeks, const Tacka &amp; t){
+        if(indeks==1){
+            Postavi(t,t2,t3);
+        }
+        if(indeks==2){
+            Postavi(t1,t,t3);
+        }
+        if(indeks==3){
+            Postavi(t1,t2,t);
+        }
+        else{
+            throw range_error("Nekorektan indeks");
+    }
+}
+static int Orijentacija(const Tacka &amp; t1, const Tacka &amp; t2, const Tacka &amp; t3){
+    double izraz=testiranje(t1,t2,t3);
+    if(izraz&gt;0) return 1;
+    else if (izraz&lt;0) return -1;
+    else return 0;
+};
+Tacka DajTjeme(int indeks)const{
+    if(indeks==1){
+        return t1;
+    }
+else if(indeks==2){
+    return t2;
+}
+else if(indeks==3){
+    return t3;
+}
+else{
+  throw range_error("Nekorektan indeks"); 
+ }
+}
+double DajStranicu(int indeks)const{
+    if(indeks==1){
+        return UdaljenostIzmedjuDvijeTacke(t2,t3);
+    }
+else if(indeks==2){
+    return UdaljenostIzmedjuDvijeTacke(t1,t3);
+}
+else if(indeks==3){
+    return UdaljenostIzmedjuDvijeTacke(t1,t2);
+}
+else{
+    throw range_error("Nekorektan indeks");
+ }
+}
+double DajUgao(int indeks)const{
+    double a=DajStranicu(1), b=DajStranicu(2), c=DajStranicu(3);
+if(indeks==1){
+    return acos((b*b+c*c-a*a)/(2*b*c));
+}
+else if(indeks==2){
+    return acos((a*a+c*c-b*b)/(2*a*c));
+}
+else if(indeks==3){
+    return acos((b*b+a*a-c*c)/(2*b*a));
+}
+else{
+    throw range_error("Nekorektan indeks");
+ }
+}
+Tacka DajCentar() const{
+    Tacka t;
+    t.first=(t1.first+t2.first+t3.first)/3;
+    return t;
+}
+double DajObim() const{
+    double a=DajStranicu(1), b=DajStranicu(2), c=DajStranicu(3);
+    return a+b+c;
+}
+double DajPovrsinu() const{
+    double izraz=fabs(testiranje(t1,t2,t3));
+    return izraz*0.5;
+}
+bool DaLiJePozitivnoOrijentiran() const{
+    return testiranje(t1,t2,t3)&gt;0;
+}
+bool DaLiJeUnutra(const Tacka &amp; t) const{
+    
+}
+void Ispisi() const{
+    cout&lt;&lt;"(("&lt;&lt;t1.first&lt;&lt;","&lt;&lt;t1.second&lt;&lt;"),("&lt;&lt;t2.first&lt;&lt;","t2.second&lt;&lt;"),("&lt;&lt;t3.first&lt;&lt;","t3.second&lt;&lt;"))"&lt;&lt;endl;
+}
+void Transliraj(double delta_x,double delta_y){
+    t1.first+=delta_x;
+    t2.first+=delta_x;
+    t3.first+=delta_x;
+<a name="3"></a><font color="#00FFFF"><a href="match292-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+    t1.second+=delta_y;
+    t2.second+=delta_y;
+    t3.second+=delta_y;
+}
+void Centriraj(const Tacka &amp; t){
+    Tacka C=this-&gt;DajCentar();
+</font>    Transliraj(t.first-C.first,t.second-C.second);
+}
+void Rotiraj(const Tacka &amp; t,double ugao){
+    t1.rotirajTacku(t1,t,ugao);
+    t2.rotirajTacku(t2,t,ugao);
+    t3.rotirajTacku(t3,t,ugao);
+}
+void Skaliraj(const Tacka &amp; t,double faktor){
+    if(JesuLiJednaki(faktor,0)){
+        throw domain_error("Nekorektan faktor skaliranja");
+    }
+    if(faktor&lt;0){
+        Rotiraj(t,atan(1)*4);
+    }
+    t1=SkalirajTacku(t1,t,faktor);
+    t2=SkalirajTacku(t2,t,faktor);
+    t3=SkalirajTacku(t3,t,faktor);
+}
+void Rotiraj(double ugao){
+    Rotiraj(DajCentar(),faktor);
+}
+void Skaliraj(double ugao){
+    Skaliraj(DajCentar(),faktor);
+}
+friend bool DaLiSuIdenticni(const Trougao &amp; t1, const Trougao &amp; t2){
+    if(JesuLiJednakeTacke(t1.t1,t2.t1) &amp;&amp; JesuLiJednakeTacke(t1.t2,t2.t2) &amp;&amp; JesuLiJednakeTacke(t1.t3,t2.t3))||
+       JesuLiJednakeTacke(t1.t1,t2.t1) &amp;&amp; JesuLiJednakeTacke(t1.t2,t2.t3) &amp;&amp; JesuLiJednakeTacke(t1.t3,t2.t2))||
+       JesuLiJednakeTacke(t1.t1,t2.t2) &amp;&amp; JesuLiJednakeTacke(t1.t2,t2.t1) &amp;&amp; JesuLiJednakeTacke(t1.t3,t2.t3))||
+       JesuLiJednakeTacke(t1.t1,t2.t2) &amp;&amp; JesuLiJednakeTacke(t1.t2,t2.t3) &amp;&amp; JesuLiJednakeTacke(t1.t3,t2.t1))||
+       JesuLiJednakeTacke(t1.t1,t2.t3) &amp;&amp; JesuLiJednakeTacke(t1.t2,t2.t1) &amp;&amp; JesuLiJednakeTacke(t1.t3,t2.t2))||
+       JesuLiJednakeTacke(t1.t1,t2.t3) &amp;&amp; JesuLiJednakeTacke(t1.t2,t2.t2) &amp;&amp; JesuLiJednakeTacke(t1.t3,t2.t1))||
+){
+    return true;
+ }
+return false;
+}
+friend bool DaLiSuPodudarni(const Trougao &amp; t1, const Trougao &amp; t2){
+    double alfa1=t1.DajUgao(1), beta1=t1.DajUgao(2), gama1=t1.DajUgao(3);
+    double alfa2=t2.DajUgao(1), beta2=t2.DajUgao(2), gama1=t2.DajUgao(3);
+    
+    double a1=t1.DajStranicu(1),b1=t1.DajStranicu(2),c1=t1.DajStranicu(3);
+<a name="0"></a><font color="#FF0000"><a href="match292-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_10.gif"/></a>
+
+    double a2=t2.DajStranicu(1),b2=t2.DajStranicu(2),c2=t2.DajStranicu(3);
+}
+Tacka A1,B1,C1,A2,B2,C2;
+if(a1&lt;=b1&amp;&amp;a1&lt;=c1){
+    A1=t1.t1;
+    if(b1&lt;c1){
+        B1=t1.t2;
+        C1=t1.t3;
+    }else{
+        B1=t1.t3;
+        C1=t1.t2;
+    }
+}
+else if(b1&lt;=a1&amp;&amp;b1&lt;=c1){
+    A1=t1.t2;
+    if(a1&lt;c1){
+        B1=t1.t1;
+        C1=t1.t3;
+    }else{
+        B1=t1.t3;
+        C1=t1.t1;
+    }
+}
+else{
+    A1=t1.t3;
+    if(a1&lt;b1){
+        B1=t1.t1;
+        C1=t1.t2;
+    }else{
+        B1=t1.t2;
+        C1=t1.t1;
+    }
+}
+if(a2&lt;=b2&amp;&amp;a2&lt;=c2){
+    A2=t2.t1;
+    if(b2&lt;c2){
+        B2=t2.t2;
+        C2=t2.t3;
+    }else{
+        B2=t2.t3;
+        C2=t2.t2;
+    }
+}
+else if(b2&lt;=a2&amp;&amp;b2&lt;=c2){
+    A2=t2.t2;
+    if(a2&lt;c2){
+        B2=t2.t1;
+        C2=t2.t3;
+    }else{
+        B2=t2.t3;
+        C2=t2.t1;
+    }
+}
+else{
+    A2=t2.t3;
+    if(a2&lt;b2){
+        B2=t2.t1;
+        C2=t2.t2;
+    }else{
+        B2=t2.t2;
+</font>        C2=t2.t1;
+    }
+}
+
+if(
+   JesuLiJednaki(udaljenostIzmedjuDvijeTacke(A1,B1),udaljenostIzmedjuDvijeTacke(A2,B2))&amp;&amp;
+   JesuLiJednaki(udaljenostIzmedjuDvijeTacke(A1,C1),udaljenostIzmedjuDvijeTacke(A2,C2))&amp;&amp;
+   JesuLiJednaki(udaljenostIzmedjuDvijeTacke(B1,C1),udaljenostIzmedjuDvijeTacke(B2,C2))&amp;&amp;
+   Orijentacija(A1,B1,C1)==Orijentacija(A2,B2,C2)
+   )
+   return true;
+   return false;
+}
+friend bool DaLiSuSlicni(const Trougao &amp; t1, const Trougao &amp; t2){
+    double alfa1=t1.DajUgao(1),beta1=t1.DajUgao(2),gama1=t1.DajUgao(3);
+    double alfa2=t2.DajUgao(1),beta2=t2.DajUgao(2),gama2=t2.DajUgao(3);
+    
+    double a1=t1.DajStranicu(1),b1=t1.DajStranicu(2),c1=t1.DajStranicu(3);
+<a name="1"></a><font color="#00FF00"><a href="match292-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_10.gif"/></a>
+
+    double a2=t2.DajStranicu(1),b2=t2.DajStranicu(2),c2=t2.DajStranicu(3);
+}
+Tacka A1,B1,C1,A2,B2,C2;
+if(a1&lt;=b1&amp;&amp;a1&lt;=c1){
+      A1 = t1.t1;
+      if(b1&lt;c1){
+        B1=t1.t2;
+        C1=t1.t3;
+      }else{
+        B1=t1.t3;
+        C1=t1.t2;
+      }
+  }
+   else if(b1&lt;=a1&amp;&amp;b1&lt;=c1){
+      A1 = t1.t2;
+      if(a1&lt;c1){
+        B1=t1.t1;
+        C1=t1.t3;
+      }else{
+        B1=t1.t3;
+        C1=t1.t1;
+      }
+  }
+   else{
+      A1 = t1.t3;
+      if(a1&lt;b1){
+        B1=t1.t1;
+        C1=t1.t2;
+      }else{
+        B1=t1.t2;
+        C1=t1.t1;
+      }
+  }
+
+
+    if(a2&lt;=b2&amp;&amp;a2&lt;=c2){
+      A2 = t2.t1;
+      if(b2&lt;c2){
+        B2=t2.t2;
+        C2=t2.t3;
+      }else{
+        B2=t2.t3;
+        C2=t2.t2;
+      }
+  }
+   else if(b2&lt;=a2&amp;&amp;b2&lt;=c2){
+      A2 = t2.t2;
+      if(a2&lt;c2){
+        B2=t2.t1;
+        C2=t2.t3;
+      }else{
+        B2=t2.t3;
+        C2=t2.t1;
+      }
+  }
+   else{
+      A2 = t2.t3;
+      if(a2&lt;b2){
+        B2=t2.t1;
+        C2=t2.t2;
+      }else{
+        B2=t2.t2;
+</font>        C2=t2.t1;
+      }
+  }
+
+  a1=udaljenostIzmedjuDvijeTacke(A1,B1);
+  b1=udaljenostIzmedjuDvijeTacke(A1,C1);
+  c1=udaljenostIzmedjuDvijeTacke(B1,C1);
+
+  a2=udaljenostIzmedjuDvijeTacke(A2,B2);
+  b2=udaljenostIzmedjuDvijeTacke(A2,C2);
+  c2=udaljenostIzmedjuDvijeTacke(B2,C2);
+
+if(JesuLiJednaki(a1/a2,b1/b2)&amp;&amp;JesuLiJednaki(b1/b2,c1/c2))&amp;&amp;Orijentacija(A1,B1,C1)==Orijentacija(A2,B2,C2))
+  return true;
+  return false;
+  }
+};
+int main(){
+    int n;
+    cout&lt;&lt;"Koliko zelite kreirati trouglova";
+    cin&gt;&gt;n;
+    vector&lt;shared_ptr&lt;Trougao&gt; &gt;(t,nullptr);
+    for(int i=0;i&lt;n;i++){
+        cout&lt;&lt;"Unesite podatke za"&lt;&lt;i+1&lt;&lt;".trougao(x1 y1 x2 y2 x3 y3):";
+        double x1,y1,x2,y2,x3,y3;
+        cin&gt;&gt;x1&gt;&gt;y1&gt;&gt;x2&gt;&gt;y2&gt;&gt;x3&gt;&gt;y3;
+        try{
+         t[i]=make_shared&lt;Trougao&gt;(Tacka(x1,y1),Tacka(x2,y2),Tacka(x3,y3));   
+        }
+        catch(domain_error e){
+            cout&lt;&lt;e.what()&lt;&lt;endl;
+            i--;
+        }
+    }
+  double dx,dy,ugao,f;
+  cout&lt;&lt;"Unesite vektor translacije (dx dy):";
+  cin&gt;&gt;dx&gt;&gt;dy;
+  cout&lt;&lt;"Unesite ugao rotacije:";
+  cin&gt;&gt;ugao;
+  cout&lt;&lt;"Unesite faktor skaliranja";
+<a name="4"></a><font color="#FF00FF"><a href="match292-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+  cin&gt;&gt;f;
+  transform(t.begin(),t.end(),t.begin(),[dx,dy,ugao,f](shared_ptr&lt;Trougao&gt;t){
+</font>      t-&gt;Transliraj(dx,dy);
+      t-&gt;Rotiraj(ugao);
+      t-&gt;Skaliraj(t-&gt;DajTjeme(1),f);
+      return t
+  });
+  cout&lt;&lt;"Trouglovi nakon obavljenih transformacija:"&lt;&lt;endl;
+  for_each(t.begin(),t.end(),[](shared_ptr&lt;Triugao&gt;t){
+      t-&gt;Ispisi();
+  }
+);
+ return 0;
+)
+  
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</pre>
+</body>
+</html>

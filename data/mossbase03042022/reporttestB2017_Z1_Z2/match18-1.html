@@ -1,0 +1,284 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student3136.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student1202.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match18-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cout;
+using std::cin;
+using std::vector;
+typedef vector&lt;vector&lt;double&gt;&gt; mat;
+mat Kreiraj(int a,int b)
+{
+    return mat(a,vector&lt;double&gt;(b));
+}
+int BrojKolona(mat matrica)
+{
+    return matrica.at(0).size();
+}
+bool GrbavaMatrica(mat matrica)
+{
+    int prvi(matrica.at(0).size());
+    for(int i=1; i&lt;matrica.size(); i++) {
+        if(matrica.at(i).size()!=prvi)
+            return false;
+    }
+    return true;
+}
+mat NajvecaPlaninaMatrice(mat matrica)
+{
+    if(matrica.size()==0) {
+        mat rezultat;
+        return  rezultat;
+    }
+    if(int(matrica.at(0).size())==0) {
+        mat rezultat;
+        return  rezultat;
+    }
+
+
+    if(!GrbavaMatrica(matrica)) throw std::domain_error ("Matrica nije korektna");
+
+    int kolone(BrojKolona(matrica));
+    int redovi(matrica.size());
+
+
+    vector&lt;double&gt; vektor_suma;
+    vector&lt;int&gt; format;
+    vector&lt;int&gt; vrh;
+    vector&lt;int&gt; indeks_reda;
+    vector&lt;int&gt; indeks_kolone;
+    //za male matrice
+  
+    if(matrica.size()&lt;=2) {
+        double maxi(matrica.at(0).at(0));
+        for(int i=0; i&lt;matrica.size(); i++)
+            for(int j=0; j&lt;kolone; j++)
+                if(matrica.at(i).at(j)&gt;maxi) {
+                    maxi=matrica.at(i).at(j);
+                }
+        mat rez(1,vector&lt;double&gt;(1,maxi));
+
+        return rez;
+    }
+
+    for(int i=0; i&lt;matrica.size(); i++) {
+        for(int j=0; j&lt;kolone; j++) {
+            vector&lt;double&gt; vektor_suma(0);
+            double suma_nova(0);
+            int brojac(0);
+            int pomicanje(1);
+            if( i&lt;int(matrica.size())-1 &amp;&amp; j&lt;kolone-1 &amp;&amp; i&gt;0 &amp;&amp; j&gt;0) {
+                while((i-pomicanje)&gt;=0 &amp;&amp; (j-pomicanje)&gt;=0 &amp;&amp; (i+pomicanje)&lt;redovi &amp;&amp;(j+pomicanje)&lt;kolone) {
+                    double suma_prethodna(0);
+                    int kontrola(1);
+                    for(int k=(i-pomicanje); k&lt;=(i+pomicanje); k++)
+                        for(int l=(j-pomicanje); l&lt;=(j+pomicanje); l++) {
+
+                            suma_prethodna+=matrica.at(k).at(l);
+
+                        }
+
+                    if(brojac==0) {
+                        suma_prethodna-=matrica.at(i).at(j);
+                        if(suma_prethodna&gt;=matrica.at(i).at(j)){
+                            kontrola=0;
+                            break;
+                        }
+                        vektor_suma.push_back(suma_prethodna);
+                    } else {
+                        suma_nova=0;
+                        for(int p=0; p&lt;vektor_suma.size(); p++)
+                            suma_nova+=vektor_suma.at(p);
+                        //drugi koncentricni kvadrat
+                        suma_prethodna-=(suma_nova+matrica.at(i).at(j));
+                        if(suma_prethodna&gt;=vektor_suma.at(brojac-1) || suma_prethodna&gt;=matrica.at(i).at(j)) {
+                            kontrola=0;
+                            break;
+                        }
+                        vektor_suma.push_back(suma_prethodna);
+
+                    }
+                    if(kontrola==0)
+                        break;
+
+                    brojac++;
+                    pomicanje++;
+                }
+                //broj koncentricnih kvadrata odredit ce najveci moguci format
+                if(brojac&gt;=1) {
+
+                    format.push_back(brojac);
+                    vrh.push_back(matrica.at(i).at(j));
+                    indeks_reda.push_back(i);
+                    indeks_kolone.push_back(j);
+
+
+                }
+            }
+        }
+
+
+    }
+    int maxi;
+    int indeks;
+    if(int(format.size())==0) {
+        mat rezultat;
+        return rezultat;
+    }
+    maxi=format.at(0);
+    indeks=0;
+    int b;
+//provjeriti uslove!!
+    int provjera(1);
+    if(format.size()&gt;1)
+        for(int q=1; q&lt;format.size(); q++) {
+            if(format.at(q)&gt;maxi) {
+                maxi=format.at(q);
+                indeks=q;
+            } else if(format.at(q)==maxi) {
+                provjera=0;
+                if(vrh.at(q)&gt;vrh.at(indeks)) {
+                    b=q;
+
+                    break;
+                } else if(vrh.at(indeks)&gt;vrh.at(q)) {
+                    b=indeks;
+                    break;
+                } else if(vrh.at(q)==vrh.at(indeks)) {
+                    if(indeks_reda.at(q)&lt;indeks_reda.at(indeks)) {
+                        b=q;
+                        break;
+                    } else if(indeks_reda.at(indeks)&lt;indeks_reda.at(q)) {
+                        b=indeks;
+                        break;
+                    } else if(indeks_reda.at(indeks)==indeks_reda.at(q)) {
+                        if(indeks_kolone.at(q)&lt;indeks_kolone.at(indeks)) {
+
+                            b=q;
+                            break;
+                        } else if(indeks_kolone.at(indeks)&lt;indeks_kolone.at(q)) {
+                            b=indeks;
+                            break;
+                        }
+                    }
+
+                }
+
+            }
+        }
+//formiranje rezultujuce matrice
+    mat rezultujuca_matrica;
+    if(provjera) {
+        int indeksR(indeks_reda.at(indeks));
+        int indeksK(indeks_kolone.at(indeks));
+
+        if(maxi==1) {
+            rezultujuca_matrica.resize(3);
+            for(int j=0; j&lt;rezultujuca_matrica.size(); j++)
+                rezultujuca_matrica.at(j).resize(3);
+        } else {
+            //broj koncentricnih kvadrata odredjuje format rez matrice
+            rezultujuca_matrica.resize(2*maxi+1);
+            for(int j=0; j&lt;rezultujuca_matrica.size(); j++)
+                rezultujuca_matrica.at(j).resize(2*maxi+1);
+        }
+        int x(0);
+        int y(0);
+        int kontrola1(0);
+        int kontrola2(0);
+        for(int p=indeksR-maxi; p&lt;=indeksR+maxi; p++) {
+            if(kontrola1) {
+
+                kontrola2=1;
+                x++;
+            }
+            for(int q=indeksK-maxi; q&lt;=indeksK+maxi; q++) {
+                if(kontrola2) y=0;
+                rezultujuca_matrica.at(x).at(y)=matrica.at(p).at(q);
+                y++;
+                kontrola1=1;
+                kontrola2=0;
+            }
+        }
+    } else {
+        int indeksR(indeks_reda.at(b));
+        int indeksK(indeks_kolone.at(b));
+
+        if(maxi==1) {
+            rezultujuca_matrica.resize(3);
+            for(int j=0; j&lt;rezultujuca_matrica.size(); j++)
+                rezultujuca_matrica.at(j).resize(3);
+        } else {
+            //broj koncentricnih kvadrata odredjuje format rez matrice
+            rezultujuca_matrica.resize(2*maxi+1);
+            for(int j=0; j&lt;rezultujuca_matrica.size(); j++)
+                rezultujuca_matrica.at(j).resize(2*maxi+1);
+        }
+        int x(0);
+        int y(0);
+        int kontrola1(0);
+        int kontrola2(0);
+        for(int p=indeksR-maxi; p&lt;=indeksR+maxi; p++) {
+            if(kontrola1) {
+
+                kontrola2=1;
+                x++;
+            }
+            for(int q=indeksK-maxi; q&lt;=indeksK+maxi; q++) {
+                if(kontrola2) y=0;
+                rezultujuca_matrica.at(x).at(y)=matrica.at(p).at(q);
+                y++;
+                kontrola1=1;
+                kontrola2=0;
+            }
+        }
+
+    }
+
+    return rezultujuca_matrica;
+
+}
+int main ()
+{
+    try {
+        //m broj redova n br kolona
+        cout&lt;&lt;"Unesite dimenzije matrice (m i n): ";
+        int m,n;
+        cin&gt;&gt;m;
+        cin&gt;&gt;n;
+        if(m&lt;0 || n&lt;0) {
+            cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+            return 1;
+        }
+        mat matrica;
+        matrica=(Kreiraj(m,n));
+        cout&lt;&lt;"Unesite elemente matrice:";
+
+        for(int i=0; i&lt;m; i++)
+            for(int j=0; j&lt;n; j++)
+                cin&gt;&gt;matrica.at(i).at(j);
+        mat rezultat;
+        rezultat=NajvecaPlaninaMatrice(matrica);
+        cout&lt;&lt;std::endl;
+        cout&lt;&lt;"Najveca planina unesene matrice je:";
+        cout&lt;&lt;std::endl;
+        for(int i =0; i&lt;rezultat.size(); i++) {
+            for(int j=0; j&lt;rezultat.at(0).size(); j++)
+                cout&lt;&lt;std::right&lt;&lt;std::setw(6)&lt;&lt;rezultat.at(i).at(j);
+            cout&lt;&lt;std::endl;
+        }
+    } catch(std::domain_error izuzetak) {
+        cout&lt;&lt; izuzetak.what()&lt;&lt;std::endl;
+</font>    }
+    return 0;
+}</pre>
+</body>
+</html>

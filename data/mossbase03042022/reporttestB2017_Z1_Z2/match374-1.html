@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student5261.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student2478.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.	
+*/
+#include &lt;iostream&gt; 
+#include &lt;stdexcept&gt; 
+#include &lt;vector&gt; 
+#include &lt;iomanip&gt;
+
+
+
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica; 
+
+Matrica FormirajMatricu(Matrica m, int x, int y, int nivo){
+	Matrica pomocna; 
+	pomocna.resize(1 + nivo*2); 
+	int duzina(1 + nivo*2);
+	
+	int k_x(x-nivo);
+	int k_y(y-nivo); 
+	
+
+	for(int i = 0; i &lt; duzina; i++) pomocna.at(i).resize(duzina); 
+	
+<a name="0"></a><font color="#FF0000"><a href="match374-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+	int l(0), k(0); 
+	for(int i = k_x; i &lt; duzina+k_x; i++){
+		l = 0; 
+		for(int j = k_y; j &lt; duzina+k_y; j++) {
+			pomocna.at(k).at(l) = m.at(i).at(j); 
+			l++;
+		}
+		k++; 
+	}
+	return pomocna; 
+</font>}
+
+
+double SaberiOkolne(Matrica m){
+	double suma(0); 
+<a name="3"></a><font color="#00FFFF"><a href="match374-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+	for(int i = 0; i &lt; m.size(); i++){
+		for(int j = 0; j &lt; m.at(i).size(); j++){
+			if(i == 0 || j == 0 || i == m.size()-1 || j == m.at(i).size()-1) suma = suma + m.at(i).at(j); 
+</font>		}
+	}
+	return suma; 
+}
+
+double SaberiUnutarnje(Matrica m){
+	double suma(0);
+<a name="1"></a><font color="#00FF00"><a href="match374-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+	for(int i = 0; i &lt; m.size(); i++){
+		for(int j = 0; j &lt; m.at(i).size(); j++){
+			if((i == 1 &amp;&amp; j &gt; 0 &amp;&amp; j &lt; m.at(i).size()-1) || (i == m.size()-2 &amp;&amp; j &lt; m.at(i).size()-1 &amp;&amp; j &gt; 0) || (j == 0 &amp;&amp; i &gt; 0 &amp;&amp; i &lt; m.size()-1) || (j == m.at(i).size()-2 &amp;&amp; i &gt; 0 &amp;&amp; i &lt; m.size()-1))  suma = suma + m.at(i).at(j); 
+</font>		}
+	}
+return suma; 
+}
+
+bool JeLiGrbava(Matrica m){
+	if(m.size() == 0 || m.at(0).size() == 0) return false; 
+<a name="4"></a><font color="#FF00FF"><a href="match374-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+	for(int i = 0; i &lt; m.size()-1; i++){
+		if(m.at(i).size() != m.at(i+1).size()) return true; 
+</font>	}
+	return false; 
+}
+
+bool JeLiPlanina(double suma, double clan){
+	if(suma &lt; clan) return true;
+	return false; 
+}
+
+double DajSumuVrha(Matrica m){
+	double suma(0);
+	for(int i = 0; i &lt; m.size(); i++){
+		for(int j = 0; j &lt; m.at(i).size(); j++){
+			if(i == j) suma = m.at(i).at(j); 
+		}
+	}
+	
+	return suma; 
+}
+
+
+
+Matrica NajvecaPlaninaMatrice(Matrica m){
+	if(JeLiGrbava(m)) throw std::domain_error("Matrica nije korektna");
+	Matrica planina; 
+<a name="2"></a><font color="#0000FF"><a href="match374-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+	for(int i = 0; i &lt; m.size(); i++){
+		
+		for(int j = 0; j &lt; m.at(i).size(); j++){
+			
+			int n(0); 
+			
+			while(i+n &lt; m.size() &amp;&amp; j+n &lt; m.at(0).size() &amp;&amp; j - n  &gt;= 0 &amp;&amp; i - n &gt;= 0){
+</font>				
+			Matrica pom = FormirajMatricu(m, i, j, n); 
+			
+			if((JeLiPlanina(SaberiOkolne(pom), SaberiUnutarnje(pom)) || pom.size() == 1) &amp;&amp; pom.size() &gt; planina.size() || (pom.size() == planina.size() &amp;&amp; pom.at(pom.size()/2).at(pom.size()/2) &gt; planina.at(planina.size()/2).at(planina.size()/2))){ 
+				planina = pom; 
+			}
+			
+			n++; 
+			}
+		}
+		
+	}
+	
+	return planina; 
+}
+
+
+
+int main(){
+	std::cout &lt;&lt; "Unesite dimenzije matrice (m i n): "; 
+	int m, n; 
+	std::cin &gt;&gt; m &gt;&gt; n; 
+	
+	if(m &lt; 0 || n &lt; 0){
+		std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!" &lt;&lt; std::endl; 
+		return 0; 
+	}
+	std::cout &lt;&lt; "Unesite elemente matrice: " &lt;&lt; std::endl; 
+
+	
+	Matrica mat;
+	mat.resize(m); 
+	for(int i = 0; i &lt; m; i++) mat.at(i).resize(n); 
+	
+	for(int i = 0; i &lt; m; i++){
+		for(int j = 0; j &lt; n; j++){
+			double r; 
+			std::cin &gt;&gt; r; 
+			mat.at(i).at(j) = r;  
+		}
+	}
+	try{
+	Matrica planina(NajvecaPlaninaMatrice(mat)); 
+	std::cout &lt;&lt; "Najveca planina unesene matrice je:" &lt;&lt; std::endl; 
+	for(int i = 0; i &lt; planina.size(); i++){
+		for(int j = 0; j &lt; planina.at(i).size(); j++){
+			std::cout &lt;&lt; std::setw(6) &lt;&lt; planina.at(i).at(j);  
+		}
+		std::cout &lt;&lt; std::endl; 
+	}
+	}
+	catch(std::domain_error greska){
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; greska.what() &lt;&lt; std::endl; 
+	}
+	return 0; 
+}
+
+
+
+</pre>
+</body>
+</html>

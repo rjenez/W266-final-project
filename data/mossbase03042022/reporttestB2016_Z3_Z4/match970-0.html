@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student8363.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student8363.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::list;
+using std::vector;
+using std::string;
+using std::set;
+
+<a name="1"></a><font color="#00FF00"><a href="match970-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+int brojKoraka(string s){
+    int c = 0;
+    for (int i = 0; i &lt; s.size(); i++) {
+        if((s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')||(s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')||(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z'))
+</font>        c++;
+    }
+    return c-1;
+} 
+list&lt;string&gt;::iterator dajSljedeceg(list&lt;string&gt; &amp;a, list&lt;string&gt;::iterator poz){
+    int u = brojKoraka(*poz);
+    poz = a.erase(poz);
+    for (int i = 0; i &lt; u; i++) {
+        if(poz==a.end()){ 
+            poz=a.begin();
+            i--;
+            if(a.begin()==a.end())return a.begin();
+            continue;
+        }
+        poz++;
+    }
+    if(poz==a.end())poz=a.begin();
+<a name="2"></a><font color="#0000FF"><a href="match970-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+    return poz;
+}
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector&lt;string&gt; imena, int b){
+    if(b&lt;1 || b&gt;imena.size())
+        throw std::logic_error("Razvrstavanje nemoguce");
+</font>    list&lt;string&gt; listaImena;
+    for (int i = 0; i &lt; imena.size(); i++) {
+        listaImena.push_back(imena[i]);
+    }
+    auto poz = listaImena.begin();
+    vector&lt;set&lt;string&gt;&gt; izlaz;
+    int prvih = imena.size()%b;
+    int clanova = imena.size()/b;
+    for (int i = 0; i &lt; b; i++) {
+        set&lt;string&gt; tmp;
+        for (int j = 0; ((j&lt;clanova ) || (j&lt;clanova+1 &amp;&amp; i&lt;prvih)); j++) {
+            //cout&lt;&lt;"Ubacujem u "&lt;&lt;i&lt;&lt;". tim "&lt;&lt;*poz&lt;&lt;endl;
+            tmp.insert(*poz);
+            poz = dajSljedeceg(listaImena,poz);
+        }
+        izlaz.push_back(tmp);
+    }
+    return izlaz;
+}
+int main ()
+{
+    vector&lt;string&gt; test;
+    int n=0;
+    cout&lt;&lt;"Unesite broj djece: ";
+    cin&gt;&gt;n;
+    cin.ignore(1);
+    cout&lt;&lt;"Unesite imena djece: \n";
+    for (int i = 0; i &lt; n; i++) {
+        if(cin.peek()=='\n')cin.ignore(1);
+        string s;
+        std::getline(cin,s);
+        test.push_back(s);
+    }
+    cout&lt;&lt;"Unesite broj timova: ";
+    cin&gt;&gt;n;
+    try{
+<a name="0"></a><font color="#FF0000"><a href="match970-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+        auto rez = Razvrstavanje(test,n);
+        for (int i = 0; i &lt; rez.size(); i++) {
+            cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+            auto r = rez[i].begin();
+</font>            for (int j = 0; j &lt; rez[i].size(); j++) {
+                    cout&lt;&lt;*r;
+                    if(j!=rez[i].size()-1)cout&lt;&lt;", ";
+                    r++;
+            }
+            cout&lt;&lt;endl;
+        }
+    }catch(std::logic_error e){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what();
+    }
+	return 0;
+}</pre>
+</body>
+</html>

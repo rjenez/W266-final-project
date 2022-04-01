@@ -1,0 +1,292 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z3/student2574.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z3/student2574.cpp<p></p><pre>
+#include &lt;deque&gt;
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;cmath&gt;
+#include &lt;type_traits&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+
+
+int SumaCifara (long long int broj ) {
+	int suma(0);
+	while (broj!=0) {
+		int temp;
+		temp=broj%10;
+		suma+=temp;
+		broj/=10;
+	}
+	return suma;
+}
+
+int SumaDjelilaca (long long int broj) {
+	int suma_d(0);
+	for (int i=1; i&lt;=std::abs(broj); i++) 
+		if (std::abs(broj)%i==0)
+			suma_d+=i;
+	return suma_d;
+}
+
+bool Savrsen (long long int broj) {
+	long long int zbir_d(0);
+	for (long long int i(1); i&lt;broj; i++) {
+		if (broj%i==0)
+			zbir_d+=i;
+	}
+	if (zbir_d==broj) 
+		return true;
+	return false;
+}
+
+int BrojProstihFaktora (long long int broj) {
+	int brojpf(0);
+	for (int i=2; i&lt;=broj; i++) {
+		if (broj%i==0) {
+			broj/=i;
+			i--;
+			brojpf++;
+		}
+	}
+	return brojpf;
+}
+
+int BrojSavrsenihDjelilaca (long long int broj) {
+	int brojsd(0);
+	if (broj==1) return 0;
+	for (long long int i=2; i&lt;=broj; i++) {
+		if (Savrsen(i)==true &amp;&amp; broj%i==0)
+			brojsd++;
+	}
+	return brojsd; 
+}
+
+bool duplikat (int broj, std::deque&lt;int&gt; d, int index) {
+	for (int j=0; j&lt;index; j++) 
+		if (broj==d.at(j))
+			return true;
+	return false;
+}
+
+template &lt;typename IterTip, typename IterTip2&gt;
+	auto UvrnutaRazlika (IterTip pok1, IterTip pok2, IterTip2 pok3, IterTip2 pok4) 
+																	-&gt; typename std::remove_reference&lt;std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt;&gt;&gt;::type {
+		
+		std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt;&gt; Vracam_ovu_matricu;
+		IterTip pocetakprvog = pok1;
+		IterTip2 pocetakdrugog = pok3;
+		while (pocetakprvog!=pok2) {
+			std::vector&lt;typename std::remove_reference&lt;decltype(*pocetakprvog)&gt;::type&gt; trpam_elemente;
+			auto imalduplih (std::count(pok3,pok4,*pocetakprvog));
+			if (imalduplih == 0) {
+				int x (std::binary_search(pok3,pok4,*pocetakprvog));
+				if (x==0) {
+					trpam_elemente.push_back(*pocetakprvog);
+					trpam_elemente.push_back(0);
+					Vracam_ovu_matricu.push_back(trpam_elemente);
+				}
+			}
+			pocetakprvog++;
+		}
+		while (pocetakdrugog!=pok4) {
+			std::vector&lt;typename std::remove_reference &lt;decltype (*pocetakdrugog)&gt;::type&gt; trpam_elemente; 
+			auto imalduplih1 (std::count(pok1,pok2,*pocetakdrugog));
+			if (imalduplih1 == 0) {
+				int x (std::binary_search(pok1,pok2,*pocetakdrugog));
+				if (x==0) {
+					trpam_elemente.push_back(*pocetakdrugog);
+					trpam_elemente.push_back(0);
+					Vracam_ovu_matricu.push_back(trpam_elemente);
+				}
+			}
+			pocetakdrugog++;
+		}
+		std::sort(Vracam_ovu_matricu.begin(),Vracam_ovu_matricu.end(), [] (std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt; prvi, std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt; drugi) {
+																			if (prvi.at(0)&gt;drugi.at(0))
+																				return true;
+																			return false;
+																		});
+		return Vracam_ovu_matricu;
+	}
+	
+template &lt;typename IterTip, typename IterTip2&gt;
+	auto UvrnutaRazlika (IterTip pok1, IterTip pok2, IterTip2 pok3, IterTip2 pok4, int funkcija (long long int))
+														-&gt; typename std::remove_reference&lt;std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt;&gt;&gt;::type {
+		
+		std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt;&gt; Vracam_ovu_matricu;
+		IterTip2	pocetakdrugog (pok3); //Kopiram pokzavivač/iterator koji pokazuje na početak drugog bloka
+		IterTip 	pocetakprvog (pok1);
+		while (pocetakprvog!=pok2) {
+			std::vector&lt;typename std::remove_reference&lt;decltype(*pocetakprvog)&gt;::type&gt; trpam_elemente; 
+			int broj(0);
+			pocetakdrugog=pok3;
+			while (pocetakdrugog!=pok4) {
+				if (funkcija(*pocetakprvog)==funkcija(*pocetakdrugog))
+					broj++;
+				pocetakdrugog++;
+			}
+			if (broj==0) {
+				trpam_elemente.push_back(*pocetakprvog);
+				trpam_elemente.push_back(funkcija(*pocetakprvog));
+				Vracam_ovu_matricu.push_back(trpam_elemente);	
+				}
+			pocetakprvog++;
+		}
+		pocetakdrugog=pok3;
+		pocetakprvog=pok1;
+		while (pocetakdrugog!=pok4) {
+			std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt; trpam_elemente;
+			int broj(0);
+			pocetakprvog=pok1;
+			while (pocetakprvog!=pok2) {
+				if(funkcija(*pocetakdrugog)==funkcija(*pocetakprvog)) 
+					broj++;
+				pocetakprvog++;
+			}
+			if (broj == 0) {
+				trpam_elemente.push_back(*pocetakdrugog);
+				trpam_elemente.push_back(funkcija(*pocetakdrugog));
+<a name="4"></a><font color="#FF00FF"><a href="match985-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+				Vracam_ovu_matricu.push_back(trpam_elemente);
+			}
+			pocetakdrugog++;
+		}
+		std::sort(Vracam_ovu_matricu.begin(),Vracam_ovu_matricu.end(), [] (std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt; prvi, std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt; drugi) {
+</font>																			if (prvi.at(1)==drugi.at(1) &amp;&amp; prvi.at(0)&lt;drugi.at(0))
+																				return false;
+																			else if (prvi.at(0)&lt;drugi.at(0))
+																				return false;
+																			return true;
+																			} );
+		return Vracam_ovu_matricu;
+	}
+
+template &lt;typename IterTip, typename IterTip2&gt; //BEZ FUNKCIJE
+	auto UvrnutiPresjek (IterTip pok1, IterTip pok2, IterTip2 pok3, IterTip2 pok4) -&gt; typename std::remove_reference&lt;std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt;&gt;&gt;::type {
+		std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt;&gt; Vracam_ovu_matricu;
+		IterTip2 pocetakdrugog = pok3;
+		IterTip pocetakprvog = pok1;
+		while (pok1!=pok2) {
+			std::vector&lt;typename std::remove_reference&lt;decltype(*pocetakprvog)&gt;::type&gt; trpam_elemente;
+			pocetakdrugog=pok3;
+			while (pocetakdrugog!=pok4) {
+				if (*pok1==*pocetakdrugog) {
+					trpam_elemente.push_back(*pok1);
+					trpam_elemente.push_back(0);
+					trpam_elemente.push_back(0);
+<a name="5"></a><font color="#FF0000"><a href="match985-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+					Vracam_ovu_matricu.push_back(trpam_elemente);
+				}
+				pocetakdrugog++;
+			}
+			pok1++;
+		}
+		std::sort(Vracam_ovu_matricu.begin(), Vracam_ovu_matricu.end(), [] (std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt; prvi, std::vector&lt;typename std::remove_reference &lt;decltype(*pok1)&gt;::type&gt; drugi) {
+</font>																			if (prvi.at(0)&gt;drugi.at(0))
+																				return false;
+																			return true;
+																		});
+		return Vracam_ovu_matricu;
+	}
+	
+template &lt;typename IterTip, typename IterTip2&gt;
+	auto UvrnutiPresjek (IterTip pok1, IterTip pok2, IterTip2 pok3, IterTip2 pok4, int funkcija (long long int)) -&gt; typename std::remove_reference&lt;std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt;&gt;&gt;::type {
+		std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt;&gt; Vracam_ovu_matricu;
+		IterTip2 pocetakdrugog = pok3;
+		while (pok1!=pok2) {   //trpaj sve elemente koji se slažu
+			std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt; trpam_elemente;
+			pocetakdrugog = pok3;
+			while (pocetakdrugog!=pok4) {
+				if (funkcija(*pok1) == funkcija(*pocetakdrugog)) {
+					trpam_elemente.clear();
+					trpam_elemente.push_back(*pok1);
+					trpam_elemente.push_back(*pocetakdrugog);
+					trpam_elemente.push_back(funkcija(*pok1));
+<a name="6"></a><font color="#00FF00"><a href="match985-1.html#6" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+					Vracam_ovu_matricu.push_back(trpam_elemente);
+				}
+				pocetakdrugog++;
+			}
+			pok1++;
+		}
+		std::sort(Vracam_ovu_matricu.begin(), Vracam_ovu_matricu.end(),	[] (std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt; prvi, std::vector&lt;typename std::remove_reference&lt;decltype(*pok1)&gt;::type&gt; drugi) {
+</font>																			if (prvi[2]&lt;drugi[2])
+																				return true;
+																			else if (prvi[2]==drugi[2] &amp;&amp; prvi[0]==drugi[0] &amp;&amp; prvi[1]&lt;drugi[1])
+																				return true;
+																			else if (prvi.at(2)==drugi.at(2) &amp;&amp; prvi.at(0)&lt;drugi.at(0))
+																				return true;
+																			return false;
+																		} );
+		return Vracam_ovu_matricu;
+	}
+	
+		
+<a name="0"></a><font color="#FF0000"><a href="match985-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+int main ()	{
+	std::cout&lt;&lt;"Unesite broj elemenata prvog kontejnera: ";
+	int broj_el_prvi (0);
+	std::cin&gt;&gt;broj_el_prvi;
+	std::cout&lt;&lt;"Unesite elemente prvog kontejnera: ";
+	std::deque&lt;int&gt; prvi_dek;
+</font>	for (int i(0); i&lt;broj_el_prvi; i++) {
+		int element(0);
+		std::cin&gt;&gt;element;
+		if (i&gt;0) 
+			if (duplikat(element, prvi_dek, i)) {
+				i--;
+				continue;
+			}
+		prvi_dek.push_back(element);
+	}
+<a name="1"></a><font color="#00FF00"><a href="match985-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+	std::cout&lt;&lt;"Unesite broj elemenata drugog kontejnera: ";
+	int broj_el_drugi(0);
+	std::cin&gt;&gt;broj_el_drugi;
+	std::cout&lt;&lt;"Unesite elemente drugog kontejnera: ";
+	std::deque&lt;int&gt; drugi_dek;
+</font>	for (int i(0); i&lt;broj_el_drugi; i++) {
+		int element(0);
+		std::cin&gt;&gt;element;
+		if (i&gt;0)
+			if (duplikat(element,drugi_dek,i)) {
+				i--;
+				continue;
+			}
+		drugi_dek.push_back(element);
+	}
+	std::cout&lt;&lt;"Uvrnuti presjek kontejnera: "&lt;&lt;std::endl;
+	std::vector&lt;std::vector&lt;int&gt;&gt; presjek (UvrnutiPresjek(prvi_dek.begin(),prvi_dek.end(),drugi_dek.begin(),drugi_dek.end(),SumaCifara));
+	for (auto red: presjek) {
+<a name="2"></a><font color="#0000FF"><a href="match985-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+		for (auto broj : red) {
+			std::cout&lt;&lt;std::setw(6)&lt;&lt;broj&lt;&lt;" ";
+		}
+		std::cout&lt;&lt;std::endl;
+	}
+	std::cout&lt;&lt;std::endl&lt;&lt;"Uvrnuta razlika kontejnera: "&lt;&lt;std::endl;
+</font>	std::vector&lt;std::vector&lt;int&gt;&gt; razlika (UvrnutaRazlika(prvi_dek.begin(), prvi_dek.end(), drugi_dek.begin(), drugi_dek.end(), BrojProstihFaktora));
+	for (auto red : razlika) {
+<a name="3"></a><font color="#00FFFF"><a href="match985-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+		for (auto broj : red ) 
+			std::cout&lt;&lt;std::setw(6)&lt;&lt;broj&lt;&lt;" ";
+		std::cout&lt;&lt;std::endl;
+	} 
+	std::cout&lt;&lt;std::endl&lt;&lt;"Dovidjenja!";
+</font>	return 0;
+}	</pre>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student2959.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student4785.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 2
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match186-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_94.gif"/></a>
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+
+Matrica NajvecaPlaninaMatrice(Matrica matrica)
+{
+	const double Eps(1e-10);
+	Matrica planina;
+	int m=matrica.size();
+	if(m==0) return planina;
+	int n=matrica.at(0).size();
+	if(n==0) return planina;
+	for(int i=1; i&lt;m; i++)
+		if(matrica.at(i).size()!=matrica.at(i-1).size()) throw std::domain_error("Matrica nije korektna");
+	int p(m);
+	if(n&lt;m) p=n;
+	if(p%2==0) p--;
+	int x(0),y(0),velicina(0);
+	double vrh(0);
+	while(p&gt;0) {
+		if(p&lt;velicina) return planina;
+		for(int i=0; i&lt;m-p+1; i++) {
+			for(int j=0; j&lt;n-p+1; j++) {
+				bool jeste_planina(true);
+				int suma1(0),suma2(0);
+				int vrh2=matrica.at(i+p/2).at(j+p/2);
+				int a(p/2),b(p/2);
+				suma1=vrh2+1;
+				do{
+					int suma(0);
+					for(int k=i;k&lt;i+p;k++){
+						for(int l=j;l&lt;j+p;l++){
+							if((k&gt;i+a &amp;&amp; k&lt;i+b &amp;&amp;(l==j+a || l==j+b)) ||((l&gt;=j+a &amp;&amp; l&lt;=j+b)&amp;&amp;(k==i+a || k==j+b))) 
+									suma+=matrica.at(k).at(l);
+						}
+					}
+					suma2=suma1;
+					suma1=suma;
+					if(suma1&gt;=suma2){
+						jeste_planina=false;
+						break;
+					}
+					a--;
+					b++;
+				}while(a&gt;=0);
+				if(!jeste_planina)	continue;
+				if(vrh2&lt;vrh) continue;
+				else if(std::fabs(vrh2-vrh)&lt;=Eps*(std::fabs(vrh2)+std::fabs(vrh)) &amp;&amp; x&lt;i+p/2) continue;
+				else if(std::fabs(vrh2-vrh)&lt;=Eps*(std::fabs(vrh2)+std::fabs(vrh)) &amp;&amp; x==i+p/2 &amp;&amp; y&lt;j+p/2) continue;
+				planina.resize(0);
+				int brojac_redova(0);
+				for(int k=i; k&lt;i+p; k++) {
+					planina.push_back(std::vector&lt;double&gt;(p));
+					int brojac_kolona(0);
+					for(int l=j; l&lt;j+p; l++) {
+						planina.at(brojac_redova).at(brojac_kolona)=matrica.at(k).at(l);
+						brojac_kolona++;
+					}
+					brojac_redova++;
+				}
+				velicina=p;
+				x=i+p/2;
+				y=j+p/2;
+				vrh=matrica.at(x).at(y);
+			}
+		}
+		p-=2;
+	}
+	return planina;
+}
+
+int main ()
+{
+	int m,n;
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m i n): ";
+	std::cin&gt;&gt;m&gt;&gt;n;
+	if(m&lt;0 || n&lt;0) {
+		std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+		return 0;
+	}
+	Matrica a(m,std::vector&lt;double&gt;(n));
+	std::cout&lt;&lt;"Unesite elemente matrice:";
+	for(int i=0; i&lt;m; i++)
+		for(int j=0; j&lt;n; j++)
+			std::cin&gt;&gt;a.at(i).at(j);
+	std::cout&lt;&lt;std::endl&lt;&lt;"Najveca planina unesene matrice je:"&lt;&lt;std::endl;
+	Matrica planina=NajvecaPlaninaMatrice(a);
+	for(int i=0; i&lt;planina.size(); i++) {
+		for(int j=0; j&lt;planina.at(i).size(); j++)
+</font>			std::cout&lt;&lt;std::setw(6)&lt;&lt;planina.at(i).at(j);
+		std::cout&lt;&lt;std::endl;
+	}
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z3/student9385.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z3/student1029.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match96-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B 2016/2017, Zadaća 4, Zadatak 3
+//Napomena: testovi ce biti dostupni dan pred rok!
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+
+bool ProvjeriDatum(int d,int m,int g)
+{
+    bool dobar_datum=true;
+
+    if(g&lt;1 || m&lt;1 || m&gt;12) dobar_datum=false;
+
+    if(m==1 || m==3 || m==5 || m==7 || m==8 || m==10 || m==12) {
+        if(d&lt;1 || d&gt;31) {
+            dobar_datum=false;
+        }
+    }
+
+    if(m==2) {
+        if(g%4==0 &amp;&amp; g%400==0 &amp;&amp; g%100!=0) { //prestupna godina
+            if(d&lt;1 || d&gt;29) {
+                dobar_datum=false;
+            }
+        }
+
+        else {
+            if(d&lt;1 || d&gt;28) {
+                dobar_datum=false;
+            }
+        }
+    }
+
+    if(m==4 || m==6 || m==9 || m==11) {
+        if(d&lt;1 || d&gt;30) {
+            dobar_datum=false;
+        }
+    }
+
+    return dobar_datum;
+}
+
+class Datum
+{
+    int dan,mjesec,godina;
+public:
+    friend class Prodaja;
+    friend class Prodaje;
+    Datum (int dan, int mjesec, int godina) {
+        if(ProvjeriDatum(dan,mjesec,godina)==false) throw std::domain_error("Neispravan datum");
+        Datum::dan=dan;
+        Datum::mjesec=mjesec;
+        Datum::godina=godina;
+    }
+    void Postavi(int dan,int mjesec, int godina) {
+        if(ProvjeriDatum(dan,mjesec,godina)==false) throw std::domain_error("Neispravan datum");
+        Datum::dan=dan;
+        Datum::mjesec=mjesec;
+        Datum::godina=godina;
+    }
+    int DajDan() const {
+        return dan;
+    }
+    int DajMjesec() const {
+        return mjesec;
+    }
+    int DajGodinu() const {
+        return godina;
+    }
+    void Ispisi() const {
+        cout&lt;&lt;dan&lt;&lt;"/"&lt;&lt;mjesec&lt;&lt;"/"&lt;&lt;godina;
+    }
+    friend class Kupac;
+};
+
+bool ProvjeriImeiPrezime(string s)
+{
+    bool dobra_rijec=true;
+    for(int i=0; i&lt;s.size(); i++) {
+        if(s[i]!='-' || s[i]!=' ' || s[i]!=39 || s[i]&lt;'0' || s[i]&gt;'9' || s[i]&lt;'a' || s[i]&gt;'z' || s[i]&lt;'A' || s[i]&gt;'Z') {
+            dobra_rijec=false;
+            break;
+        }
+    }
+
+    return dobra_rijec;
+}
+
+class Kupac
+{
+    string ime_i_prezime;
+    Datum datum_rodjenja;
+public:
+    friend class Prodaja;
+    friend class Prodaje;
+    Kupac(const string &amp;ime_i_prezime , const Datum &amp;datum_rodjenja):
+        datum_rodjenja(datum_rodjenja.DajDan(),datum_rodjenja.DajMjesec(),datum_rodjenja.DajGodinu()) {
+        if(ProvjeriImeiPrezime(ime_i_prezime)==false) throw std::domain_error("Neispravno ime i prezime");
+        Kupac::ime_i_prezime=ime_i_prezime;
+        Kupac::datum_rodjenja=datum_rodjenja;
+    }
+
+    void Postavi(const string &amp;ime_i_prezime, const Datum &amp;datum_rodjenja) {
+        if(ProvjeriDatum(datum_rodjenja.DajDan(),datum_rodjenja.DajMjesec(), datum_rodjenja.DajGodinu())==false) throw std::domain_error("Neispravan datum");
+        if(ProvjeriImeiPrezime(ime_i_prezime)==false) throw std::domain_error("Neispravno ime i prezime");
+        Kupac::ime_i_prezime=ime_i_prezime;
+        Kupac::datum_rodjenja=datum_rodjenja;
+    }
+
+    string DajImePrezime() const {
+        return ime_i_prezime;
+    }
+
+    Datum DajDatumRodjenja() const {
+        return datum_rodjenja;
+    }
+
+    void Ispisi() const {
+        cout&lt;&lt;ime_i_prezime&lt;&lt;"("&lt;&lt;datum_rodjenja.DajDan()&lt;&lt;"/"&lt;&lt;datum_rodjenja.DajMjesec()&lt;&lt;"/"&lt;&lt;datum_rodjenja.DajGodinu()&lt;&lt;")";
+    }
+    friend class Datum;
+};
+
+class Stan
+{
+    string adresa;
+    int sprat;
+    int broj_soba;
+    bool namjesten;
+    double kvadratura;
+public:
+    friend class Prodaja;
+    friend class Prodaje;
+    Stan (const string &amp;adresa, int sprat, int broj_soba, bool namjesten, double kvadratura) {
+        if(sprat&lt;0 || broj_soba&lt;0 || kvadratura&lt;0) throw std::domain_error("Neispravan unos podataka.");
+        if(namjesten!=0 || namjesten!=1) throw std::domain_error("Neispravan unos podataka.");
+        Stan::adresa=adresa;
+        Stan::sprat=sprat;
+        Stan::broj_soba=broj_soba;
+        Stan::namjesten=namjesten;
+        Stan::kvadratura=kvadratura;
+    }
+    void Postavi(const string &amp;adresa, int sprat, int broj_soba, bool namjesten, double kvadratura) {
+        if(sprat&lt;0 || broj_soba&lt;0 || kvadratura&lt;0) throw std::domain_error("Neispravan unos podataka.");
+        if(namjesten!=0 || namjesten!=1) throw std::domain_error("Neispravan unos podataka.");
+        Stan::adresa=adresa;
+        Stan::sprat=sprat;
+        Stan::broj_soba=broj_soba;
+        Stan::namjesten=namjesten;
+        Stan::kvadratura=kvadratura;
+    }
+    string DajAdresu() const {
+        return adresa;
+    }
+
+    int DajSprat() const {
+        return sprat;
+    }
+
+    int DajBrojSoba() const {
+        return broj_soba;
+    }
+
+    bool DajNamjesten() const {
+        return namjesten;
+    }
+
+    double DajKvadraturu() const {
+        return kvadratura;
+    }
+
+    void Ispisi() const {
+        cout&lt;&lt;"Stan se nalazi na adresi "&lt;&lt;DajAdresu()&lt;&lt;" na "&lt;&lt;DajSprat()&lt;&lt;". spratu i ima "&lt;&lt;DajBrojSoba();
+        int n=DajBrojSoba();
+        if(n==1) cout&lt;&lt;" sobu.";
+        if(n&gt;=5) cout&lt;&lt;" soba.";
+        if(n&gt;1 &amp;&amp; n&lt;5) cout&lt;&lt;" sobe.";
+        cout&lt;&lt;endl&lt;&lt;"Kvadratura stana je "&lt;&lt;DajKvadraturu()&lt;&lt;" (m^2) i stan "&lt;&lt;DajNamjesten()&lt;&lt;" namjesten.";
+    }
+};
+
+class Prodaja
+{
+    string ime_agenta_prodaje;
+    double cijena_stana;
+    Datum datum_prodaje;
+    Kupac kupac_stana;
+    Stan kupljeni_stan;
+public:
+    friend class Prodaja;
+    friend class Datum;
+    friend class Kupac;
+    friend class Prodaje;
+    Prodaja(const string &amp;ime_agenta_prodaje , double cijena_stana, const Datum &amp;datum_prodaje , const Kupac &amp;kupac_stana, const Stan &amp;kupljeni_stan):
+        datum_prodaje(datum_prodaje.DajDan(),datum_prodaje.DajMjesec(),datum_prodaje.DajGodinu()),
+        kupac_stana(kupac_stana.DajImePrezime(),kupac_stana.DajDatumRodjenja()),
+        kupljeni_stan(kupljeni_stan.DajAdresu(),kupljeni_stan.DajSprat(),kupljeni_stan.DajBrojSoba(),kupljeni_stan.DajNamjesten(),kupljeni_stan.DajKvadraturu()) {
+        Prodaja::ime_agenta_prodaje=ime_agenta_prodaje;
+        Prodaja::cijena_stana=cijena_stana;
+    }
+
+    Prodaja (const string &amp;ime_agenta_prodaje, double cijena_stana, int dan_prodaje , int mjesec_prodaje, int godina_prodaje,
+             string &amp;ime_kupca, const Datum &amp;datum_rodjenja_kupca , const string &amp;adresa_stana, int sprat_stana, int broj_soba ,
+             bool namjesten_stan, double broj_kvadrata):
+        datum_prodaje(dan_prodaje,mjesec_prodaje,godina_prodaje),
+        kupac_stana(ime_kupca,datum_rodjenja_kupca),
+        kupljeni_stan(adresa_stana,sprat_stana,broj_soba,namjesten_stan,broj_kvadrata) {
+        Prodaja::ime_agenta_prodaje=ime_agenta_prodaje;
+        Prodaja::cijena_stana=cijena_stana;
+    }
+
+    void PromijeniKupca (const Kupac &amp;novi_kupac) {
+        kupac_stana.ime_i_prezime=novi_kupac.ime_i_prezime;
+        kupac_stana.datum_rodjenja.dan=novi_kupac.datum_rodjenja.dan;
+        kupac_stana.datum_rodjenja.mjesec=novi_kupac.datum_rodjenja.mjesec;
+        kupac_stana.datum_rodjenja.godina=novi_kupac.datum_rodjenja.godina;
+    }
+
+    void PromijeniStan (const Stan &amp;novi_stan) {
+        kupljeni_stan.adresa=novi_stan.adresa;
+        kupljeni_stan.sprat=novi_stan.sprat;
+        kupljeni_stan.broj_soba=novi_stan.broj_soba;
+        kupljeni_stan.namjesten=novi_stan.namjesten;
+        kupljeni_stan.kvadratura=novi_stan.kvadratura;
+    }
+
+    void PromijeniDatumKupovine (const Datum &amp;novi_datum) {
+        datum_prodaje.dan=novi_datum.dan;
+        datum_prodaje.mjesec=novi_datum.mjesec;
+        datum_prodaje.godina=novi_datum.godina;
+    }
+
+    void PromijeniCijenuProdaje (const double &amp;nova_cijena) {
+        cijena_stana=nova_cijena;
+    }
+
+    void PomjeriDanUnaprijed() {
+        datum_prodaje.dan++;
+        int dani_u_mj[12]= {31,28,31,30,31,30,31,31,30,31,30,31};
+        if(datum_prodaje.godina%4==0 &amp;&amp; datum_prodaje.godina%400==0 &amp;&amp; datum_prodaje.godina%100!=0) dani_u_mj[1]++;
+        if(datum_prodaje.dan&gt;dani_u_mj[datum_prodaje.mjesec-1]) {
+            datum_prodaje.dan-=dani_u_mj[datum_prodaje.mjesec-1];
+            datum_prodaje.mjesec++;
+        }
+        if(datum_prodaje.mjesec&gt;12) {
+            datum_prodaje.mjesec=1;
+            datum_prodaje.godina++;
+        }
+        ProvjeriDatum(datum_prodaje.dan, datum_prodaje.mjesec, datum_prodaje.godina);
+    }
+
+    void PomjeriDanUnazad() {
+        datum_prodaje.dan--;
+        int dani_u_mj[12]= {31,28,31,30,31,300,31,31,30,32,30,31};
+        if(datum_prodaje.godina%4==0 &amp;&amp; datum_prodaje.godina%400==0 &amp;&amp; datum_prodaje.godina%100!=0) dani_u_mj[1]++;
+        if(datum_prodaje.dan&lt;1) {
+            datum_prodaje.dan=dani_u_mj[datum_prodaje.mjesec-2]-datum_prodaje.dan;
+            datum_prodaje.mjesec--;
+        }
+        if(datum_prodaje.mjesec&lt;1) {
+            datum_prodaje.mjesec=12;
+            datum_prodaje.godina--;
+        }
+        ProvjeriDatum(datum_prodaje.dan,datum_prodaje.mjesec,datum_prodaje.godina);
+    }
+
+    string DajImeAgenta() const {
+        return ime_agenta_prodaje;
+    }
+
+    string DajImeKupca() const {
+        return kupac_stana.ime_i_prezime;
+    }
+
+    Datum DajDatumProdaje() const {
+        return datum_prodaje;
+    }
+
+    double DajCijenuStana() const {
+        return cijena_stana;
+    }
+
+    friend bool ProdatPrije(const Prodaja &amp;p1, const Prodaja &amp;p2) {
+        if(p1.datum_prodaje.godina&lt;p2.datum_prodaje.godina) return true;
+        if(p1.datum_prodaje.godina==p2.datum_prodaje.godina) {
+            if(p1.datum_prodaje.mjesec&lt;p2.datum_prodaje.mjesec) return true;
+            if(p1.datum_prodaje.mjesec==p2.datum_prodaje.mjesec) {
+                if(p1.datum_prodaje.dan&lt;p2.datum_prodaje.dan) return true;
+            }
+        } else return false;
+    }
+
+    friend bool SkupljiStan(const Prodaja &amp;p1, const Prodaja &amp;p2) {
+        if(p1.cijena_stana&gt;p2.cijena_stana) return true;
+        else return false;
+    }
+
+    void Ispisi() const {
+        cout&lt;&lt;"Ime agenta: "&lt;&lt;setprecision(10)&lt;&lt;DajImeAgenta()&lt;&lt;endl;
+        cout&lt;&lt;"Ime kupca: "&lt;&lt;setprecision(10)&lt;&lt;DajImeKupca()&lt;&lt;endl;
+        cout&lt;&lt;"Zakazani datum prodaje: "&lt;&lt;endl;
+        cout&lt;&lt;"Cijena stana: "&lt;&lt;endl;
+        cout&lt;&lt;"Informacije o stanu: "&lt;&lt;endl;
+        cout&lt;&lt;"Stan se nalazi na adresi "&lt;&lt;kupljeni_stan.DajAdresu()&lt;&lt;" na "&lt;&lt;kupljeni_stan.DajSprat()&lt;&lt;". spratu i ima "&lt;&lt;kupljeni_stan.DajBrojSoba();
+        int n=kupljeni_stan.DajBrojSoba();
+        if(n==1) cout&lt;&lt;" sobu.";
+        if(n&gt;=5) cout&lt;&lt;" soba.";
+        if(n&gt;1 &amp;&amp; n&lt;5) cout&lt;&lt;" sobe.";
+        cout&lt;&lt;endl&lt;&lt;"Kvadratura stana je "&lt;&lt;kupljeni_stan.DajKvadraturu()&lt;&lt;" (m^2) i stan "&lt;&lt;kupljeni_stan.DajNamjesten()&lt;&lt;" namjesten.";
+    }
+
+};
+
+class Prodaje
+{
+    int stanje, kapacitet;
+    Prodaja **pok;
+public:
+    explicit Prodaje(int max_broj_prodaja) {
+        kapacitet=max_broj_prodaja;
+        stanje=0;
+        pok= new Prodaja *[max_broj_prodaja];
+    }
+    /*    Prodaje(std::initializer_list&lt;Prodaja&gt; spisak_prodaja) {
+            int i=0;
+            pok=new Prodaja *[spisak_prodaja.end()-spisak_prodaja.begin()];
+            for(auto it=spisak_prodaja.begin(); it&lt;spisak_prodaja.end(); ) {
+                pok[i]=*it;
+                i++;
+                it++;
+            }
+        } */
+
+    ~Prodaje() {
+        for(int i=0; i&lt;stanje; i++) delete pok[i];
+        delete[] pok;
+    }
+
+    Prodaje(const Prodaje &amp;prodaje) {
+        stanje=prodaje.stanje;
+        kapacitet=prodaje.kapacitet;
+        pok=new Prodaja *[prodaje.kapacitet];
+        for(int i=0; i&lt;stanje; i++) {
+            pok[i]=new Prodaja (*prodaje.pok[i]);
+        }
+    }
+
+    Prodaje(Prodaje &amp;&amp;prodaje) {
+        stanje=prodaje.stanje;
+        kapacitet=prodaje.kapacitet;
+        pok=prodaje.pok;
+        prodaje.pok=nullptr;
+        prodaje.stanje=0;
+    }
+
+    Prodaje &amp;operator = (const Prodaje &amp;prodaje) {
+        if(pok==prodaje.pok) return *this; //da nema rekurzije
+        for(int i=0; i&lt;prodaje.stanje; i++) delete prodaje.pok[i];
+        delete[] prodaje.pok;
+        stanje=prodaje.stanje;
+        kapacitet=prodaje.kapacitet;
+        pok=new Prodaja *[prodaje.kapacitet];
+        for(int i=0; i&lt;stanje; i++) {
+            pok[i]= new Prodaja (*prodaje.pok[i]);
+        }
+        return *this;
+    }
+
+    Prodaje &amp;operator = (Prodaje &amp;&amp;prodaje) {
+        if(pok==prodaje.pok) return *this;
+        for(int i=0; i&lt;prodaje.stanje; i++) delete prodaje.pok[i];
+        delete[] prodaje.pok;
+        stanje=prodaje.stanje;
+        kapacitet=prodaje.kapacitet;
+        pok=prodaje.pok;
+        prodaje.pok=nullptr;
+        prodaje.stanje=0;
+        return *this;
+    }
+
+    friend class Datum;
+    friend class Kupac;
+    friend class Stan;
+    friend class Prodaja;
+
+    /*   void RegistrirajProdaju(const string &amp;ime_agenta_prodaje, double cijena_stana, const Datum &amp;datum_prodaje,const Kupac &amp;kupac_stana, const Stan &amp;kupljeni_stan):
+
+       {
+
+       } */
+
+
+
+};
+
+
+int main ()
+{
+    cout&lt;&lt;"Dobrodosli!"&lt;&lt;endl;
+    cout&lt;&lt;"Izaberite opciju:"&lt;&lt;endl;
+    cout&lt;&lt;" 0 - kraj"&lt;&lt;endl&lt;&lt;" 1 - uredjivanje stanova"&lt;&lt;endl&lt;&lt;" 2 - uredjivanje kupaca"&lt;&lt;endl&lt;&lt;" 3 - uredjivanje prodaja";
+    int unos;
+    cout&lt;&lt;endl;
+    cin&gt;&gt;unos;
+    if(unos==0) return 0;
+    if(unos==1) {
+            cout&lt;&lt;"Izaberite opciju:"&lt;&lt;endl;
+            cout&lt;&lt;" 0 - nazad"&lt;&lt;endl&lt;&lt;" 1 - dodavanje stanova"&lt;&lt;endl&lt;&lt;" 2 - uredjivanje stanova"&lt;&lt;endl&lt;&lt;" 3 - ispis svih stanova"&lt;&lt;endl&lt;&lt;" 4 - kraj"&lt;&lt;endl;
+            int a;
+            cin&gt;&gt;a;
+            if(a==1) {
+                bool dobar_unos;
+                do {
+                    dobar_unos=true;
+                    cout&lt;&lt;"Unesite adresu: ";
+                    string adresa;
+                    cin.ignore(1000,'\n');
+                    getline(cin,adresa);
+                    cout&lt;&lt;"Unesite sprat: ";
+                    int sprat;
+                    cin&gt;&gt;sprat;
+                    cout&lt;&lt;"Unesite broj soba: ";
+                    int broj_soba;
+                    cin&gt;&gt;broj_soba;
+                    cout&lt;&lt;"Da li je stan namjesten (1 - da, 0 - ne): ";
+                    int namjesten;
+                    cin&gt;&gt;namjesten;
+                    cout&lt;&lt;"Unesite kvadraturu: ";
+                    double kvadratura;
+                    cin&gt;&gt;kvadratura;
+                    try {
+                        Stan novi(adresa,sprat,broj_soba,namjesten,kvadratura);
+                        dobar_unos=true;
+                        cout&lt;&lt;"Stan je uspjesno dodan!";
+                    } catch(std::domain_error izuzetak) {
+                        dobar_unos=false;
+                        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what()&lt;&lt;" Molimo unesite opet."&lt;&lt;endl;
+                    }
+                } while(dobar_unos==false);
+</font>            }
+        }
+        return 0;
+    }</pre>
+</body>
+</html>

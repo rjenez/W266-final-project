@@ -1,0 +1,205 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student5621.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student6156.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 3
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match148-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+template &lt;typename tipint&gt;
+void periodican(const std::vector&lt;tipint&gt; &amp;veca, int &amp;broj_clanova_podniza, int &amp;broj_podnizova)
+{
+	try
+	{
+		for(int i=1; i&lt;veca.size(); i++)
+		{
+			broj_podnizova=0;
+			for(int j=0; j+i&lt;veca.size(); j++)
+			{
+				if(veca.at(0)==veca.at(j))broj_podnizova++;
+				if(veca.at(i+j)!=veca.at(j))break;
+				if(j+i==veca.size()-1)
+				{
+					broj_clanova_podniza=i;
+					broj_podnizova++;
+					throw std::string("Periodican je");
+				}
+			}
+		}
+	}
+	catch(...)
+	{
+		//	std::cout&lt;&lt;"\nBroj podnizova: "&lt;&lt;broj_podnizova&lt;&lt;"\nbroj clanova: "&lt;&lt;broj_clanova_podniza;
+		return;
+	}
+	broj_clanova_podniza=veca.size();
+	broj_podnizova=2;
+
+	return;
+}
+
+
+
+template &lt;typename tipint&gt;
+int** AlocirajFragmentirano(const std::vector&lt;tipint&gt; &amp;veca, int &amp;koliko_puta)
+{
+	if(veca.size()==0)throw std::string("Prazan vektor");
+	for(int i=0; i&lt;veca.size(); i++)
+		if( veca.at(i)&lt;1)throw std::domain_error("Neispravan vektor");
+
+	int** niz(nullptr);
+	int br_clanova(0),br_niz(0);
+	periodican(veca,br_clanova,br_niz);
+	try
+	{
+		niz = new int*[br_clanova*br_niz] {};
+		try
+		{
+			for(int i=0; i&lt;br_clanova*br_niz; i++)
+			{
+				niz[i]=new int[veca.at(i%br_clanova)] {};
+			}
+		}
+		catch(...)
+		{
+			delete[] niz;
+			throw std::domain_error("Neispravan vektor");
+		}
+		tipint najveci(static_cast&lt;int&gt;(*max_element(veca.begin(),veca.end())));
+		for(int i=0; i&lt;br_clanova*br_niz; i++)
+		{
+			for(int j = 0; j &lt; veca.at(i%br_clanova); j++)
+			{
+				niz[i][j]=static_cast&lt;int&gt;(najveci-veca.at(i%br_clanova)+1+j);
+			}
+		}
+		return niz;
+	}
+	catch(...)
+	{
+		throw std::domain_error("Neispravan vektor");
+	}
+
+	return nullptr;
+}
+
+template &lt;typename tipint&gt;
+int** AlocirajKontinualno(const std::vector&lt;tipint&gt; &amp;veca, int &amp;koliko_puta)
+{
+	if(veca.size()==0)throw std::string("Prazan vektor");
+	for(int i=0; i&lt;veca.size(); i++)
+		if( veca.at(i)&lt;1)throw std::domain_error("Neispravan vektor");
+
+	int** niz(nullptr);
+	int br_clanova(0),br_niz(0);
+	periodican(veca,br_clanova,br_niz);
+	try
+	{
+		niz = new int* [br_niz*br_clanova] {};
+		try
+		{
+			int suma(0);
+			for(int i=0; i&lt;veca.size(); i++)suma+=veca.at(i);
+			niz[0]= new int[br_niz*br_clanova*suma];
+			int najveci=static_cast&lt;int&gt;(*std::max_element(veca.begin(),veca.end()));
+			for(int i=0; i&lt;veca.at(0); i++)
+				niz[0][i]=static_cast&lt;int&gt;(najveci-i-(najveci-veca.at(0)));
+			for(int i=1; i&lt;br_niz*br_clanova; i++)
+			{
+				niz[i]=niz[(i-1)%br_clanova]+veca.at((i-1)%br_clanova);
+				for(int j=0; j&lt;veca.at(i%br_clanova); j++)
+					niz[i][j]=static_cast&lt;int&gt;(najveci-j-(najveci-veca.at(i%br_clanova)));
+			}
+			return niz;
+		}
+		catch(...)
+		{
+			throw std::domain_error("Neispravan vektor");
+		}
+	}
+	catch(...)
+	{
+		throw std::domain_error("Neispravan vektor");
+	}
+	return nullptr;
+}
+
+
+void pocisti_fragmentiranu(int** pokazivac, int br_pok)
+{
+	for(int i=0; i&lt;br_pok; i++)delete[] pokazivac[i];
+	delete[] pokazivac;
+}
+
+void pocisti_kontinualnu(int** pokazivac, int br_pok)
+{
+	delete[] pokazivac[0];
+	delete[] pokazivac;
+}
+
+int main ()
+{
+	typedef void (*pok_na_fun)(int**,int);
+	std::cout&lt;&lt;"Unesite broj elemenata vektora: ";
+	int n;
+	std::cin&gt;&gt;n;
+	std::cout&lt;&lt;"Unesite elemente vektora: ";
+
+	std::vector&lt;int&gt; veca(n);
+	for(int i=0; i&lt;n; i++)
+	{
+		std::cin&gt;&gt;veca.at(i);
+	}
+	std::cout&lt;&lt;"Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+	int x;
+	std::cin&gt;&gt;x;
+	typedef int** (*pok_na_aloc)(const std::vector&lt;int&gt;&amp;, int&amp;);
+	pok_na_aloc desni_bek[2] {AlocirajKontinualno,AlocirajFragmentirano};
+	try
+	{
+		int koliko_puta,koliko_clanova;
+		periodican(veca,koliko_clanova,koliko_puta);
+		int** niz(desni_bek[x](veca,koliko_puta));
+		std::cout&lt;&lt;"Dinamicki alocirana matrica:\n";
+		for(int i=0; i&lt;koliko_puta*koliko_clanova; i++)
+		{
+			for(int j=0; j&lt;veca.at(i%koliko_clanova); j++)
+			{
+				std::cout&lt;&lt;std::setw(3)&lt;&lt;std::left&lt;&lt;niz[i][j];
+			}
+			std::cout&lt;&lt;std::endl;
+		}
+		pok_na_fun cistac[2] {pocisti_kontinualnu,pocisti_fragmentiranu};
+		cistac[x](niz,koliko_puta*koliko_clanova);
+	}
+	catch(std::domain_error izuzetak)
+	{
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what()&lt;&lt;"!";
+	}
+	catch(std::string izuzetak)
+	{
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak&lt;&lt;"!";
+</font>	}
+	return 0;
+}</pre>
+</body>
+</html>

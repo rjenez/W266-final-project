@@ -1,0 +1,266 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student4639.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student4639.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;string&gt;
+#include&lt;stdexcept&gt;
+#include &lt;string.h&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match96-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+int PotencijalniKrivci(char **&amp;a,std::vector&lt;std::string&gt;v){
+	
+		
+	try{
+		
+		a = new char *[v.size()];
+		for(int i (0); i &lt; v.size();i++){
+			a[i] = nullptr;
+		}
+		
+		
+		try{
+			
+			//a = new char *[v.size()];
+			
+			for(size_t i = 0; i &lt; v.size();i++){
+					a[i] = new char [v.size() + 1];
+					strcpy(a[i],v[i].c_str());
+			}
+			
+			
+			}catch(std::bad_alloc){
+				
+				for(int i (0); i &lt; v[i].size();i++)
+					delete[] a[i];
+					
+					delete [] a;
+			}
+			
+			
+		}catch(...){
+			std::cout&lt;&lt;"Nedovoljno memorije!\n";
+			throw;
+		}
+		
+		//...VRATI VELICINU NIZA
+		return v.size();
+	
+}
+
+int OdbaciOptuzbu(char **&amp;a,int vel,std::string s){
+		//.....NE RADI dobro!
+	int brojobr(0);
+	
+	//...UPOREDI
+	int j = 0;
+	for(int i (0); i &lt; vel; i++){
+		if(strcmp (a[i],s.c_str()) == 0){
+			
+			brojobr++;
+			j = i;
+			
+			while(j + 1 &lt; vel){
+						a[j] = *&amp;a[j + 1];
+						
+						if(j == vel - brojobr - 1){
+							delete[] a[j];
+						}
+						
+						j++;
+			}
+				
+		}
+			
+	}	
+
+	
+	//....USTEDA
+	
+	if(brojobr &gt; 10){
+		
+		char **novi = nullptr;
+		
+		try{
+			novi = new char *[vel - brojobr];
+			/*
+			//...PREKOPIRA SE STARI NIZ POKAZIVACA U NOVI
+			novi = a;
+			//...UKLONI SE STARI NIZ POKAZIVACA
+			a = nullptr;
+			//...POSALJE SE NOVI POKAZIVAC
+			a = novi;
+			*/
+			
+			for(int i(0); i &lt; vel - brojobr;i++){
+				if(a[i] != nullptr){
+					novi[i] = *&amp;a[i];
+				}
+				delete[] a;
+				
+				a = novi;
+			}
+		}catch(std::bad_alloc){
+			
+			std::cout&lt;&lt;"Novi niz pokazivaca u OdbaciOptuzbu nije alociran!\n";
+			for(int i (0); i &lt; vel - brojobr;i++)
+				delete [] novi[i];
+			delete [] novi;
+			throw;
+			
+		}catch(...){
+			std::cout&lt;&lt;"Nedovoljno memorije!\n";
+		}
+	}
+	return vel - brojobr;
+}
+
+
+int DodajOptuzbu(char **&amp;a,int vel,std::string s){
+	int brojdodan (0);
+	
+	char * niz = nullptr;
+	
+	try{
+		//...DINAMICKI ALOCIRA NIZ
+		niz = new char [s.size() + 1];
+		//...PREPISI IZ STRINGA U NIZ
+		strcpy(niz,s.c_str());
+		
+		brojdodan++;
+	}catch(std::bad_alloc){
+		std::cout&lt;&lt;"Niz DodajOptuzbu neuspijesno alociran!\n";
+		delete[] niz;
+		throw;
+	}catch(...){
+		std::cout&lt;&lt;"Nedovoljno memorije!\n";
+	}	
+		//... UKOLIKO JE NEKI NULLPTR NA NJEGA ZAKACI NOVI NIZ
+		
+		char ** novi = nullptr;
+		
+		try{
+			novi = new char * [vel + brojdodan];
+			for(int i (0); i &lt; brojdodan + vel;i++ ){
+				if (i &lt; vel){
+					if(a[i] != nullptr){
+						novi[i] = *&amp;a[i];
+					}
+				}else{
+					novi[i] = niz;
+				}
+			}
+			delete[] a;
+			a = novi;
+		}catch(std::bad_alloc){
+			std::cout&lt;&lt;"Alokacija novog u DodajOptuzbu nije uspjela!\n";
+			for(int i(0); i &lt; vel + brojdodan;i++) delete [] novi[i];
+			delete[] novi;
+			throw;
+		}
+		return vel + brojdodan;
+	
+}
+
+void IzlistajOptuzbu(char **a,int vel){
+	char **pok = a;
+	
+	for(int i (0); i &lt; vel ; i++){
+		if(pok[i] == nullptr) continue;
+		std::cout&lt;&lt;pok[i]&lt;&lt;std::endl;
+	}
+	
+}
+
+int main (){
+	std::cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti?\n";
+	int n;
+	std::cin &gt;&gt; n;
+	std::cin.ignore(10000,'\n');
+	
+	std::cout&lt;&lt;"Unesite potencijalne krivce:\n";
+	std::vector&lt;std::string&gt;k;
+	std::string s;
+	
+	for(int i (0); i &lt; n; i++){
+		std::getline(std::cin,s);
+		k.push_back(s);
+	}
+	
+	char **pk = nullptr;
+	try{
+		int vel = PotencijalniKrivci(pk,k);
+		try{ 
+		int opcija = -1;
+		
+		while(opcija != 0){
+			std::cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj:\n";
+			std::cin &gt;&gt; opcija;
+			
+			if(opcija == 1){
+			
+				std::cout&lt;&lt;"Unesite ime novog optuzenog:\n";
+				std::string c;
+				std::cin.ignore(10000,'\n');
+				std::getline(std::cin,c);
+				
+				try{
+					vel = DodajOptuzbu(pk,vel,c);
+				}catch(std::bad_alloc izuzetak){
+					std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+				}
+				
+				opcija = -1;
+			}
+			
+			if(opcija == 2){
+				
+				std::cout&lt;&lt;"Unesite ime koje zelite izbaciti:\n";
+				std::string p;
+				std::cin.ignore(10000,'\n');
+				std::getline(std::cin,p);
+					
+					try{
+						vel = OdbaciOptuzbu(pk,vel,p);
+					}catch(std::bad_alloc izuzetak){
+						std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+					}
+					opcija = -1;
+			}
+			
+			if(opcija  == 3){
+				IzlistajOptuzbu(pk,vel);
+				opcija = -1;
+			}
+			
+			if(opcija == 0){
+				
+				break;
+			}
+		}
+		
+		
+	}catch(std::bad_alloc izuzetak){
+		std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+	}
+	
+	}catch(std::bad_alloc izuzetak){
+		std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+	}
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

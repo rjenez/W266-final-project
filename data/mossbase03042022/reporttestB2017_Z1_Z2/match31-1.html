@@ -1,0 +1,227 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student8886.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student5263.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.	
+*/
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+#define epsilon 0.0001
+<a name="0"></a><font color="#FF0000"><a href="match31-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+Matrica KreirajMatricu(int br_redova, int br_kolona){
+	return Matrica(br_redova, std::vector&lt;double&gt;(br_kolona));
+}
+void IspisiMatricu(Matrica m){
+	for(std::vector&lt;double&gt; x : m){
+		for(double x1 : x){
+			std::cout&lt;&lt;std::setw(6)&lt;&lt;x1;
+		}
+		std::cout&lt;&lt;std::endl;
+	}
+}
+Matrica UnesiMatricu(int br_redova, int br_kolona){
+	auto m(KreirajMatricu(br_redova,br_kolona));
+	for(int i=0; i&lt;br_redova; i++){
+		for(int j=0; j&lt;br_kolona; j++){
+			std::cin&gt;&gt;m.at(i).at(j);
+		}
+	}
+	return m;
+}
+std::vector&lt;Matrica&gt; StvarniVrhovi(std::vector&lt;Matrica&gt; vekvrhova){
+	std::vector&lt;Matrica&gt; vrhovi;
+	double Suma(0), Zbir(0);
+	for(int k=0; k&lt;vekvrhova.size(); k++){
+    Zbir=0;
+    if(vekvrhova.at(k).size()==1) vrhovi.push_back(vekvrhova.at(k));
+	else if(vekvrhova.at(k).size()%2!=0){ Suma=vekvrhova.at(k).at(vekvrhova.at(k).size()/2).at(vekvrhova.at(k).size()/2);
+//	std::cout&lt;&lt;Suma&lt;&lt;std::endl;
+
+	for(int c=0; c&lt;vekvrhova.at(k).size()/2; c++){
+		for(int i=0; i&lt;vekvrhova.at(k).size(); i++){
+			for(int j=0; j&lt;vekvrhova.at(k).at(i).size(); j++){
+				if(i==c || j==c || i==vekvrhova.at(k).size()-1-c || j==vekvrhova.at(k).size()-1-c){
+					Zbir+=vekvrhova.at(k).at(i).at(j);
+				} 
+				
+			}
+		}
+		if(Zbir &lt; Suma){
+			Suma=Zbir;
+			vrhovi.push_back(vekvrhova.at(k));
+		}
+	    else break;
+//		std::cout&lt;&lt;Zbir&lt;&lt;std::endl;
+	}
+	}
+	}
+	return vrhovi;
+}
+std::vector&lt;Matrica&gt; NajvecePlanine(std::vector&lt;Matrica&gt; v, int vrh){
+	std::vector&lt;Matrica&gt; v1;
+	for(int i=0; i&lt;v.size(); i++){
+			if(v.at(i).size()==vrh) v1.push_back(v.at(i));
+	}
+	return v1;
+}
+std::vector&lt;Matrica&gt; NajveciVrhovi(std::vector&lt;Matrica&gt; v){
+	std::vector&lt;Matrica&gt; v1;
+	int vrh=v.at(0).size();
+	int max(0);
+			for(int i=0; i&lt;v.size(); i++){
+				if(v.at(i).at(vrh/2).at(vrh/2) &gt; max){
+						max=v.at(i).at(vrh/2).at(vrh/2);
+				}
+			}
+	for(int i=0; i&lt;v.size(); i++){
+		if(fabs(v.at(i).at(vrh/2).at(vrh/2) -max) &lt;= epsilon) v1.push_back(v.at(i));
+	}
+//	IspisiMatricu(v1.at(2));
+	return v1;
+}
+Matrica NajvecaPlaninaMatrice(Matrica mat){
+	Matrica novamat;
+	Matrica povratna;
+	std::vector&lt;Matrica&gt; vekvrhova;
+	for(int i=0; i&lt;mat.size(); i++){
+		if(mat.size()== 0 || mat.at(i).size()==0 ) return mat;
+		if(mat.at(i).size()!=mat.at(0).size()) throw std::domain_error("Matrica nije korektna");
+	}
+	
+	if(mat.size()==0) return mat;
+	if(mat.size()==1) return mat;
+	for(int i=0; i&lt;mat.size(); i++){
+		for(int j=0; j&lt;mat.at(i).size(); j++){
+			int dim=mat.size()-i;
+			if(j+1&lt;dim ) dim=j+1;
+			if(mat.at(i).size()-j &lt; dim) dim=mat.at(i).size()-j;
+			if(i+1 &lt; dim ) dim=i+1;
+			int c=dim-1;
+			novamat.resize(dim+c);
+			for(int k=0; k&lt;dim+c; k++) novamat.at(k).resize(dim+c);
+		//	std::cout&lt;&lt;"dim="&lt;&lt;dim&lt;&lt;std::endl;
+		    int k=0, l=0; 
+			for(int n=i-c; n&lt;=i+c; n++){
+				k=0;
+				for(int m=j-c; m&lt;=j+c; m++){
+					novamat.at(l).at(k)=mat.at(n).at(m);
+					k++;
+				}
+				l++;
+			}
+			vekvrhova.push_back(novamat);
+			
+		}
+	}
+	//Sada oznaciti vrhove koji ne mogu to biti
+//	IspisiMatricu(novamat);
+	auto novivekvrhova=StvarniVrhovi(vekvrhova);
+//	IspisiMatricu(novivekvrhova.at(0));
+
+	int vrh=novivekvrhova.at(0).size();
+	for(int k=0; k&lt;novivekvrhova.size();k++){
+		if(novivekvrhova.at(k).size() &gt; vrh &amp;&amp; novivekvrhova.at(k).size()%2!=0) vrh=novivekvrhova.at(k).size(); 
+	}
+/*
+	for(int i=0; i&lt;novivekvrhova.size(); i++){
+		for(int j=i+1; j&lt;novivekvrhova.size(); j++){
+			if(novivekvrhova.at(i).size() == novivekvrhova.at(j).size() &amp;&amp; novivekvrhova.at(i).size()==vrh ){
+			     if(novivekvrhova.at(i).at(int(vrh/2)).at(int(vrh/2)) &gt; novivekvrhova.at(j).at(int(vrh/2)).at(int(vrh/2))){
+			     	if(povratna.size()==0) povratna=novivekvrhova.at(i);
+			     	else if(povratna.at(vrh/2).at(vrh/2) &lt; novivekvrhova.at(i).at(vrh/2).at(vrh/2)) povratna=novivekvrhova.at(i);
+			     } 
+			     else if(fabs(novivekvrhova.at(i).at(int(vrh/2)).at(int(vrh/2)) - novivekvrhova.at(j).at(int(vrh/2)).at(int(vrh/2))) &lt;= epsilon){
+			     	int prva_koordinata(0), prva_koordinata1(0), druga_koordinata(0), druga_koordinata1(0);
+			     	for(int n=0; n&lt;mat.size(); n++){
+			     		for(int m=0; m&lt;mat.at(0).size(); m++){
+			     			if(fabs(mat.at(n).at(m) - novivekvrhova.at(i).at(vrh/2).at(vrh/2))&lt;=epsilon){
+			     				prva_koordinata=n; 
+			     				druga_koordinata=m;
+			     			}
+			     			else if(fabs(mat.at(n).at(m) - novivekvrhova.at(j).at(vrh/2).at(vrh/2)) &lt;= epsilon ){
+			     				prva_koordinata1=n;
+			     				druga_koordinata1=m;
+			     			}
+			     			
+			     		}
+			     	}
+			     	if(prva_koordinata &lt; prva_koordinata1) povratna=novivekvrhova.at(i);
+			     	else if(prva_koordinata==prva_koordinata1){
+			     		if(druga_koordinata &lt; druga_koordinata1) povratna=novivekvrhova.at(i);
+			     		else povratna=novivekvrhova.at(j);
+			     	}
+			     	else povratna=novivekvrhova.at(j);
+			     }
+			     else povratna=novivekvrhova.at(j);
+			}
+		    else if(novivekvrhova.at(i).size()==vrh &amp;&amp; povratna.size()==0) povratna=novivekvrhova.at(i);
+		}
+	}
+*/
+
+	auto najplanine=NajvecePlanine(novivekvrhova,vrh);
+	if(najplanine.size()==1) povratna=najplanine.at(0);
+	else{ 
+		if(NajveciVrhovi(najplanine).size() &gt; 1){
+			auto koordinate=NajveciVrhovi(najplanine);
+			povratna=koordinate.at(0);
+			//ovdje dalje nastaviti ispitivati koordinate
+		}
+		else{
+			int max(0);
+			for(int i=0; i&lt;najplanine.size(); i++){
+				if(najplanine.at(i).at(vrh/2).at(vrh/2) &gt; max){
+						max=najplanine.at(i).at(vrh/2).at(vrh/2);
+						povratna=najplanine.at(i);
+				}
+			}
+		}
+		
+	}
+
+//	IspisiMatricu(povratna);
+	return povratna;
+}
+int main ()
+{
+//	Matrica m={{0,0,0,15,12,6},{1,25,1,5,2,9},{1,1,20,15,10,5},{3,2,19,130,14,8},{90,6,20,12,17,2},{12,3,5,1,8,4}};
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m i n): ";
+	int n(0), m(0);
+	std::cin&gt;&gt;n&gt;&gt;m;
+	if(m&lt;0 || n&lt;0){
+		std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+		return 0;
+	}
+	std::cout&lt;&lt;"Unesite elemente matrice: "&lt;&lt;std::endl;
+    auto m1(UnesiMatricu(n, m));
+    std::cout&lt;&lt;"Najveca planina unesene matrice je: "&lt;&lt;std::endl;
+    try{
+	auto mat=NajvecaPlaninaMatrice(m1);
+	IspisiMatricu(mat);
+    }
+    catch(std::domain_error izuzetak){
+    	std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+    	return 0;
+    }
+	return 0;
+</font>}</pre>
+</body>
+</html>

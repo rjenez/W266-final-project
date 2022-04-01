@@ -1,0 +1,95 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student1424.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student1424.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match219-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+ const double eps(1e-10);
+bool kriterij(std::pair&lt;double,double&gt; p1, std::pair&lt;double,double&gt; p2)
+{
+    return p1.first&lt;p2.first;
+}
+std::function&lt;double(double)&gt;LinearnaInterpolacija(std::vector&lt;std::pair&lt;double,double&gt;&gt; cvorovi)
+{
+    std::sort(cvorovi.begin(), cvorovi.end(), kriterij);
+    if(std::unique(cvorovi.begin(), cvorovi.end(), [](std::pair&lt;double, double&gt; p1, std::pair&lt;double,double&gt; p2) {
+    return std::fabs(p1.first-p2.first)&lt;eps;
+})!=cvorovi.end())
+    throw std::domain_error("Neispravni cvorovi");
+    return [cvorovi](double x) {
+        if(std::fabs(x-cvorovi[cvorovi.size()-1].first)&lt;eps) return cvorovi[cvorovi.size()-1].second;
+        auto it(std::upper_bound(cvorovi.begin(), cvorovi.end(), std::make_pair(x,0), kriterij));
+        if(it==cvorovi.end() || it==cvorovi.begin()) throw std::range_error("Argument izvan opsega");
+        return (*(it-1)).second+((*it).second-(*(it-1)).second)/((*it).first-(*(it-1)).first)*(x-(*(it-1)).first);
+    };
+}
+
+std::function&lt;double(double)&gt;LinearnaInterpolacija (std::function&lt;double(double)&gt; fun, double x_min, double x_max, double delta)
+{
+    if(x_min&gt;x_max || delta&lt;=0) throw std::domain_error("Nekorektni parametri");
+    std::vector&lt;std::pair&lt;double,double&gt;&gt; cvorovi;
+   
+    double korak(x_min);
+    for(;;) {
+        cvorovi.push_back({korak, fun(korak)});
+        if(std::fabs(korak-x_max)&lt;eps) break;
+        korak+=delta;
+    }
+    return LinearnaInterpolacija(cvorovi);
+}
+int main ()
+{
+    int opcija;
+    std::cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    std::cin&gt;&gt;opcija;
+    try{
+    if(opcija==1 || opcija==2) {
+ std::function&lt;double(double)&gt; fun,approx;
+
+        if(opcija==1) {
+            std::cout&lt;&lt;"Unesite broj cvorova: ";
+            int n;
+            std::cin&gt;&gt;n;
+            std::vector&lt;std::pair&lt;double, double&gt;&gt; cvorovi(n) ;
+            std::cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+            double x,y;
+            for(int i=0; i&lt;n; i++) {   std::cin&gt;&gt;x; std::cin&gt;&gt;y;
+                cvorovi[i]=std::make_pair(x,y);
+            }
+            fun=LinearnaInterpolacija(cvorovi);
+        }
+        if(opcija==2) {
+            std::cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+            double x_min, x_max, korak;
+           fun=([](double x) { return x*x+std::sin(x);});
+            std::cin&gt;&gt;x_min; std::cin&gt;&gt;x_max; std::cin&gt;&gt;korak;
+      approx=LinearnaInterpolacija(fun, x_min, x_max, korak);}
+        for(;;) {
+            std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+            double x,t;
+            std::cin&gt;&gt;x;
+            if(!std::cin || (std::cin.peek()!=' ' &amp;&amp; std::cin.peek()!='\n' )) break;
+                  try{ if(opcija==2) t=approx(x);  std::cout&lt;&lt;"f("&lt;&lt;x&lt;&lt;") = "&lt;&lt;fun(x);
+                  if(opcija==2) std::cout&lt;&lt;" "&lt;&lt;"fapprox("&lt;&lt;x&lt;&lt;") = "&lt;&lt;t; std::cout&lt;&lt;std::endl;} 
+                  catch(std::range_error izuzetak){ std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;}
+catch(std::domain_error izuzetak){std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;}
+                  
+        }
+} }catch(std::range_error izuzetak){ std::cout&lt;&lt;izuzetak.what();}
+catch(std::domain_error izuzetak){std::cout&lt;&lt;izuzetak.what();}
+</font>
+return 0;
+}
+</pre>
+</body>
+</html>

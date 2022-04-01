@@ -1,0 +1,246 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student2111.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student2111.cpp<p></p><pre>
+// B 16/17, Zadaća 2, Zadatak 2
+//	Autotestovi by Enil Pajic (epajic1@etf.unsa.ba | @eon : etf.ba)
+//	NAPOMENA: i javni ATo-vi su dio postavke!	
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt; 
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+enum class SmjerKretanja{
+<a name="0"></a><font color="#FF0000"><a href="match51-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_98.gif"/></a>
+
+NaprijedNazad,NazadNaprijed,GoreDolje,DoljeGore,LijevoDesno,DesnoLijevo };
+ 
+template &lt;typename nekitip&gt;
+auto IzdvojiDijagonale3D(nekitip m,SmjerKretanja smijer)-&gt; typename std::remove_reference&lt;decltype (m[0])&gt;::type
+{
+    bool izuzetak=false;
+    for(int i=0;i&lt;m.size();i++)
+    {
+        for(int j=0;j&lt;m[i].size();j++)
+        {
+            if(m[i][j].size()!=m[i][0].size())
+            izuzetak=true;
+        }
+    }
+    
+    
+    if(izuzetak==true)
+    {
+        throw std::domain_error("Redovi nemaju isti broj elemenata");
+    }
+    izuzetak=false;
+    for(int i=0;i&lt;m.size();i++)
+    {
+        if(m[i].size()!=m[0].size())
+        izuzetak=true;
+    }
+    if(izuzetak==true)
+    {
+        throw std::domain_error("Plohe nemaju isti broj redova");
+    }
+    typename std::remove_reference&lt;decltype (m[0])&gt;::type vrati;
+    if(smijer==SmjerKretanja(0))
+    {
+        for(int i=0;i&lt;m.size();i++)
+        {
+            vrati.resize(i+1);
+            
+            for(int j=0;j&lt;m[0].size();j++)
+            {
+                for(int k=0;k&lt;m[0][0].size();k++)
+                {
+                    if(j==k)
+                    {
+                        vrati[i].push_back(m[i][j][k]);
+                    }
+                }
+            }
+        }
+ 
+    }
+    
+    if(smijer==SmjerKretanja(1))
+    {
+        int l=0;
+        for(int i=m.size()-1;i&gt;=0;i--)
+        {
+                vrati.resize(l+1);
+            for(int j=0;j&lt;m[0].size();j++)
+            {
+                for(int k=0;k&lt;m[0][0].size();k++)
+                {
+                    if(j+k==m[0][0].size()-1)
+                    vrati[l].push_back(m[i][j][k]);
+                }
+            }
+            l++;
+        }
+    }
+    if(smijer==SmjerKretanja(2))
+    {
+        vrati.resize(m[0].size());
+        for(int i=0;i&lt;m[0].size();i++)
+        vrati[i].resize(m.size());
+        int j=0;
+        for(int i=m.size()-1;i&gt;=0;i--)
+        {
+            for(int k=0;k&lt;m[0].size();k++)
+            {
+                vrati[k][j]=m[i][k][j];
+            }
+            j++;
+        }
+            
+        return vrati;
+            
+     }
+     
+     if(smijer==SmjerKretanja(3))
+     {
+         vrati.resize(m[0].size());
+         for(int i=0;i&lt;m[0].size();i++)
+         vrati[i].resize(m.size());
+         
+         for(int i=0;i&lt;vrati.size();i++)
+         {
+             for(int j=0;j&lt;vrati[i].size();j++)
+             {
+                 vrati[i][j]=m[m.size()-1-j][m[0].size()-1-i][m[0][0].size()-1-j];
+             }
+       
+         }
+         return vrati;
+     }
+        
+    if(smijer==SmjerKretanja(4))
+    {
+    
+        vrati.resize(m[0][0].size());
+        for(int i=0;i&lt;m[0][0].size();i++)
+        vrati[i].resize(m.size());
+        int l=0;
+        
+        for(int i=m.size()-1;i&gt;=0;i--)
+        {
+          
+          for(int j=0;j&lt;m[0][0].size();j++)
+          {
+              vrati[j][l]=m[i][l][j];
+          }
+          l++;
+        }
+        return vrati;
+
+    }
+    if(smijer==SmjerKretanja(5))
+    {
+         vrati.resize(m[0][0].size());
+         for(int i=0;i&lt;m[0][0].size();i++)
+         vrati[i].resize(m.size());
+         int l=0;
+         
+        for(int i=0;i&lt;m.size();i++)
+        {   l=i;
+            int p=0;
+            for(int j=m[0][0].size()-1;j&gt;=0;j--)
+            {   
+               vrati[p][i]=m[i][l][j];
+                p++;
+            }
+        }
+        return vrati;
+    }
+
+    return vrati;
+ 
+}
+
+void ispis(int n)
+{
+    if(n==0)
+    std::cout&lt;&lt;"NaprijedNazad: ";
+    if(n==1)
+    std::cout&lt;&lt;"NazadNaprijed: ";
+    if(n==2)
+    std::cout&lt;&lt;"GoreDolje: ";
+    if(n==3)
+    std::cout&lt;&lt;"DoljeGore: ";
+    if(n==4)
+    std::cout&lt;&lt;"LijevoDesno: ";
+    if(n==5)
+    std::cout&lt;&lt;"DesnoLijevo: ";
+}
+
+int main ()
+{
+    std::cout&lt;&lt;"Unesite dimenzije (x y z): ";
+    int x,y,z;
+    std::cin&gt;&gt;x;
+    std::cin&gt;&gt;y;
+    std::cin&gt;&gt;z;
+    if(x&lt;=0 || y&lt;=0 || z&lt;=0)
+    {
+        std::cout&lt;&lt;"Neispravne dimenzije kontejnera!";
+        return 0;
+    }
+    std::cout&lt;&lt;"Unesite elemente kontejnera: ";
+    std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt; ulaz;
+    ulaz.resize(x);
+    for(int i=0;i&lt;x;i++)
+    {
+        ulaz[i].resize(y);
+    }
+    for(int i=0;i&lt;x;i++)
+      for(int j=0;j&lt;y;j++)
+         ulaz[i][j].resize(z);
+         
+    for(int i=0;i&lt;x;i++)
+     for(int j=0;j&lt;y;j++)
+      for(int k=0;k&lt;z;k++)
+      {
+           int temp;
+           std::cin&gt;&gt;temp;
+           ulaz[i][j][k]=temp;
+      }
+   
+    std::cout&lt;&lt;"\nUnesite smjer kretanja [0 - 5]: ";
+    int temp;
+    std::cin&gt;&gt;temp;
+    
+    if(temp&lt;0 || temp&gt;5)
+    {
+        std::cout&lt;&lt;"Smjer kretanja nije ispravan!";
+    }
+    
+    ispis(temp);
+    SmjerKretanja smijer=SmjerKretanja(temp);
+    try{
+        
+        auto ispis=IzdvojiDijagonale3D(ulaz,smijer);
+        std::cout&lt;&lt;"\n";
+        for(int i=0;i&lt;ispis.size();i++)
+        {
+            for(int j=0;j&lt;ispis[i].size();j++)
+            std::cout&lt;&lt;std::setw(4)&lt;&lt;ispis[i][j];
+            std::cout&lt;&lt;"\n";
+        }
+    }
+    catch(std::domain_error izuzetak)
+    {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+</font>    }
+    
+    
+    
+    return 0;
+}</pre>
+</body>
+</html>

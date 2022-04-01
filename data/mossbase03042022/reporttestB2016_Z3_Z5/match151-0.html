@@ -1,0 +1,138 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student3116.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student3116.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match151-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 3
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+using namespace std;
+
+struct Dijete
+{
+    string ime;
+    Dijete *sljedeci;
+};
+
+vector&lt;int&gt; PobrojiTimove(int n,int k)
+{
+    vector&lt;int&gt; v(k);
+    for(int i=0;i&lt;v.size();i++)
+    {
+        if(i&lt;n%k)
+            v[i]=(n/k)+1;
+        else v[i]=n/k;
+        
+    }
+    return v;
+}
+
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector&lt;string&gt; Djeca,int k)
+{   
+    int n=Djeca.size();
+    if(k&gt;n || n&lt;1) throw logic_error("Razvrstavanje nemoguce");
+    vector&lt;set&lt;string&gt;&gt; v(k);
+    vector&lt;int&gt; br=PobrojiTimove(n,k);
+    
+    
+    Dijete *poc=nullptr;
+    Dijete *tren=nullptr;
+    for(int i=0;i&lt;n;i++)
+    {
+        Dijete *novi=new Dijete;
+        novi-&gt;ime=Djeca[i];
+        if(i==0)
+        {
+            poc=novi;
+            tren=novi;
+        }
+        else 
+        {
+            tren-&gt;sljedeci=novi;
+            tren=novi;
+        }
+        if(n-1==i) novi-&gt;sljedeci=poc;
+        
+    }
+    Dijete *p=poc;Dijete *q=tren;
+    int brojac=0;
+    for(int i=0;i&lt;v.size();i++)
+    {
+        set&lt;string&gt; pom;
+        for(int j=0;j&lt;br[i];j++)
+        {
+            pom.insert(p-&gt;ime);int k=0;brojac++;
+            
+            for(auto g:p-&gt;ime)
+            {
+                if((g&gt;='A' &amp;&amp; g&lt;='Z') ||(g&gt;='a' &amp;&amp; g&lt;='z')||(g&gt;='0' &amp;&amp; g&lt;='9'))
+                        k++;
+            }
+            k-=1;
+            if(brojac!=n)
+            {
+                q-&gt;sljedeci=p-&gt;sljedeci;
+                p-&gt;sljedeci=nullptr;
+                delete p;
+                p=q-&gt;sljedeci;
+                
+                for(;k!=0;k--)
+                {
+                    q=q-&gt;sljedeci;
+                    p=p-&gt;sljedeci;
+                }
+            }else 
+            {
+                p-&gt;sljedeci=nullptr;
+                delete p;
+            }
+        }
+        v[i]=pom;
+    }
+        
+    
+    
+    return v;
+}
+
+
+
+int main ()
+{
+    int n;
+    cout&lt;&lt;"Unesite broj djece: ";
+    cin&gt;&gt;n;
+    vector&lt;string&gt;v(n);
+    cin.clear();
+    cin.ignore(10000,'\n');
+    cout&lt;&lt;"Unesite imena djece: "&lt;&lt;endl;
+    for(int i=0;i&lt;v.size();i++)
+	    getline(cin,v[i]);
+	cout&lt;&lt;"Unesite broj timova: ";
+	cin&gt;&gt;n;
+	try{
+	vector&lt;set&lt;string&gt;&gt; Timovi=Razvrstavanje(v,n);
+	for(int i=0;i&lt;Timovi.size();i++)
+	{   
+	    cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";int br=0;
+	    for(auto p:Timovi[i]){
+	        if(br==Timovi[i].size()-1) cout&lt;&lt;p&lt;&lt;endl;
+	            else cout&lt;&lt;p&lt;&lt;", ";
+	        br++;
+	    }
+	}
+	}
+	catch(logic_error e){cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what();}
+</font>	return 0;
+}</pre>
+</body>
+</html>

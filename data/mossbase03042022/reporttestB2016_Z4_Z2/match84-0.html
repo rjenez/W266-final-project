@@ -1,0 +1,217 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student2886.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student2886.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+<a name="3"></a><font color="#00FFFF"><a href="match84-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+enum Pol {Musko, Zensko};
+
+bool Validnost_Datuma(int dan,int mjesec,int godina){
+     int broj_dana[]{31,28,31,30,31,30,31,31,30,31,30,31};
+</font>     if((godina%4==0&amp;&amp;godina%100!=0)||godina%400==0)
+     broj_dana[1]++;
+<a name="2"></a><font color="#0000FF"><a href="match84-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_19.gif"/></a>
+
+     if(godina&lt;1||mjesec&lt;1||mjesec&gt;12||dan&lt;1||dan&gt;broj_dana[mjesec-1])
+     return true;
+     return false;
+}
+void RastavinaCifreJMBG(long long int JMBG,int* cifreJMBG){
+    int cifra;
+    int i=12;
+    while(JMBG!=0){
+        cifra=JMBG%10;
+        cifreJMBG[i]=cifra;
+        JMBG=JMBG/10;
+      i--;
+    }
+}
+
+long long int KreirajJMBG(int dan_rodjenja,int mjesec_rodjenja,int godina_rodjenja,int sifra_regije,int kod){
+    int c[13]{0};
+    int cifra;
+    int c13;
+    long long int  JMBG;
+    for(int i=11;i&gt;=0;i--){
+        if(i==11||i==10||i==9){
+            cifra=kod%10;
+            kod=kod/10;
+            c[i]=cifra;
+        }
+        else if(i==7||i==8){
+            cifra=sifra_regije%10;
+            sifra_regije=sifra_regije/10;
+            c[i]=cifra;
+        }
+        else if(i==4||i==5||i==6){
+            cifra=godina_rodjenja%10;
+            godina_rodjenja=godina_rodjenja/10;
+            c[i]=cifra;
+        }
+    
+    else if(i==2||i==3){
+            cifra=mjesec_rodjenja%10;
+            mjesec_rodjenja=mjesec_rodjenja/10;
+            c[i]=cifra;
+        }
+        else if(i==0||i==1){
+            cifra=dan_rodjenja%10;
+            dan_rodjenja=dan_rodjenja/10;
+            c[i]=cifra;
+        }}
+       c13=11-(7*(c[0]+c[6])+6*(c[1]+c[7])+5*(c[2]+c[8])+4*(c[3]+c[9])+3*(c[4]+c[10])+2*(c[5]+c[11]))%11;
+</font><a name="1"></a><font color="#00FF00"><a href="match84-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_30.gif"/></a>
+
+    if(c13==11)c13=0;
+      c[12]=c13;
+       JMBG=c[0]*pow(10,12)+c[1]*pow(10,11)+c[2]*pow(10,10)+c[3]*pow(10,9)+c[4]*pow(10,8)+c[5]*pow(10,7)+c[6]*pow(10,6)+c[7]*pow(10,5)+c[8]*pow(10,4)+c[9]*pow(10,3)+c[10]*pow(10,2)+c[11]*pow(10,1)+c[12];
+       return JMBG;
+}
+
+void OcitajJMBG(long long int JMBG,int&amp; dan_rodjenja,int&amp; mjesec_rodjenja,int&amp; godina_rodjenja,int&amp; sifra_regije,int&amp; kod){
+    
+    int cifreJMBG[13]{0};
+    RastavinaCifreJMBG(JMBG,cifreJMBG);
+        dan_rodjenja=cifreJMBG[0]*10+cifreJMBG[1];
+        mjesec_rodjenja=cifreJMBG[2]*10+cifreJMBG[3];
+        if(cifreJMBG[4]==0)godina_rodjenja=2*1000+cifreJMBG[4]*100+cifreJMBG[5]*10+cifreJMBG[6];
+        else godina_rodjenja=1*1000+cifreJMBG[4]*100+cifreJMBG[5]*10+cifreJMBG[6];
+        sifra_regije=cifreJMBG[7]*10+cifreJMBG[8];
+        kod=cifreJMBG[9]*100+cifreJMBG[10]*10+cifreJMBG[11];
+}
+
+int Kod(long long int JMBG){
+    int dr;int mr;int god;int sr;int p;
+    OcitajJMBG(JMBG,dr,mr,god,sr,p);
+    return p;
+}
+bool Provjeri_JMBG(long long int JMBG){
+    int dan,mjesec,godina;
+    int c[13]{0};
+    int c13;
+    int p;
+    int sifra_regije;
+    OcitajJMBG(JMBG,dan,mjesec,godina,sifra_regije,p);
+    if(Validnost_Datuma(dan,mjesec,godina))return true;
+    RastavinaCifreJMBG(JMBG,c);
+    c13=11-(7*(c[0]+c[6])+6*(c[1]+c[7])+5*(c[2]+c[8])+4*(c[3]+c[9])+3*(c[4]+c[10])+2*(c[5]+c[11]))%11;
+</font><a name="0"></a><font color="#FF0000"><a href="match84-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_39.gif"/></a>
+
+    if(c13==11)c13=0;
+    if(c13!=10&amp;&amp;c[12]==c13){
+        return true;
+    }
+    else return false;
+}
+
+class GradjaninBiH {
+    std::string ime_i_prezime;
+    long long int jmbg;
+    GradjaninBiH* prethodni=nullptr;
+    static GradjaninBiH* posljednji;
+    public:
+GradjaninBiH(std::string ime_i_prezime, long long int JMBG){
+    std::cout&lt;&lt;posljednji-&gt;ime_i_prezime;
+     for(GradjaninBiH* p=posljednji;p!=nullptr;p=p-&gt;prethodni){
+             if(JMBG==(*p).DajJMBG()){
+             throw std::logic_error("Vec postoji gradjanin sa istim JMBG");
+         }
+     }
+    if(!Provjeri_JMBG(JMBG))throw std::logic_error("JMBG nije validan");
+    jmbg=JMBG;
+    this-&gt;ime_i_prezime=ime_i_prezime;
+     if(posljednji!=nullptr){
+    std::cout&lt;&lt;"bla";
+    this-&gt;prethodni=posljednji;
+     }
+    posljednji=this;
+     
+ //       OcitajJMBG(JMBG,dan_rodjenja,mjesec_rodjenja,godina_rodjenja,sifra_regije,pol);
+}
+GradjaninBiH(std::string ime_i_prezime, int dan_rodjenja, int mjesec_rodjenja,int godina_rodjenja, int sifra_regije, Pol pol){
+    this-&gt;ime_i_prezime=ime_i_prezime;
+    int kod(0);
+     for(GradjaninBiH* p=posljednji;p!=nullptr;p=p-&gt;prethodni){
+         if((*p).DajPol()==pol){
+             if(kod&gt;Kod((*p).DajJMBG()))
+             kod=Kod((*p).DajJMBG());
+         }
+     }
+     if(kod==0&amp;&amp;pol==Musko)kod=0;
+     else if(kod==0&amp;&amp;pol==Zensko)kod=500;
+     else
+     kod++;
+     for(GradjaninBiH* p=posljednji;p!=nullptr;p=p-&gt;prethodni){
+             if(kod==Kod((*p).DajJMBG())){
+             kod++;p=posljednji;
+         }
+     }
+     if(Validnost_Datuma(dan_rodjenja,mjesec_rodjenja,godina_rodjenja)||sifra_regije&lt;0||sifra_regije&gt;99)throw std::logic_error("Neispravni podaci");
+     auto JMBG=KreirajJMBG(dan_rodjenja,mjesec_rodjenja,godina_rodjenja,sifra_regije,kod);
+     if(!Provjeri_JMBG(JMBG))throw std::logic_error("JMBG nije validan");
+       for(GradjaninBiH* p=posljednji;p!=nullptr;p=p-&gt;prethodni){
+             if(JMBG==(*p).DajJMBG()){
+             throw std::logic_error("Vec postoji gradjanin sa istim JMBG");
+         }
+     }
+     jmbg=JMBG;
+      if(posljednji!=nullptr)
+    this-&gt;prethodni=posljednji;
+    posljednji=this;
+ }
+std::string DajImeIPrezime() const;
+long long int DajJMBG() const{
+    return jmbg;
+}
+int DajDanRodjenja() const{
+    int dr;int mr;int god;int sr;int p;
+    OcitajJMBG(jmbg,dr,mr,god,sr,p);
+    return dr;
+}
+int DajMjesecRodjenja() const{
+    int dr;int mr;int god;int sr;int p;
+    OcitajJMBG(jmbg,dr,mr,god,sr,p);
+    return mr;
+}
+int DajGodinuRodjenja() const{
+    int dr;int mr;int god;int sr;int p;
+    OcitajJMBG(jmbg,dr,mr,god,sr,p);
+    return god;
+}
+int DajSifruRegije() const{
+    int dr;int mr;int god;int sr;int p;
+    OcitajJMBG(jmbg,dr,mr,god,sr,p);
+    return sr;
+}
+Pol DajPol() const{
+    Pol pol;
+    int dr;int mr;int god;int sr;int p;
+    OcitajJMBG(jmbg,dr,mr,god,sr,p);
+    if(p&lt;=499&amp;&amp;p&gt;=0)pol=Musko;
+    else pol=Zensko;
+    return pol;
+}
+void PromijeniImeIPrezime(std::string novo_ime);
+};
+GradjaninBiH* GradjaninBiH::posljednji=nullptr;
+int main ()
+{
+    Pol pol=Musko;
+ //   GradjaninBiH neko("Avdo Palic",1,9,2001,17,pol);
+ //   std::cout&lt;&lt;neko.DajJMBG()&lt;&lt;std::endl;
+ //   pol=Musko;
+  GradjaninBiH neko4("Zemska kalic",802998150026);
+  GradjaninBiH h("Harun Mesan", 806996191588);
+//  std::cout&lt;&lt;neko4.DajJMBG()&lt;&lt;std::endl;
+//    GradjaninBiH neko2("ina Palic",1,9,20014,17,pol);
+ //   std::cout&lt;&lt;neko2.DajJMBG()&lt;&lt;std::endl;
+	return 0;
+</font>}</pre>
+</body>
+</html>

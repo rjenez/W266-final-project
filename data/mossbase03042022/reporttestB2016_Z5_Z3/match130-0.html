@@ -1,0 +1,196 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student5140.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student5140.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match130-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 3)
+//Autotestovi by Enil Pajic (mail: epajic1@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;limits&gt;
+
+const long long int m(std::numeric_limits&lt;long long int&gt;::min());
+const long long int M(std::numeric_limits&lt;long long int&gt;::min());
+
+static long long int NZD(long long int p, long long int q){
+    while(q!=0){
+        long long int pomocna;
+        pomocna=p;
+        p=q;
+        q=pomocna%q;
+    }
+    return p;
+}
+
+
+class Razlomak{
+    long long int brojnik,nazivnik;
+    static long long int NZD();
+public:
+    Razlomak(long long int x, long long int y) {
+        if(y==0)
+            throw std::logic_error("Nekorektan razlomak");
+        long long int skrati;
+        skrati=::NZD(x,y);
+        x/=skrati;
+        y/=skrati;
+        if(x&lt;0 &amp;&amp; y&lt;0) {x=(-1)*x; y=(-1)*y;}
+        else if(y&lt;0) {x=(-1)*x; y=(-1)*y;}
+        brojnik=x; nazivnik=y;
+    }
+    Razlomak(long long int x) {brojnik=x; nazivnik=1;}
+    Razlomak() {brojnik=0; nazivnik=1;}
+    Razlomak(std::initializer_list&lt;long long int&gt; lista){ 
+        std::vector&lt;long long int&gt; v(lista);
+        Razlomak(v[0],v[1]);
+    }
+    long long int DajBrojnik() const {return brojnik;}
+    long long int DajNazivnik() const {return nazivnik;}
+    friend Razlomak operator +(const Razlomak &amp;r1, const Razlomak &amp;r2){
+        long long int q1(r1.DajNazivnik());
+        long long int q2(r2.DajNazivnik());
+        long long int p1(r1.DajBrojnik());
+        long long int p2(r2.DajBrojnik());
+        auto r(::NZD(q1,q2));
+        Razlomak vrati(p1*(q2/r)+p2*(q1/r),q1*(q2/r));
+        return vrati;
+    }
+    friend Razlomak operator -(const Razlomak &amp;r1, const Razlomak &amp;r2){
+        long long int q1(r1.DajNazivnik());
+        long long int q2(r2.DajNazivnik());
+        long long int p1(r1.DajBrojnik());
+        long long int p2(r2.DajBrojnik());
+        auto r(::NZD(q1,q2));
+        Razlomak vrati(p1*(q2/r)-p2*(q1/r),q1*(q2/r));
+        return vrati;
+    }
+    friend Razlomak operator *(const Razlomak &amp;r1, const Razlomak &amp;r2){
+        long long int q1(r1.DajNazivnik());
+        long long int q2(r2.DajNazivnik());
+        long long int p1(r1.DajBrojnik());
+        long long int p2(r2.DajBrojnik());
+        auto s(::NZD(p1,q2));
+        auto t(::NZD(p2,q1));
+        Razlomak vrati((p1/s)*(p2/t),(q1/t)*(q2/s));
+        return vrati;
+    }
+   friend Razlomak operator /(const Razlomak &amp;r1, const Razlomak &amp;r2){
+        long long int q1(r1.DajNazivnik());
+        long long int q2(r2.DajNazivnik());
+        long long int p1(r1.DajBrojnik());
+        long long int p2(r2.DajBrojnik());
+        auto r(::NZD(q1,q2));
+        auto u(::NZD(p1,p2));
+        Razlomak vrati((p1/u)*(q2/r),(q1/r)*(p2/u));
+        return vrati;
+    }
+    friend Razlomak &amp;operator -(Razlomak &amp;r){
+        r.brojnik=(-1)*r.brojnik;
+        return r;
+    }
+    friend Razlomak &amp;operator +(Razlomak &amp;r){return r;}
+    friend Razlomak &amp;operator +=(Razlomak &amp;r1, const Razlomak &amp;r2){
+        r1=r1+r2;
+        return r1;
+    }
+    friend Razlomak &amp;operator -=(Razlomak &amp;r1, const Razlomak &amp;r2){
+        r1=r1-r2;
+        return r1;
+    }
+    friend Razlomak &amp;operator *=(Razlomak &amp;r1, const Razlomak &amp;r2){
+        r1=r1*r2;
+        return r1;
+    }
+    friend Razlomak &amp;operator /=(Razlomak &amp;r1, const Razlomak &amp;r2){
+        r1=r1/r2;
+        return r1;
+    }
+    friend Razlomak &amp;operator ++(Razlomak &amp;r1){
+        r1=r1+Razlomak(1,1);
+        return r1;
+    }
+    friend Razlomak &amp;operator --(Razlomak &amp;r1){
+        r1=r1-Razlomak(1,1);
+        return r1;
+    }
+    friend Razlomak operator --(Razlomak &amp;r1, int){
+        auto vrati(r1);
+        r1=r1-Razlomak(1,1);
+        return vrati;
+    }
+    friend Razlomak operator ++(Razlomak &amp;r1, int){
+        auto vrati(r1);
+        r1=r1+Razlomak(1,1);
+        return vrati;
+    }
+    friend bool operator &lt;(const Razlomak &amp;r1, const Razlomak &amp;r2){
+        long double v1(((long double)r1.brojnik)/r1.nazivnik);
+        long double v2(((long double)r2.brojnik)/r2.nazivnik);
+        return v1&lt;v2;
+    }
+    friend bool operator &gt;(const Razlomak &amp;r1, const Razlomak &amp;r2){
+        long double v1(((long double)r1.brojnik)/r1.nazivnik);
+        long double v2(((long double)r2.brojnik)/r2.nazivnik);
+        return v1&gt;v2;
+    }
+    friend bool operator &lt;=(const Razlomak &amp;r1, const Razlomak &amp;r2){
+        long double v1(((long double)r1.brojnik)/r1.nazivnik);
+        long double v2(((long double)r2.brojnik)/r2.nazivnik);
+        return v1&lt;=v2;
+    }
+    friend bool operator &gt;=(const Razlomak &amp;r1, const Razlomak &amp;r2){
+        long double v1(((long double)r1.brojnik)/r1.nazivnik);
+        long double v2(((long double)r2.brojnik)/r2.nazivnik);
+        return v1&gt;=v2;
+    }
+    friend bool operator ==(const Razlomak &amp;r1, const Razlomak &amp;r2){
+        long double v1(((long double)r1.brojnik)/r1.nazivnik);
+        long double v2(((long double)r2.brojnik)/r2.nazivnik);
+        return v1==v2;
+    }
+    friend bool operator !=(const Razlomak &amp;r1, const Razlomak &amp;r2){
+        long double v1(((long double)r1.brojnik)/r1.nazivnik);
+        long double v2(((long double)r2.brojnik)/r2.nazivnik);
+        return !(v1==v2);
+    }
+    friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok,const Razlomak &amp;r){
+        if(r.nazivnik==1)
+            tok &lt;&lt; r.brojnik;
+        else
+            tok &lt;&lt; r.brojnik &lt;&lt; "/" &lt;&lt; r.nazivnik;
+        return tok;
+    }
+    friend std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, Razlomak &amp;r){
+        char znak;
+        long long int x,y;
+        tok &gt;&gt; std::ws;
+        tok &gt;&gt; x;
+        if(tok.peek()!='/'){ r=Razlomak(x);}
+        else if (tok.peek()=='/'){ tok &gt;&gt; znak &gt;&gt; y; r=Razlomak(x,y);}
+        else tok.setstate(std::ios::failbit);
+        return tok;
+    }
+    operator long double () const{
+        return (((long double)brojnik)/nazivnik);
+    }
+};
+
+/*struct RazlomakBroj{
+    long long int x;
+    RazlomakBroj(long long int x): x(x) {};
+};
+ Razlomak operator /(const RazlomakBroj &amp;b, const RazlomakBroj &amp;n) {return {b.x,n.x};}
+ RazlomakBroj operator "" _r (unsigned long long int x) {return RazlomakBroj(x);}*/
+
+int main ()
+{
+	return 0;
+</font>}</pre>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student8923.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student8923.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 6
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;new&gt;
+#include &lt;memory&gt;
+<a name="0"></a><font color="#FF0000"><a href="match539-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_9.gif"/></a>
+
+using std::cout;
+using std::cin;
+using std::vector;
+using std::string;
+using std::set;
+struct Dijete
+{
+    string ime;
+    std::shared_ptr&lt;Dijete&gt; sljedeci;
+};
+int Prebroji(string ime)
+{
+    int brojac(0);
+    for(int i=0;i&lt;ime.size();i++)
+    {
+        if((ime[i]&gt;='a' &amp;&amp; ime[i]&lt;='z') || (ime[i]&gt;='A' &amp;&amp; ime[i]&lt;='Z') || (ime[i]&gt;='0' &amp;&amp; ime[i]&lt;='9'))
+</font><a name="1"></a><font color="#00FF00"><a href="match539-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+        brojac++;
+    }
+    return brojac;
+}
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector&lt;string&gt; imena,int broj)
+</font>{
+    vector&lt;set&lt;string&gt;&gt; ekipe;
+    if(broj&lt;1 || broj&gt;imena.size())
+    throw std::logic_error("Razvrstavanje nemoguce");
+    std::shared_ptr&lt;Dijete&gt; pocetak(nullptr), prethodni(nullptr);
+    try
+    {
+    int n=imena.size()/broj;
+    int m=imena.size()%broj;
+    set&lt;string&gt; skup;
+    
+        for(int i=0;i&lt;imena.size();i++)
+        {
+<a name="2"></a><font color="#0000FF"><a href="match539-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+            std::shared_ptr&lt;Dijete&gt; novi(new Dijete);
+            novi-&gt;ime=imena[i];
+            novi-&gt;sljedeci=nullptr;
+            if(!pocetak)
+            {
+                pocetak=novi;
+</font>            }
+            else
+            prethodni-&gt;sljedeci=novi;
+            prethodni=novi;
+        }
+        prethodni-&gt;sljedeci=pocetak;
+      std::shared_ptr&lt;Dijete&gt; zadnji=prethodni;
+      std::shared_ptr&lt;Dijete&gt; basprvi=pocetak;
+      int pom(0);
+        for(int i=0;i&lt;imena.size();i++)
+        {
+           if(i==0)
+           {
+               skup.insert(pocetak-&gt;ime);
+               std::shared_ptr&lt;Dijete&gt; prosli(pocetak);
+               pom=Prebroji(pocetak-&gt;ime);
+               prosli-&gt;sljedeci=pocetak-&gt;sljedeci;
+             zadnji-&gt;sljedeci=pocetak-&gt;sljedeci;
+              // pocetak=nullptr;
+           }
+           else
+           {
+               std::shared_ptr&lt;Dijete&gt; prosli(pocetak);
+               while(pom&gt;0)
+               {
+                 //  cout&lt;&lt;pocetak-&gt;ime&lt;&lt;" ";
+                   prosli=pocetak;
+                   pocetak=pocetak-&gt;sljedeci;
+                   pom--;
+               }
+               skup.insert(pocetak-&gt;ime);
+             //  cout&lt;&lt;std::endl;
+                pom=Prebroji(pocetak-&gt;ime);
+              //cout&lt;&lt;prethodni-&gt;ime&lt;&lt;" "&lt;&lt;pocetak-&gt;ime&lt;&lt;";"&lt;&lt;std::endl;
+               prosli-&gt;sljedeci=pocetak-&gt;sljedeci;
+               if(pocetak==zadnji-&gt;sljedeci)
+              zadnji-&gt;sljedeci=pocetak-&gt;sljedeci;
+             //  pocetak=nullptr;
+           }
+          if((ekipe.size()&lt;m &amp;&amp; skup.size()==n+1) || (ekipe.size()&gt;=m &amp;&amp; skup.size()==n))
+          {
+          ekipe.push_back(skup);
+          set&lt;string&gt; skup1;
+          skup=skup1;
+        //  for(auto it3=skup.begin();it3!=skup.end();it3++)
+        //  skup.erase(it3);
+          }
+        }
+        std::shared_ptr&lt;Dijete&gt; pok;
+        while(basprvi!=nullptr)
+        {
+            pok=basprvi;
+            basprvi=basprvi-&gt;sljedeci;
+            pok-&gt;sljedeci=nullptr;
+            pok=nullptr;
+        }
+        return ekipe; 
+   }
+    catch(...)
+    {
+        std::shared_ptr&lt;Dijete&gt; p;
+        while(pocetak!=nullptr)
+        {
+            p=pocetak;
+            pocetak=pocetak-&gt;sljedeci;
+            p-&gt;sljedeci=nullptr;
+            p=nullptr;
+        }
+        throw;
+    }
+    return ekipe;
+}
+int main ()
+{
+    cout&lt;&lt;"Unesite broj djece: ";
+    int br;
+    cin&gt;&gt;br;
+    cout&lt;&lt;"Unesite imena djece: "&lt;&lt;std::endl;
+    vector&lt;string&gt; imena;
+    cin.ignore(10000,'\n');
+    for(int i=0;i&lt;br;i++)
+    {
+        string pom;
+        std::getline(cin,pom);
+        imena.push_back(pom);
+    }
+    cout&lt;&lt;"Unesite broj timova: ";
+    int broj;
+    cin&gt;&gt;broj;
+    vector&lt;set&lt;string&gt;&gt; timovi;
+    try
+    {
+        timovi=Razvrstavanje(imena,broj);
+        int i(0);
+            for(auto pom1: timovi)
+            {
+            i++;
+            int brojac(0);
+            cout&lt;&lt;"Tim "&lt;&lt;i&lt;&lt;": ";
+            for(auto pom2: pom1)
+            {
+               if(brojac!=timovi[i-1].size()-1)
+                cout&lt;&lt;pom2&lt;&lt;", ";
+               else
+              cout&lt;&lt;pom2;
+              brojac++;
+            }
+            cout&lt;&lt;std::endl;
+            }
+    }
+    catch(std::logic_error izuzetak)
+    {
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+        return 0;
+    }
+//	return 0;
+	return 0;
+}</pre>
+</body>
+</html>

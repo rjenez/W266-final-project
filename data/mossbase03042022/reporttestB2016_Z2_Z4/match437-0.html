@@ -1,0 +1,201 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student4415.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student4415.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+
+	NAPOMENA: i javni ATo-vi su dio postavke
+
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include "TestCurenja.h"
+
+
+
+int PotencijalniKrivci (char** &amp;pok,std::vector&lt;std::string&gt; v1)
+{
+	char** imena(nullptr);
+	try {
+		imena = new char*[v1.size()];
+	} catch (std::bad_alloc) {
+		return 0;
+	}
+
+	for (int i = 0; i &lt; v1.size(); i++) {
+		imena[i] = nullptr;
+	}
+
+	try {
+		for (int i = 0; i &lt; v1.size(); i++) {
+			imena[i] = new char[v1[i].size()+1];
+		}
+<a name="4"></a><font color="#FF00FF"><a href="match437-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+	} catch (std::bad_alloc) {
+		for (int i = 0; i &lt; v1.size(); i++) {
+			delete[] imena[i];
+		}
+		delete[] imena;
+</font>		throw;
+	}
+	int i(0);
+	int j(0);
+	for (i = 0; i &lt; v1.size(); i++) {
+		for (j = 0; j &lt; v1[i].size(); j++) {
+			imena[i][j] = v1[i][j];
+		}
+		imena[i][j] = '\0';
+	}
+	
+	pok = imena;
+	return v1.size();
+}
+
+int OdbaciOptuzbu (char** &amp;pok1,int vel,std::string s)
+{
+	bool nalazi_se(false);
+	int pozicija(0);
+	for (int i = 0; i &lt; vel; i++) {
+		if (std::string(pok1[i]) == s) {
+			nalazi_se = true;
+			pozicija = i;
+			break;
+		}
+	}
+	std::string izutezak("Osoba sa imenom ");
+	izutezak +=s + " nije bila optuzena"; 
+	if (nalazi_se == false) throw std::domain_error (izutezak);
+<a name="1"></a><font color="#00FF00"><a href="match437-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+	delete[] pok1[pozicija];
+	pok1[pozicija] = nullptr;
+	int brojac(0);
+	for (int i = 0; i &lt; vel; i++) {
+		if(pok1[i] == nullptr) brojac++;
+	}
+	if (brojac &gt; 10) {
+</font>		char** pok2(nullptr);
+		try {
+			pok2 = new char*[vel-brojac];
+		} catch (std::bad_alloc) {
+			throw;
+		}
+		for (int i = 0; i &lt; vel-brojac; i++) {
+			pok2[i] = nullptr;
+		}
+		int j(0);
+		for (int i = 0; i &lt; vel-brojac and j &lt; vel;) {
+			if(pok1[j] == nullptr) j++;
+			else {
+				pok2[i] = pok1[j];
+				i++;
+				j++;
+			}
+		}
+		
+		delete[] pok1;
+		pok1 = pok2;
+<a name="2"></a><font color="#0000FF"><a href="match437-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+		return vel -brojac;
+	}
+	return vel;
+	
+}
+
+int DodajOptuzbu (char** &amp;pok1,int vel,std::string s)
+{
+	char* ime(nullptr);
+	try {
+		ime = new char[s.size()+1];
+</font>		int i(0);
+		for (i = 0; i &lt; s.size(); i++) {
+			ime[i] = s[i];
+		}
+		ime[i] = '\0';
+	} catch (std::bad_alloc) {
+		throw;
+	}
+<a name="0"></a><font color="#FF0000"><a href="match437-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+	for (int i = 0; i &lt; vel; i++) {
+		if(pok1[i] == nullptr) {
+			pok1[i] = ime;
+			return vel;
+		}
+	}
+	
+	char** pok2(nullptr);
+	try {
+		
+		pok2 = new char*[vel+1];
+		for (int i = 0; i &lt; vel +1; i++) {
+</font>			pok2[i] = nullptr;
+		}
+		for (int i = 0; i &lt; vel; i++) {
+			pok2[i] = pok1[i];
+		}
+		pok2[vel] = ime;
+		delete[] pok1; 		
+		pok1 = pok2;		
+		return vel+1;
+		
+	} catch (std::bad_alloc) {
+		delete[] ime;
+		throw;
+	}
+    return vel;
+}
+
+void IzlistajOptuzbu (char** const &amp;pok,int vel)
+{
+<a name="3"></a><font color="#00FFFF"><a href="match437-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+	for (int i = 0; i &lt; vel; i++) {
+		if(pok[i] != nullptr) std::cout &lt;&lt; pok[i] &lt;&lt; std::endl;
+</font>	}
+}
+
+
+int main ()
+{
+	std::cout &lt;&lt; "Koliko potencijalnih krivaca zelite unijeti? " &lt;&lt; std::endl;
+	int n;
+	std::cin &gt;&gt; n;
+	std::vector&lt;std::string&gt; imena(n);
+	std::cout &lt;&lt; "Unesite potencijalne krivce: "&lt;&lt;std::endl;
+	for (auto &amp;i : imena) {
+		std::cin &gt;&gt; i;
+	}
+	char** p(nullptr);
+	int opcija(0);
+	int vel(PotencijalniKrivci(p,imena));
+	std::string ime;
+	do {
+		std::cout &lt;&lt; "Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: " &lt;&lt; std::endl;
+		std::cin &gt;&gt; opcija;
+		switch (opcija) {
+			case 1 :  std::cout &lt;&lt; "Unesite ime novog optuzenog: " &lt;&lt; std::endl; std::cin &gt;&gt; ime; vel = DodajOptuzbu(p,vel,ime); break;
+			case 2 :  std::cout &lt;&lt; "Unesite ime koje zelite izbaciti: " &lt;&lt; std::endl; std::cin &gt;&gt; ime; vel = OdbaciOptuzbu(p,vel,ime); break;
+			case 3 :  IzlistajOptuzbu(p,vel); break;
+			case 0 :  break;
+			default : break;
+		}
+	}while(opcija != 0);
+	for (int i = 0; i &lt; vel; i++) {
+	    delete[] p[i];
+	}
+	delete[] p;
+	return 0;
+}</pre>
+</body>
+</html>

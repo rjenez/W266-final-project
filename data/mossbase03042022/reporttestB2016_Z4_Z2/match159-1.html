@@ -1,0 +1,157 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student3594.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student1176.cpp<p></p><pre>
+#include &lt;iostream&gt; 
+#include &lt;string&gt;  
+#include &lt;stdexcept&gt;
+enum Pol{Musko, Zensko};
+class GradjaninBiH{ 
+    std::string ip; 
+    int dan, mjesec, godina, regija;  
+    long long int jmb;
+    Pol pol1;
+    public: 
+    GradjaninBiH(std::string ime_i_prezime, long long int jmbg){
+        ip=ime_i_prezime; 
+        jmb=jmbg;
+        dan=jmbg/100000000000;
+        mjesec=jmbg/1000000000%10+(jmbg/1000000000)%100/10*10;
+        godina=(jmbg/1000000)%1000; 
+        if(godina&lt;18) godina+=2000;
+        if(godina&gt;17) godina+=1000;
+        regija=(jmbg/10000)%100; 
+        int sifra=(jmbg/10)%1000;
+        if(sifra&gt;=0 &amp;&amp; sifra&lt;=499) pol1=Musko;
+        if(sifra&gt;499 &amp;&amp; sifra&lt;=999) GradjaninBiH::pol1=Pol::Zensko; 
+        int c13=11-(7*(dan/10+godina%10)+6*(dan%10+regija/10)+5*(mjesec/10+regija%10)+4*(mjesec%10+sifra/100)+3*(godina/100%10+sifra/10%10)+2*(godina/10%10+sifra%10))%11;
+        if(c13==11) c13=0; 
+        if(c13==10) throw std::logic_error("JMBG nije validan");
+    } 
+    GradjaninBiH(std::string ime_i_prezime, int dan_rodjenja, int mjesec_rodjenja, int godina_rodjenja, int sifra_regije, Pol pol){
+        if(regija&lt;0 || regija&gt;99) throw std::logic_error("Neispravni podaci"); 
+        int br_dana[12]{31,28,31,30,31,30,31,31,30,31,30,31};
+        if(godina_rodjenja%4==0 &amp;&amp; godina_rodjenja%100!=0 || godina_rodjenja%400==0) br_dana[1]++; 
+        if(godina_rodjenja&lt;1 || dan_rodjenja&lt;1 || mjesec_rodjenja&lt;1 || mjesec_rodjenja&gt;12 || dan_rodjenja&gt;br_dana[mjesec_rodjenja-1]) 
+        throw std::logic_error("Neispravni podaci");
+        ip=ime_i_prezime;
+        dan=dan_rodjenja;
+        mjesec=mjesec_rodjenja;
+        godina=godina_rodjenja;
+        regija=sifra_regije; 
+        jmb=dan*100000000000+mjesec*1000000000+godina%1000*1000000+regija*10000+0*1000;
+        pol1=pol;   
+        int br1; 
+    } 
+    std::string DajImeIPrezime() const{
+        return ip;
+    } 
+    long long int DajJMBG() const{
+        return jmb;
+    } 
+    int DajDanRodjenja() const{
+        return dan;
+    }
+    int DajMjesecRodjenja() const{
+        return mjesec;
+    } 
+    int DajGodinuRodjenja() const{
+        return godina;
+    } 
+    int DajSifruRegije() {
+        return regija;
+    } 
+    Pol DajPol() const{
+        return pol1;
+    } 
+    void PromijeniImeIPrezime(std::string novo_ime){
+        ip=novo_ime;
+    }
+};
+int main ()
+{ 
+    int n;
+    std::cout &lt;&lt; "Koliko gradjana zelite unijeti po JMBG? " &lt;&lt; std::endl;
+    std::cin &gt;&gt; n;  
+    std::cin.clear();
+    std::cin.ignore(10000, '\n');  
+    long long int jmb;
+    std::string ip; 
+    for(int i(0); i&lt;n; ++i){
+<a name="0"></a><font color="#FF0000"><a href="match159-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_11.gif"/></a>
+
+        std::cout &lt;&lt; "Unesite ime i prezime (u istom redu): " &lt;&lt; std::endl; 
+        std::getline(std::cin, ip); 
+        std::cout &lt;&lt; "Unesite JMBG: " &lt;&lt; std::endl;
+        std::cin &gt;&gt; jmb; 
+        try{
+            GradjaninBiH gradanin(ip, jmb); 
+            ip.clear();
+            std::cin.clear();
+            std::cin.ignore(10000, '\n'); 
+            std::cout &lt;&lt; "Unijeli ste gradjanina " &lt;&lt; gradanin.DajImeIPrezime() &lt;&lt; " rodjenog " &lt;&lt; gradanin.DajDanRodjenja() &lt;&lt; "." &lt;&lt; 
+            gradanin.DajMjesecRodjenja() &lt;&lt; "." &lt;&lt; gradanin.DajGodinuRodjenja() &lt;&lt; " u regiji " &lt;&lt; gradanin.DajSifruRegije() &lt;&lt; ",";
+            if(gradanin.DajPol()==Pol::Zensko) std::cout &lt;&lt; " zensko." &lt;&lt; std::endl;
+</font><a name="1"></a><font color="#00FF00"><a href="match159-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_10.gif"/></a>
+
+            if(gradanin.DajPol()==Pol::Musko) std::cout &lt;&lt; " musko." &lt;&lt; std::endl; 
+        }
+        catch(std::logic_error izuzetak){
+            std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl; 
+            i--;
+            ip.clear();  
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+        } 
+        ip.erase();
+    }  
+    std::cout &lt;&lt; "Koliko gradjana zelite unijeti po datumu rodjenja, regiji i polu? " &lt;&lt; std::endl; 
+    int n2;
+    std::cin &gt;&gt; n2;
+    std::cin.clear();
+    std::cin.ignore(10000, '\n'); 
+    std::string ip2; 
+    int g, m, d, sifra;
+    char spol, x;
+</font>    Pol pol; 
+    for(int i(0); i&lt;n2; ++i){
+<a name="2"></a><font color="#0000FF"><a href="match159-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_10.gif"/></a>
+
+        std::cout &lt;&lt; "Unesite ime i prezime (u istom redu): " &lt;&lt; std::endl; 
+        std::getline(std::cin, ip2);
+        std::cout &lt;&lt; "Unesite datum rodjenja (format dd/mm/gg): " &lt;&lt; std::endl;
+        std::cin &gt;&gt; d;
+        std::cin &gt;&gt; x;
+        std::cin &gt;&gt; m;
+        std::cin &gt;&gt; x;
+        std::cin &gt;&gt; g; 
+        std::cout &lt;&lt; "Unesite sifru regije: " &lt;&lt; std::endl;
+        std::cin &gt;&gt; sifra;
+        std::cout &lt;&lt; "Unesite M za musko, Z za zensko: " &lt;&lt; std::endl;
+        std::cin &gt;&gt; spol;
+        if(spol=='Z') pol=Zensko;
+</font>        if(spol=='M') pol=Musko; 
+<a name="3"></a><font color="#00FFFF"><a href="match159-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_10.gif"/></a>
+
+        try{
+            auto gradanin2=GradjaninBiH(ip2, d, m, g, sifra, pol);
+            ip2.clear();
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout &lt;&lt; "Unijeli ste gradjanina " &lt;&lt; gradanin2.DajImeIPrezime() &lt;&lt; " JMBG: " &lt;&lt; gradanin2.DajJMBG() &lt;&lt; "." &lt;&lt; std::endl;
+        } 
+        catch(std::logic_error izuzetak){
+            std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+            i--;
+            ip2.clear();
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+        }
+    }
+	return 0;
+</font>}</pre>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student8428.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student8428.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt;
+<a name="0"></a><font color="#FF0000"><a href="match879-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+struct Dijete
+{
+    std::string ime;
+    std::shared_ptr&lt;Dijete&gt; sljedeci;
+};
+int BrojSlova(std::string s)
+{
+    int brojac(0);
+    for(int i(0); i &lt; s.size(); i++)
+    {
+        if(s[i] &gt;= '0' &amp;&amp; s[i] &lt;= '9')
+</font>            brojac++;
+        else if(s[i] &gt;= 'a' &amp;&amp; s[i] &lt;= 'z')
+            brojac++;
+        else if(s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z')
+            brojac++;
+    }
+    return brojac;
+}
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; v, int brojTimova)
+{
+<a name="2"></a><font color="#0000FF"><a href="match879-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+    if(brojTimova &lt; 1 || brojTimova &gt; v.size())
+        throw std::logic_error("Razvrstavanje nemoguce");
+    std::shared_ptr&lt;Dijete&gt; pocetak(nullptr), prethodni(nullptr);
+</font>    try
+    {
+        for(int i(0); i &lt; v.size(); i++)
+        {
+            std::shared_ptr&lt;Dijete&gt; novo(new Dijete);
+            novo-&gt;ime = v[i];
+            novo-&gt;sljedeci = nullptr;
+            if(!pocetak)
+                pocetak = novo;
+            else
+                prethodni-&gt;sljedeci = novo;
+            prethodni = novo;
+        }
+    }
+    catch(std::bad_alloc)
+    {
+        prethodni = nullptr;
+        while (pocetak != nullptr) {
+            pocetak = pocetak-&gt;sljedeci;
+        }
+    }
+    prethodni-&gt;sljedeci = pocetak;
+    
+    int brojDjece = v.size();
+    int brojTimovaSaClanomVise = brojDjece % brojTimova;
+    std::vector&lt;std::set&lt;std::string&gt;&gt; clanovi(brojTimova);
+    std::vector&lt;int&gt;brojClanovaPoTimu(brojTimova, brojDjece/brojTimova);
+    for(int i(0); i &lt; brojTimovaSaClanomVise; i++)
+       brojClanovaPoTimu[i]++;
+        
+    
+    int brojSlova = BrojSlova(pocetak-&gt;ime);
+    clanovi[0].insert(pocetak-&gt;ime);
+    
+    pocetak = pocetak-&gt;sljedeci;
+    prethodni-&gt;sljedeci = pocetak;
+    
+    int brojDjeceUTimu = 1;
+    int brojSkupa = 0;
+    for(int i(1); i &lt; v.size(); i++)
+    {
+        if(brojDjeceUTimu == brojClanovaPoTimu[brojSkupa])
+        {
+            brojSkupa++;
+            brojDjeceUTimu = 0;
+        }
+        int brojac(1);
+        while(brojac &lt; brojSlova)
+        {
+            pocetak = pocetak-&gt;sljedeci;
+            brojac++;
+            prethodni = prethodni-&gt;sljedeci;
+        }
+        brojSlova = BrojSlova(pocetak-&gt;ime);
+        clanovi[brojSkupa].insert(pocetak-&gt;ime);
+        brojDjeceUTimu++;
+
+        pocetak = pocetak-&gt;sljedeci;
+        prethodni-&gt;sljedeci = pocetak;
+
+    }
+    pocetak-&gt;sljedeci = nullptr;
+    pocetak = nullptr;
+    prethodni = nullptr;
+    return clanovi;
+}
+int main ()
+{
+    try
+    {
+        std::cout &lt;&lt; "Unesite broj djece: ";
+        int n;
+        std::cin &gt;&gt; n;
+        std::cout &lt;&lt; "Unesite imena djece: \n";
+        std::vector&lt;std::string&gt; v;
+        std::cin.ignore(1000, '\n');
+<a name="1"></a><font color="#00FF00"><a href="match879-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+        for(int i(0); i &lt; n; i++)
+        {
+            std::string s;
+            std::getline(std::cin, s);
+            v.push_back(s);
+        }
+        std::cout &lt;&lt; "Unesite broj timova: ";
+        std::cin &gt;&gt; n;
+        auto novi = Razvrstavanje(v, n);
+</font>        for(int i(0); i &lt; n; i++)
+        {
+            std::cout &lt;&lt; "Tim " &lt;&lt; i + 1&lt;&lt; ": ";
+            auto pok = novi[i].begin();
+            for(int j(0); j &lt; novi[i].size() - 1; ++j, ++pok)
+                std::cout &lt;&lt; *pok &lt;&lt; ", ";
+            std::cout &lt;&lt; *pok &lt;&lt; std::endl;
+        }
+    	return 0;
+    }
+    catch(std::logic_error e)
+    {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what();
+        return 0;
+    }
+}</pre>
+</body>
+</html>

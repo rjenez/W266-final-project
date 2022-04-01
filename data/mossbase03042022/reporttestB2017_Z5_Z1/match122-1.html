@@ -1,0 +1,323 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z1/student6321.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z1/student4554.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match122-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_30.gif"/></a>
+
+/B2017/2018: Zadaća 5, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+
+
+class Student {
+    int  broj_indeksa;
+    std::string godina_studija, ime_i_prezime, adresa, broj_telefona;
+    
+    public:
+    
+    Student(int broj_indeksa, std::string godina_studija, std::string ime_i_prezime, std::string adresa, std::string broj_telefona) {
+        int br(broj_indeksa);
+        
+        int brojac=0;
+
+        while(br != 0) {
+            int cifra = br % 10;
+            br /= 10;
+            brojac++;
+        }
+        if(brojac != 5) throw std::domain_error("Neispravni parametri1");
+    
+    if(godina_studija != "1" &amp;&amp; godina_studija != "2" &amp;&amp; godina_studija != "3" &amp;&amp; godina_studija != "1/B" &amp;&amp; godina_studija != "2/B" &amp;&amp; godina_studija != "3/B" &amp;&amp; godina_studija != "1/M" &amp;&amp; godina_studija != "2/M" &amp;&amp; godina_studija != "1/D" &amp;&amp; godina_studija != "2/D" &amp;&amp; godina_studija != "3/D" )
+     throw std::domain_error("Neispravni parametri2");
+    
+    while(ime_i_prezime[0] == ' ') {
+        ime_i_prezime.erase(0,1);
+    }
+    
+    for(int i=1; i&lt;ime_i_prezime.size(); i++) {
+        if(ime_i_prezime[i-1] == ' ' &amp;&amp; ime_i_prezime[i] == ' ') {
+            ime_i_prezime.erase(i, 1);
+            i--;
+        }
+    }
+    if(ime_i_prezime[0] == ' ') ime_i_prezime.erase(0,1);
+    if(ime_i_prezime[ime_i_prezime.size()] == ' ') ime_i_prezime.erase(ime_i_prezime.size());
+    
+    // BROJ TELEFONA
+   int brojacc=0;
+    for(int i=0; i&lt;broj_telefona.size(); i++)  {
+        if(broj_telefona[i] &lt; '0' || broj_telefona[i] &gt; '9') {
+            if(brojacc == 0 &amp;&amp; broj_telefona[i] != '/') throw std::domain_error("Neispravni parametri");
+            if(brojacc == 1 &amp;&amp; broj_telefona[i] != '-') throw std::domain_error("Neispravni parametri");
+            if(brojacc == 2) throw std::domain_error("Neispravni parametri");
+        
+            brojacc++;
+        }
+        
+        
+    }
+    
+    this-&gt;broj_indeksa=broj_indeksa;
+    this-&gt;godina_studija=godina_studija;
+    this-&gt;ime_i_prezime=ime_i_prezime;
+    this-&gt;broj_telefona=broj_telefona;
+    this-&gt;adresa=adresa;
+    
+    } //kraj konstruktora
+    
+    
+    int DajIndeks() const {
+        return broj_indeksa;
+    }
+    std::string DajGodinuStudija() const {
+        
+        return godina_studija;
+    }
+    
+    std::string DajImeiPrezime() const {
+        return ime_i_prezime;
+    }
+    
+    std::string DajAdresu() const {
+        return adresa;
+    }
+    
+    std::string DajTelefon() const {
+        return broj_telefona;
+    }
+    
+    void Ispisi() {
+        std::cout&lt;&lt;"Broj indeksa: "&lt;&lt;DajIndeks()&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Godina studija: "&lt;&lt;DajGodinuStudija()&lt;&lt;std::endl;
+</font>        std::cout&lt;&lt;"Ime i prezime: "&lt;&lt;DajImeiPrezime()&lt;&lt;std::endl;
+<a name="0"></a><font color="#FF0000"><a href="match122-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_50.gif"/></a>
+
+        std::cout&lt;&lt;"Adresa: "&lt;&lt;DajAdresu()&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Telefon: "&lt;&lt;DajTelefon()&lt;&lt;std::endl;
+        
+    }
+};
+
+class Laptop {
+    int ev_broj;
+    std::string naziv, karakteristike;
+    Student *kod_koga_je = nullptr;
+    
+        public:
+
+    Laptop( int ev_broj, std::string naziv, std::string karakteristike) {
+        if(ev_broj &lt; 0) throw std::domain_error("Neispravni parametri");
+       
+       this-&gt;ev_broj=ev_broj;
+       this-&gt;naziv=naziv;
+       this-&gt;karakteristike=karakteristike;
+       this-&gt;kod_koga_je=kod_koga_je;
+    } 
+    
+    
+    int DajEvidencijskiBroj() const {
+        return ev_broj;
+    }
+    std::string DajNaziv() const {
+        return naziv;
+    }
+    std::string DajKarakterstike() const {
+        return karakteristike;
+    }
+    
+    void Zaduzi(Student &amp;s) {
+        if(DaLiJeZaduzen())
+        throw std::domain_error("Laptop je vec zaduzen");
+                else this-&gt;kod_koga_je=&amp;s;
+
+    }
+    
+    void Razduzi () {
+        kod_koga_je = nullptr;
+    }
+    
+    bool DaLiJeZaduzen() {
+        if(kod_koga_je == nullptr) return false;
+        return true;
+    }
+   Student &amp;DajKodKogaJe() {
+        if(!(DaLiJeZaduzen())) throw std::domain_error("Laptop nije zaduzen");
+        else *kod_koga_je;
+    }
+    Student *DajPokKodKogaJe() {
+         if(!(DaLiJeZaduzen())) throw std::domain_error("Laptop nije zaduzen");
+        else kod_koga_je;
+    }
+    
+    void Ispisi() {
+        std::cout&lt;&lt;"Evidencijski broj: "&lt;&lt;DajEvidencijskiBroj()&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Naziv: "&lt;&lt;DajNaziv()&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Karakteristike: "&lt;&lt;DajKarakterstike()&lt;&lt;std::endl;
+    }
+};
+
+class Administracija {
+    
+    std::map&lt;int, Student*&gt; s_mapa;
+    std::map&lt;int, Laptop*&gt; l_mapa;
+    
+    public: 
+    
+    Administracija() {}
+    
+    
+    ~Administracija() {
+        for(auto it=s_mapa.begin(); it != s_mapa.end(); it++) delete it-&gt;second;
+        
+        for(auto it=l_mapa.begin(); it != l_mapa.end(); it++) delete it-&gt;second;
+    }
+   void RegistrirajNovogStudenta(int broj_indeksa, std::string godina_studija, std::string ime_i_prezime, std::string adresa, std::string broj_telefona) {
+       Student* s=new Student(broj_indeksa, godina_studija, ime_i_prezime, adresa, broj_telefona);
+       
+       auto it(this-&gt;s_mapa.find(broj_indeksa));
+       if(it != s_mapa.end())
+       throw std::domain_error("Student s tim indeksm vec postoji");
+       this-&gt;s_mapa[broj_indeksa]=s;
+   }
+    
+Student &amp;NadjiStudenta(int broj_indeksa) {
+           auto it(this-&gt;s_mapa.find(broj_indeksa));
+
+           if(it == s_mapa.end())
+          throw std::domain_error("Student nije nadjen");
+        return *it-&gt;second;
+}
+
+Laptop &amp;NadjiLaptop(int ev_broj) {
+auto it(this-&gt;l_mapa.find(ev_broj));
+
+           if(it == l_mapa.end())
+          throw std::domain_error("Laptop nije nadjen");
+        return *it-&gt;second;
+}
+
+void IzlistajStudente() {
+    for(auto it=s_mapa.begin(); it != s_mapa.end(); it++) {
+        it-&gt;second-&gt;Ispisi();
+    }
+}
+
+void IzlistajLaptope() {
+     for(auto it=l_mapa.begin(); it != l_mapa.end(); it++) {
+        it-&gt;second-&gt;Ispisi();
+    }
+}
+
+
+void ZaduziLaptop(int broj_indeksa, int ev_broj) {
+    
+        Student s=this-&gt;NadjiStudenta(broj_indeksa);
+
+    Laptop l=this-&gt;NadjiLaptop(ev_broj);
+    
+    
+    
+    this-&gt;l_mapa[ev_broj]-&gt;Zaduzi(NadjiStudenta(broj_indeksa));
+    
+             
+}
+
+int NadjiSlobodniLaptop() {
+   for(auto it=l_mapa.begin(); it != l_mapa.end(); it++) {
+       if( it-&gt;second-&gt;DaLiJeZaduzen() == false) return it-&gt;first;
+   }
+    throw std::domain_error("Nema slobodnih laptopa");
+}
+
+void RazduziLaptop(int ev_broj) {
+    Laptop l=this-&gt;NadjiLaptop(ev_broj);
+   
+    this-&gt;l_mapa[ev_broj]-&gt;Razduzi();
+
+}
+
+void PrikaziZaduzenja() {
+    
+    for(auto it=l_mapa.begin(); it != l_mapa.end(); it++) {
+        if(it-&gt;second-&gt;DaLiJeZaduzen()==true) {
+            std::cout&lt;&lt;"Student "&lt;&lt;it-&gt;second-&gt;DajPokKodKogaJe()-&gt;DajImeiPrezime()&lt;&lt;" ("&lt;&lt;it-&gt;second-&gt;DajPokKodKogaJe()-&gt;DajIndeks()&lt;&lt;") zaduzio/la laptop broj "&lt;&lt;it-&gt;second-&gt;DajEvidencijskiBroj()&lt;&lt;std::endl;
+            
+        } else std::cout&lt;&lt;"Nema zaduzenja";
+            }
+}
+
+};
+
+
+int main ()
+{
+    try {
+        
+    for(;;) {
+        std::cout&lt;&lt;"Unesite broj za opciju koju zelite ili 0 za kraj: "&lt;&lt;std::endl;
+        std::cout&lt;&lt;"1 - Registriraj novog studenta"&lt;&lt;std::endl;
+        std::cout&lt;&lt;"2 - Registriraj novi laptop"&lt;&lt;std::endl;
+</font>        std::cout&lt;&lt;"3 - Nadji studenta"&lt;&lt;std::endl;
+<a name="2"></a><font color="#0000FF"><a href="match122-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_14.gif"/></a>
+
+        std::cout&lt;&lt;"4 - NadjiLaptop"&lt;&lt;std::endl;
+        std::cout&lt;&lt;"5 - Registriraj novi laptop"&lt;&lt;std::endl;
+        std::cout&lt;&lt;"6 - Izlistaj studente"&lt;&lt;std::endl;
+        
+        int n;
+        
+        std::cin&gt;&gt;n;
+        
+        if (n == 0) {
+            return 0;
+        } else {
+        if(n == 1) {
+           Student s8(17865, "1/B","   Nejla Bandic         - ", "Miami 6984", "033/421-322");
+           s8.Ispisi();
+        }
+        
+
+
+    Student s1(17866, "1/B","   Nejla Bandic         - ", "Miami 6984", "033/421-322");
+    Student s2(12354, "2/B", "   Alma Almić   ", " Igmanska 154   ", "036/344-666");
+    Student s3(12333, "1/D", "Meho Milic ", "Brezovacka 7", "035/422-469");
+    Student s4(78975, "3/B", "Ina Matic  ", "Hadzeli 1", "031/456-098");
+    
+    s1.Ispisi();
+    s2.Ispisi();
+    s3.Ispisi();
+    s4.Ispisi();
+    
+    std::cout&lt;&lt;std::endl;
+    
+    Laptop l1(724," Asus 856", "intel 256, bhjgsajgfjd");
+    Laptop l2(12, "HP ", "Intel, 8 GB RAM");
+    Laptop l3(124, "HP  656", "16 GB RAM, Intel CPU");
+    Laptop l4(45, "Asus Aspire", "2.4 GHz, 16 GB RAM");
+    
+    l1.Ispisi();
+    l2.Ispisi();
+    l3.Ispisi();
+    l4.Ispisi();
+    
+    std::cout&lt;&lt;std::endl;
+    
+        }
+    }
+    } catch(std::exception &amp;ex) {
+        std::cout&lt;&lt;ex.what();
+    }
+    
+  //else
+
+
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

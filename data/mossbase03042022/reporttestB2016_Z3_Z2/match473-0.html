@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student7293.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student7293.cpp<p></p><pre>
+<a name="2"></a><font color="#0000FF"><a href="match473-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_6.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;set&gt;
+#include &lt;utility&gt;
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova (std::string s) //pridruzena vrijednost su skupovi cijelih brojeva
+{
+    std::string novi;
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; ip;
+</font>    std::set&lt;int&gt; prvi{};
+    
+    for (int i=0; i&lt;s.length(); i++) {
+        std::string temp = std::string();
+        while (s[i]==' ' &amp;&amp; i!=s.length()) {
+            i++;
+        }
+        int pom = i;
+        while (s[i]!=' ' &amp;&amp; i!=s.length()) {
+            temp = temp + s[i];
+            i++;
+        }
+        if (!ip.count(temp)) ip.insert(make_pair(temp,prvi));
+<a name="0"></a><font color="#FF0000"><a href="match473-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_11.gif"/></a>
+
+        ip[temp].insert(pom);
+    }
+    return ip;
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova (std::string s, std::map&lt;std::string, std::set&lt;int&gt;&gt; m) //vraca skup pozicija
+{
+    if (!m.count(s)) throw std::logic_error ("Unesena rijec nije nadjena!");
+</font>    
+    return m[s];
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match473-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_8.gif"/></a>
+
+void IspisiIndeksPojmova (std::map&lt;std::string, std::set&lt;int&gt;&gt; m) //prima mapu koja predstavlja indeks pojmova
+{
+    for (auto k : m) {
+        std::cout &lt;&lt; k.first &lt;&lt; ": ";
+</font>        int br{0};
+        int vel = distance(k.second.begin(), k.second.end());
+        for (auto l : k.second) {
+            br++;
+            if (br == vel) std::cout &lt;&lt; l;
+            else std::cout &lt;&lt; l &lt;&lt; ",";
+            
+        }
+<a name="3"></a><font color="#00FFFF"><a href="match473-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_6.gif"/></a>
+
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+int main() 
+{
+    std::string tekst;
+    std::cout &lt;&lt; "Unesite tekst: ";
+    std::getline (std::cin, tekst);
+    IspisiIndeksPojmova(KreirajIndeksPojmova(tekst));
+</font>    
+    while (1) {
+        std::string rijec;
+        std::cout &lt;&lt; "Unesite rijec: ";
+        try {
+            std::getline(std::cin, rijec);
+            if (rijec == ".") break;
+            
+            std::set&lt;int&gt; skup = PretraziIndeksPojmova(rijec, KreirajIndeksPojmova(tekst));
+            
+            for (auto x : skup) {
+                std::cout &lt;&lt; x &lt;&lt; " ";
+            }
+            std::cout &lt;&lt; std::endl;
+        }
+        catch(std::logic_error izuzetak) {
+            std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+        }
+    }
+    return 0;
+}</pre>
+</body>
+</html>

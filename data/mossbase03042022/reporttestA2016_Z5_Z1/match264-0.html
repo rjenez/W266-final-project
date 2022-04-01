@@ -1,0 +1,137 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z1/student9897.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z1/student9897.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#define epsilon 0.0001
+
+<a name="2"></a><font color="#0000FF"><a href="match264-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+struct Student {
+	char ime[20], prezime[20];
+	int ocjene[50];
+	int br_ocjena;
+};
+
+float prosjek_svih_studenata(int niz[], int vel) {
+</font>	float prosjek_svih=0.0;
+	int i;
+	float suma=0;
+	for(i=0;i&lt;vel;i++) {
+		if(niz[i]==5 || vel==0) return 5.0;
+		suma+=niz[i];
+		prosjek_svih=suma/vel;
+	}
+	return prosjek_svih;
+}
+
+int uporedi(char* s1, char* s2) {
+	if(strcmp(s1,s2)==0) return 0;
+	if(strcmp(s1,s2)&lt;0) return -1;
+	if(strcmp(s1,s2)&gt;0) return 1;
+	while(*s1!='\0' &amp;&amp; *s2!='\0') {
+		if(*s1&lt;*s2) return -1;
+		if(*s1&gt;*s2) return 1;
+		s1++;
+		s2++;
+	}
+	if(*s1!='\0') return 1;
+	if(*s2!='\0') return -1;
+	return 0;
+}
+ int redoslijed(struct Student prvi, struct Student drugi) {
+	float prosjek1=prosjek_svih_studenata(prvi.ocjene,prvi.br_ocjena);
+	float prosjek2=prosjek_svih_studenata(drugi.ocjene,drugi.br_ocjena);
+		if(prosjek1&gt;prosjek2) return 1;
+		else if(prosjek1&lt;prosjek2) return 0;
+		
+		if(uporedi(prvi.prezime,drugi.prezime)==-1) return 1;
+		else if(uporedi(prvi.prezime,drugi.prezime)==1) return 0;
+		
+		if(uporedi(prvi.ime,drugi.ime)==-1) return 1;
+		else if(uporedi(prvi.ime,drugi.ime)==1) return 0;
+		else return 1;
+}
+
+int genijalci(struct Student niz[], int vel, float prosjekk) {
+	int i, j, index1, index2, index3, indexmin=0;
+	double temp_prosjek, min=10;
+<a name="0"></a><font color="#FF0000"><a href="match264-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+	for(i=0;i&lt;vel;i++) {
+		if(prosjekk-prosjek_svih_studenata(niz[i].ocjene,niz[i].br_ocjena)&gt;epsilon) {
+              for(j=i;j&lt;vel-1;j++) {
+			  niz[j]=niz[j+1];
+</font>			}
+			vel--;
+			i--;
+		}
+	}
+<a name="3"></a><font color="#00FFFF"><a href="match264-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+	for(i=0;i&lt;vel;i++) {
+		temp_prosjek=prosjek_svih_studenata(niz[i].ocjene, niz[i].br_ocjena);
+		if(min-prosjek_svih_studenata(niz[i].ocjene,niz[i].br_ocjena)&gt;epsilon)
+</font>		{
+			min=temp_prosjek;
+			indexmin=i;
+		}
+	}
+		if(vel==0) return 0;
+		if(vel==1) goto jedan;
+		if(vel&gt;1) goto dva;
+		
+		jedan:
+		index1=indexmin;
+		printf("\n%s %s", niz[index1].prezime,niz[index1].ime);
+		return vel;
+		
+		dva:
+		index1=indexmin;
+		for(i=0;i&lt;vel;i++) {
+			if(redoslijed(niz[i],niz[index1]))
+			index1=i;
+		}
+		index2=indexmin;
+		for(i=0;i&lt;vel;i++) {
+			if(i==index1) continue;
+			if(redoslijed(niz[i],niz[index2]))
+			index2=i;
+		}
+		printf("\n%s %s",niz[index1].prezime,niz[index1].ime);
+<a name="1"></a><font color="#00FF00"><a href="match264-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+		printf("\n%s %s",niz[index2].prezime,niz[index2].ime);
+		
+		if(vel&gt;2) {
+			index3=indexmin;
+			for(i=0;i&lt;vel;i++) {
+				if(i==index1 || i==index2) continue;
+</font>				if(redoslijed(niz[i],niz[index3]))
+				index3=i;
+			}
+			printf("\n%s %s",niz[index3].prezime,niz[index3].ime);
+		}
+		return vel;
+}
+
+int main() {
+	struct Student studenti[] = {
+		{"Ajla", "Smajic", {7, 9, 10, 10}, 4},
+		{"Sajra", "Gujic", {6, 8, 9}, 3},
+		{"Imad", "Fazlinovic", {7, 9, 5, 8}, 4}
+	};
+	int i;
+  int vel=genijalci(studenti,4,7.7);
+  printf("Vel:%dStudenti:",vel);
+  for(i=0;i&lt;vel;i++);
+  printf("%s %s", studenti[i].prezime,studenti[i].ime);
+	return 0;
+}
+</pre>
+</body>
+</html>

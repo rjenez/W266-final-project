@@ -1,0 +1,203 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student3790.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8329.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match137-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::vector;
+using std::string;
+using std::move;
+
+
+// POTENCIJALNI KRIVCI
+
+int PotencijalniKrivci (char** &amp;pok, vector&lt;string&gt; v){
+	int brojac=0;
+	int broj_ljudi=v.size();
+	try{
+		char** pokazivac(new char* [broj_ljudi]);
+		for(int i=0; i&lt;broj_ljudi; i++){
+			int duzina_imena;
+			duzina_imena=v[i].length();
+			pokazivac[i]=new char[duzina_imena+1];
+			for(int j=0; j&lt;v[i].length(); j++){
+				pokazivac[i][j]=v[i][j];
+			}
+			
+			brojac++;
+		}
+		pok=pokazivac;
+	}
+	catch(...){
+		for(int i=0; i&lt;brojac; i++){
+			delete[] pok[i];
+		}
+		delete[]pok;
+		throw;
+	}
+	return brojac;
+}
+
+// ODBACI OPTUZBU
+
+int OdbaciOptuzbu(char ** &amp;pok, int velicina, string ime){
+	bool tacnost=0;
+	int brojac=0;
+	for(int i=0; i&lt;velicina; i++){
+		if(pok[i]==ime){
+			delete[] pok[i];
+			pok[i]==nullptr;
+			tacnost=1;
+		}
+	}
+	if(!tacnost){
+		throw std::domain_error ("Osoba sa imenom " +ime+ " nije bila optuzena");
+	}
+	for(int i=0; i&lt;velicina; i++){
+		if(pok[i]==nullptr) brojac++;
+	}
+	if(brojac&lt;=10){
+		return velicina;
+	}
+	else{
+		try{
+			char** novi_pokazivac=new char*[velicina-brojac];
+			int novi_brojac=0;
+			for(int i=0; i&lt;velicina;i++){
+				if(pok[i]!=nullptr){
+					novi_pokazivac[novi_brojac]=pok[i];
+					novi_brojac++;
+				
+				}
+				delete[] pok[i];
+			}
+			delete[] pok;
+			auto pok=novi_pokazivac;
+			return velicina-brojac;
+			}
+			catch(...){
+				return velicina;
+			}
+		}
+}
+
+// DODAJ OPTUZBU
+
+int DodajOptuzbu(char ** &amp;pok, int velicina, string ime){
+	int duzina_imena=ime.length();
+	bool tacnost=1;
+	for(int i=0; i&lt;velicina; i++){
+		if(pok[i]==nullptr){
+			try{
+				pok[i]=new char[duzina_imena+1];
+				for(int j=0; j&lt;duzina_imena; j++){
+					pok[i][j]=ime[j];
+				}
+				tacnost=0;
+				return velicina;
+			}
+			catch(...){
+				return velicina;
+			}
+		}
+	}
+	if(tacnost){
+		try{
+			char** novi_pokazivac=new char*[velicina+1];
+			for(int i=0; i&lt;velicina; i++){
+				novi_pokazivac[i]=pok[i];
+			}
+			for(int i=0; i&lt;duzina_imena; i++){
+				novi_pokazivac[velicina][i]=ime[i];
+			}
+			for(int i=0; i&lt;velicina; i++){
+				delete[]pok[i];
+			}
+			delete[]pok;
+			auto pok=novi_pokazivac;
+			
+			return velicina+1;
+		}
+		catch(...){
+			return velicina;
+		}
+	}
+	return velicina;
+}
+
+void IzlistajOptuzbu(char ** pok, int velicina){
+	for(int i=0; i&lt;velicina; i++){
+		if(pok[i]!=nullptr){
+			cout&lt;&lt;pok[i];
+			cout&lt;&lt;endl;
+		}
+	}
+}
+
+int main (){
+	cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? "&lt;&lt;endl;
+	int n;
+	cin&gt;&gt;n;
+	cout&lt;&lt;"Unesite potencijalne krivce: "&lt;&lt;endl;
+	vector&lt;string&gt; imena;
+	char** pok;
+	cin.ignore(1000,'\n');
+	for(int i=0; i&lt;n; i++){
+		string element;
+		getline(cin,element);
+		imena.push_back(element);
+	}
+	int broj;
+	try{
+
+		n=PotencijalniKrivci(pok,imena);
+		do{
+			cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj:";
+			cin&gt;&gt;broj;
+			cin.ignore(10000,'\n');
+			if(broj==1){
+				string ime;
+				getline(cin,ime);
+				n=DodajOptuzbu(pok,n,ime);
+			}
+			else if(broj==2){
+				string ime;
+				getline(cin,ime);
+				n=OdbaciOptuzbu(pok,n,ime);
+			}
+			else if(broj==3){
+				IzlistajOptuzbu(pok,n);
+				
+			}
+		}
+		while(broj!=0);
+		for(int i=0; i&lt;n; i++){
+					delete[] pok[i];
+				}
+				delete[] pok;
+	}
+	catch(std::domain_error s){
+		cout&lt;&lt;s.what();
+</font>	}
+	return 0;
+}</pre>
+</body>
+</html>

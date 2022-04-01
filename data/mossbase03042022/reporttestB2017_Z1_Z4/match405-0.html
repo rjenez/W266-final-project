@@ -1,0 +1,141 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student2035.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student2035.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+
+
+<a name="0"></a><font color="#FF0000"><a href="match405-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_12.gif"/></a>
+
+std::string IzvrniString(std::string s) {
+      std::string novi; 
+      for(int i=s.size()-1; i&gt;=0; i--) 
+            novi.push_back(s.at(i));
+      
+      return novi;
+}
+
+bool JelSlovo(char znak) {
+      if(znak&gt;='A' &amp;&amp; znak&lt;='Z' || znak&gt;='a' &amp;&amp; znak&lt;='z') return true;
+      return false;
+}
+
+std::string NapraviPalindrom (std::string recenica, std::vector&lt;std::string&gt; lista) {
+</font>      std::string rezultat(recenica); 
+      if(lista.size()==0) return recenica; 
+      if(recenica.size()==0) return recenica;
+      int j(0); 
+   //   std::cout &lt;&lt; "bio sam u fiji"; 
+      for(int i=0; i&lt;lista.size(); i++) {
+            j=0;
+            if(lista.at(i).size()&gt;rezultat.size()) continue;
+            while(j&lt;=rezultat.size()-lista.at(i).size()) { // NOTE TO SELF JA MISLIM DA OVDJE MNOZES STROGU NEJEDNAKOST JER VO J POCINJE OD NULE ALI NISAM SIGURNA
+                  std::string pomocni;
+                  
+                  pomocni=rezultat.substr(j, lista.at(i).size());
+               //   std::cout &lt;&lt; "pomocni je " &lt;&lt; pomocni &lt;&lt; std::endl; 
+                  if(pomocni==lista.at(i)) {
+                        if(j&gt;0) {
+                              
+                              if(JelSlovo(rezultat.at(j-1))) {
+                                  /*  std::cout &lt;&lt; "ukinuti cu ti ovu pomocnu " &lt;&lt; pomocni  &lt;&lt; std::endl;*/ j++; continue;}
+                        }
+                        if(j&lt;rezultat.size()-lista.at(i).size()) { //za ovaj uslov nisam sigurna
+                        
+                            if(JelSlovo(rezultat.at(j+lista.at(i).size()))) { //ovaj uslov vidi malo
+                                  /*std::cout &lt;&lt; "Ukinuti cu ti ovu pomocnu " &lt;&lt; pomocni &lt;&lt; std::endl ;*/ j++; continue;}
+                        }
+              // std::cout &lt;&lt; "nasao sam neki da je isti" &lt;&lt; std::endl;
+               rezultat=rezultat.substr(0, j) + pomocni + IzvrniString(pomocni) + rezultat.substr(j+pomocni.size(), rezultat.size()-j); 
+                  //DOPUNI JE INACE IDI DALJE
+                  }
+                  j++; 
+            }
+            
+      }
+      
+      
+      return rezultat;
+}
+
+
+std::string ModificirajString(std::string fraza) { //provjeri u obe ove petlje granice, tj procitaj lepo zadatak pa onda zakljuci kako da postupis
+      std::string rezultat; 
+      for(int i=0; i&lt;fraza.size()/2; i++)
+<a name="1"></a><font color="#00FF00"><a href="match405-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+      rezultat.push_back(fraza.at(i)); 
+      for(int i=(fraza.size()-1)/2; i&gt;=0; i--)
+      rezultat.push_back(fraza.at(i)); 
+      return rezultat; //ovdje provjeri dimenziju ovu da li je ok
+}
+
+std::string NapraviPoluPalindrom(std::string recenica, std::vector&lt;std::string&gt; lista) {
+</font>      std::string rezultat(recenica); 
+      if(recenica.size()==0) return recenica; 
+      if(lista.size()==0) return recenica; 
+      int j(0); 
+      for(int i=0; i&lt;lista.size(); i++) {
+            if(lista.at(i).size()&gt;rezultat.size()) continue; 
+            j=0; 
+            while(j&lt;=rezultat.size()-lista.at(i).size()) {
+                  std::string pomocni;
+                  
+                  pomocni=rezultat.substr(j, lista.at(i).size());
+                  if(pomocni==lista.at(i)) {
+                        if(j&gt;0) {
+                              if(JelSlovo(rezultat.at(j-1))) {
+                                    j++; continue;
+                              }
+                              
+                        }
+                        
+                        if(j&lt;rezultat.size()-lista.at(i).size()) {
+                              if(JelSlovo(rezultat.at(j+lista.at(i).size()))) {j++; continue; }
+                        }
+                        rezultat=rezultat.substr(0, j) + ModificirajString(pomocni) + rezultat.substr(j+pomocni.size(), rezultat.size()-j);
+                  }
+                  j++;
+            }
+            
+            
+            
+      }
+      
+      return rezultat; 
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match405-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+int main ()
+{
+      std::cout &lt;&lt; "Unesite recenicu: "; 
+      std::string A; 
+      std::getline(std::cin, A); 
+     // std::cin.ignore(1000, '\n'); 
+      std::cout &lt;&lt; "Unesite fraze: "; 
+</font>      std::vector&lt;std::string&gt; dek;
+      int kontrolna(0); 
+      for(;;) {
+            kontrolna++; 
+            dek.resize(kontrolna); 
+            std::string neka; 
+            std::getline(std::cin, neka); 
+            
+            if(neka.size()!=0) 
+            dek.at(kontrolna-1)=neka; 
+            else break; 
+      }
+      std::cout &lt;&lt; "Recenica nakon Palindrom transformacije: ";
+      std::cout &lt;&lt; NapraviPalindrom(A, dek); 
+      std::cout &lt;&lt; std::endl &lt;&lt; "Recenica nakon PoluPalindrom transformacije: " &lt;&lt; NapraviPoluPalindrom(A, dek);
+	return 0;
+}</pre>
+</body>
+</html>

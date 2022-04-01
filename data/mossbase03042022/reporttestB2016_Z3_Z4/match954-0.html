@@ -1,0 +1,117 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student6248.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student6248.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+#include &lt;iterator&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+
+int Duzina(std::string s)
+{
+    int br(0);
+    for(int i(0); i&lt;s.length(); i++)
+    {
+        if((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')) br++;
+    }
+    return br;
+}
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; v, int k)
+{
+    if(k&lt;1 || k&gt;v.size()) throw std::logic_error("Razvrstavanje nemoguce");
+    
+    int n(v.size());
+    int broj_timova1(n%k);
+    int clanovi_prvog_tima((n/k)+1);
+    int clanovi_drugog_tima(n/k);
+    
+    std::list&lt;std::string&gt; lista;
+    for(int i(0); i&lt;v.size(); i++)
+    {
+        lista.push_back(v[i]);
+    }
+    
+    std::vector&lt;int&gt; clanovi(k);
+    for(int i(0); i&lt;broj_timova1; i++) clanovi[i]=clanovi_prvog_tima;
+    for(int i(broj_timova1); i&lt;k; i++) clanovi[i]=clanovi_drugog_tima;
+    
+    std::vector&lt;std::set&lt;std::string&gt;&gt; timovi(k);
+    auto iter(lista.begin());
+    for(int i(0); i&lt;k; i++)
+    {
+        int br_clanova(clanovi[i]);
+        
+        while(!lista.empty() &amp;&amp; br_clanova!=0)
+        { 
+            std::string dijete;
+            dijete=*iter;
+            int duzina(Duzina(dijete));
+            iter=lista.erase(iter);
+            if(iter==lista.end()) iter=lista.begin();
+            br_clanova--;
+            timovi[i].insert(dijete);
+            
+            for(int p(1); p&lt;duzina; p++)
+            {
+                iter++;
+                if(iter==lista.end()) iter=lista.begin();
+            }
+        }
+    }
+    return timovi;
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match954-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+int main ()
+{
+    try
+    {
+        std::cout &lt;&lt; "Unesite broj djece: ";
+        int n; 
+        std::cin &gt;&gt; n;
+        std::cout &lt;&lt; "Unesite imena djece: " &lt;&lt; std::endl;;
+        std::cin.ignore(10000,'\n');
+</font>        std::vector&lt;std::string&gt; v(n);
+<a name="0"></a><font color="#FF0000"><a href="match954-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+        for(int i(0); i&lt;n; i++)
+        {
+            std::getline(std::cin, v[i]);
+        }
+        std::cout &lt;&lt; "Unesite broj timova: ";
+        int k;
+        std::cin &gt;&gt; k;
+        std::vector&lt;std::set&lt;std::string&gt;&gt; s;
+        s=Razvrstavanje(v,k);
+</font>        for(int i(0); i&lt;k; i++)
+        {
+            std::cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+            int duzina(std::distance(s[i].begin(),s[i].end()));
+            auto it(s[i].begin());
+            for(int j(0); j&lt;duzina-1; j++)
+            {
+                std::cout &lt;&lt; *it++ &lt;&lt; ", ";
+            } 
+<a name="2"></a><font color="#0000FF"><a href="match954-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+            std::cout &lt;&lt; *it &lt;&lt; std::endl;
+        }
+    }
+    catch(std::logic_error izuzetak)
+    {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

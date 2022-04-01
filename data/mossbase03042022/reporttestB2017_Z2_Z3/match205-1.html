@@ -1,0 +1,125 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student9443.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student7540.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 3 */
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match205-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+int OdrediOsnovniPeriod(std::vector&lt;int&gt; v) {
+	for(int p=1; p&lt;v.size(); p++) {
+		bool znak{true};
+   	    for(int i=p; i&lt;v.size(); i+=p) {
+   	    	if( v.at(i) &lt;= 0 ) throw std::domain_error("Neispravan vektor!");
+       		for(int j=0; j&lt;p; j++) {
+   	    		if(i+j &gt;= v.size()) break;
+   		    	if(v.at(i+j) != v.at(j)) {
+   		    		znak=false;
+   		    		break;
+   		    	}
+       		}
+       	}
+       	if(znak) return p;
+	}
+	return 0;
+}
+
+template &lt;typename Tip&gt;
+int **AlocirajFragmentirano( std::vector&lt;Tip&gt; &amp;nekinesta, int &amp;koliko_puta) {
+	if(nekinesta.size() == 0) throw("Prazan vektor!");
+ 	int period{ OdrediOsnovniPeriod(nekinesta) };
+ 	if(period == 0) {
+ 		period=nekinesta.size();
+ 		koliko_puta=2;
+ 	}
+ 	else if((period &gt; 0 &amp;&amp; double(nekinesta.size()) / period - nekinesta.size()/period &gt;0.000001)) {
+ 		koliko_puta = nekinesta.size() / period; 
+        koliko_puta++;
+ 	}
+ 	else koliko_puta = nekinesta.size() / period; 
+ 	int najveci{0};
+ 	for(int i=0; i&lt;nekinesta.size(); i++) if(najveci &lt; nekinesta.at(i)) najveci=nekinesta.at(i);                    // Najveci broj u vector
+ 	int **dino{nullptr};
+ 	try{
+     	dino = new Tip*[period*koliko_puta] {};
+     	try{
+    		int pomocna_najvece{najveci};
+    		for(int k=0; k&lt;koliko_puta; k++) {
+    			for(int i=0; i&lt;period; i++) {
+    				dino[i+k*period]=new int[nekinesta.at(i)];
+    				for(int j=nekinesta.at(i)-1; j&gt;=0; j--) {
+    					dino[i+k*period][j] = pomocna_najvece;
+    					pomocna_najvece--;
+    				}
+    				pomocna_najvece=najveci;
+    			}
+    		}
+	        
+        }
+        catch(std::bad_alloc) {
+    	   	for(int i=0; i&lt;period*koliko_puta; i++) delete[] dino[i];
+    	   	delete[] dino;
+ 	     	throw;
+        }
+ 	}
+ 	catch(std::bad_alloc) {
+ 		delete [] dino;
+ 		throw;
+ 	}
+    return dino;
+
+}
+
+int main ()
+{
+	std::cout &lt;&lt; "Unesite broj elemenata vektora: ";
+	int n;
+	std::cin &gt;&gt; n;
+	std::vector&lt;int&gt; v(n);
+	std::cout &lt;&lt; "Unesite elemente vektora: ";
+	for(int i=0; i&lt;n; i++) std::cin &gt;&gt; v.at(i);
+	std::cout &lt;&lt; "Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+	int tip_alok;
+	std::cin &gt;&gt; tip_alok;
+	n=0;
+	try{
+		if(tip_alok == 1) {
+        	int **pokpok (AlocirajFragmentirano(v,n));
+        	int period{OdrediOsnovniPeriod(v)};
+         	if(period==0) period=v.size();
+        	std::cout &lt;&lt; "Dinamicki alocirana matrica:" &lt;&lt; std::endl;
+        	for(int k=0; k&lt;n; k++)
+		    	for(int i=0; i&lt;period; i++) {
+			    	for(int j=0; j&lt;v.at(i); j++) {
+				    	std::cout &lt;&lt; std::left &lt;&lt; std::setw(3) &lt;&lt; pokpok[i+k*period][j];
+    				}
+	    			std::cout &lt;&lt; std::endl;
+		    	}
+	        for(int i=0; i&lt;period*n; i++) delete[] pokpok[i];
+     	   	delete[] pokpok;      
+       	}
+       	else if(tip_alok == 0) {
+       		std::cout &lt;&lt; "Bice i to aBd";
+       	}
+  	}
+	catch(const char izuzetak[]) {
+		std::cout &lt;&lt; izuzetak;
+	}
+	catch(std::domain_error izuzetak) {
+		std::cout &lt;&lt; izuzetak.what();
+	}
+	catch(...) {
+		std::cout &lt;&lt; "Izuzetak!";
+</font>	}
+	
+	return 0;
+}</pre>
+</body>
+</html>

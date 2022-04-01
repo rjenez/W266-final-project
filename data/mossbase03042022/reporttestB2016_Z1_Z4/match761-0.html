@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4185.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4185.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt; 
+#include &lt;stdexcept&gt;
+
+
+//F.CIJA KOJA PROVJERAVA DA LI JE NESTO SLOVO
+<a name="2"></a><font color="#0000FF"><a href="match761-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+bool jelslovo(char a){
+	if ((a&gt;='A' &amp;&amp; a&lt;='Z') || (a&gt;='a' &amp;&amp; a&lt;='z')) { return true;	}
+	return false;
+}
+
+
+// TRAZENA F.CIJA OBRNI FRAZE
+std :: string ObrniFraze(std :: string org, std::vector&lt;std :: string&gt; a)
+</font>{
+<a name="0"></a><font color="#FF0000"><a href="match761-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+	for (int i = 0; i &lt; a.size(); i++) {
+		std :: string pomocni=a[i];
+		for(int j = 0; j &lt; org.length(); j++){
+			if (org[j] == pomocni[0]) {
+</font>				int brojac=0;
+				int k=j;
+				int r=0;
+					while( k&lt;org.size()  &amp;&amp;  r&lt;pomocni.size()  &amp;&amp;  org[k] == pomocni[r]){
+						k++;
+						r++;
+						brojac++;
+				}
+				if (brojac == pomocni.length()) {
+					int zadnji=pomocni.length()-1;
+					
+						for(int t = j; t &lt; j+brojac; t++ ){
+							org[t] = pomocni[zadnji];
+							zadnji--;
+					}
+					
+					
+				} else continue;
+				
+			} else continue;
+			
+		}
+	}
+	return org;
+}
+//KADA SE PIGLATIN F.CIJI POSALJE PRAZAN VEKTOR KORISTIMO OVU
+std :: string PrazanVektor(std :: string org){
+	for(int j=0; j&lt;org.size(); j++){
+		if (!jelslovo(org[j])) {continue;	}
+		int brojac=0;
+		int k=j;
+		
+		while (jelslovo(org[k])) {
+			k++;
+			brojac++;
+		}
+		char prvi=org[j];
+		char drugi='a';
+		char treci='y';
+		org.erase(org.begin()+j);
+		org.insert(org.begin()+j-1,prvi);
+		org.insert(org.begin()+j,drugi);
+		org.insert(org.begin()+j+1,treci);
+		j=k+1;
+	}
+	return org;
+}
+// PIG LATIN F.CIJA
+std :: string IzmijeniUPigLatin(std :: string org, std :: vector&lt;std :: string&gt; vs)
+{ 
+<a name="1"></a><font color="#00FF00"><a href="match761-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+	for(int k=0; k&lt;vs.size(); k++){
+		for(int p=0; p&lt;vs[k].length(); p++){
+			if (!jelslovo(vs[k][p])) {
+				throw std :: domain_error("Nekorektan izbor rijeci");
+</font>			}
+		}
+	}
+	//AKO JE PRAZAN VEKTOR
+	if (vs.size()==0) { 
+		std :: string vrati;
+		vrati=PrazanVektor(org);
+		return vrati;
+	} 
+	else { 
+	
+	for(int i = 0; i &lt; vs.size(); i++){
+		std :: string pomocni=vs[i];
+		for(int j = 0; j &lt; org.length(); j++){
+			if (org[j]==pomocni[0]) {
+				int brojac=0;
+				int k=j;
+				int r=0;
+			
+			while( k&lt;org.size() &amp;&amp; r&lt;pomocni.size() &amp;&amp; org[k] == pomocni[r]){
+				k++;
+				r++;
+				brojac++;
+			}	//AKO JE J NULA NE PROVJERAVAJ PRETHODNI ZNAK
+			if (j==0 &amp;&amp; brojac==pomocni.length() &amp;&amp; !((org[j+brojac]&gt;='A' &amp;&amp; org[j+brojac]&lt;='Z') || (org[j+brojac]&gt;='a' &amp;&amp; org[j+brojac]&lt;='z'))) {
+				char prvi=org[j];
+				char drugi='a';
+				char treci='y';
+				org.erase(org.begin()+j);
+				org.insert(org.begin()+j+brojac-1,prvi);
+				org.insert(org.begin()+j+brojac,drugi);
+				org.insert(org.begin()+j+brojac+1,treci);
+				
+			}
+			//AKO JE J+BROJAC JEDNAKO VELICINI NE PROVJERAVAJ NAREDNI ZNAK
+			else if ((j+brojac)==org.size() &amp;&amp; brojac==pomocni.length() &amp;&amp; (!jelslovo(org[j-1])) ) {
+				 char prvi=org[j];
+				 char drugi='a';
+				 char treci='y';
+				 org.erase(org.begin()+j);
+				 org.insert(org.begin()+j+brojac-1,prvi);
+				 org.insert(org.begin()+j+brojac,drugi);
+				 org.insert(org.begin()+j+brojac+1,treci);
+				
+			} 
+			//AKO JE J NA SREDINI PROVJERAVAJ I J-1 I J+BROJAC+1
+			else if((j+brojac)!=org.size() &amp;&amp; j!=0 &amp;&amp; brojac==pomocni.length() &amp;&amp; !(jelslovo(org[j-1])) &amp;&amp; !(jelslovo(org[j+brojac]))){
+				char prvi=org[j];
+				char drugi='a';
+				char treci='y';
+				org.erase(org.begin()+j);
+				org.insert(org.begin()+j+brojac-1,prvi);
+				org.insert(org.begin()+j+brojac,drugi);
+				org.insert(org.begin()+j+brojac+1,treci);
+			} else continue;
+			
+			} else continue;
+		}
+	}
+	return org;	
+	}
+}
+
+int main ()
+{
+	std :: string s,zaPig,zaObrni;
+	std::vector&lt;std :: string&gt; fraze;
+	std::cout &lt;&lt; "Unesite recenicu: ";
+	std :: getline(std :: cin, s);
+	std::cout &lt;&lt; "Unesite fraze: ";
+	for(; ;){
+	std :: string unos;
+	std :: getline(std :: cin,unos);
+	if (unos.length()==0) { break; }
+	fraze.push_back(unos);
+	}
+	try{
+	std::cout &lt;&lt; "Recenica nakon PigLatin transformacije: "&lt;&lt;IzmijeniUPigLatin(s,fraze)&lt;&lt;std :: endl;
+	}
+	catch(std :: domain_error izuzetak){
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt;izuzetak.what()&lt;&lt;std :: endl;
+	}
+	
+	std::cout &lt;&lt; "Recenica nakon obrtanja fraza: " &lt;&lt;ObrniFraze(s,fraze);
+	
+	return 0;
+}</pre>
+</body>
+</html>

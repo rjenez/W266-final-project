@@ -1,0 +1,175 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student3867.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4273.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+*/
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cstring&gt;
+
+using std::cin; using std::cout; using std::endl; using std::string; using std::vector;
+
+string ObrniFraze (string recenica, vector&lt;string&gt; vektor_stringova) {
+	string modificirana (recenica);
+	if (vektor_stringova.size()==0) return recenica;
+
+	for (int i=0; i&lt;vektor_stringova.size(); i++) { //Prolazimo kroz listu fraza
+		for (int j=0; j&lt;modificirana.size(); j++) { //Prolazimo kroz recenicu
+	        int poc (j); int k;
+			for (k=0; k&lt;vektor_stringova[i].size(); k++) { //prolazimo kroz frazu
+				if (modificirana.at(j)!=vektor_stringova.at(i).at(k))
+				break; //Nisu iste
+				if (j==modificirana.size()-1) {
+					//Ako je zadnji char, ostali znakovi su isti
+					k++;
+					break;
+				}
+			    j++;
+			}
+			if (k==vektor_stringova[i].size()) {
+			//Pronasli smo rijec koju trebamo zamijeniti
+			j=poc;
+				for (int k=(vektor_stringova[i].size()-1); k&gt;=0; k--) {
+					modificirana.at(j)=vektor_stringova.at(i).at(k);
+					j++;
+				}
+				//cout &lt;&lt; modificirana &lt;&lt; endl;
+			j--; //da provjerimo sljedeci, a ne dva puta povecani!
+		    }
+	    }
+	}
+	return modificirana;
+}
+
+string IzmijeniUPigLatin (string recenica, vector&lt;string&gt; vektor_stringova) {
+	string modificirana(recenica);
+	//Ako je vektor stringova prazan mijenjamo sve rijeci
+	if (vektor_stringova.size()==0) {
+		bool neslovo(true);
+		for (int i=0; i&lt;modificirana.size(); i++) {
+<a name="2"></a><font color="#0000FF"><a href="match709-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+			if (modificirana.at(i)&lt;'A' || (modificirana.at(i)&gt;'Z' &amp;&amp; modificirana.at(i)&lt;'a') || modificirana.at(i)&gt;'z') neslovo=true;
+</font>			else if (neslovo==true) {
+				//Pronasli smo rijec
+				neslovo=false;
+				//Pretvorimo je u piglatin¸
+				int poc(i); int kraj(i);
+				//Pronadjimo kraj rijeci (indeks)
+<a name="0"></a><font color="#FF0000"><a href="match709-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+				while (kraj&lt;modificirana.size() &amp;&amp; ((modificirana.at(kraj)&gt;='A' &amp;&amp; modificirana.at(kraj)&lt;='Z') || (modificirana.at(kraj)&gt;='a' &amp;&amp; modificirana.at(kraj)&lt;='z')) ) { //Pazi na prekoracenkraje
+					kraj++;
+</font>				}
+				char prvo=modificirana[poc];
+				for (int j=i; j&lt;kraj; j++) {
+					modificirana[j]=modificirana[j+1]; //j+1 na zadnje slovo!
+				}
+				modificirana[kraj-1]=prvo;
+				//dodajmo samda ay
+				//string pomocna;
+				modificirana=modificirana.substr(0,kraj)+"ay"+modificirana.substr(kraj,modificirana.size());
+				//modificirana=pomocna;
+			}
+		}
+<a name="3"></a><font color="#00FFFF"><a href="match709-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+		return modificirana;
+	}
+
+	//Provjerimo da li je ispravan vektor stringova, smiju biti samo slova alfabeta!
+	for (int i=0; i&lt;vektor_stringova.size(); i++) {
+		for (int j=0; j&lt;vektor_stringova[i].size(); j++) {
+</font>			if (vektor_stringova[i][j]&lt;'A' || (vektor_stringova[i][j]&gt;'Z' &amp;&amp; vektor_stringova[i][j]&lt;'a') || vektor_stringova[i][j]&gt;'z')
+			throw std::domain_error ("Nekorektan izbor rijeci");
+		}
+	}
+
+	//u PigLatin mijenjamo samo rijeci
+	for (int i=0; i&lt;vektor_stringova.size(); i++) { //Prolazimo kroz vektor rijeci koje trebamo zamijeniti
+			bool neslovo(true);
+			for (int j=0; j&lt;modificirana.size(); j++) { //Prolazimo kroz recenicu
+			if (modificirana.at(j)&lt;'A' || (modificirana.at(j)&gt;'Z' &amp;&amp; modificirana.at(j)&lt;'a') || modificirana.at(j)&gt;'z') neslovo=true;
+			else if (neslovo==true) {
+				//Pronasli smo rijec
+				neslovo=false;
+				//Pretvorimo je u piglatin¸
+				int poc(j); int kraj(j); string pomocna;
+				//Pronadjimo kraj rijeci (indeks)
+<a name="1"></a><font color="#00FF00"><a href="match709-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+				while (kraj&lt;modificirana.size() &amp;&amp; ((modificirana.at(kraj)&gt;='A' &amp;&amp; modificirana.at(kraj)&lt;='Z') || (modificirana.at(kraj)&gt;='a' &amp;&amp; modificirana.at(kraj)&lt;='z')) ) { //Pazi na prekoracenje
+</font><a name="1"></a><font color="#00FF00"><a href="match709-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+				    pomocna.push_back(modificirana[kraj]);
+</font>					kraj++; //Pokazuje iza kraja rijeci
+				}
+				//Provjerimo da li je rijec na spisku
+				int k;
+				for (k=0; k&lt;vektor_stringova[i].size(); k++) {
+					if (k==pomocna.size() || pomocna.at(k)!= vektor_stringova.at(i).at(k))
+					break; //nisu iste
+				}
+				if (k==pomocna.size() &amp;&amp; k==vektor_stringova[i].size()) { //Pronasli smo rijec koju treba mijenjati
+				    char prvo=modificirana[poc];
+				    j=poc;
+				    for (int m=j; m&lt;kraj-1  ; m++) {
+					modificirana[m]=modificirana[m+1]; //j+1 na zadnje slovo!
+					}
+					modificirana[kraj-1]=prvo;  //dodajmo samda ay
+				    string pomocna;
+				    pomocna=modificirana.substr(0,kraj)+"ay"+modificirana.substr(kraj,modificirana.size());
+				    modificirana=pomocna;
+				}
+			}
+		}
+	}
+	return modificirana;
+}
+
+int main ()
+{
+	string recenica, fraza;
+	cout &lt;&lt; "Unesite recenicu: ";
+	std::getline(cin, recenica);
+	vector&lt;string&gt; lista;
+	cout &lt;&lt; "Unesite fraze: ";
+    for (int i=0; ; i++) {
+    	std::getline(cin, fraza);
+    	if (fraza.size()==0) break;
+    	lista.resize(i+1);
+    	lista[i]=fraza;
+    }
+
+    bool ispis(true);
+    try {
+    	IzmijeniUPigLatin(recenica, lista);
+	}
+	catch (std::domain_error izuzetak) {
+      cout &lt;&lt; izuzetak.what() &lt;&lt; endl;
+      ispis=false;
+   }
+    if (ispis) cout &lt;&lt; "Recenica nakon PigLatin transformacije: " &lt;&lt; IzmijeniUPigLatin(recenica, lista) &lt;&lt; endl;
+	
+	cout &lt;&lt; "Recenica nakon obrtanja fraza: " &lt;&lt; ObrniFraze(recenica, lista);
+
+	return 0;
+}
+</pre>
+</body>
+</html>

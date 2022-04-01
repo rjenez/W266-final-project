@@ -1,0 +1,214 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z2/student2210.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z2/student2210.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt;
+
+struct Korisnik{
+    std::string ime, prezime, adresa, telefon;
+};
+
+class Knjiga{
+    std::string naslov, ime_pisca, zanr;
+    int godina_izdavanja;
+    Korisnik* zaduzena;
+public:
+    Knjiga(std::string naslov, std::string ime_pisca, std::string zanr, int godina_izdavanja) : naslov(naslov), ime_pisca(ime_pisca), zanr(zanr),
+        godina_izdavanja(godina_izdavanja), zaduzena(nullptr){}
+    std::string DajNaslov()const{return naslov;}
+    std::string DajAutora()const{return ime_pisca;}
+    std::string DajZanr()const{return zanr;}
+    int DajGodinuIzdavanja()const{return godina_izdavanja;}
+<a name="2"></a><font color="#0000FF"><a href="match34-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+    Korisnik* DajKodKogaJe()const{return zaduzena;}
+    void ZaduziKnjigu(Korisnik &amp;kor){zaduzena=&amp;kor;}
+    void RazduziKnjigu(){zaduzena=nullptr;}
+    bool DaLiJeZaduzena()const{if(zaduzena==nullptr) return false; else return true;}
+};
+
+class Biblioteka{
+    std::map&lt;int, std::shared_ptr&lt;Korisnik&gt;&gt; mkorisnika;
+    std::map&lt;int, std::shared_ptr&lt;Knjiga&gt;&gt; mknjiga;
+public:
+    Biblioteka(){}
+    Biblioteka(Biblioteka &amp;b);
+    Biblioteka(Biblioteka &amp;&amp;b);
+    Biblioteka &amp;operator=(Biblioteka &amp;b);
+    Biblioteka &amp;operator=(Biblioteka &amp;&amp;b);
+    void RegistrirajNovogKorisnika(int cl_broj, std::string ime, std::string prezime, std::string adresa, std::string telefon);
+</font><a name="0"></a><font color="#FF0000"><a href="match34-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_65.gif"/></a>
+
+    void RegistrirajNovuKnjigu(int ev_broj, std::string naslov, std::string ime_pisca, std::string zanr, int godina_izdavanja);
+    Korisnik &amp;NadjiKorisnika(int cl_broj);
+    Knjiga &amp;NadjiKnjigu(int ev_broj);
+    void IzlistajKorisnike();
+    void IzlistajKnjige();
+    void ZaduziKnjigu(int ev_broj, int cl_broj);
+    void RazduziKnjigu(int ev_broj);
+    void PrikaziZaduzenja(int cl_broj);
+};
+
+Biblioteka::Biblioteka(Biblioteka &amp;b){
+    for(auto it=b.mkorisnika.begin(); it!=b.mkorisnika.end(); it++){
+        it-&gt;second=std::make_shared&lt;Korisnik&gt;();
+        *mkorisnika[it-&gt;first]=*b.mkorisnika[it-&gt;first];
+    }
+    for(auto it=b.mknjiga.begin(); it!=b.mknjiga.end(); it++){
+        auto knjiga(b.mknjiga[it-&gt;first]);
+        mknjiga[it-&gt;first]=std::make_shared&lt;Knjiga&gt;(knjiga-&gt;DajNaslov(), knjiga-&gt;DajAutora(), knjiga-&gt;DajZanr(), knjiga-&gt;DajGodinuIzdavanja());
+        //znam da je plitko
+    }
+}
+Biblioteka::Biblioteka(Biblioteka &amp;&amp;b) : mkorisnika(b.mkorisnika), mknjiga(b.mknjiga){
+    for(auto it=b.mkorisnika.begin(); it!=b.mkorisnika.end(); it++) b.mkorisnika[it-&gt;first]=nullptr;
+    for(auto it=b.mknjiga.begin(); it!=b.mknjiga.end(); it++) b.mknjiga[it-&gt;first]=nullptr;
+}
+Biblioteka &amp;Biblioteka::operator=(Biblioteka &amp;b){
+    for(auto it=b.mkorisnika.begin(); it!=b.mkorisnika.end(); it++){
+        it-&gt;second=std::make_shared&lt;Korisnik&gt;();
+        *mkorisnika[it-&gt;first]=*b.mkorisnika[it-&gt;first];
+    }
+    for(auto it=b.mknjiga.begin(); it!=b.mknjiga.end(); it++){
+        auto knjiga(b.mknjiga[it-&gt;first]);
+        mknjiga[it-&gt;first]=std::make_shared&lt;Knjiga&gt;(knjiga-&gt;DajNaslov(), knjiga-&gt;DajAutora(), knjiga-&gt;DajZanr(), knjiga-&gt;DajGodinuIzdavanja());
+        //znam da je plitko
+    } return *this;
+}
+Biblioteka &amp;Biblioteka::operator=(Biblioteka &amp;&amp;b){
+    mkorisnika=b.mkorisnika; mknjiga=b.mknjiga;
+    for(auto it=b.mkorisnika.begin(); it!=b.mkorisnika.end(); it++) mkorisnika[it-&gt;first]=nullptr;
+    for(auto it=b.mknjiga.begin(); it!=b.mknjiga.end(); it++) mknjiga[it-&gt;first]=nullptr; return *this;
+}
+void Biblioteka::RegistrirajNovogKorisnika(int cl_broj, std::string ime, std::string prezime, std::string adresa, std::string telefon){
+    if(mkorisnika.count(cl_broj)) throw std::logic_error("Korisnik vec postoji");
+    mkorisnika[cl_broj]=std::make_shared&lt;Korisnik&gt;();
+    mkorisnika[cl_broj]-&gt;ime=ime; mkorisnika[cl_broj]-&gt;prezime=prezime; mkorisnika[cl_broj]-&gt;adresa=adresa; mkorisnika[cl_broj]-&gt;telefon=telefon;
+}
+void Biblioteka::RegistrirajNovuKnjigu(int ev_broj, std::string naslov, std::string ime_pisca, std::string zanr, int godina_izdavanja){
+    if(mknjiga.count(ev_broj)) throw std::logic_error("Knjiga vec postoji");
+    mknjiga[ev_broj]=std::make_shared&lt;Knjiga&gt;(naslov, ime_pisca, zanr, godina_izdavanja);
+}
+Korisnik&amp; Biblioteka::NadjiKorisnika(int cl_broj){
+    if(!mkorisnika.count(cl_broj)) throw std::logic_error("Korisnik nije nadjen");
+    return *mkorisnika[cl_broj];
+}
+Knjiga&amp; Biblioteka::NadjiKnjigu(int ev_broj){
+    if(!mknjiga.count(ev_broj)) throw std::logic_error("Knjiga nije nadjena");
+    return *mknjiga[ev_broj];
+}
+void Biblioteka::IzlistajKorisnike(){
+    for(auto it=mkorisnika.begin(); it!=mkorisnika.end(); it++){
+        std::cout&lt;&lt;"Clanski broj: "&lt;&lt;it-&gt;first&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Ime i prezime: "&lt;&lt;mkorisnika[it-&gt;first]-&gt;ime&lt;&lt;" "&lt;&lt;mkorisnika[it-&gt;first]-&gt;prezime&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Adresa: "&lt;&lt;mkorisnika[it-&gt;first]-&gt;adresa&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Broj telefona: "&lt;&lt;mkorisnika[it-&gt;first]-&gt;telefon&lt;&lt;std::endl;
+        std::cout&lt;&lt;std::endl;
+    }
+}
+void Biblioteka::IzlistajKnjige(){
+    for(auto it=mknjiga.begin(); it!=mknjiga.end(); it++){
+        std::cout&lt;&lt;"Evidencijski broj: "&lt;&lt;it-&gt;first&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Naslov: "&lt;&lt;mknjiga[it-&gt;first]-&gt;DajNaslov()&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Pisac: "&lt;&lt;mknjiga[it-&gt;first]-&gt;DajAutora()&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Zanr: "&lt;&lt;mknjiga[it-&gt;first]-&gt;DajZanr()&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Godina izdavanja: "&lt;&lt;mknjiga[it-&gt;first]-&gt;DajGodinuIzdavanja()&lt;&lt;std::endl;
+        if(mknjiga[it-&gt;first]-&gt;DaLiJeZaduzena()){
+            std::cout&lt;&lt;"Zaduzena kod korisnika: "&lt;&lt;mknjiga[it-&gt;first]-&gt;DajKodKogaJe()-&gt;ime&lt;&lt;" "&lt;&lt;it-&gt;second-&gt;DajKodKogaJe()-&gt;prezime;
+        /*    for(auto it2=mkorisnika.begin(); it2!=mkorisnika.end(); it2++){
+                if(mknjiga[it-&gt;first]-&gt;DajKodKogaJe()==mkorisnika[it2-&gt;first])
+                    std::cout&lt;&lt;"Zaduzena kod korisnika: "&lt;&lt;it2-&gt;first;
+            }
+        */
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+}
+void Biblioteka::ZaduziKnjigu(int ev_broj, int cl_broj){
+    if(!mknjiga.count(ev_broj)) throw std::logic_error("Knjiga nije nadjena");
+    if(!mkorisnika.count(cl_broj)) throw std::logic_error("Korisnik nije nadjen");
+    if(mknjiga[ev_broj]-&gt;DaLiJeZaduzena()) throw std::logic_error("Knjiga vec zaduzena");
+    mknjiga[ev_broj]-&gt;ZaduziKnjigu(*mkorisnika[cl_broj]);
+}
+void Biblioteka::RazduziKnjigu(int ev_broj){
+    if(!mknjiga.count(ev_broj)) throw std::logic_error("Knjiga nije nadjena");
+    if(!mknjiga[ev_broj]-&gt;DaLiJeZaduzena()) throw std::logic_error("Knjiga nije zaduzena");
+    mknjiga[ev_broj]-&gt;RazduziKnjigu();
+}
+void Biblioteka::PrikaziZaduzenja(int cl_broj){
+    if(!mkorisnika.count(cl_broj)) throw std::domain_error("Korisnik nije nadjen"); bool zaduzio(false);
+    for(auto it=mknjiga.begin(); it!=mknjiga.end(); it++){
+        if(mkorisnika[cl_broj]==std::shared_ptr&lt;Korisnik&gt;(mknjiga[it-&gt;first]-&gt;DajKodKogaJe())){
+            std::cout&lt;&lt;"Evidencijski broj: "&lt;&lt;it-&gt;first&lt;&lt;std::endl;
+            std::cout&lt;&lt;"Naslov: "&lt;&lt;mknjiga[it-&gt;first]-&gt;DajNaslov()&lt;&lt;std::endl;
+            std::cout&lt;&lt;"Pisac: "&lt;&lt;mknjiga[it-&gt;first]-&gt;DajAutora()&lt;&lt;std::endl;
+            std::cout&lt;&lt;"Zanr: "&lt;&lt;mknjiga[it-&gt;first]-&gt;DajZanr()&lt;&lt;std::endl;
+            std::cout&lt;&lt;"Godina izdavanja: "&lt;&lt;mknjiga[it-&gt;first]-&gt;DajGodinuIzdavanja()&lt;&lt;std::endl&lt;&lt;std::endl;
+            zaduzio=true;
+        }
+    }
+    if(!zaduzio) std::cout&lt;&lt;"Nema zaduzenja za tog korisnika!";
+}
+
+int main (){
+    std::cout&lt;&lt;"*Biblioteka - Rubik's Cube*"&lt;&lt;std::endl&lt;&lt;std::endl;
+    Biblioteka rubiks;
+    int input;
+    std::cout&lt;&lt;"1 -&gt;-&gt; Registriraj Novog Korisnika"&lt;&lt;std::endl
+        &lt;&lt;"2 -&gt;-&gt; Registriraj Novu Knjigu"&lt;&lt;std::endl
+        &lt;&lt;"3 -&gt;-&gt; Izlistaj Korisnike"&lt;&lt;std::endl
+</font>        &lt;&lt;"4 -&gt;-&gt; Izlistaj Knjige"&lt;&lt;std::endl
+<a name="1"></a><font color="#00FF00"><a href="match34-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_20.gif"/></a>
+
+        &lt;&lt;"5 -&gt;-&gt; Zaduzi Knjigu"&lt;&lt;std::endl
+        &lt;&lt;"6 -&gt;-&gt; Razduzi Knjigu"&lt;&lt;std::endl
+        &lt;&lt;"7 -&gt;-&gt; Prikazi Zaduzenja"&lt;&lt;std::endl
+        &lt;&lt;"0 -&gt;-&gt; Kraj"&lt;&lt;std::endl;
+    do{
+        std::cout&lt;&lt;"___Komanda___: "; std::cin&gt;&gt;input;
+        int cl_broj, ev_broj, godina_izdavanja; 
+        std::string ime, prezime, adresa, telefon, naslov, ime_pisca, zanr;
+        switch(input){
+            case 1:
+                std::cout&lt;&lt;"Clanski broj: "; std::cin&gt;&gt;cl_broj; std::cin.ignore(1000, '\n');
+                std::cout&lt;&lt;"Ime: "; std::cin&gt;&gt;ime;
+                std::cout&lt;&lt;"Prezime: "; std::cin&gt;&gt;prezime;
+                std::cout&lt;&lt;"Adresa: "; std::cin&gt;&gt;adresa;
+                std::cout&lt;&lt;"Telefon: "; std::cin&gt;&gt;telefon;
+                rubiks.RegistrirajNovogKorisnika(cl_broj, ime, prezime, adresa, telefon); break;
+            case 2:
+                std::cout&lt;&lt;"Evidencijski broj: "; std::cin&gt;&gt;ev_broj; std::cin.ignore(1000, '\n');
+                std::cout&lt;&lt;"Naslov: "; std::cin&gt;&gt;naslov;
+                std::cout&lt;&lt;"Ime Pisca: "; std::cin&gt;&gt;ime_pisca;
+                std::cout&lt;&lt;"Zanr: "; std::cin&gt;&gt;zanr;
+                std::cout&lt;&lt;"Godina Izdavanja: "; std::cin&gt;&gt;godina_izdavanja; std::cin.ignore(1000, '\n');
+                rubiks.RegistrirajNovuKnjigu(ev_broj, naslov, ime_pisca, zanr, godina_izdavanja); break;
+            case 3:
+                rubiks.IzlistajKorisnike(); break;
+            case 4:
+                rubiks.IzlistajKnjige(); break;
+            case 5:
+                std::cout&lt;&lt;"Evidencijski broj: "; std::cin&gt;&gt;ev_broj; std::cin.ignore(1000, '\n');
+                std::cout&lt;&lt;"Clanski broj: "; std::cin&gt;&gt;cl_broj;
+                rubiks.ZaduziKnjigu(ev_broj, cl_broj); break;
+            case 6:
+                std::cout&lt;&lt;"Evidencijski broj: "; std::cin&gt;&gt;ev_broj; std::cin.ignore(1000, '\n');
+                rubiks.RazduziKnjigu(ev_broj); break;
+            case 7:
+                std::cout&lt;&lt;"Clanski broj: "; std::cin&gt;&gt;cl_broj; std::cin.ignore(1000, '\n');
+                rubiks.PrikaziZaduzenja(cl_broj); break;
+        }
+    }while(input!=0);
+    Biblioteka a; a=rubiks;
+    a.IzlistajKnjige();
+</font>	return 0;
+}</pre>
+</body>
+</html>

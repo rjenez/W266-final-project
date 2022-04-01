@@ -1,0 +1,217 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z3/student1534.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z3/student1534.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 3
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+#include &lt;new&gt;
+#include &lt;vector&gt;
+#include &lt;iterator&gt;
+
+//Definiramo genericku strukturu Matrica
+template&lt;typename NekiTip&gt;
+struct Matrica{
+    int broj_redova, broj_kolona;
+    NekiTip** elementi = nullptr;
+};
+
+//Funkcija za dealokaciju memorije
+template&lt;typename NekiTip&gt;
+<a name="2"></a><font color="#0000FF"><a href="match952-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+void UnistiMatricu(NekiTip mat){
+    if(!mat.elementi) return;
+    for(int i(0); i &lt; mat.broj_redova; i++) delete[] mat.elementi[i];
+    delete[] mat.elementi;
+    mat.elementi = nullptr;
+</font>}
+
+//Funkcija za stvaranje novih matrica
+template&lt;typename NekiTip&gt;
+Matrica&lt;NekiTip&gt; StvoriMatricu(int br_redova){
+    Matrica&lt;NekiTip&gt; mat;
+<a name="0"></a><font color="#FF0000"><a href="match952-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+    mat.broj_redova = br_redova;
+    mat.broj_kolona = br_redova;
+    mat.elementi = new NekiTip*[br_redova];
+    //sve ih inicijalizujemo na nullptr
+    for(int i(0); i &lt; br_redova; i++) mat.elementi[i] = nullptr;
+    //sada alociramo matricu
+    try{
+        for(int i(0); i &lt; br_redova; i++) mat.elementi[i] = new NekiTip[br_redova]; 
+    }catch(...){
+        UnistiMatricu(mat);
+</font>        throw;
+    }
+    return mat;
+}
+
+//Funkcija za unos matrice
+template&lt;typename NekiTip&gt;
+void UnesiMatricu(Matrica&lt;NekiTip&gt; &amp;mat){
+    for(int i(0); i &lt; mat.broj_redova; i++){
+        for(int j(0); j&lt; mat.broj_redova; j++){
+            std::cout &lt;&lt; "A(" &lt;&lt; i + 1 &lt;&lt; "," &lt;&lt; j + 1 &lt;&lt; ") = ";
+            std::cin &gt;&gt; mat.elementi[i][j];
+            //std::cout &lt;&lt; std::endl;
+        }
+    }
+}
+
+//Funkcija za ispis matrice
+template&lt;typename NekiTip&gt;
+<a name="1"></a><font color="#00FF00"><a href="match952-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+void IspisiMatricu(const Matrica&lt;NekiTip&gt; &amp;mat, int sirina_ispisa, int preciznost = 6, bool treba_brisati = false){
+    for(int i(0); i &lt; mat.broj_redova; i++){
+        for(int j(0); j &lt; mat.broj_redova; j++){
+            std::cout &lt;&lt; std::setw(sirina_ispisa) &lt;&lt; std::setprecision(preciznost) &lt;&lt; mat.elementi[i][j];
+</font>        }
+        std::cout &lt;&lt; std::endl;
+    }
+    if(treba_brisati) UnistiMatricu(mat);
+}
+
+//Funkcija za racunanje produkta dvije matrice
+template&lt;typename NekiTip&gt;
+Matrica&lt;NekiTip&gt; ProduktMatrica(const Matrica&lt;NekiTip&gt; &amp;m1, const Matrica&lt;NekiTip&gt; &amp;m2){
+    if(m1.broj_redova != m2.broj_redova) throw std::domain_error("Matrice nisu saglasne za mnozenje");
+    //stvaramo matricu koju cemo vratiti kao rezultat funkcije
+<a name="3"></a><font color="#00FFFF"><a href="match952-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+    auto m3(StvoriMatricu&lt;NekiTip&gt;(m1.broj_redova));
+    for(int i(0); i &lt; m1.broj_redova; i++){
+        for(int j(0); j &lt; m1.broj_redova; j++){
+            NekiTip suma;
+</font><a name="4"></a><font color="#FF00FF"><a href="match952-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+            for(int k(0); k &lt; m1.broj_redova; k++) suma = m1.elementi[i][k] * m2.elementi[k][j];
+            m3.elementi[i][j] = suma;
+        }
+    }
+    return m3;
+}
+
+template&lt;typename NekiTip&gt;
+Matrica&lt;NekiTip&gt; ZbirMatrica(const Matrica&lt;NekiTip&gt; &amp;mat1, const Matrica&lt;NekiTip&gt; &amp;mat2){
+</font>    auto m3(StvoriMatricu&lt;NekiTip&gt;(mat1.broj_redova));
+    for(int i(0); i &lt; mat1.broj_redova; i++){
+        for(int j(0); j &lt; mat1.broj_redova; j++){
+            m3.elementi[i][j] = mat1.elementi[i][j] + mat2.elementi[i][j];
+        }
+    }
+    return m3;
+}
+
+template&lt;typename NekiTip&gt;
+Matrica&lt;NekiTip&gt; PomnoziMatricuSkalarom(const Matrica&lt;NekiTip&gt; &amp;mat, int faktor){
+    auto m2(StvoriMatricu&lt;NekiTip&gt;(mat.broj_redova));
+    for(int i(0); i &lt; mat.broj_redova; i++){
+        for(int j(0); j &lt; mat.broj_redova; j++) m2.elementi[i][j] = mat.elementi[i][j] * faktor;
+    }
+    return m2;
+}
+
+template&lt;typename NekiTip&gt;
+Matrica&lt;NekiTip&gt; StepenujMatricu(const Matrica&lt;NekiTip&gt; &amp;mat, int n){
+    auto m2(StvoriMatricu&lt;NekiTip&gt;(mat.broj_redova));
+    m2 = ProduktMatrica(mat, mat);
+    for(int i(0); i &lt; n-2; i++){
+        m2 = ProduktMatrica(mat, mat);
+    }
+    return m2;
+}
+
+template&lt;typename NekiTip&gt;
+Matrica&lt;NekiTip&gt; KreirajJedinicnu(int broj_redova){
+    auto m2(StvoriMatricu&lt;NekiTip&gt;(broj_redova));
+    for(int i(0); i &lt; broj_redova; i++){
+        for(int j(0); j &lt; broj_redova; j++) {
+            if(i == j) m2.elementi[i][j] = 1;
+            else m2.elementi[i][j] = 0;
+        }
+    }
+    return m2;
+}
+
+//Funkcija koja racuna matricni polinom
+template&lt;typename NekiTip&gt;
+Matrica&lt;NekiTip&gt; MatricniPolinom(const Matrica&lt;NekiTip&gt; &amp;mat, int n, std::vector&lt;double&gt;::iterator it){
+    if(n &lt; 0) throw std::domain_error("Neispravan stepen polinoma");
+    if(mat.broj_kolona != mat.broj_redova) throw std::domain_error("Matrica mora biti kvadratna");
+    auto mat2(StvoriMatricu&lt;NekiTip&gt;(mat.broj_redova));
+    //Sada trebamo racunati matricni polinom
+    //Matrice podrzavaju osobinu komutativnosti
+    //Tako da ce jedinicna matrica biti naknadno dodana
+    //Cuvam prvo mjesto u vektoru
+    auto poc(it);
+    it++;
+    for(int i(1);;){
+        auto pomnozena(StvoriMatricu&lt;NekiTip&gt;(mat.broj_redova));
+        auto stepenovana(StvoriMatricu&lt;NekiTip&gt;(mat.broj_redova));
+        pomnozena = PomnoziMatricuSkalarom(mat, *it);
+        stepenovana = StepenujMatricu(pomnozena, i);
+        if(i == 1) mat2 = stepenovana;
+        //else if(*it == 0);
+        else mat2 = ZbirMatrica(mat2, stepenovana);
+        i++;
+        if(i == n +1) break;
+        it++;
+    }
+    auto jed(StvoriMatricu&lt;NekiTip&gt;(mat.broj_redova));
+    jed = KreirajJedinicnu&lt;NekiTip&gt;(mat.broj_redova);
+    jed = PomnoziMatricuSkalarom(jed, *poc);
+    mat2 = ZbirMatrica(jed, mat2);
+    //mat2 += v[0] * KreirajJedinicnu&lt;double&gt;(mat.broj_redova);
+    return mat2;
+}
+
+int main ()
+{
+    std::cout &lt;&lt; "Unesite dimenziju kvadratne matrice: ";
+    int dimenzija(0);
+    std::cin &gt;&gt; dimenzija;
+    std::cout &lt;&lt; "Unesite elemente matrice A: " &lt;&lt; std::endl;
+    Matrica&lt;double&gt; mat;
+    try{
+        mat = StvoriMatricu&lt;double&gt;(dimenzija);
+    }catch(std::bad_alloc){
+        std::cout &lt;&lt; "Nema dovoljno memorije!";
+        return 0;
+    }
+    UnesiMatricu(mat);
+    std::cout &lt;&lt; "Unesite red polinoma: ";
+    int red_polinoma(0);
+    std::cin &gt;&gt; red_polinoma;
+    std::cout &lt;&lt; "Unesite koeficijente polinoma: ";
+    std::vector&lt;double&gt; koeficijenti;
+    for(int i(0); i &lt; red_polinoma+1; i++){
+        int temp(0);
+        std::cin &gt;&gt; temp;
+        koeficijenti.push_back(temp);
+    }
+    Matrica&lt;double&gt; mat2;
+    try{
+        mat2 = StvoriMatricu&lt;double&gt;(dimenzija);
+    }catch(std::bad_alloc){
+        std::cout &lt;&lt; "Nema dovoljno memorije!";
+        return 0;
+    }
+    try{
+    mat2 = MatricniPolinom(mat, red_polinoma, koeficijenti.begin());
+    }catch(std::domain_error izuzetak){
+        std::cout &lt;&lt; izuzetak.what();
+        return 0;
+    }
+    IspisiMatricu(mat2, 10, 6, true);
+	return 0;
+}
+</pre>
+</body>
+</html>

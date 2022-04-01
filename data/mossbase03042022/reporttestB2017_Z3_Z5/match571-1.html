@@ -1,0 +1,474 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student9325.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student8055.cpp<p></p><pre>
+
+<a name="1"></a><font color="#00FF00"><a href="match571-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+#include &lt;stack&gt;
+#include &lt;algorithm&gt;
+enum class Boje {Pik, Tref, Herc, Karo};
+std::vector&lt;std::string&gt; nazivi {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+</font>std::vector&lt;std::string&gt; vektorBoja  {"Pik", "Tref", "Herc", "Karo"};
+std::string dajBoju (Boje boja) {
+     for (int i=0; i&lt;4; i++){
+         if (boja==Boje(i)) return vektorBoja.at(i);
+     }
+
+}
+int dajIndexBoje (Boje boja) {
+    for (int i=0; i&lt;4; i++){
+         if (boja==Boje(i)) return i;
+     }
+}
+int dajIndexNaziva (std::string naziv) {
+    for (int i=0; i&lt;13; i++){
+         if (naziv==nazivi.at(i)) return i;
+     }
+}
+
+
+bool domenvrijednosti (std::string v) {
+    for (int i=0; i&lt;13; i++){
+        if (v==nazivi.at(i)) return true;
+    }
+    return false;
+}
+bool domenBoje (Boje boja ){
+    for (int i=0; i&lt;3; i++)
+        if (boja== Boje::Pik
+        || boja== Boje::Tref
+        || boja== Boje::Herc
+         || boja== Boje::Karo
+
+        ) return true;
+
+
+    return false;
+}
+
+struct Karta {
+  Boje boja;
+  std::string vrijednost;
+};
+
+struct Cvor {
+    Karta karta;
+    Cvor* sljedeci ;
+};
+Karta DajNovuKartu () {
+    static int i (-1);
+    i++;
+    if (i==52) return { Boje(i/13), "0"};
+    return { Boje(i/13), nazivi.at(i%13)};
+}
+Cvor* KreirajSpil () {
+Cvor* pocetak(nullptr), *prethodni;
+
+    for(;;) {
+    Karta k (DajNovuKartu());
+    if (k.vrijednost == "0") break;
+    Cvor *novi(new Cvor {k, nullptr});
+    if(!pocetak) pocetak = novi;// Prvi čvor...
+    else prethodni-&gt;sljedeci = novi; // Svi osim prvog...
+    prethodni = novi;
+}
+prethodni-&gt;sljedeci=pocetak;
+return pocetak;
+}
+
+bool daLiJeKruzna (Cvor* &amp;c) {
+    auto pocetak (c);
+    auto it (pocetak);
+    Cvor* pomocna (nullptr);
+    for ( ;;  ){
+           if (it == pomocna) return 1;
+           if (it == nullptr) return 0;
+       // std::cout&lt;&lt;dajBoju((*it).karta.boja)&lt;&lt;" "&lt;&lt;(*it).karta.vrijednost&lt;&lt;"\n";
+        pomocna = pocetak;
+        it=it-&gt;sljedeci;
+    }
+}
+int dajBrojElListe (Cvor* &amp;c) {
+    auto pocetak (c);
+    auto it (pocetak);
+    Cvor* pomocna (nullptr);
+    int broj(0);
+    for ( ;;  ){
+           if (it == pomocna) return broj;
+         //  if (it == nullptr) return 0;
+       // std::cout&lt;&lt;dajBoju((*it).karta.boja)&lt;&lt;" "&lt;&lt;(*it).karta.vrijednost&lt;&lt;"\n";
+        pomocna = pocetak;
+        it=it-&gt;sljedeci;
+        broj++;
+    }
+
+
+}
+
+bool Validno (Cvor* &amp;c) {
+
+    auto pocetak (c);
+    auto it (pocetak);
+    Cvor* pomocna (nullptr);
+    for ( ;;  ){
+           if (it == pomocna) break;
+      if (!domenBoje((*it).karta.boja) || !domenvrijednosti((*it).karta.vrijednost)) return false;
+        pomocna = pocetak;
+        it=it-&gt;sljedeci;
+    }
+
+    std::vector&lt;int&gt; v;
+    pocetak = c;
+    it = pocetak;
+    pomocna = nullptr;
+    for (; ; ) {
+        if (it == pomocna) break;
+        int x(0);
+        v.push_back(x);
+        auto it1 (pocetak);
+        Cvor* pomocna1 (nullptr);
+        for (; ;) {
+            if (it1 == pomocna1) break;
+            if (((*it).karta.boja == (*it1).karta.boja) &amp;&amp; ((*it).karta.vrijednost == (*it1).karta.vrijednost)   ) *(v.end()-1)++;
+            pomocna1 = pocetak;
+            it1=it1-&gt;sljedeci;
+        }
+       pomocna = pocetak;
+        it=it-&gt;sljedeci;
+    }
+    for (auto k : v)
+     if (k&gt;1) return false;
+
+    return true;
+}
+
+bool Sortirano (Cvor* &amp;c ) {
+    // spil.sort ( [] (element x, element y) { return index(x.first) &gt;= index(y.first); } );
+   //spil.sort ( [] (element x, element y) { if  (index(x.first) != index(y.first)) return true; return indexv(x.second) &lt; indexv(y.second); } );
+    int n (dajBrojElListe(c));
+    auto it (c);
+
+    for (int i=0 ;  i&lt;n-1; i++  ){
+
+        if  ( dajIndexBoje  ( (it-&gt;karta ).boja )
+              &gt; dajIndexBoje  ( (it-&gt;sljedeci-&gt;karta ).boja ) ) return 0;
+
+        if   (  ( dajIndexNaziva ( (it-&gt;karta ).vrijednost )
+              &gt;   dajIndexNaziva ( (it-&gt;sljedeci-&gt;karta ).vrijednost ) ) &amp;&amp; (
+                dajIndexBoje  ( (it-&gt;karta ).boja )
+             == dajIndexBoje  ( (it-&gt;sljedeci-&gt;karta ).boja )
+               )  )  return 0;
+
+        it=it-&gt;sljedeci;
+    }
+
+
+    return 1;
+}
+
+
+void IzbaciKarte ( Cvor* &amp;c, std::multimap&lt;Boje, std::string&gt; &amp;multimapa ){
+     if (!daLiJeKruzna(c) || dajBrojElListe(c)&gt;52 || !Validno(c)  ||
+          !Sortirano (c)  ) throw std::logic_error ("Neispravna lista");
+          int n (dajBrojElListe(c));
+    for (auto it = multimapa.begin(); it!=multimapa.end(); it++){
+        auto tu ( -1 );
+        auto its1 (c);
+
+        for (int i = 0; i != n ; i++){
+            if  ( ( (its1-&gt;karta).boja == (*it).first)  &amp;&amp;
+              ( (its1-&gt;karta).vrijednost == (*it).second))
+            {
+                tu = i;
+            }
+        if (tu != -1 ) {
+         multimapa.erase (it);
+          auto p (its1-&gt;sljedeci);
+          auto pocetni (c);
+          if (tu==0)  {
+              if (dajBrojElListe(c) == 1) {
+                  delete c;
+                  c-&gt;sljedeci = nullptr;
+                  continue;
+              }
+              else c = c-&gt;sljedeci;
+              tu = n;
+          }
+          while (tu!=1) {
+              pocetni = pocetni-&gt;sljedeci;
+              tu--;
+          }
+            delete pocetni-&gt;sljedeci;
+            pocetni-&gt;sljedeci = p;
+
+        }
+        its1=its1-&gt;sljedeci;
+    }
+}
+}
+void Vrati ( Cvor* &amp;it){
+    int n(dajBrojElListe(it));
+    for (int i=0; i&lt;n-1; i++)
+        it = it-&gt;sljedeci;
+
+}
+
+void Obrisi (Cvor* &amp;c, Cvor* &amp;brisi) {
+     auto tu ( -1 );
+ auto its1 (c);
+ int n (dajBrojElListe(c));
+for (int i = 0; i != n ; i++){
+            if  ( ( (its1-&gt;karta).boja == (brisi-&gt;karta).boja ) &amp;&amp;
+              ( (its1-&gt;karta).vrijednost == (brisi-&gt;karta).vrijednost)  )
+            {
+                tu = i;
+            }
+        if (tu != -1 ) {
+          auto p (its1-&gt;sljedeci);
+          auto pocetni (c);
+          if (tu==0)  {
+              if (dajBrojElListe(c) == 1) {
+                  delete c;
+                 c = nullptr;
+                 return;
+              }
+            //  else c = c-&gt;sljedeci;
+              tu = n;
+          }
+          while (tu!=1) {
+              pocetni = pocetni-&gt;sljedeci;
+              tu--;
+          }
+            delete pocetni-&gt;sljedeci;
+            pocetni-&gt;sljedeci = p;
+            return;
+
+        }
+<a name="3"></a><font color="#00FFFF"><a href="match571-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+        its1=its1-&gt;sljedeci;
+    }
+}
+
+
+
+
+
+
+
+std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; IzbaciKarteRazbrajanjem ( Cvor* &amp;c, short int &amp;r, const int &amp;b)
+</font>{
+    if (!daLiJeKruzna(c) || dajBrojElListe(c)&gt;52 || !Validno(c)  ||
+          !Sortirano (c)  ) throw std::logic_error ("Neispravna lista");
+    if (r&lt;1 || r&gt;52 || b&lt;1) throw std::logic_error("Neispravni elementi za izbacivanje!");
+    int b1(b);
+    int r1(r);
+
+    std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; stek;
+    auto it (c);
+    for (; ; ) {
+    bool obrisan (0);
+        if (r1==1){
+            std::string boja  (vektorBoja.at(dajIndexBoje((it-&gt;karta).boja)));
+            stek.push({boja, (it-&gt;karta).vrijednost});
+            auto pomocna (it);
+             it=it-&gt;sljedeci;
+            Obrisi (c, pomocna);
+            r1 = r+1;
+            b1--;
+            obrisan =1;
+        }
+        r1--;
+        if (b1==0) break;
+        if (!obrisan) it=it-&gt;sljedeci;
+
+    }
+
+    return stek;
+}
+bool validirajStek (std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; stek) {
+    while (!stek.empty()) {
+         auto it1 (std::find(vektorBoja.begin(), vektorBoja.end(), stek.top().first) );
+         auto it2 (std::find(nazivi.begin(), nazivi.end(), stek.top().second) );
+         if (it1 == vektorBoja.end() || it2 == nazivi.end()) return false;
+        stek.pop();
+}
+return true;
+}
+bool daLiJeTu (Cvor* &amp;c, Cvor* &amp;novi) {
+    int n (dajBrojElListe(c));
+    Cvor* cvor (c);
+    for (int i=0; i&lt;n ; i++) {
+        if (  (cvor-&gt;karta).boja == (novi-&gt;karta).boja  &amp;&amp;
+              (cvor-&gt;karta).vrijednost == (novi-&gt;karta).vrijednost
+            ) {return true; }
+    cvor = cvor-&gt;sljedeci;
+    }
+    return false;
+}
+
+void dodajCvor (Cvor* &amp;c, Cvor* novi ){
+    if (c == nullptr) c = novi; //ako je lista prazna bila!
+    auto it (c);
+    int n (dajBrojElListe(c));
+    for (int i=0 ;  i&lt;n; i++  ){
+           bool dodati1(0), dodati2(0), dodati3(0);
+           auto indexBojeIt   ( dajIndexBoje  ( (it-&gt;karta ).boja)  ) ;
+           auto indexBojeNove   ( dajIndexBoje  ( (novi-&gt;karta ).boja ) );
+           auto indexBojeNaredne (  dajIndexBoje  ( (it-&gt;sljedeci-&gt;karta ).boja )) ;
+           auto indexNazivaIt (  dajIndexNaziva ( (it-&gt;karta ).vrijednost )  ) ;
+
+           int indexNazivaNove = dajIndexNaziva((novi-&gt;karta ).vrijednost);
+           auto indexNazivaNaredne  (dajIndexNaziva ( (it-&gt;sljedeci-&gt;karta ).vrijednost) );
+
+        if (   (indexBojeIt==indexBojeNaredne) &amp;&amp;
+               (indexBojeIt==indexBojeNove)  &amp;&amp;
+               (indexNazivaIt&lt;indexNazivaNove) &amp;&amp;
+               (indexNazivaNaredne&gt;indexNazivaNove)  )dodati1=1;
+
+        if (   (indexBojeIt!=indexBojeNaredne) &amp;&amp;
+               (indexBojeNaredne==indexBojeNove)  &amp;&amp;
+               (indexNazivaNaredne&gt;indexNazivaNove)  )dodati2=1;
+
+        if (   (indexNazivaIt==11) &amp;&amp;
+               (indexNazivaNove==12) &amp;&amp;
+               (indexBojeIt == indexBojeNove)
+                 )dodati3=1;
+
+
+        if (dodati1 || dodati2 || dodati3) {
+            auto pomocna (it-&gt;sljedeci );
+            it-&gt;sljedeci = novi;
+            novi-&gt;sljedeci = pomocna;
+            return;
+        }
+           it=it-&gt;sljedeci;
+
+    }
+
+
+}
+void IspisiSpil (Cvor* &amp;c) {
+    int n(dajBrojElListe(c));
+    std::cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;n&lt;&lt;" karata, i to:\n";
+for (auto i=0; i&lt;n ; i++){
+     std::cout&lt;&lt;"Pik: ";
+     while  ((c-&gt;karta).boja == Boje::Pik &amp;&amp; i!=n ) { std::cout&lt;&lt; (c-&gt;karta).vrijednost&lt;&lt; " " ; i++; c = c-&gt;sljedeci; }
+     std::cout&lt;&lt;"\n";
+     std::cout&lt;&lt;"Tref: ";
+     while  ((c-&gt;karta).boja == Boje::Tref &amp;&amp; i!=n ) { std::cout&lt;&lt; (c-&gt;karta).vrijednost&lt;&lt; " " ; i++; c = c-&gt;sljedeci;  }
+     std::cout&lt;&lt;"\n";
+     std::cout&lt;&lt;"Herc: ";
+     while  ((c-&gt;karta).boja == Boje::Herc &amp;&amp; i!=n ) { std::cout&lt;&lt; (c-&gt;karta).vrijednost&lt;&lt; " " ; i++; c = c-&gt;sljedeci; }
+     std::cout&lt;&lt;"\n";
+     std::cout&lt;&lt;"Karo: ";
+     while  ((c-&gt;karta).boja == Boje::Karo &amp;&amp; i!=n ) { std::cout&lt;&lt; (c-&gt;karta).vrijednost&lt;&lt; " " ; i++; c = c-&gt;sljedeci; }
+     std::cout&lt;&lt;"\n";
+     if (n==i) break;
+     c = c-&gt;sljedeci;
+}
+
+}
+<a name="0"></a><font color="#FF0000"><a href="match571-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+void VratiPosljednjihNKarata (Cvor* &amp;c, std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; &amp;stek, int n){
+    if (n&lt;0) throw std::domain_error ("Broj n je besmislen!");
+    if(n&gt; stek.size()) throw std::range_error ("Nedovoljno karata u steku!");
+</font>    if (!validirajStek (stek)) throw std::logic_error ("Neispravne karte!");
+    if (!daLiJeKruzna(c) || dajBrojElListe(c)&gt;52 || !Validno(c)  ||
+          !Sortirano (c)  ) throw std::logic_error ("Neispravna lista");
+   while (n!=0) {
+            int x = std::find (vektorBoja.begin(), vektorBoja.end(), stek.top().first ) - vektorBoja.begin();
+            Cvor* novi = new Cvor {  {Boje(x), stek.top().second}, nullptr}; //Kreiran pomocni par samo da se pretvori string-&gt;Boja
+         if (daLiJeTu(c, novi) == 0) { //Nema ga vec u mapi, onda dodaji
+             dodajCvor (c, novi);
+             n--;
+         }
+         else delete novi;
+        stek.pop();
+
+      //  IspisiSpil(c);
+}
+
+}
+
+void UnistiSpil ( Cvor* &amp;p) {
+    if (p == nullptr) return ;
+    int n(dajBrojElListe(p));
+    while (n !=0 ){
+    auto pomocna (p);
+    for (int i=0; i&lt;n-2; i++){
+       pomocna = pomocna-&gt;sljedeci;
+    }
+    if (n!=1 )delete pomocna-&gt;sljedeci;
+    if (n==1) delete pomocna;
+    n--;
+    }
+}
+
+
+
+
+
+
+int main ()
+{
+    auto l (KreirajSpil());
+try {
+
+std::cout&lt;&lt;"Unesite korak razbrajanja: ";
+short int r;
+int b;
+std::cin&gt;&gt;r;
+std::cout&lt;&lt;"Unesite broj karata koje zelite izbaciti: ";
+std::cin&gt;&gt;b;
+auto izbacene (IzbaciKarteRazbrajanjem (l, r, b) );
+
+IspisiSpil(l);
+
+//std::cout&lt;&lt; !daLiJeKruzna(l) &lt;&lt; (dajBrojElListe(l)&gt;52) &lt;&lt;  !Validno(l)  &lt;&lt;
+  //        !Sortirano (l)   ;
+
+int n;
+std::cout&lt;&lt;"Unesite broj karata koje zelite vratiti u spil: ";
+std::cin&gt;&gt;n;
+VratiPosljednjihNKarata(l, izbacene, n);
+IspisiSpil(l);
+
+}
+catch (std::logic_error e) {
+<a name="2"></a><font color="#0000FF"><a href="match571-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+    std::cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what();
+
+}
+catch (std::domain_error e) {
+    std::cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what();
+
+}
+catch (std::range_error e) {
+    std::cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what();
+</font>
+}
+catch (...) {
+
+std::cout&lt;&lt;"nesto drugo";
+
+}
+
+UnistiSpil(l);
+
+
+	return 0;
+}
+</pre>
+</body>
+</html>

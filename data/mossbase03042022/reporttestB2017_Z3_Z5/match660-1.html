@@ -1,0 +1,226 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student5193.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student4740.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;new&gt;
+#include &lt;map&gt;
+#include &lt;algorithm&gt;
+#include &lt;utility&gt;
+#include&lt;queue&gt;
+#include &lt;stdexcept&gt;
+enum class Boje
+{
+    Pik, Tref, Herc, Karo
+} ;
+<a name="2"></a><font color="#0000FF"><a href="match660-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+const std::vector&lt;std::string&gt; imena {"2","3","4","5","6","7","8","9","10","J","Q","K","A"} ;
+const std::vector&lt;std::string&gt; znakovi {"Pik","Tref","Herc","Karo"} ;
+</font>
+//typedef std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; spil_karata ;
+
+struct Karta {
+    Boje boja;
+    std::string vrijednost;
+};
+struct Cvor {
+    Karta karta;
+    Cvor *sljedeci;
+};
+Cvor *KreirajSpil()
+{
+    Cvor *poc(nullptr),*prethodni;
+    for(int i=0; i&lt;4; i++) {
+        for(int j=0; j&lt;13; j++) {
+            Cvor *novi(nullptr);
+            novi=new Cvor {{Boje(i), imena[j]}, nullptr};
+            if(poc==nullptr) poc=novi;
+            else prethodni-&gt;sljedeci=novi;
+            prethodni=novi;
+            if(i==3 &amp;&amp; j==12) novi-&gt;sljedeci=poc;
+        }
+    }
+    return poc;
+}
+int BrojElemenata(Cvor* const &amp;pocetak)
+{
+    int br(0);
+    if(pocetak==nullptr) return br;
+    for(Cvor *p=pocetak;; p=p-&gt;sljedeci) {
+        if(br!=0 &amp;&amp; p==pocetak) break;
+        br++;
+    }
+    return br;
+}
+void IspisiSpil(Cvor* const &amp;pocetak)
+{
+    std::cout &lt;&lt; "U spilu trenutno ima "&lt;&lt; BrojElemenata(pocetak) &lt;&lt;" karata, i to:" &lt;&lt; std::endl;
+    for(int i(0); i&lt;4; i++) {
+        std::cout &lt;&lt; znakovi[i] &lt;&lt;": ";
+        int br(0);
+        for(Cvor *p=pocetak; ; p=p-&gt;sljedeci) {
+            if(br!=0 &amp;&amp; p==pocetak) break;
+            if(p-&gt;karta.boja==Boje(i)) std::cout &lt;&lt; p-&gt;karta.vrijednost &lt;&lt;" ";
+            br++;
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+void IzbaciKarte(Cvor *pocetak, std::multimap&lt;Boje, std::string&gt; multim)
+{
+    if(BrojElemenata(pocetak)==0) throw std::logic_error("Neispravna lista!");
+    for(auto it(multim.begin()); it!=multim.end(); it++) {
+        //std::pair&lt;Boje, std::string&gt; par;
+        auto first=it-&gt;first;
+        auto second=it-&gt;second;
+        //Karta test; test.boja=first; test.vrijednost=second;
+        Cvor *trenutni(pocetak), *prethodni;
+        bool nadjen(true);
+        while(trenutni-&gt;karta.boja!=first &amp;&amp; trenutni-&gt;karta.vrijednost!=second){
+            if(trenutni-&gt;sljedeci==pocetak){ nadjen=false; break; }
+            prethodni=trenutni;
+            trenutni=trenutni-&gt;sljedeci;
+        }
+        if(!nadjen) continue;
+        if(trenutni-&gt;sljedeci==pocetak){
+            pocetak=nullptr; delete pocetak; 
+            it=multim.erase(it); it--; continue;}
+        if(trenutni==pocetak){
+            for(prethodni=pocetak;prethodni-&gt;sljedeci!=pocetak;prethodni=prethodni-&gt;sljedeci);
+            pocetak=trenutni-&gt;sljedeci;
+            prethodni-&gt;sljedeci=pocetak;
+            delete trenutni;
+            it=multim.erase(it); it--; continue;
+        }
+        else if(trenutni-&gt;sljedeci==pocetak){
+            prethodni-&gt;sljedeci=pocetak;
+            delete trenutni;
+            it=multim.erase(it); it--; continue;
+        }else {
+            prethodni-&gt;sljedeci=trenutni-&gt;sljedeci;
+            delete trenutni;
+            it=multim.erase(it); it--; continue;
+        }
+
+    }
+    
+}
+std::queue&lt;std::pair&lt;Boje, std::string&gt;&gt; IzbaciKarteRazbrajanjem(Cvor* pocetak, short int r, int b)
+{
+    if(r&lt;1 || r&gt;52 || b&lt;1) throw std::logic_error("Neispravni elementi za izbacivanje!");
+    if(BrojElemenata(pocetak)==0) throw std::logic_error("Neispravna lista!");
+
+    std::queue&lt;std::pair&lt;Boje,std::string&gt;&gt; red ;
+    auto trenutni(pocetak);
+    trenutni=trenutni-&gt;sljedeci;
+    auto prethodni(pocetak);
+    int br(1);
+    int bii(0);
+    while(br!=r) {
+        trenutni=trenutni-&gt;sljedeci;
+        prethodni=prethodni-&gt;sljedeci;
+        br++;
+    }
+    while(BrojElemenata(pocetak)&gt;0 &amp;&amp; bii&lt;b) {
+        if(br%r==0) {
+<a name="1"></a><font color="#00FF00"><a href="match660-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+            std::pair&lt;Boje, std::string&gt; par;
+            par.first=trenutni-&gt;karta.boja;
+            par.second=trenutni-&gt;karta.vrijednost;
+            red.push(par);
+</font>            prethodni=trenutni-&gt;sljedeci;
+            delete trenutni;
+            br++;
+            bii++;
+        } else {
+            trenutni=trenutni-&gt;sljedeci;
+            prethodni=prethodni-&gt;sljedeci;
+            br++;
+        }
+    }
+    return red;
+}
+
+void ProvjeriRed(std::queue&lt;std::pair&lt;Boje, std::string&gt;&gt; red)
+{
+    while(!red.empty()) {
+        auto clan=red.front();
+        if(clan.first!=Boje::Tref &amp;&amp; clan.first!=Boje::Herc &amp;&amp; clan.first!=Boje::Pik &amp;&amp; clan.first!=Boje::Karo) throw std::logic_error ("Neispravne karte!");
+        bool ok(false);
+        for(int i(0); i&lt;imena.size(); i++) if(clan.second==imena[i]) ok=true;
+        if(!ok) throw std::logic_error ("Neispravne karte!");
+        red.pop();
+    }
+}
+void VratiPrvihNKarata(Cvor* pocetak, std::queue&lt;std::pair&lt;Boje, std::string&gt;&gt; &amp;red, int n)
+{
+    if(n&lt;0) throw std::domain_error ("Broj n je besmislen!");
+    if(n&gt;red.size()) throw std::range_error ("Nedovoljno karata u redu!");
+    ProvjeriRed(red);
+    for(int i(0); i&lt;n; i++) {
+        auto element(red.front());
+        auto it(pocetak);
+        while(it-&gt;karta.boja&lt;element.first) it=it-&gt;sljedeci;
+        auto tu(std::find(imena.begin(), imena.end(),element.second));
+        while(std::find(imena.begin(), imena.end(),it-&gt;karta.vrijednost)&lt;tu) it=it-&gt;sljedeci;
+        auto q(it-&gt;sljedeci-&gt;sljedeci);
+        Cvor *novi(nullptr);
+        novi=new Cvor {{element.first, element.second}, nullptr};
+        it=novi; novi-&gt;sljedeci=q;
+        red.pop();
+    }
+}
+
+void UnistiSpil(Cvor *pocetak){
+    if(pocetak==nullptr) return;
+    //int vel(BrojElemenata(pocetak));
+    Cvor *p=pocetak;
+    Cvor *naredni;
+ 
+       int br(0);
+    for(Cvor *q=pocetak;; q=q-&gt;sljedeci) {
+        if(br!=0 &amp;&amp; q-&gt;sljedeci==pocetak) {q=nullptr; break;}
+        br++;
+    }
+       while(p!=nullptr){
+        naredni=p-&gt;sljedeci;
+        delete p;
+        p=naredni;
+    }
+}
+int main ()
+{
+   Cvor* spil(KreirajSpil());
+<a name="0"></a><font color="#FF0000"><a href="match660-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+     try {
+        short int korak;
+        int broj;
+        std::cout &lt;&lt; "Unesite korak razbrajanja: " ;
+        std::cin &gt;&gt; korak;
+        std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+        std::cin &gt;&gt; broj;
+        auto izbacene=IzbaciKarteRazbrajanjem(spil,korak,broj);
+        IspisiSpil(spil);
+        int vracaj;
+        std::cout &lt;&lt;  "Unesite broj karata koje zelite vratiti u spil: ";
+        std::cin &gt;&gt; vracaj;
+        VratiPrvihNKarata(spil,izbacene,vracaj);
+        IspisiSpil(spil);
+    } catch(std::logic_error greska) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; greska.what() &lt;&lt; std::endl;
+</font>    } catch(std::range_error greska) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; greska.what() &lt;&lt; std::endl;
+    }
+    UnistiSpil(spil);
+    return 0;
+}</pre>
+</body>
+</html>

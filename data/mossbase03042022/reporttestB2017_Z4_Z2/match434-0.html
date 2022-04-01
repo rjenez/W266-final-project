@@ -1,0 +1,199 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student9475.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student9475.cpp<p></p><pre>
+/B2017/2018: Zadaća 4, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;tuple&gt;
+#include &lt;cmath&gt;
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+#include &lt;algorithm&gt;
+
+const double epsilon=pow(10,-10);
+
+class NepreklapajucaKugla
+{
+    double x, y, z, r;
+    bool DaLiSePreklapaju(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+public:
+    explicit NepreklapajucaKugla(double r = 0) {
+        if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+        NepreklapajucaKugla::r=r;
+        NepreklapajucaKugla::x=0;
+        NepreklapajucaKugla::y=0;
+<a name="0"></a><font color="#FF0000"><a href="match434-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+        NepreklapajucaKugla::z=0;
+    }
+    NepreklapajucaKugla(double x, double y, double z, double r = 0) {
+        if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+        NepreklapajucaKugla::r=r;
+        NepreklapajucaKugla::x=x;
+        NepreklapajucaKugla::y=y;
+        NepreklapajucaKugla::z=z;
+    }
+    explicit NepreklapajucaKugla(const std::tuple&lt;double, double, double&gt; &amp;centar, double r = 0) {
+</font>        if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+        NepreklapajucaKugla::r=r;
+        NepreklapajucaKugla::x=std::get&lt;0&gt;(centar);
+        NepreklapajucaKugla::y=std::get&lt;1&gt;(centar);
+        NepreklapajucaKugla::z=std::get&lt;2&gt;(centar);
+    }
+    NepreklapajucaKugla(const NepreklapajucaKugla &amp;k) = delete;
+    NepreklapajucaKugla &amp;operator = (const NepreklapajucaKugla &amp;k) = delete;
+    double DajX() const {
+        return x;
+    }
+    double DajY() const {
+        return y;
+    }
+    double DajZ() const {
+        return z;
+    }
+    std::tuple&lt;double, double, double&gt; DajCentar() const {      
+        return std::tie(x,y,z);
+    }
+    double DajPoluprecnik() const {
+        return r;
+    }
+    double DajPovrsinu() const {
+        return 16*r*r*atan(1);
+    }
+    double DajZapreminu() const {
+        return (16*r*r*r*atan(1))/3;
+    }
+    NepreklapajucaKugla &amp;PostaviX(double x) {
+        NepreklapajucaKugla::x=x;
+        return *this;
+    }
+    NepreklapajucaKugla &amp;PostaviY(double y) {
+        NepreklapajucaKugla::y=y;
+        return *this;
+    }
+    NepreklapajucaKugla &amp;PostaviZ(double z) {
+        NepreklapajucaKugla::z=z;
+        return *this;
+    }
+<a name="4"></a><font color="#FF00FF"><a href="match434-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+    NepreklapajucaKugla &amp;PostaviCentar(double x, double y, double z) {
+        NepreklapajucaKugla::x=x;
+        NepreklapajucaKugla::y=y;
+        NepreklapajucaKugla::z=z;
+        return *this;
+    }
+    NepreklapajucaKugla &amp;PostaviCentar(const std::tuple&lt;double, double, double&gt; &amp;centar) {
+</font>        NepreklapajucaKugla::x=std::get&lt;0&gt;(centar);
+        NepreklapajucaKugla::y=std::get&lt;1&gt;(centar);
+<a name="2"></a><font color="#0000FF"><a href="match434-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+        NepreklapajucaKugla::z=std::get&lt;2&gt;(centar);
+        return *this;
+    }
+    NepreklapajucaKugla &amp;PostaviPoluprecnik(double r) {
+        if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+        NepreklapajucaKugla::r=r;
+        return *this;
+    }
+    void Ispisi() const {
+        std::cout &lt;&lt; "{" &lt;&lt; "(" &lt;&lt; x &lt;&lt; "," &lt;&lt; y &lt;&lt; "," &lt;&lt; z &lt;&lt; ")," &lt;&lt; r &lt;&lt; "}" &lt;&lt; std::endl;
+</font>    }
+    void Transliraj(double delta_x, double delta_y, double delta_z) {
+        NepreklapajucaKugla::x+=delta_x;
+        NepreklapajucaKugla::y+=delta_y;
+<a name="5"></a><font color="#FF0000"><a href="match434-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+        NepreklapajucaKugla::z+=delta_z;
+    }
+
+    friend double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+};
+
+double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2)
+{
+    return sqrt((k1.x-k2.x)*(k1.x-k2.x) + (k1.y-k2.y)*(k1.y-k2.y) + (k1.z-k2.z)*(k1.z-k2.z));
+</font><a name="3"></a><font color="#00FFFF"><a href="match434-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+}
+
+int main ()
+{
+
+    int n;
+    std::cout &lt;&lt; "Unesite broj kugli: ";
+</font>    while(true) {
+        try {
+            std::cin &gt;&gt; n;
+            if(!std::cin || n&lt;=0) {
+                std::cin.clear();
+                std::cin.ignore(100000,'\n');
+                throw std::domain_error("Neispravan broj kugli, unesite ponovo!");
+            }
+            break;
+        } catch(std::domain_error izuzetak) {
+            std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+        }
+    }
+
+
+    double x, y, z, r;
+    std::vector&lt;std::shared_ptr&lt;NepreklapajucaKugla&gt;&gt; kugle(n);
+    for(int i=0; i&lt;n; i++) {
+        try {
+            std::cout &lt;&lt; "Unesite centar za "  &lt;&lt; i+1 &lt;&lt; ". kuglu: ";
+            std::cin &gt;&gt; x;
+            if(!std::cin) {
+                std::cin.clear();
+                std::cin.ignore(100000,'\n');
+                throw std::domain_error("Neispravan centar");
+            }
+            std::cin &gt;&gt; y;
+            if(!std::cin) {
+                std::cin.clear();
+                std::cin.ignore(100000,'\n');
+                throw std::domain_error("Neispravan centar");
+            }
+            std::cin &gt;&gt; z;
+<a name="1"></a><font color="#00FF00"><a href="match434-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+            if(!std::cin) {
+                std::cin.clear();
+                std::cin.ignore(100000,'\n');
+                throw std::domain_error("Neispravan centar");
+            }
+            std::cout &lt;&lt; "Unesite poluprecnik: ";
+            std::cin &gt;&gt; r;
+            if(!std::cin) {
+                std::cin.clear();
+                std::cin.ignore(100000,'\n');
+</font>                throw std::domain_error("Ilegalan poluprecnik");
+            }
+<a name="6"></a><font color="#00FF00"><a href="match434-1.html#6" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+            kugle[i]=std::make_shared&lt;NepreklapajucaKugla&gt;(x,y,z,r);
+        } catch(std::domain_error izuzetak) {
+            std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+</font>            i--;
+        }
+    }
+    
+    std::sort(kugle.begin(), kugle.end(), [](std::shared_ptr&lt;NepreklapajucaKugla&gt; a, std::shared_ptr&lt;NepreklapajucaKugla&gt; b) {
+        return a-&gt;DajPovrsinu()&lt;b-&gt;DajPovrsinu();
+    });
+    
+    std::cout &lt;&lt; "Kugle nakon obavljenog sortiranja: " &lt;&lt; std::endl;
+    for(int i=0; i&lt;kugle.size(); i++) {
+        kugle[i]-&gt;Ispisi();
+    }
+
+    return 0;
+}
+
+</pre>
+</body>
+</html>

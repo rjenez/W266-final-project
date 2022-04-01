@@ -1,0 +1,124 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student7582.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student7582.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;tuple&gt;
+#include &lt;set&gt;
+#include &lt;iterator&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+<a name="0"></a><font color="#FF0000"><a href="match696-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+typedef map&lt;string, vector&lt;string&gt;&gt; Knjiga;
+map&lt;string, set&lt;tuple&lt;string,int,int&gt;&gt;&gt; KreirajIndeksPojmova(Knjiga k)
+{
+    map&lt;string, set&lt;tuple&lt;string,int,int&gt;&gt;&gt; m;
+    for(auto it=k.begin(); it!=k.end(); it++) {
+        for(int i=0; i&lt;(it-&gt;second).size(); i++) {
+</font>            tuple&lt;string,int,int&gt; t;
+            get&lt;0&gt;(t)=it-&gt;first;
+            get&lt;1&gt;(t)=i+1;
+            int neslovo(1);
+            string str;
+            for(int j=0; j&lt;(it-&gt;second).at(i).length(); j++) {
+                if(!((it-&gt;second).at(i).at(j)&gt;='A' &amp;&amp; (it-&gt;second).at(i).at(j)&lt;='Z' || (it-&gt;second).at(i).at(j)&gt;='a' &amp;&amp; (it-&gt;second).at(i).at(j)&lt;='z' || (it-&gt;second).at(i).at(j)&gt;='0' &amp;&amp; (it-&gt;second).at(i).at(j)&lt;='9'))
+                    neslovo=1;
+                else if(neslovo==1) {
+                    neslovo=0;
+                    get&lt;2&gt;(t)=j;
+                    while(j!=(it-&gt;second).at(i).length() &amp;&amp; ((it-&gt;second).at(i).at(j)&gt;='A' &amp;&amp; (it-&gt;second).at(i).at(j)&lt;='Z' || (it-&gt;second).at(i).at(j)&gt;='a' &amp;&amp; (it-&gt;second).at(i).at(j)&lt;='z' || (it-&gt;second).at(i).at(j)&gt;='0' &amp;&amp; (it-&gt;second).at(i).at(j)&lt;='9')) {
+                        str.push_back((it-&gt;second).at(i).at(j));
+                        j++;
+                    }
+                    j--;
+                    for_each(str.begin(),str.end(),[](char &amp;s){s=tolower(s);});
+                    m[str].insert(t);
+                }
+                str="";
+            }
+        }
+    }
+    return m;
+}
+<a name="2"></a><font color="#0000FF"><a href="match696-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+set&lt;tuple&lt;string,int,int&gt;&gt; PretraziIndeksPojmova(string str, map&lt;string, set&lt;tuple&lt;string,int,int&gt;&gt;&gt; m){
+</font>    set&lt;tuple&lt;string,int,int&gt;&gt; s;
+    if(!m.count(str)) throw logic_error("Pojam nije nadjen");
+    else s=m[str];
+    return s;
+}
+<a name="1"></a><font color="#00FF00"><a href="match696-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+void IspisiIndeksPojmova(map&lt;string, set&lt;tuple&lt;string,int,int&gt;&gt;&gt; m){
+    for(auto it=m.begin();it!=m.end();it++){
+        cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        for(auto iter=(it-&gt;second).begin();iter!=(it-&gt;second).end();iter++){
+</font>            cout&lt;&lt;get&lt;0&gt;(*iter)&lt;&lt;"/"&lt;&lt;get&lt;1&gt;(*iter)&lt;&lt;"/"&lt;&lt;get&lt;2&gt;(*iter);
+            int razlika(distance(iter,(it-&gt;second).end()));
+            if(razlika&gt;1) cout&lt;&lt;", ";
+        }
+        cout&lt;&lt;endl;
+    }
+}
+int main ()
+{
+    string poglavlje,pomocna;
+    vector&lt;string&gt; v;
+    while(1){
+    cout&lt;&lt;"Unesite naziv poglavlja: ";
+    getline(cin,pomocna);
+    if(pomocna!=".") poglavlje=pomocna;
+    else break;
+    string sadrzaj;
+    for(int i=1;;i++){
+        cout&lt;&lt;"Unesite sadrzaj stranice "&lt;&lt;i&lt;&lt;": ";
+        getline(cin,sadrzaj);
+        if(sadrzaj!=".")
+        v.push_back(sadrzaj);
+        else break;
+    }
+    }
+    cout&lt;&lt;endl&lt;&lt;"Kreirani indeks pojmova:"&lt;&lt;endl;
+    Knjiga k{{poglavlje,v}};
+    auto m(KreirajIndeksPojmova(k));
+    IspisiIndeksPojmova(m);
+    while(1){
+        try{
+        cout&lt;&lt;"Unesite rijec: ";
+        string rijec;
+        getline(cin,rijec);
+        if(rijec!="."){
+        set&lt;tuple&lt;string,int,int&gt;&gt; s(PretraziIndeksPojmova(rijec,m));
+        for(auto it=s.begin();it!=s.end();it++){
+            cout&lt;&lt;get&lt;0&gt;(*it)&lt;&lt;"/"&lt;&lt;get&lt;1&gt;(*it)&lt;&lt;"/"&lt;&lt;get&lt;2&gt;(*it)&lt;&lt;" ";
+        }
+        cout&lt;&lt;endl;
+        }
+        else break;
+        }catch(logic_error izuzetak){
+            cout&lt;&lt;"Unesena rijec nije nadjena!"&lt;&lt;endl;
+        }
+    }
+    /*map&lt;string, set&lt;tuple&lt;string,int,int&gt;&gt;&gt; m;
+    string s {"Nadija"};
+    vector&lt;string&gt; v({"abc qwe stsda abc abc dhi qwe hrkw dhi"});
+    Knjiga k {{s,v}};
+    m=KreirajIndeksPojmova(k);
+    auto it=m.begin();
+    cout&lt;&lt;it-&gt;first&lt;&lt;endl;
+    auto iter((it-&gt;second).begin());
+    cout&lt;&lt;get&lt;0&gt;(*iter)&lt;&lt;endl&lt;&lt;get&lt;1&gt;(*iter)&lt;&lt;endl&lt;&lt;get&lt;2&gt;(*iter);*/
+    //IspisiIndeksPojmova(m);
+    return 0;
+}
+</pre>
+</body>
+</html>

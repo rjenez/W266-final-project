@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z5/Z1/student2478.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z5/Z1/student2478.c<p></p><pre>
+#include &lt;stdio.h&gt;
+<a name="0"></a><font color="#FF0000"><a href="match291-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_82.gif"/></a>
+
+struct Datum { int dan, mjesec, godina; };
+    struct Uposlenik {
+        char ime_prezime[50];
+        struct Datum datum_rodjenja;
+    };
+int datum2dani (struct Datum d)
+{
+	int dani[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	int g = d.godina;
+	dani[2] += g % 4 == 0 &amp;&amp; (g % 100 != 0 || g % 400 == 0);
+	int dana = 0, i;
+	for (i = 0; i &lt; d.mjesec; ++i)
+		dana += dani[i];
+	return g * 365 + g / 4 - g / 100 + g / 400 + dana + d.dan;
+}
+int razmak (struct Datum d1, struct Datum d2)
+{
+	return datum2dani(d2) - datum2dani(d1);
+}
+void daj_prezimena (const char *s, char *prezime1, char *prezime2)
+{
+	
+	while (*s &amp;&amp; *s != ' ') s++;
+	const char *p = ++s;
+	while (*s &amp;&amp; *s != '-' &amp;&amp; *s != ' ') s++;
+	if (*s == ' ')
+		{
+			p = ++s;
+			while (*s &amp;&amp; *s != '-') s++;
+		}
+		
+	while (p &lt; s)
+		*prezime1++ = *p++;
+	if (*s == '-')
+		while (*s)
+			*prezime2++ = *++s;
+	*prezime1 = *prezime2 = 0;
+	
+}
+#include &lt;string.h&gt;
+int suzi_listu(struct Uposlenik* kandidati, int vel, struct Uposlenik direktor, int broj_dana)
+{
+	int i, j, bd = broj_dana &lt; 0 ? -broj_dana : broj_dana;
+	char p1[50], p2[50], d1[50], d2[50];
+	daj_prezimena(direktor.ime_prezime, d1, d2);
+	for (i = 0; i &lt; vel; ++i)
+	{
+		daj_prezimena(kandidati[i].ime_prezime, p1, p2);
+		if (!*p2 &amp;&amp; !*d2)
+			*p2 = '-';
+		if (!strcmp (p1, d1) || !strcmp (p1, d2) || !strcmp (p2, d1) || !strcmp (p2, d2))
+			continue;
+		int r = razmak(kandidati[i].datum_rodjenja, direktor.datum_rodjenja);
+		if (r &gt; broj_dana &amp;&amp; broj_dana &gt; 0 || broj_dana &lt; 0 &amp;&amp; -r &lt; -broj_dana)
+		{
+			for (j = i + 1; j &lt; vel; ++j)
+				kandidati[j - 1] = kandidati[j];
+			vel--;
+			i--;
+		}
+
+	}
+	return vel;
+}
+int main() {
+/* AT6: Negativna razlika dana */
+struct Uposlenik direktor = {"Mujo Mujic", {1, 9, 1980} };
+struct Uposlenik kandidati[7] = {
+    { "Meho Mehic", { 31, 1, 1980 } },
+</font>    { "Pero Peric", { 1, 2, 1980 } },
+    { "Sara Sarac", { 3, 10, 1980 } },
+    { "Fata Mujic", { 1, 2, 1976 } },
+    { "Jozo Jozic", { 2, 10, 1980 } },
+<a name="1"></a><font color="#00FF00"><a href="match291-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_9.gif"/></a>
+
+    { "Mijo Mijic", { 4, 3, 1979 } },
+    { "Suljo Suljc", { 15, 1, 1982 } },
+};
+
+int novi_br = suzi_listu(kandidati, 7, direktor, -31);
+int i;
+printf("Nakon suzenja liste:\n");
+for (i=0; i&lt;novi_br; i++)
+    printf("%s\n", kandidati[i].ime_prezime);
+</font>}
+</pre>
+</body>
+</html>

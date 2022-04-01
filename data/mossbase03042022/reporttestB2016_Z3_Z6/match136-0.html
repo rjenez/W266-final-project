@@ -1,0 +1,174 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student3872.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student3872.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match136-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_8.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 6
+
+#include &lt;iostream&gt;
+#include&lt;stdexcept&gt;
+#include&lt;vector&gt;
+#include&lt;set&gt;
+#include&lt;list&gt;
+#include&lt;algorithm&gt;
+#include&lt;string&gt;
+#include&lt;iomanip&gt;
+#include&lt;memory&gt;
+using namespace std;
+int DuzinaImena(string ime)
+{
+    
+    int brojac(0);
+    for(int i=0;i&lt;ime.length();i++)
+    {
+        if((ime[i]&gt;='A' &amp;&amp; ime[i]&lt;='Z') || (ime[i]&gt;='a' &amp;&amp; ime[i]&lt;='z') || (ime[i]&gt;='0' &amp;&amp; ime[i]&lt;='9'))
+</font><a name="0"></a><font color="#FF0000"><a href="match136-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_87.gif"/></a>
+
+        brojac++;
+    }
+    return brojac;
+}
+struct Dijete
+{
+    string ime;
+shared_ptr&lt;Dijete&gt; sljedeci;
+   
+};
+
+
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje( const vector&lt;string&gt; &amp;ImenaDjece, int broj_timova)
+ {
+     if(broj_timova&lt;1 || broj_timova&gt;ImenaDjece.size()) throw logic_error("Razvrstavanje nemoguce");
+  
+   
+
+   int br_tim=ImenaDjece.size()%broj_timova;
+     int broj_clanove(0), broj_timove(0);
+     int obican_broj_timova(ImenaDjece.size()/broj_timova);
+    int broj_timova_s_vise_djece(ImenaDjece.size()/broj_timova);
+    if(br_tim!=0) broj_timova_s_vise_djece++;
+   shared_ptr&lt;Dijete&gt; pocetak=nullptr;
+  shared_ptr&lt;Dijete&gt; current=nullptr;
+   vector&lt;set&lt;string&gt;&gt; Krajnji;
+   set&lt;string&gt; temp;
+   for(int i=0;i&lt;ImenaDjece.size();i++)
+     {
+         if(i==0)
+         {
+             pocetak=make_shared&lt;Dijete&gt;();
+             current=pocetak;
+         }
+         else
+         {
+             current-&gt;sljedeci=make_shared&lt;Dijete&gt;();
+             current=current-&gt;sljedeci;
+         }
+         current-&gt;ime=ImenaDjece[i];
+     }
+     shared_ptr&lt;Dijete&gt; prethodni=current;
+     current-&gt;sljedeci=pocetak;
+    current=pocetak;
+    while(1)
+    {
+        int broj_iteratora(DuzinaImena(current-&gt;ime));
+        temp.insert(current-&gt;ime);
+        shared_ptr&lt;Dijete&gt; pomocno_dijete=nullptr;
+        if(current-&gt;sljedeci!=current)
+        {
+            pomocno_dijete=current-&gt;sljedeci;
+        }
+        else
+        {
+           
+            pomocno_dijete=nullptr;
+            current-&gt;sljedeci=nullptr;
+        }
+       current=nullptr;
+        if(pomocno_dijete!=nullptr)
+        {
+            prethodni-&gt;sljedeci=pomocno_dijete;
+        }
+        current=pomocno_dijete;
+        broj_clanove++;
+     if(broj_clanove==broj_timova_s_vise_djece)
+     {
+        Krajnji.push_back(temp);
+        broj_timove++;
+        broj_clanove=0;
+        temp.clear();
+     }
+    else if(broj_clanove== obican_broj_timova &amp;&amp; broj_timove&gt;= br_tim)
+    {
+        Krajnji.push_back(temp);
+        broj_clanove=0;
+        temp.clear();
+        
+    }
+    if(current==nullptr)
+ break;
+ for(int i=1;i&lt;broj_iteratora;i++)
+ {
+     current=current-&gt;sljedeci;
+     prethodni=prethodni-&gt;sljedeci;
+ }
+    }
+    return Krajnji;
+ }
+
+int main ()
+{
+    vector&lt;string&gt; djeca;
+	int broj_djece;
+	cout&lt;&lt;"Unesite broj djece: ";
+	cin&gt;&gt;broj_djece;
+	
+	cin.ignore(1000,'\n');
+	cout&lt;&lt;"Unesite imena djece: "&lt;&lt;endl;
+	for(int i=0;i&lt;broj_djece;i++)
+	{
+	    string ime;
+	    getline(cin, ime);
+	    djeca.push_back(ime);
+	}
+	cout&lt;&lt;"Unesite broj timova: ";
+
+	int broj_timova;
+	cin&gt;&gt;broj_timova;
+	
+	vector&lt;set&lt;string&gt;&gt; Rezultat;
+	try
+	{
+	Rezultat=Razvrstavanje(djeca, broj_timova);
+	int temp(0);
+  for(int i=0;i&lt;Rezultat.size();i++)
+  {
+      cout&lt;&lt;"Tim "&lt;&lt;temp+1&lt;&lt;": ";
+      int pom(Rezultat[i].size());
+      int brojac(0);
+      for(auto p(Rezultat[i].begin());p!=Rezultat[i].end();p++)
+      {
+          cout&lt;&lt;*p;
+          brojac++;
+          if(brojac!=pom)
+          cout&lt;&lt;", ";
+      }
+      temp++;
+      cout&lt;&lt;endl;
+      
+  } }
+  catch(logic_error izuzetak)
+  {
+      cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+</font>  }
+  
+	
+
+	return 0;
+	
+}</pre>
+</body>
+</html>

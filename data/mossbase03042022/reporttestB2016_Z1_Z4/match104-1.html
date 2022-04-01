@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student5222.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student8532.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match104-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_97.gif"/></a>
+
+std::string obrniString(std::string str) {
+	for(int i(0);i&lt;str.length()/2;i++) {
+		char tmp = str[i];
+		str[i] = str[ str.length() - 1 - i ];
+		str[ str.length() - 1 - i] = tmp;
+	}
+	return str;
+}
+
+std::string ObrniFraze(std::string recenica, std::vector&lt;std::string&gt; fraze) {
+	for(int i(0);i&lt;fraze.size();i++) {
+		for(int j(0);j&lt;recenica.length();j++) {
+			int len = fraze[i].length();
+			if(fraze[i] == recenica.substr(j,len)) {
+				auto tmpString = obrniString(recenica.substr(j,len));
+				int tmp = j;
+				for(int k(0);k&lt;tmpString.length();k++) {
+					recenica[j++]=tmpString[k];
+				}
+				j=tmp;
+			}
+		}
+	}
+	return recenica;
+}
+
+std::string PigLatinTransform(std::string str) {
+	if(str.size())
+		return str.substr(1,str.length()-1) + str[0] + "ay";
+	else return "";
+}
+
+bool slovo(char c){
+	return ( ((c&gt;='a' &amp;&amp; c&lt;='z') || (c&gt;='A' &amp;&amp; c&lt;='Z')) );
+}
+
+std::string IzmijeniUPigLatin(std::string recenica, std::vector&lt;std::string&gt; rijeci) {
+	std::string retRecenica;
+	for(int i(0);i&lt;rijeci.size();i++) {
+		for(int j(0);j&lt;rijeci[i].length();j++)
+			if( !((rijeci[i][j]&gt;='a' &amp;&amp; rijeci[i][j] &lt;= 'z') || (rijeci[i][j]&gt;='A' &amp;&amp; rijeci[i][j]&lt;='Z')) )  
+				throw std::domain_error("Nekorektan izbor rijeci");
+	}
+	if(rijeci.size()) {
+		for(int i(0);i&lt;rijeci.size();i++) {
+			for(int j(0);j&lt;recenica.size();j++) {
+				if( recenica.substr(j, rijeci[i].size()) == rijeci[i] ) {
+					if(  ( j==0 || (j!=0 &amp;&amp; !slovo(recenica[j-1])) ) &amp;&amp; ( j+rijeci[i].size()==recenica.size()-1 || !slovo(recenica[j+rijeci[i].size()]) )  ) {
+						std::string tmpString = recenica.substr(j,rijeci[i].size());
+						recenica.erase(j, rijeci[i].size());
+						tmpString = PigLatinTransform(tmpString);
+						recenica.insert(j, tmpString);
+					}	
+				}
+			}
+		}
+	}
+	else {
+		int i=0;
+		while(i&lt;recenica.size()) {
+			int tmp = i;
+			while(i&lt;recenica.size() &amp;&amp; slovo(recenica[i]))
+				i++;
+			std::cout&lt;&lt;"Pocetak: "&lt;&lt;tmp&lt;&lt;" Kraj: "&lt;&lt;i&lt;&lt;std::endl;
+			
+			std::string tmpString = recenica.substr(tmp, i-tmp);
+			std::cout&lt;&lt;tmpString&lt;&lt;std::endl;
+			recenica.erase(tmp, i-tmp);
+			tmpString = PigLatinTransform(tmpString);
+			recenica.insert(tmp, tmpString);
+			while(slovo(recenica[i++]));
+			while(i&lt;recenica.size() &amp;&amp; !slovo(recenica[i]))
+				i++;	
+		}
+	}
+	return recenica;
+}
+
+
+int main ()
+{
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	std::string recenica;
+	std::getline(std::cin, recenica);
+	std::cout&lt;&lt;"Unesite fraze: ";
+	std::vector&lt;std::string&gt; fraze;
+	for(;;) {  
+		std::string x;
+		std::getline(std::cin, x);
+		if(x=="") break;
+		fraze.push_back(x);
+	}
+	try {
+		std::string x = IzmijeniUPigLatin(recenica,fraze);
+		std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: "&lt;&lt; x &lt;&lt;std::endl;
+		std::cout&lt;&lt;"Recenica nakon obrtanja fraza: " &lt;&lt; ObrniFraze(recenica, fraze) ;
+	}
+	catch(std::domain_error izuzetak) {
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+</font>		std::cout&lt;&lt;"Recenica nakon obrtanja fraza: " &lt;&lt; ObrniFraze(recenica, fraze);
+	}
+	return 0;
+}</pre>
+</body>
+</html>

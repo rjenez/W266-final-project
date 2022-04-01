@@ -1,0 +1,256 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z1/student8789.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z1/student8789.cpp<p></p><pre>
+<a name="2"></a><font color="#0000FF"><a href="match49-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+/B2017/2018: Zadaća 4, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;tuple&gt;
+#include &lt;cmath&gt;
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+class Kugla{
+double x,y,z,r;
+public:
+    explicit Kugla(double r = 0){
+        if(r &lt; 0) throw std::domain_error("Ilegalan poluprecnik");
+        Kugla::x = 0; Kugla::y = 0; Kugla::z = 0; Kugla::r = r;
+    }
+    Kugla(double x, double y, double z, double r = 0){
+        if(r &lt; 0) throw std::domain_error("Ilegalan poluprecnik");
+</font>        Kugla::x = x; Kugla::y = y; Kugla::z = z; Kugla::r = r;
+    }
+    explicit Kugla(const std::tuple&lt;double, double, double&gt; &amp;centar, double r = 0){
+        if(r &lt; 0) throw std::domain_error("Ilegalan poluprecnik");
+        Kugla::x = std::get&lt;0&gt;(centar); Kugla::y = std::get&lt;1&gt;(centar); Kugla::z = std::get&lt;2&gt;(centar); Kugla::r = r;
+    }
+    double DajX() const{
+        return x;
+    }
+    double DajY() const{
+        return y;
+    }
+    double DajZ() const{
+        return z;
+    }
+<a name="1"></a><font color="#00FF00"><a href="match49-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_16.gif"/></a>
+
+    std::tuple&lt;double, double, double&gt; DajCentar() const{
+        return std::make_tuple(x, y, z);
+    }
+    double DajPoluprecnik() const{
+        return r;
+    }
+    double DajPovrsinu() const{
+        return 4 * 4 * atan(1) * r * r;
+    }
+    double DajZapreminu() const{
+        return 4 / 3 * 4 * atan(1) * r * r * r;
+    }
+    Kugla &amp;PostaviX(double x){
+        (*this).x = x;
+        return *this;
+    }
+    Kugla &amp;PostaviY(double y){
+        (*this).y = y;
+        return *this;
+    }
+    Kugla &amp;PostaviZ(double z){
+        (*this).z = z;
+        return *this;
+    }
+    Kugla &amp;PostaviCentar(double x, double y, double z){
+        (*this).x = x; (*this).y = y; (*this).z = z;
+        return *this;
+    }
+    Kugla &amp;PostaviCentar(const std::tuple&lt;double, double, double&gt; &amp;centar){
+        (*this).x = std::get&lt;0&gt;(centar); (*this).y = std::get&lt;1&gt;(centar); (*this).z = std::get&lt;2&gt;(centar);
+        return *this;
+    }
+    Kugla &amp;PostaviPoluprecnik(double r){
+        if(r &lt; 0) throw std::domain_error("Ilegalan poluprecnik");
+        (*this).r = r;
+        return *this;
+    }
+    void Ispisi() const{
+        std::cout &lt;&lt; "{(" &lt;&lt; DajX() &lt;&lt; "," &lt;&lt; DajY() &lt;&lt; "," &lt;&lt; DajZ() &lt;&lt; ")," &lt;&lt; DajPoluprecnik() &lt;&lt; "}" &lt;&lt; std::endl;
+    }
+    void Translatiraj(double delta_x, double delta_y, double delta_z){
+        (*this).x += delta_x; (*this).y += delta_y; (*this).z += delta_z;
+    }
+    friend bool DaLiSuIdenticne(const Kugla &amp;k1, const Kugla &amp;k2);
+    friend bool DaLiSuPodudarne(const Kugla &amp;k1, const Kugla &amp;k2);
+</font>    friend bool DaLiSuKoncentricne(const Kugla &amp;k1, const Kugla &amp;k2);
+    friend bool DaLiSeDodirujuIzvana(const Kugla &amp;k1, const Kugla &amp;k2);
+    friend bool DaLiSeDodirujuIznutra(const Kugla &amp;k1, const Kugla &amp;k2);
+<a name="0"></a><font color="#FF0000"><a href="match49-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_68.gif"/></a>
+
+    friend bool DaLiSePreklapaju(const Kugla &amp;k1, const Kugla &amp;k2);
+    friend bool DaLiSeSijeku(const Kugla &amp;k1, const Kugla &amp;k2);
+    bool DaLiSadrzi(const Kugla &amp;k) const{
+        //std::cout &lt;&lt; std::endl &lt;&lt; (*this).r &lt;&lt; " , novi" &lt;&lt; k.r &lt;&lt; " RastojanjeCentara " &lt;&lt; RastojanjeCentara((*this), k) &lt;&lt;std::endl;
+        //if((*this).r &lt; k.r) 
+        return abs((*this).r - k.r) &gt;= RastojanjeCentara((*this), k);
+        //else return k.r &lt;= RastojanjeCentara((*this), k);
+    }
+    friend double RastojanjeCentara(const Kugla &amp;k1, const Kugla &amp;k2);
+};
+
+bool DaLiSuIdenticne(const Kugla &amp;k1, const Kugla &amp;k2){
+    bool tacno(true);
+    if(!(abs(k1.x-k2.x) &lt; 1e-10*(abs(k1.x) + abs(k2.x)))) tacno = false;
+    if(!(abs(k1.y-k2.y) &lt; 1e-10*(abs(k1.y) + abs(k2.y)))) tacno = false;
+    if(!(abs(k1.z-k2.z) &lt; 1e-10*(abs(k1.z) + abs(k2.z)))) tacno = false;
+    if(!(abs(k1.r-k2.r) &lt; 1e-10*(abs(k1.r) + abs(k2.r)))) tacno = false;
+    return tacno;
+}
+
+bool DaLiSuPodudarne(const Kugla &amp;k1, const Kugla &amp;k2){
+    return (abs(k1.r-k2.r) &lt; 1e-10*(abs(k1.r) + abs(k2.r)));
+}
+
+bool DaLiSuKoncentricne(const Kugla &amp;k1, const Kugla &amp;k2){
+    bool tacno(true);
+    if(!(abs(k1.x-k2.x) &lt; 1e-10*(abs(k1.x) + abs(k2.x)))) tacno = false;
+    if(!(abs(k1.y-k2.y) &lt; 1e-10*(abs(k1.y) + abs(k2.y)))) tacno = false;
+    if(!(abs(k1.z-k2.z) &lt; 1e-10*(abs(k1.z) + abs(k2.z)))) tacno = false;
+    return tacno;
+}
+
+bool DaLiSeDodirujuIznutra(const Kugla &amp;k1, const Kugla &amp;k2){
+    //std::cout &lt;&lt; k1.DaLiSadrzi(k2);
+    return (abs(abs(k2.r - k1.r) - RastojanjeCentara(k1, k2) &lt; 1e-10 * (abs(k2.r - k1.r) + abs(RastojanjeCentara(k1, k2)))));     // x =  abs(k2.r - k1.r) == y = RastojanjeCentara(k1,k2);
+}
+
+bool DaLiSeDodirujuIzvana(const Kugla &amp;k1, const Kugla &amp;k2){
+    return (abs(k1.r + k2.r - RastojanjeCentara(k1, k2)) &lt; 1e-10 * (abs(k1.r + k2.r) + abs(RastojanjeCentara(k1, k2)))); //k1.r + k2.r == RastojanjeCentara(k1, k2);
+}
+
+bool DaLiSePreklapaju(const Kugla &amp;k1, const Kugla &amp;k2){
+    //if(k1.r &lt; k2.r) return k2.r &lt;= RastojanjeCentara(k1, k2);
+    //else return k1.r &lt;= RastojanjeCentara(k1, k2);
+    //return abs(k1.r - k2.r) &lt;= RastojanjeCentara(k1, k2);
+    return k1.r + k2.r &gt; RastojanjeCentara(k1, k2);
+    //else return pow(k2.r, 2) &gt; RastojanjeCentara(k1, k2);
+}
+
+bool DaLiSeSijeku(const Kugla &amp;k1, const Kugla &amp;k2){
+    //std::cout &lt;&lt; DaLiSePreklapaju(k1, k2);
+    if(!k1.DaLiSadrzi(k2)) return k1.r + k2.r &gt; RastojanjeCentara(k1, k2);
+    //else if(!k1.DaLiSadrzi(k2)) return pow(k2.r, 2) &gt; RastojanjeCentara(k1, k2);
+    //return abs(pow(k1.r,2) - pow(k2.r,2)) &lt; RastojanjeCentara(k1, k2);
+    return 0;
+}
+
+double RastojanjeCentara(const Kugla &amp;k1, const Kugla &amp;k2){
+    return sqrt(pow((k1.x-k2.x),2)+pow((k1.y-k2.y),2)+pow((k1.z-k2.z),2));
+}
+
+void Unos(double &amp;x, double &amp;y, double &amp;z, int nesto, int brojac){
+    while(!(std::cin &gt;&gt; x &gt;&gt; y &gt;&gt; z)){
+        std::cin.clear();
+        std::cin.ignore(9999, '\n');
+        if(nesto == 1) {
+            std::cout &lt;&lt; "Neispravan centar" &lt;&lt; std::endl;
+            std::cout &lt;&lt; "Unesite centar " &lt;&lt; brojac + 1 &lt;&lt; ". kugle: ";
+        }
+        if(nesto == 0) std::cout &lt;&lt; "Neispravni parametri translacije, unesite ponovo!" &lt;&lt; std::endl;
+    }
+}
+
+int main ()
+{
+    std::cout &lt;&lt; "Unesite broj kugla: ";
+    int broj(-1);
+    double x, y, z, r(-1);
+    int brojac(0);
+    double dx, dy, dz;
+
+    while(!(std::cin &gt;&gt; broj)||broj &lt;= 0){
+        //std::cin &gt;&gt; broj;
+        std::cin.clear();
+        std::cin.ignore(9999, '\n');
+        if(broj &lt;= -1) std::cout &lt;&lt; "Neispravan broj kugli, unesite ponovo!" &lt;&lt; std::endl;
+        else std::cout &lt;&lt; "Neispravan broj kugli, unesite ponovo!" &lt;&lt; std::endl;
+    }
+    try{
+        std::vector&lt;std::shared_ptr&lt;Kugla&gt;&gt; vektor(broj);
+        for(;;){
+            std::cout &lt;&lt; "Unesite centar " &lt;&lt; brojac + 1 &lt;&lt; ". kugle: ";
+            Unos(x,y,z, 1, brojac);
+            std::cout &lt;&lt; "Unesite poluprecnik " &lt;&lt; brojac + 1 &lt;&lt; ". kugle: ";
+            while(!(std::cin &gt;&gt; r) || r &lt; 0){
+                std::cin.clear();
+                std::cin.ignore(9999, '\n');
+                if(r &lt; 0){
+                    std::cout &lt;&lt; "Ilegalan poluprecnik" &lt;&lt; std::endl;
+                    std::cout &lt;&lt; "Unesite centar " &lt;&lt; brojac + 1 &lt;&lt; ". kugle: ";
+                    Unos(x, y, z, 1, brojac);
+                    std::cout &lt;&lt; "Unesite poluprecnik " &lt;&lt; brojac + 1 &lt;&lt; ". kugle: ";
+                }
+                else {
+                    std::cout &lt;&lt; "Ilegalan poluprecnik" &lt;&lt; std::endl;
+                    std::cout &lt;&lt; "Unesite centar " &lt;&lt; brojac + 1 &lt;&lt; ". kugle: ";
+                    Unos(x, y, z, 1, brojac);
+                    std::cout &lt;&lt; "Unesite poluprecnik " &lt;&lt; brojac + 1 &lt;&lt; ". kugle: ";
+                }
+            }
+            vektor[brojac] = std::make_shared&lt;Kugla&gt; (x, y, z, r);
+            brojac++;
+            if(brojac==broj) break;
+        }
+        std::cout &lt;&lt; "Unesite parametre translacije (delta_x,delta_y,delta_z): ";
+        Unos(dx, dy, dz, 0, brojac);
+        std::cout &lt;&lt; "Kugle nakon obavljenje transformacije imaju sljedece vrijednosti: " &lt;&lt; std::endl;
+        std::transform(vektor.begin(), vektor.end(), vektor.begin(),
+            [=](std::shared_ptr&lt;Kugla&gt;&amp; prvo) -&gt; std::shared_ptr&lt;Kugla&gt; {
+                (*prvo).PostaviX(dx+(*prvo).DajX()); (*prvo).PostaviY(dy+(*prvo).DajY()); (*prvo).PostaviZ(dz+(*prvo).DajZ());
+                return prvo;
+            });
+        std::sort(vektor.begin(), vektor.end(),
+        [](const std::shared_ptr&lt;Kugla&gt;&amp; prvo, const std::shared_ptr&lt;Kugla&gt;&amp; drugo){
+            return (*prvo).DajZapreminu()&lt;(*drugo).DajZapreminu();
+        });
+        
+        std::for_each(vektor.begin(), vektor.end(),
+            [](std::shared_ptr&lt;Kugla&gt;&amp; prvo){
+                return (*prvo).Ispisi();
+            });
+        std::cout &lt;&lt; "Kugla sa najvecom povrsinom je: ";
+        (**(std::max_element(vektor.begin(), vektor.end(),
+        [](std::shared_ptr&lt;Kugla&gt;&amp; prvo, std::shared_ptr&lt;Kugla&gt;&amp; drugo){
+            return (*prvo).DajPovrsinu()&lt;(*drugo).DajPovrsinu();
+        }))).Ispisi();
+        brojac=1;
+        bool tacno(false);
+        //(*vektor[brojac]).Ispisi();
+    	std::for_each(vektor.begin(), vektor.end(),
+    	    [&amp;](const std::shared_ptr&lt;Kugla&gt; &amp;prvo) -&gt; void{
+    	        std::for_each(vektor.begin()+brojac, vektor.end(),
+    	            [&amp;](const std::shared_ptr&lt;Kugla&gt; &amp;drugo) -&gt; void{
+    	                //std::cout &lt;&lt; "Pozvano" ;
+    	                if(DaLiSeSijeku((*prvo), (*drugo))){
+    	                    std::cout &lt;&lt; "Presjecaju se kugle: ";
+    	                    (*prvo).Ispisi(); 
+    	                    (*drugo).Ispisi();
+    	                    tacno = true;
+    	                };
+    	            });
+    	        brojac++;
+    	    });
+    	if(!tacno) std::cout &lt;&lt; "Ne postoje kugle koje se presjecaju!";
+    }
+    catch(const std::exception &amp;greska){
+        std::cout &lt;&lt; greska.what();
+</font>    }
+	return 0;
+}
+</pre>
+</body>
+</html>

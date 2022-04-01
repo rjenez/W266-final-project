@@ -1,0 +1,173 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z1/student5660.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z1/student5660.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;math.h&gt;
+#define eps 0.00000000000000001
+
+<a name="2"></a><font color="#0000FF"><a href="match844-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+struct Student 
+{
+	char ime[20], prezime[20];
+	int ocjene[50];
+	int br_ocjena;
+};
+
+float DajProsjekStudenta (struct Student student)
+{
+	int suma = 0, j = 0;
+</font>	float prosjekStudenta;
+	while (j &lt; student.br_ocjena)
+	{
+		if (student.ocjene[j] == 5)
+		{
+			/* Ide ocjenu po ocjenu i provjerava te ako je neka od ocjena 5 prekida rad while petlje */
+			/* Sa j = 0 postizem da se izvrsi ovaj if dole i postavi prosjek na 5.0 */
+			j = 0;
+			break;
+		}
+		suma += student.ocjene[j];
+		j++;
+	}
+	/* Ovim if-om postizem da ako nema registrovanu niti jednu ocjenu bude prosjek = 5.0; */
+	if (j == 0) prosjekStudenta = 5.0;
+	else prosjekStudenta = (float)suma/student.br_ocjena;
+	return prosjekStudenta;
+}
+
+int DajIndeksIducegNajveceg (struct Student* studenti, int prvi, int vel, int drugi, int treci)
+{
+	int i, komparacija;
+	int indeksDrugogNajjaceg;
+	if (prvi != 0)
+	indeksDrugogNajjaceg = 0;
+	else indeksDrugogNajjaceg = 1;
+	for (i = 0; i &lt; vel; i++)
+	{
+		/* Ovim if-om se postize da ne poredi nikad najveci "sa samim sobom" */
+		if (prvi == i || i == drugi || i == treci) continue;
+		if (DajProsjekStudenta(studenti[i]) &lt; DajProsjekStudenta(studenti[prvi]) &amp;&amp;
+			DajProsjekStudenta(studenti[i]) &gt; DajProsjekStudenta(studenti[indeksDrugogNajjaceg]))
+			indeksDrugogNajjaceg = i;
+		
+		else if (fabsf(DajProsjekStudenta(studenti[i]) - DajProsjekStudenta(studenti[indeksDrugogNajjaceg])) &lt; eps)
+		{
+			komparacija = strcmp(studenti[i].prezime, studenti[indeksDrugogNajjaceg].prezime);
+			if (komparacija &lt; 0)
+			{
+				indeksDrugogNajjaceg = i;
+			}
+			else if (komparacija == 0)
+			{
+				komparacija = strcmp(studenti[i].ime, studenti[indeksDrugogNajjaceg].ime);
+				if (komparacija &lt; 0)
+				{
+					indeksDrugogNajjaceg = i;
+				}
+				else if (komparacija == 0)
+				{
+					indeksDrugogNajjaceg = i;
+				}
+			}
+		}
+	}
+	return indeksDrugogNajjaceg;
+}
+
+void ispisi (struct Student* studenti, int vel)
+{
+	int i, komparacija;
+	int prvi = 0;
+	int drugi = -1, treci = -1;
+	if (vel == 0) return;
+	/*printf ("Ispis nakon izbacaja\n");
+	for (i = 0; i &lt; vel; i++)
+	printf ("%s ima prosjek %.3f\n", studenti[i].ime, DajProsjekStudenta(studenti[i]));
+	printf ("\n");
+	*//* Ovo = -1 ce mi kasnije biti od koristi jer cu znati ako mu je "indeks == -1" to znaci da ima samo 2 ili 1 student */
+	for (i = 1; i &lt; vel; i++)
+	{
+		if (DajProsjekStudenta(studenti[i]) &gt; DajProsjekStudenta(studenti[prvi]))
+			prvi = i;
+		else if (fabsf(DajProsjekStudenta(studenti[i]) - DajProsjekStudenta(studenti[prvi])) &lt; eps)
+		{
+			komparacija = strcmp(studenti[i].prezime, studenti[prvi].prezime);
+			if (komparacija &lt; 0)
+				prvi = i;
+			else if (komparacija == 0)
+			{
+				komparacija = strcmp(studenti[i].ime, studenti[prvi].ime);
+				if (komparacija &lt; 0)
+					prvi = i;
+				else if (komparacija == 0)
+					prvi = i;
+			}
+			/* Ako je komparacija &gt; 0 znaci da je student[prvi] manji od student[i]
+				odnosno leksikografski ispred student[i] i sve ostaje isto... */
+		}
+	}
+
+	/* Sad definitivno imam onog najjaceg */
+	printf ("%s %s", studenti[prvi].prezime, studenti[prvi].ime);
+	if (vel &gt; 1)
+	{
+		drugi = DajIndeksIducegNajveceg(studenti, prvi, vel, drugi, treci);
+		printf ("\n%s %s", studenti[drugi].prezime, studenti[drugi].ime);
+	}
+	/* Eh sad vidim ima li jos jakih. Ako nema vratim se a ako ima zavirim jos jednom da vidim ima li jos jedan jak */
+	if (vel &gt; 2)
+	{
+		treci = DajIndeksIducegNajveceg(studenti, prvi, vel, drugi, treci);
+		printf ("\n%s %s", studenti[treci].prezime, studenti[treci].ime);
+	}
+	return;
+}
+
+int genijalci (struct Student* studenti, int vel, float prosjek)
+{
+	int i, j;
+	for (i = 0; i &lt; vel; i++)
+	{
+	/*	printf ("%s ima prosjek %.3f\n", studenti[i].ime, DajProsjekStudenta(studenti[i]));
+	*/	if (DajProsjekStudenta(studenti[i]) &lt; prosjek)
+		{
+			for (j = i; j &lt; vel-1; j++)
+				studenti[j] = studenti[j+1];
+<a name="1"></a><font color="#00FF00"><a href="match844-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+			vel--;
+			i--;
+		}
+	}
+	/*printf ("\n");
+	*/ispisi (studenti, vel);
+	return vel;
+}
+
+
+int main() 
+{
+	struct Student studenti[5] ={
+	{ "Mujo", "Mujic", { 7,7,7,7,8}, 5}, 
+</font>	{ "Meho", "Mujic", { 7,7,7,7,8}, 5}, 
+	{ "Beba", "Bebic", { 10, 10, 10, 10, 5}, 5},
+<a name="0"></a><font color="#FF0000"><a href="match844-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+	{ "Mujo", "Mujic", { 7,7,7,7,8}, 5}, 
+	{ "Fata", "Fatic", { 7,7,7,7,8}, 5}, 
+};
+genijalci(studenti, 5, 6.5);
+</font>
+
+	return 0;
+	
+}
+</pre>
+</body>
+</html>

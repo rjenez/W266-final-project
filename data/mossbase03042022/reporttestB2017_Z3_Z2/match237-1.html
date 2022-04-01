@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student9557.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student5639.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;tuple&gt;
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+<a name="0"></a><font color="#FF0000"><a href="match237-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_90.gif"/></a>
+
+typedef std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int , int&gt;&gt;&gt; IndeksPojmova;
+
+bool Slovo (char c)
+{
+    return ((c &gt;= 'a' &amp;&amp; c &lt;= 'z') || (c &gt;= 'A' &amp;&amp; c &lt;= 'Z'));
+}
+
+std::vector&lt;std::string&gt; IzdvojiRijeci (std::string s)
+{
+    std::vector&lt;std::string&gt; v;
+    std::string pomocni;
+    int i(0);
+    while (i &lt; s.length()) {
+        while(Slovo(s.at(i))) {
+            pomocni.push_back(s.at(i));
+            i++;
+        }
+        v.push_back(pomocni);
+        pomocni.resize(0);
+        i++;
+    }
+    return v;
+}
+
+std::vector&lt;int&gt; IndeksRijeci (std::string s)
+{
+    std::vector&lt;int&gt; v;
+    v.push_back(0);
+    int i(1);
+    while (i &lt; s.length()) {
+        if(Slovo(s.at(i)) &amp;&amp; !Slovo(s.at(i-1))) v.push_back(i);
+        i++;
+    }
+    return v;
+}
+
+IndeksPojmova KreirajIndeksPojmova(Knjiga k){
+    IndeksPojmova index;
+    std::string poglavlje = k.begin()-&gt;first;
+    for(auto it=k.begin(); it!=k.end(); it++){
+    std::vector&lt;std::string&gt; stranice=IzdvojiRijeci(it.second);
+    
+    for(int i=0; i&lt;stranice.size(); i++){
+    std::string pomocni = stranice[i];
+    for(int j=0; j &lt; pomocni.size(); j++){
+        int indeks = IndeksRijeci(pomocni.at(j));
+        auto ubaci = std::make_tuple(poglavlje, i, indeks);
+        index[pomocni].insert(ubaci);
+    }
+    }
+    return index;
+}
+
+void IspisiIndeksPojmova(IndeksPojmova index){
+    for(auto it:index){
+        std::cout &lt;&lt; it.first &lt;&lt; ": ";
+        int br, vel;
+        br=0; vel= std::distance(it.second.begin(),it.second.end());
+        for(auto i: it.second){
+            br++;
+            if(br==vel) std::cout &lt;&lt; std::get&lt;0&gt;(i) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(i) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(i);
+            else std::cout &lt;&lt; std::get&lt;0&gt;(i) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(i) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(i) &lt;&lt; ", ";
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+/*
+IndeksPojmova KreirajIndeksPojmova (Knjiga k)
+{
+    IndeksPojmova index;
+    std::string naziv_poglavlja;
+    int broj_stranice, pocetak_rijeci;
+    std::tuple&lt;std::string, int, int&gt; indeksacija;
+  //  auto it=k.begin();
+    naziv_poglavlja = (k.begin())-&gt;first;
+    std::vector&lt;std::string&gt;v;
+    for(auto i = 0; i&lt;(k.begin()-&gt;second).size(); i++) {
+        v = IzdvojiRijeci((k.begin()-&gt;second)[i]);
+    }
+    
+    auto indeks_rijeci = IndeksRijeci(k.begin()-&gt;first);
+    for(int i=0; i&lt;(k.begin()-&gt;second).size(); i++) {
+        for(int j=0; j&lt;v.size(); j++) {
+            broj_stranice = i+1;
+            pocetak_rijeci=indeks_rijeci[j];
+            indeksacija = std::make_tuple(naziv_poglavlja, broj_stranice, pocetak_rijeci);
+            index[v.at(j)].insert(indeksacija);
+        }
+    }
+    return index;
+}
+
+void IspisiIndeksPojmova(IndeksPojmova index){
+    for(auto it: index){
+        std::cout &lt;&lt; it.first &lt;&lt; ": ";
+        for(auto it1: it.second){
+           std::cout &lt;&lt; std::get&lt;0&gt;(it1) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(it1) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(it1) &lt;&lt; std::endl; 
+        }
+    }
+}
+*/
+
+int main()
+{
+    Knjiga k;
+    k.insert({"I", {"abc  qwe ert abc"}});
+    IspisiIndeksPojmova(KreirajIndeksPojmova(k));
+    return 0;
+</font>}</pre>
+</body>
+</html>

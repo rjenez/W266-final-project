@@ -1,0 +1,258 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student7293.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student7293.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match141-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+#include &lt;stack&gt;
+#include &lt;utility&gt;
+
+enum class Boje {Pik, Tref, Herc, Karo};
+
+typedef std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; StekParova;
+typedef std::multimap&lt;Boje, std::string&gt; Multimapa;
+
+struct Karta {
+    Boje boja;
+    std::string vrijednost;
+};
+
+struct Cvor {
+    Karta karta;
+    Cvor *sljedeci;
+};
+
+
+void UnistiSpil(Cvor* pocetak) {
+    if (pocetak==nullptr) return;
+    
+    Cvor* p=pocetak;
+    p = p-&gt;sljedeci;
+    if (p==pocetak) {
+        delete pocetak;
+        return;
+    }
+    pocetak-&gt;sljedeci = nullptr;
+    
+    while (p) {
+        auto pok = p-&gt;sljedeci;
+        delete p;
+        p = nullptr;
+        p = pok;
+    }
+}
+
+int VelicinaSpila (Cvor* &amp;Spil) {
+    int br(0);
+    for (auto *p=Spil;;) {
+        br++;
+        p = p-&gt;sljedeci;
+        if (p==Spil) break;
+    }
+    return br;
+}
+
+Cvor* KreirajSpil () {                                                          // vraca pok na pocetak "cvora"
+    std::vector&lt;std::string&gt; vr {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    Cvor *pocetak(nullptr), *prethodni;
+    
+    for (int i=0; i&lt;4; i++) {
+        for (int j=0; j&lt;vr.size(); j++) {
+            Karta nova_karta;
+            nova_karta.boja = Boje(i);
+            nova_karta.vrijednost = vr.at(j);
+            Cvor *novi (new Cvor);
+            novi-&gt;karta = nova_karta;
+            novi-&gt;sljedeci = nullptr;
+            if (!pocetak) {
+                pocetak = novi;
+                prethodni = novi;
+            }
+            else if (i==3 &amp;&amp; j==vr.size()-1) {                                  //kruzna lista
+                prethodni-&gt;sljedeci = novi;
+                novi-&gt;sljedeci = pocetak;
+            }
+            else {
+                prethodni-&gt;sljedeci = novi;
+                prethodni = novi;
+            }
+        }
+    }
+    return pocetak;
+}
+
+void IzbaciKarte (Cvor* &amp;pocetak, Multimapa &amp;m) {
+    if (VelicinaSpila(pocetak)) {
+        UnistiSpil(pocetak);
+        throw std::logic_error ("Neispravna lista!");
+    }
+    for (auto *p = pocetak; p!=nullptr; p=p-&gt;sljedeci) {
+        Karta temp = p-&gt;karta;
+        for (auto it=m.begin(); it!=m.end(); it++) {
+            if (temp.boja==it-&gt;first &amp;&amp; temp.vrijednost==it-&gt;second) {
+                auto pok = (p+1)-&gt;sljedeci;
+                p = pok;
+                m.erase(it);
+                break;
+            }
+        }
+        p--;
+    }
+}
+
+StekParova IzbaciKarteRazbrajanjem (Cvor* &amp;pocetak, const short int &amp;r, const int &amp;b) {
+    if (r&lt;1 || r&gt;52 || b&lt;1) { 
+        UnistiSpil(pocetak);
+        throw std::logic_error ("Neispravni elementi za izbacivanje!");
+    }
+    if (VelicinaSpila(pocetak)&gt;52) {
+        UnistiSpil(pocetak);
+        throw std::logic_error ("Neispravna lista!");
+    }
+    StekParova stek;
+    int br(0);
+    for (auto *p=pocetak;;) {
+        Karta trenutna = p-&gt;karta;
+        short int pom(r);
+        while (pom&gt;1) {
+            p=p-&gt;sljedeci;
+            pom--;
+        }
+        
+        std::string pom1;
+        int prvi = int(trenutna.boja);
+        if (prvi==0) pom1 = "Pik";
+        else if (prvi==1) pom1 = "Tref";
+        else if (prvi==2) pom1 = "Herc";
+        else if (prvi==3) pom1 = "Karo";
+        
+        std::string pom2(trenutna.vrijednost);
+        
+        std::pair&lt;std::string, std::string&gt; par = std::make_pair(pom1, pom2);
+        stek.push(par);
+        auto tmp_p = p-&gt;sljedeci;
+        
+        p = tmp_p-&gt;sljedeci;
+        delete tmp_p;
+        //p = p-&gt;sljedeci;
+        //if (VelicinaSpila(pocetak)==0) break;
+        
+        br++;
+        if (br==0) break;
+    }
+    return stek;
+}
+
+void VratiPosljednjihNKarata (Cvor* &amp;pocetak, StekParova &amp;stek, int n) {
+    if (n&lt;1 || n&gt;52) {
+        UnistiSpil(pocetak);
+        throw std::logic_error ("Broj n je besmislen");
+    }
+    if (stek.size()&lt;n) {
+        UnistiSpil(pocetak);
+        throw std::range_error ("Nedovoljno karata u steku");
+    }
+}
+
+int main ()
+{
+    /*Cvor* pocetak = KreirajSpil();
+    for (auto *p=pocetak;;) {
+        Karta pom = p-&gt;karta;
+        std::cout &lt;&lt; int(pom.boja) &lt;&lt; " " &lt;&lt; pom.vrijednost &lt;&lt; std::endl;
+        p = p-&gt;sljedeci;
+        if (p==pocetak) break;
+    }*/
+    Cvor* Spil;
+    try {
+        Spil = KreirajSpil();                                                 // Spil je pok na prvu kartu u spilu
+        int korak;
+        std::cout &lt;&lt; "Unesite korak razbrajanja: ";
+        std::cin &gt;&gt; korak;
+        int br_karata1;
+        std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+        std::cin &gt;&gt; br_karata1;
+        StekParova stek = IzbaciKarteRazbrajanjem(Spil, korak, br_karata1);
+        std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; 52-br_karata1 &lt;&lt; " karata, i to:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Pik: ";
+        for (auto *p=Spil; ;) {
+            Karta pom = p-&gt;karta;
+            if (int(pom.boja)==0) std::cout &lt;&lt; pom.vrijednost &lt;&lt; " ";
+            p = p-&gt;sljedeci;
+            if (p==Spil) break;
+        }
+        std::cout &lt;&lt; std::endl &lt;&lt; "Tref: ";
+        for (auto *p=Spil;;) {
+            Karta pom = p-&gt;karta;
+            if (int(pom.boja)==1) std::cout &lt;&lt; pom.vrijednost &lt;&lt; " ";
+            p = p-&gt;sljedeci;
+            if (p==Spil) break;
+        }
+        std::cout &lt;&lt; std::endl &lt;&lt; "Herc: ";
+        for (auto *p=Spil;;) {
+            Karta pom = p-&gt;karta;
+            if (int(pom.boja)==2) std::cout &lt;&lt; pom.vrijednost &lt;&lt; " ";
+            p = p-&gt;sljedeci;
+            if (p==Spil) break;
+        }
+        std::cout &lt;&lt; std::endl &lt;&lt; "Karo: ";
+        for (auto *p=Spil;;) {
+            Karta pom = p-&gt;karta;
+            if (int(pom.boja)==3) std::cout &lt;&lt; pom.vrijednost &lt;&lt; " ";
+            p = p-&gt;sljedeci;
+            if (p==Spil) break;
+        }
+        int br_karata2;
+        std::cout &lt;&lt; std::endl &lt;&lt; "Unesite broj karata koje zelite vratiti u spil: ";
+        std::cin &gt;&gt; br_karata2;
+        std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; 52-br_karata1+br_karata2 &lt;&lt; " karata, i to:" &lt;&lt; std::endl;
+        VratiPosljednjihNKarata(Spil, stek, br_karata2);
+        std::cout &lt;&lt; "Pik: ";
+        for (auto *p=Spil;;) {
+            Karta pom = p-&gt;karta;
+            if (int(pom.boja)==0) std::cout &lt;&lt; pom.vrijednost &lt;&lt; " ";
+            p = p-&gt;sljedeci;
+            if (p==Spil) break;
+        }
+        std::cout &lt;&lt; std::endl &lt;&lt; "Tref: ";
+        for (auto *p=Spil;;) {
+            Karta pom = p-&gt;karta;
+            if (int(pom.boja)==1) std::cout &lt;&lt; pom.vrijednost &lt;&lt; " ";
+            p = p-&gt;sljedeci;
+            if (p==Spil) break;
+        }
+        std::cout &lt;&lt; std::endl &lt;&lt; "Herc: ";
+        for (auto *p=Spil;;) {
+            Karta pom = p-&gt;karta;
+            if (int(pom.boja)==2) std::cout &lt;&lt; pom.vrijednost &lt;&lt; " ";
+            p = p-&gt;sljedeci;
+            if (p==Spil) break;
+        }
+        std::cout &lt;&lt; std::endl &lt;&lt; "Karo: ";
+        for (auto *p=Spil;;) {
+            Karta pom = p-&gt;karta;
+            if (int(pom.boja)==3) std::cout &lt;&lt; pom.vrijednost &lt;&lt; " ";
+            p = p-&gt;sljedeci;
+            if (p==Spil) break;
+        }
+        //UnistiSpil(Spil);
+    }
+    catch (std::bad_alloc) {
+        std::cout &lt;&lt; "Greska u memoriji" &lt;&lt; std::endl;
+    }
+    catch (std::logic_error izuzetak) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+    }
+    UnistiSpil(Spil);
+</font>	return 0;
+}</pre>
+</body>
+</html>

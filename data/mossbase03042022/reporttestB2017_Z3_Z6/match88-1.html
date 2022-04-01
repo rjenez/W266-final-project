@@ -1,0 +1,290 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z6/student5961.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z6/student7795.cpp<p></p><pre>
+// updating, solved locally
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;algorithm&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stack&gt;
+#include &lt;memory&gt;
+
+// predefined data
+<a name="0"></a><font color="#FF0000"><a href="match88-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum class Boje { Pik, Tref, Herc, Karo };
+
+constexpr int DECK_SIZE(52);
+const std::vector&lt;std::string&gt; cardValues { "2","3","4","5","6","7","8","9","10","J","Q","K","A" };
+const std::vector&lt;std::string&gt; cardNames { "Pik", "Tref", "Herc", "Karo" };
+auto cardNumIndex = [](const std::string&amp; _str) { return std::find(cardValues.cbegin(), cardValues.cend(), _str); };
+
+/// defining classes
+struct Karta {
+	Boje boja;
+	std::string vrijednost;
+};
+struct Cvor {
+	Karta karta;
+	std::shared_ptr&lt;Cvor&gt; sljedeci;
+};
+
+typedef std::pair&lt;Boje, std::string&gt;                   Card;
+typedef std::pair&lt;std::string, std::string&gt;            RemovedCards;
+typedef std::shared_ptr&lt;Cvor&gt;                          Spil;
+typedef std::shared_ptr&lt;Cvor&gt;                          PointCvor;
+typedef std::multimap&lt;Boje, std::string&gt;               KarteMapa;
+typedef std::stack&lt;RemovedCards&gt;                       ObrisaneRed;
+
+/*   functions for list  */
+Karta toKarta(Card _card) { return { _card.first, _card.second }; }
+int size_list(Spil);
+bool _empty(Spil);
+bool _equal(PointCvor, PointCvor);
+void _increment(PointCvor&amp;);
+PointCvor _prevMember(Spil, PointCvor);
+PointCvor _insert(Spil&amp;, Card);
+PointCvor _remove(Spil&amp;, PointCvor&amp;);
+
+/**
+		Validation functions
+**/
+bool sortFunction(PointCvor a, PointCvor b) {
+	return a != nullptr &amp;&amp; b != nullptr &amp;&amp;
+		((a-&gt;karta.boja &lt; b-&gt;karta.boja) || ((a-&gt;karta.boja == b-&gt;karta.boja) &amp;&amp; (cardNumIndex(a-&gt;karta.vrijednost) &lt; cardNumIndex(b-&gt;karta.vrijednost))));
+}
+
+// check if given card is valid
+bool validCard(const std::string&amp; str, std::vector&lt;std::string&gt; _arr = cardValues) {
+     return std::any_of(_arr.begin(), _arr.end(), [=](const std::string&amp; _val) { return _val == str; });
+}
+
+// check validity of elements in deck
+bool invalidDeck(Spil _deck) {
+     if(_deck == nullptr) return false;
+     auto karta (_deck);
+     do {
+          if (karta-&gt;karta.boja &lt; Boje::Pik || karta-&gt;karta.boja &gt; Boje::Karo || !validCard(karta-&gt;karta.vrijednost)) 
+			return true;
+          _increment(karta);
+     } while (karta != nullptr &amp;&amp; karta != _deck);
+     return false;
+}
+
+// check sort validity
+bool sortiranaLista(Spil _deck) {
+     if(_deck == nullptr) return true;
+     auto karta (_deck);
+     do {
+          if(karta-&gt;sljedeci.get() == _deck.get()) break;
+          auto card (karta-&gt;sljedeci);
+          do {
+               if (!sortFunction(karta, card)) return false;
+               _increment(card);
+          } while (card != nullptr &amp;&amp; card != _deck);
+          _increment(karta);
+     } while (karta != nullptr &amp;&amp; karta != _deck);
+     return true;
+}
+
+// validate entire card deck
+void checkDeckValidity(Spil _deck) {
+     if (_deck != nullptr) 
+          if (size_list(_deck) &gt; DECK_SIZE || invalidDeck(_deck) || !sortiranaLista(_deck))
+               throw std::logic_error("Neispravna lista!");
+}
+
+// validate queue cards
+void validateCardQueue(ObrisaneRed _deck) {
+     for (; !_deck.empty();) {
+          auto _card (_deck.top());
+          if(!(validCard(_card.first, cardNames) &amp;&amp; validCard(_card.second)))
+               throw std::logic_error("Neispravne karte!");
+          _deck.pop();
+     }
+}
+
+// print cards function
+void ispisiDeck(const Spil&amp; _deck) {
+     for (int i(0); i &lt; cardNames.size(); ++i) {
+          std::cout &lt;&lt; std::endl &lt;&lt; cardNames.at(i) &lt;&lt; ": ";
+		auto karta(_deck);
+          do {
+               if(karta == nullptr) break;
+               if(karta-&gt;karta.boja == static_cast&lt;Boje&gt;(i + int(Boje::Pik))) 
+                    std::cout &lt;&lt; karta-&gt;karta.vrijednost &lt;&lt; " ";
+               _increment(karta);
+          } while (karta != nullptr &amp;&amp; karta != _deck);
+     }
+}
+
+/*   functions to implement   */
+Spil KreirajSpil() {
+     PointCvor _start(nullptr), _prev (nullptr);
+     for (auto _znak(static_cast&lt;int&gt;(Boje::Pik)); _znak &lt;= static_cast&lt;int&gt;(Boje::Karo); ++_znak) {
+          for(int i(0); i &lt; cardValues.size(); ++i) {
+               auto _new = std::make_shared&lt;Cvor&gt;();
+               _new-&gt;karta = {static_cast&lt;Boje&gt;(_znak), cardValues.at(i)}; _new-&gt;sljedeci = nullptr;
+               if (!_start) _start = std::move(PointCvor(_new));
+               else _prev-&gt;sljedeci =  std::move(PointCvor(_new));
+               _prev = std::move(_new);
+          }
+     }
+     _prev-&gt;sljedeci = _start;
+     return _start;
+}
+
+void IzbaciKarte(Spil&amp; _deck, KarteMapa &amp;_dmap) {
+     checkDeckValidity(_deck);  // validity check
+
+     for (bool _exist(false);;) {
+          auto karta (_deck);
+          do {
+               _exist = false;
+			auto _it(_dmap.find(karta-&gt;karta.boja));
+			if (_it != _dmap.end() &amp;&amp; _it-&gt;second == karta-&gt;karta.vrijednost) {
+				_it = _dmap.erase(_it);
+				_exist = true;
+			}
+               if (_exist) _remove(_deck, karta);
+               _increment(karta);
+          }  while (karta != nullptr &amp;&amp; karta != _deck);
+          if (!_exist) break;
+     }
+}
+
+
+ObrisaneRed IzbaciKarteRazbrajanjem(Spil&amp; _deck, const short int&amp; r, const int&amp; b) {
+     // validity checks
+     if (r &lt; 1 || r &gt; DECK_SIZE || b &lt; 1)
+          throw std::logic_error("Neispravni elementi za izbacivanje!");
+     checkDeckValidity(_deck);
+     
+     ObrisaneRed output;
+     int _erased (0), _size (size_list(_deck));
+     
+	auto karta (_deck);
+     for(int _currentPos (1); karta != nullptr &amp;&amp; _size &gt; 0 &amp;&amp; _erased &lt; b; ++_currentPos, _increment(karta)) {
+          if (_currentPos == r) {
+               ++_erased; --_size;
+               output.push(std::make_pair(cardNames.at(int(karta-&gt;karta.boja) + int(Boje::Pik)), karta-&gt;karta.vrijednost));
+               karta = _remove(_deck, karta);
+               _currentPos = 0;
+          } 
+     }
+
+     return output;
+}
+
+void VratiPosljednjihNKarata(Spil&amp; _deck, ObrisaneRed&amp; _removedCards, int n) {
+     // validations
+     if (n &lt; 0) 
+          throw std::domain_error("Broj n je besmislen!");
+     else if (n &gt; _removedCards.size()) 
+          throw std::range_error("Nedovoljno karata u steku!");
+     validateCardQueue(_removedCards);
+     checkDeckValidity(_deck);
+     
+     int _size(size_list(_deck));
+     for (; n &gt; 0; --n) {
+          auto _card (_removedCards.top());
+          // map card accordingly from (string, string) to (Boje, string)
+          int _pos (std::find(cardNames.begin(), cardNames.end(), _card.first) - cardNames.begin());
+          
+          if(_size &lt; DECK_SIZE)
+               _insert(_deck, std::make_pair(static_cast&lt;Boje&gt;(_pos + int(Boje::Pik)), _card.second));
+          _removedCards.pop();
+          ++_size;
+     }
+}
+
+// main program logic
+int main() {
+     short int r;
+     int b, n;
+     Spil _deck (KreirajSpil());
+     try {
+		std::cout &lt;&lt; "Unesite korak razbrajanja: "; std::cin &gt;&gt; r;
+		std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: "; std::cin &gt;&gt; b;
+		auto _removed (IzbaciKarteRazbrajanjem(_deck, r, b));
+		
+		std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; size_list(_deck) &lt;&lt; " karata, i to: "; ispisiDeck(_deck);
+		
+		std::cout &lt;&lt; std::endl &lt;&lt; "Unesite broj karata koje zelite vratiti u spil: "; std::cin &gt;&gt; n;
+		VratiPosljednjihNKarata(_deck, _removed, n);
+		std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; size_list(_deck) &lt;&lt; " karata, i to: "; ispisiDeck(_deck);
+     }
+     catch (const std::exception&amp; e) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what();
+	}
+	if(_deck != nullptr) 
+	     _prevMember(_deck, _deck)-&gt;sljedeci = nullptr;
+     return 0;
+}
+
+/*  implementation of list functions  */
+int size_list(Spil _deck) {
+     if (_deck == nullptr) return 0;
+     int _size (0);
+     auto _prev(_deck);
+     do { ++_size; _increment(_prev); } while (_prev != nullptr &amp;&amp; _prev != _deck);
+     return _size;
+}
+PointCvor _prevMember(Spil _deck, PointCvor _card) {
+     PointCvor _pos(nullptr);
+     for (_pos = _deck; _pos != nullptr &amp;&amp; _pos-&gt;sljedeci != _card &amp;&amp; _pos-&gt;sljedeci != _deck; _increment(_pos));
+     if (_pos == nullptr) return nullptr;
+     return (_pos-&gt;sljedeci == _card ? _pos : nullptr);
+}
+bool _empty(Spil _deck) { return _deck == nullptr; }
+void _increment(PointCvor&amp; _point) { _point = _point ? _point-&gt;sljedeci : nullptr; }
+PointCvor _insert(Spil &amp;_deck, Card _card) {
+     PointCvor _new (std::make_shared&lt;Cvor&gt;());
+     _new-&gt;karta = toKarta(_card);
+     if (_empty(_deck) || _deck-&gt;sljedeci == nullptr) {
+          _new-&gt;sljedeci = _new;
+          _deck = _new;
+          return _new;
+     }
+     auto _next (_deck);
+     do {
+          if(sortFunction(_new, _next) &amp;&amp; !_equal(_new, _next)) {
+               _new-&gt;sljedeci = _next-&gt;sljedeci;
+               _next-&gt;sljedeci = _new;
+               std::swap(_new-&gt;karta, _next-&gt;karta);
+               return _new;
+          }
+          _increment(_next);
+     } while (_next != nullptr &amp;&amp; _next != _deck);
+	/// ubaci na kraj liste
+	auto _mem(_prevMember(_deck, _deck));
+	if(_equal(_new, _mem)) return nullptr;
+	_mem-&gt;sljedeci = _new;
+	_new-&gt;sljedeci = _deck;
+	return _new;
+}
+PointCvor _remove(Spil &amp;_deck, PointCvor &amp;_card) {
+     auto prev (_prevMember(_deck, _card));
+     if (_empty(_deck) || _card == nullptr || prev == nullptr)
+          return nullptr;
+     if (_deck == _card) _deck = _deck-&gt;sljedeci;
+     prev-&gt;sljedeci = _card-&gt;sljedeci;
+     if (size_list(_deck) == 1 &amp;&amp; _deck == _card) {
+          _deck = _deck-&gt;sljedeci = nullptr;
+          return nullptr;
+     }
+     _card = nullptr;
+     return prev;
+}
+bool _equal(PointCvor a, PointCvor b) {
+     return (a != nullptr &amp;&amp; b != nullptr &amp;&amp; 
+          a-&gt;karta.boja == b-&gt;karta.boja &amp;&amp; a-&gt;karta.vrijednost == b-&gt;karta.vrijednost);
+</font>}</pre>
+</body>
+</html>

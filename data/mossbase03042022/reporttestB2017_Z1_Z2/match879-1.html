@@ -1,0 +1,218 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student4261.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student8209.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cstdlib&gt;
+#include &lt;limits&gt;
+#include &lt;cmath&gt;
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+
+Matrica FormirajMatricu (int m, int n)
+{
+<a name="0"></a><font color="#FF0000"><a href="match879-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+	return Matrica(m, std::vector&lt;double&gt; (n));
+}
+
+bool ProvjeraDimenzija (Matrica ulaz)
+{
+	int broj_kolona (ulaz.at(0).size());
+	for(int i = 0; i &lt; ulaz.size(); i++) {
+		if(ulaz.at(i).size() != broj_kolona)
+</font>			throw std::domain_error ("Matrica nije korektna");
+	}
+
+	return true;
+}
+
+Matrica KreirajPodmatricu (Matrica ulaz, int m, int n, int dimenzija)
+{
+
+	int duzina (dimenzija * 2 + 1);
+	Matrica planina (FormirajMatricu(duzina, duzina));
+
+	int b(0), c(0);
+
+	for(int i = m; i &lt; dimenzija *2 + 1 + m; i++) {
+		for (int j = n; j &lt; dimenzija * 2 + 1 + n; j++) {
+			planina.at(b).at(c) = ulaz.at(i).at(j);
+			c++;
+		}
+		c = 0;
+		b++;
+	}
+	return planina;
+}
+
+bool PorediPodmatrice (Matrica nova, Matrica stara)
+{
+	if (nova.size() == 0 &amp;&amp; stara.size() == 0) return true;
+	if(nova.size() &gt; stara.size() ) return true;
+	else if(nova.size() &lt; stara.size()) return false;
+	else {
+<a name="3"></a><font color="#00FFFF"><a href="match879-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+		double vrh1 (nova.at(0).at(0));
+		double vrh2 (stara.at(0).at(0));
+
+		for(int i = 0; i &lt; nova.size() ; i++ ) {
+			for(int j = 0; j &lt; nova.size(); j++) {
+</font>				if(nova.at(i).at(j) &gt; vrh1) vrh1 = nova.at(i).at(j);
+			}
+		}
+		for(int i = 0; i &lt; stara.size() ; i++ ) {
+			for(int j = 0; j &lt; stara.size(); j++) {
+				if(stara.at(i).at(j) &gt; vrh2) vrh2 = stara.at(i).at(j);
+			}
+		}
+
+		if(vrh1 &gt; vrh2) return true;
+		else return false;
+	}
+	return false;
+
+}
+
+int ManjaDimenzija (int m, int n)
+{
+	if (m &lt; n &amp;&amp; m % 2 != 0) return m;
+	else if( m &lt; n &amp;&amp; m % 2 == 0) return m -1 ;
+	else if (n &lt; m &amp;&amp; n % 2 == 0) return n -1;
+	else if ( m == n &amp;&amp; m % 2 == 0) return m -1;
+	else
+		return n;
+}
+
+Matrica NajvecaPlaninaMatrice (Matrica ulaz)
+{
+
+	Matrica Planina, testna;
+
+	if(ulaz.size() == 0 || ulaz.at(0).size() == 0) return Planina;
+
+	if(!ProvjeraDimenzija(ulaz)) exit(1);
+
+	int manja (ManjaDimenzija(ulaz.size(), ulaz.at(0).size()));
+
+	if(manja &lt; 3) {
+
+		double testna(ulaz.at(0).at(0));
+		for(int i = 0; i &lt; ulaz.size(); i++) {
+			for(int j = 0; j &lt;ulaz.at(0).size(); j++) {
+				if(ulaz.at(i).at(j) &gt; testna) {
+					testna = ulaz.at(i).at(j);
+				}
+			}
+		}
+
+		Planina.resize(manja);
+		Planina.at(0).push_back(testna);
+	}
+
+
+	for(int dimenzija = 0; dimenzija &lt; manja-1; dimenzija+=2) {
+		double suma_prstena (0), vanjski (std::numeric_limits&lt;double&gt;::lowest());
+
+		for(int k = 0; k &lt; ulaz.size() - (manja - dimenzija) + 1; k++) {
+			for(int l = 0; l &lt; ulaz.at(0).size() - (manja-dimenzija) + 1; l++) {
+
+				for(int p = 0; p &lt;= (manja-dimenzija)/2 ; p++ ) {
+
+<a name="2"></a><font color="#0000FF"><a href="match879-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+					for(int i = 0; i &lt; ulaz.size(); i++) {
+						for(int j = 0; j &lt; ulaz.at(0).size(); j++) {
+
+							if((i == k + p || j == l + p || i ==  manja - p - 1 + k || j == manja - p - 1 + l) &amp;&amp;
+</font>							        i &lt;= manja - p - 1 + k &amp;&amp; j &lt;= manja - p - 1 + l &amp;&amp; i &gt;= p + k &amp;&amp; j &gt;= p + l)
+								suma_prstena += ulaz.at(i).at(j);
+
+							if(p == (manja - dimenzija)/2  &amp;&amp; (i == ulaz.size() - 1) &amp;&amp; (j == ulaz.at(0).size() - 1) &amp;&amp; (suma_prstena &gt; vanjski)) {
+
+								int prvi_ulaz = k;
+								int drugi_ulaz = l;
+								testna = KreirajPodmatricu (ulaz, prvi_ulaz, drugi_ulaz, p);
+								if(PorediPodmatrice(testna, Planina)) Planina = testna;
+
+								vanjski = std::numeric_limits&lt;double&gt;::lowest();
+							}
+						}
+
+					}
+
+					if(suma_prstena &gt; vanjski) {
+						vanjski = suma_prstena;
+						suma_prstena = 0;
+
+					} else {
+						vanjski = std::numeric_limits&lt;double&gt;::lowest();
+						break;
+					}
+				}
+				suma_prstena = 0;
+				if(Planina.size() != 0) return Planina;
+
+			}
+		}
+		if(Planina.size() == 0) {
+			double trazilica(ulaz.at(0).at(0));
+			for(int i = 0; i &lt; ulaz.size(); i++) {
+				for(int j = 0; j &lt; ulaz.at(0).size(); j++)
+					if(ulaz.at(i).at(j) &gt; trazilica) trazilica = ulaz.at(i).at(j);
+			}
+			Planina.resize(1);
+			Planina.at(0).push_back(trazilica);
+		}
+
+	}
+	return Planina;
+}
+
+int main ()
+{
+	std::cout &lt;&lt; "Unesite dimenzije matrice (m i n): ";
+	int m, n;
+
+	std::cin &gt;&gt; m &gt;&gt; n;
+
+	if(m &lt; 0 || n &lt; 0) {
+		std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!";
+		return 0;
+	}
+
+	std::cout &lt;&lt; "Unesite elemente matrice: " &lt;&lt; std::endl;
+
+	auto vektor_vektora (FormirajMatricu(m,n));
+
+	for(int i = 0; i &lt; m; i++) {
+		for(int j = 0; j &lt; n; j++) {
+			std::cin &gt;&gt; vektor_vektora.at(i).at(j);
+		}
+	}
+
+	std::cout &lt;&lt; "Najveca planina unesene matrice je: " &lt;&lt; std::endl;
+
+	auto rezultat (NajvecaPlaninaMatrice(vektor_vektora));
+
+	for(int i = 0; i &lt; rezultat.size(); i++) {
+<a name="1"></a><font color="#00FF00"><a href="match879-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+		for (int j = 0; j &lt; rezultat.at(0).size(); j++) {
+			std::cout &lt;&lt; std::setw(6) &lt;&lt; rezultat.at(i).at(j);
+</font>		}
+		std::cout &lt;&lt; std::endl;
+
+	}
+
+	return 0;
+}</pre>
+</body>
+</html>

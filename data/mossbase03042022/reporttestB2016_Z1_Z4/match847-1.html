@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student2886.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student5170.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+typedef std::vector&lt;std::string&gt; vektor;
+
+std::string ObrniFraze (std::string recenica, vektor fraze)
+{
+	char pomocni;
+	int b(0), k(0);
+	for (int i=0; i&lt;fraze.size(); i++) {
+		for (int j=0; j&lt;recenica.length()-fraze[i].length()+1; j++) {
+			if (fraze[i][0]==recenica[j]) {
+				for (k=0; k&lt;fraze[i].length(); k++)
+					if (fraze[i][k]!=recenica[j+k]) break;
+				if (k==fraze[i].length()) {
+					b=0;
+					for (int l=j; l&lt;j+k/2; l++) {
+						pomocni=recenica[l];
+						recenica[l]=recenica[j+k-b-1];
+						recenica[j+k-b-1]=pomocni;
+						b++;
+					}
+					j=j+k;
+				}
+			}
+		}
+	}
+	return recenica;
+}
+
+<a name="0"></a><font color="#FF0000"><a href="match847-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_12.gif"/></a>
+
+std::string IzmijeniUPigLatin (std::string recenica, vektor fraze)
+{
+	for (int i=0; i&lt;fraze.size(); i++) {
+		for (int j=0; j&lt;fraze[i].length(); j++) {
+			if (fraze[i][j]&lt;'A' || (fraze[i][j]&gt;'Z' &amp;&amp; fraze[i][j]&lt;'a') || fraze[i][j]&gt;'z') throw std::domain_error ("Izuzetak: Nekorektan izbor rijeci");
+</font>		}
+	}
+	int b(0),k(0),l;
+	char pomocni;
+	for (int i=0; i&lt;fraze.size(); i++) {
+		for (int j=0; j&lt;recenica.length()-fraze[i].length()+1; j++) {
+			if (fraze[i][0]==recenica[j]) {
+				for (k=0; k&lt;fraze[i].length(); k++)
+					if (fraze[i][k]!=recenica[j+k]) break;
+				if (k==fraze[i].length() &amp;&amp; recenica[j+k]==' ' &amp;&amp; (recenica[j-1]==' ' || j==0)) {
+					b=0;
+					for (l=j; l&lt;j+k-1; l++) {
+<a name="1"></a><font color="#00FF00"><a href="match847-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+						pomocni=recenica[l];
+						recenica[l]=recenica[l+1];
+						recenica[l+1]=pomocni;
+						b++;
+					}
+					recenica.insert(recenica.begin()+l+1, 'y');
+</font>					recenica.insert(recenica.begin()+l+1, 'a');
+					j=j+k;
+				}
+			}
+		}
+	}
+	return recenica;
+}
+
+int main ()
+{
+	std::cout &lt;&lt; "Unesite recenicu: ";
+	std::string recenica, fraze;
+	std::getline(std::cin, recenica);
+	vektor vek;
+	int n(0);
+	std::cout &lt;&lt; "Unesite fraze: ";
+	do {
+		std::getline(std::cin, fraze);
+		if (fraze.size()==0) break;
+		n++;
+		vek.resize(n);
+		vek[n-1]=fraze;
+	} while (fraze[0]!='\n');
+	try {
+		std::cout &lt;&lt; "Recenica nakon PigLatin transformacije: " &lt;&lt; IzmijeniUPigLatin(recenica, vek) &lt;&lt; std::endl;
+	} catch (std::domain_error tekst) {
+		std::cout &lt;&lt; tekst.what() &lt;&lt; std::endl;
+	}
+	std::cout &lt;&lt; "Recenica nakon obrtanja fraza: " &lt;&lt; ObrniFraze(recenica, vek) &lt;&lt; std::endl;
+	return 0;
+}</pre>
+</body>
+</html>

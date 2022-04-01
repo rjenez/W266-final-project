@@ -1,0 +1,180 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student5829.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student5829.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match78-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cout;
+using std::cin;
+using std::vector;
+using std::deque;
+typedef vector&lt;deque&lt;deque&lt;int&gt;&gt;&gt; KONT;
+enum class SmjerKretanja{NaprijedNazad,NazadNaprijed,GoreDolje,DoljeGore,LijevoDesno,DesnoLijevo};
+
+void UnesiMat(deque&lt;deque&lt;int&gt;&gt; &amp;mat,int dim){
+	for(int i(0);i&lt;dim;i++){
+		deque&lt;int&gt; dek;
+		for(int j(0);j&lt;dim;j++){
+			int x(0);
+			cin&gt;&gt;x;
+			dek.push_back(x);
+		}
+		mat.push_back(dek);
+	}
+}
+
+template&lt;typename Neki3DTip&gt;
+	void DaLiJeKocka(Neki3DTip &amp;Kont){
+		for(int i(0);i&lt;Kont.size();i++){
+			if(Kont.at(0).size()!=Kont.at(i).size()) throw std::domain_error("3D matrica nema oblik kocke");
+		}
+		for(int i(0);i&lt;Kont.size();i++){
+			for(int j(0);j&lt;Kont.at(i).size();j++){
+					if(Kont.at(i).size()!=Kont.at(i).at(j).size()) throw std::domain_error("3D matrica nema oblik kocke");
+			}
+		}
+	}
+	
+template&lt;typename Neki1DTip&gt;
+	void Red(Neki1DTip &amp;v, Neki1DTip &amp;pom_red, int n){
+		std::copy(v.begin()+n,v.begin()+v.size()-n,std::back_inserter(pom_red));
+	}
+	
+template&lt;typename Neki2DTip&gt;
+	Neki2DTip Matrica(Neki2DTip &amp;Mat){
+		Neki2DTip pom_mat(Mat.size());
+		for(int i(0);i&lt;Mat.size();i++){
+			if(i==(Mat.size()-1)/2) Red(Mat.at(i),pom_mat.at(i),i);
+			else if(i&lt;(Mat.size()-1)/2) Red(Mat.at(i),pom_mat.at(i),i);
+			else Red(Mat.at(i),pom_mat.at(i),Mat.size()-i-1);
+		}
+		return pom_mat;
+	}
+	
+template&lt;typename Neki3DTip&gt;
+	void IzbaciEl(Neki3DTip &amp;Kont){
+		Neki3DTip pom(Kont.size());
+		for(int i(0);i&lt;Kont.size();i++){
+			pom.at(i)=Matrica(Kont.at(i));
+		}
+		Kont=pom;
+	}
+	
+template&lt;typename Neki3DTip&gt;
+	void ZaokreniGD(Neki3DTip &amp;Kont){
+		for(int i(0);i&lt;Kont.size();i++){
+			for(int j(0);j&lt;Kont.size()/2;j++){
+				std::swap_ranges(Kont.at(i).at(j).begin(),Kont.at(i).at(j).end(),Kont.at(i).at(Kont.size()-j-1).begin());
+			}
+		}
+	}
+
+template&lt;typename Neki3DTip&gt;
+	void ZaokreniDL(Neki3DTip &amp;Kont){
+		Neki3DTip PomocniKont(Kont);
+		for(int i(0);i&lt;Kont.size();i++){
+			for(int j(0);j&lt;Kont.size();j++){
+				for(int k(0);k&lt;Kont.size();k++){
+					PomocniKont.at(i).at(j).at(k)=Kont.at(i).at(k).at(Kont.size()-j-1);
+				}
+			}
+		}
+		Kont=PomocniKont;
+	}
+	
+template&lt;typename Neki3DTip&gt;
+	void ZaokreniNN(Neki3DTip &amp;Kont){
+		Neki3DTip PomocniKont(Kont);
+		for(int j(0);j&lt;Kont.size();j++){
+			for(int i(0);i&lt;Kont.size();i++){
+					std::copy(Kont.at(i).at(j).begin(),Kont.at(i).at(j).end(),PomocniKont.at(j).at(i).begin());
+			}
+		}
+		Kont=PomocniKont;
+	}
+
+template&lt;typename Neki3DTip&gt;
+	Neki3DTip PjescaniSat(Neki3DTip Kont,enum SmjerKretanja smjer){
+		if(Kont.size()==0) return Neki3DTip();
+		if(Kont.size()==1) return Kont;
+		DaLiJeKocka(Kont);
+		if(Kont.at(0).size()%2==0) throw std::length_error("3D kontejner ne zadovoljava uvjet neparnosti");
+		if(smjer==SmjerKretanja(3)){ ZaokreniGD(Kont); }
+		else if(smjer==SmjerKretanja(5)){ ZaokreniDL(Kont); }
+		else if(smjer==SmjerKretanja(4)){ ZaokreniDL(Kont); ZaokreniGD(Kont); }
+		else if(smjer==SmjerKretanja(0)){ ZaokreniNN(Kont); }
+		else if(smjer==SmjerKretanja(1)){ ZaokreniNN(Kont); ZaokreniGD(Kont); }
+		IzbaciEl(Kont);
+		return Kont;
+	}
+
+int main ()
+{
+	int dim(0);
+	cout&lt;&lt;"Unesite dimenziju (x/y/z): ";
+	cin&gt;&gt;dim;
+	while(dim&lt;0){
+		cout&lt;&lt;"Dimenzija nije ispravna, unesite opet: ";
+		cin&gt;&gt;dim;
+	}
+	cout&lt;&lt;"Unesite elemente kontejnera: ";
+	KONT Kont(dim);
+	for(int i(0);i&lt;dim;i++){
+		UnesiMat(Kont.at(i),dim);
+	}
+	int smjer(0);
+	cout&lt;&lt;"Unesite smjer kretanja [0 - 5]: ";
+	cin&gt;&gt;smjer;
+	while(!(smjer&gt;=0 &amp;&amp; smjer&lt;=5)){
+		cout&lt;&lt;"Smjer nije ispravan, unesite opet: ";
+		cin&gt;&gt;smjer;
+	}
+	try{
+		Kont=PjescaniSat(Kont,SmjerKretanja(smjer));
+		cout&lt;&lt;std::endl&lt;&lt;"Pjescani sat unesene matrice je:"&lt;&lt;std::endl;
+		for(int i(0);i&lt;Kont.size();i++){
+			for(int j(0);j&lt;Kont.at(i).size();j++){
+				if(j&lt;Kont.size()/2+1) cout&lt;&lt;std::string((j)*4,' ');
+				else cout&lt;&lt;std::string((Kont.size()-j-1)*4,' ');
+				for(int k(0);k&lt;Kont.at(i).at(j).size();k++){
+					if(k==0) cout&lt;&lt;std::right&lt;&lt;std::setw(4)&lt;&lt;Kont.at(i).at(j).at(k);
+					else cout&lt;&lt;std::right&lt;&lt;std::setw(4)&lt;&lt;Kont.at(i).at(j).at(k);
+				}
+				cout&lt;&lt;std::endl;
+			}
+			cout&lt;&lt;std::endl;
+		}
+	}
+	catch(std::domain_error izuzetak){
+		cout&lt;&lt;std::endl&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+	}
+	catch(std::length_error izuzetak){
+		cout&lt;&lt;std::endl&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+</font>	}
+	
+	return 0;
+}</pre>
+</body>
+</html>

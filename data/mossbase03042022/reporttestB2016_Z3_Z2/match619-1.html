@@ -1,0 +1,106 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4599.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4108.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;iterator&gt;
+#include &lt;stdexcept&gt;
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string tekst){
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa;
+    for(int i=0;i&lt;tekst.length();i++){
+        if(tekst[i]&gt;='A' &amp;&amp; tekst[i]&lt;='Z') tekst[i]=std::tolower(tekst[i]);   //pretvaranje cijelog teksta u mala slova
+        
+    }
+    for(int i=0;i&lt;tekst.length();i++){
+        std::string rijec;
+        while((tekst[i]&lt;'0') || (tekst[i]&gt;'9' &amp;&amp; tekst[i]&lt;'a') || tekst[i]&gt;'z') i++;
+        if((tekst[i]&gt;='0' &amp;&amp; tekst[i]&lt;='9') || (tekst[i]&gt;='a' &amp;&amp; tekst[i]&lt;='z')){
+            int pozicija=i;
+            std::set&lt;int&gt; skup;
+            while(((tekst[i]&gt;='a' &amp;&amp; tekst[i]&lt;='z') || (tekst[i]&gt;='0' &amp;&amp; tekst[i]&lt;='9')) &amp;&amp; i&lt;tekst.length()){   //izdvajanje rijeci-rijec je slijed cifara i slova
+                rijec.push_back(tekst[i]);                                   
+                i++;
+            }
+            skup.insert(pozicija);           //prvo pojavljivanje rijeci
+            mapa.insert(std::make_pair(rijec,skup));      //par u mapi-rijec i pocetna pozicija; kasnije ce biti dodana ostala pojavljivanja rijeci
+            for(auto it=mapa.begin();it!=mapa.end();it++){
+                if(it-&gt;first==rijec) {
+                    it-&gt;second.insert(i-rijec.length());        //nova pojavljivanja rijeci-dodavanje u skup
+                }
+            }
+        }
+    }
+    return mapa;
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match619-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string rijec, std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa){
+    std::set&lt;int&gt; skup;
+    bool postoji(false);
+    for(int i=0;i&lt;rijec.size();i++){
+</font>        if(rijec[i]&gt;='A' &amp;&amp; rijec[i]&lt;='Z') rijec[i]=std::tolower(rijec[i]);
+    }
+    for(auto it=mapa.begin();it!=mapa.end();it++){
+        if(rijec==it-&gt;first) {                    //ako je rijec jednaka prvoj iz jednog para mape, mijenja je sa drugom iz istog tog para
+            postoji=true;
+            skup=it-&gt;second;
+            break;
+        }
+    }
+    if(postoji==false) throw std::logic_error("Unesena rijec nije nadjena!");
+    return skup;
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa){
+    for(auto it=mapa.begin();it!=mapa.end();it++){
+<a name="0"></a><font color="#FF0000"><a href="match619-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        for(auto it1=it-&gt;second.begin(); it1!=it-&gt;second.end(); it1++){
+            if(it1==(--it-&gt;second.end())) std::cout&lt;&lt;*it1;          //provjera za posljednji clan
+            else std::cout&lt;&lt;*it1&lt;&lt;",";
+        }
+        std::cout&lt;&lt;std::endl;
+</font>    }
+}
+
+
+int main ()
+{   std::string tekst;
+    std::cout&lt;&lt;"Unesite tekst: ";
+    std::getline(std::cin, tekst);
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa;
+    mapa=KreirajIndeksPojmova(tekst);
+    IspisiIndeksPojmova(mapa);
+    std::set&lt;int&gt; skup;
+    std::string rijec;
+    while(rijec!="."){
+    std::cout&lt;&lt;"Unesite rijec: ";
+    std::getline(std::cin,rijec);
+    if(rijec==".") break;
+        try{
+<a name="1"></a><font color="#00FF00"><a href="match619-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+            skup=PretraziIndeksPojmova(rijec,mapa);
+            for(auto x: skup){
+                std::cout&lt;&lt;x&lt;&lt;" ";
+            }
+        }
+        catch(std::logic_error izuzetak){
+            std::cout&lt;&lt;izuzetak.what();
+        }
+    std::cout&lt;&lt;std::endl;
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

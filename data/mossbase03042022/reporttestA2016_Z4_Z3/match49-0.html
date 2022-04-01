@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z3/student8886.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z3/student8886.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;ctype.h&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match49-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_91.gif"/></a>
+
+int da_li_su_iste(char *p,char *pom)
+{
+	int	iste=1;
+
+		while(*pom!='\0')
+		{
+			if(*pom++!=*p++) {
+				iste=0;
+				break;
+			}
+			if(*pom=='\0' &amp;&amp; (*p!=' ' &amp;&amp; *p!='\0')) {
+				iste=0;
+				break;
+			}
+		}
+	return iste;
+		
+}
+
+void zamjeni_rijeci(char *rec, char *rijec)
+{
+	while(*rijec!='\0')
+	{
+		*rec++=*rijec++;
+	}
+	rec++;
+}
+
+int provjera(char **rijeci,char **zamjene,int broj_rijeci)
+{
+	int i,iste=1;
+	char *pom1,*pom2;
+	
+		for(i=0;i&lt;broj_rijeci;i++)
+		{
+			pom1=rijeci[i];
+			pom2=zamjene[i];
+			while(*pom1!='\0' || *pom2!='\0')
+			{
+				if(*pom1++!=*pom2++)iste=0;
+			}
+			if (iste==0) break;
+		}
+		return iste;
+}
+
+char* zamjena_rijeci(char* tekst, char** rijeci,char** zamjene, int broj_rijeci)
+{
+	char *p=tekst;
+	char *pom,*poc,*kraj,*sumica;
+	int i,brojac;
+	     
+	     
+	    if(provjera(rijeci,zamjene,broj_rijeci)) return tekst;
+	     
+		while(*p!='\0')
+		{
+			if(p==tekst || *(p-1)==' ')
+			{
+				while(*p==' ') p++;
+				poc=p;
+				
+				for(i=0;i&lt;broj_rijeci;i++)
+				{	
+					brojac=0;
+					p=poc;
+					pom=rijeci[i];
+					
+					if(da_li_su_iste(p,pom))
+					{	
+						kraj=poc;
+						
+						while(*p!='\0' &amp;&amp; *p!=' ') p++;
+						
+						
+						while(*p!='\0')
+						{
+							*kraj++=*p++;
+						}						
+						*kraj='\0';
+						
+						p=poc;
+						pom=zamjene[i];
+						while(*pom!='\0')
+						{
+							brojac++;
+							pom++;
+						}
+					
+						sumica=kraj+brojac;
+						p--;
+						
+						while(kraj!=p)
+						{
+							*sumica--=*kraj--;
+						}
+						
+						pom=zamjene[i];
+						zamjeni_rijeci(poc,pom);			
+					}
+				}
+			}
+			p++;
+				
+		}
+	return tekst;
+}
+
+
+int main() {
+    char* rijeci[2] = { "beli", "sneg" };
+</font>	char* zamjene[2] = { "bijeli", "snijeg" };
+	char tekst[100] = "beli sneg je pokrio beli breg";
+	printf("%s", zamjena_rijeci(tekst, rijeci, zamjene, 2));
+	return 0;
+}
+
+
+
+
+</pre>
+</body>
+</html>

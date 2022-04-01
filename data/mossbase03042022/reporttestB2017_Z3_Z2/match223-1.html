@@ -1,0 +1,123 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student3551.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4519.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;tuple&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match223-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_97.gif"/></a>
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+
+std::map&lt;std::string, std::tuple&lt;std::string, int, int&gt;&gt; IndeksPojmova;
+
+bool LegalanZnak(char c)
+{
+    if(!((c&gt;='a' &amp;&amp; c&lt;='z') || (c&gt;='A' &amp;&amp; c&lt;='Z') || (c&gt;='0' &amp;&amp; c&lt;='9')))
+        return false;
+    return true;
+
+}
+
+std::string MalaSlova(std::string s)
+{
+    std::string novi;
+    for(int i=0; i&lt;s.length(); i++)
+        if(s.at(i)&gt;='A' &amp;&amp; s.at(i)&lt;='Z')
+            novi += 'A' - 'a';
+        else novi+= s.at(i);
+    return novi;
+}
+
+bool PorediRijeci(std::string s1,  std::string s2){
+    if(MalaSlova(s1)==MalaSlova(s2))
+        return true;
+    return false;    
+}
+
+void /*std::vector&lt;std::pair&lt;std::string, std::vector&gt;&gt; */ RijeciIPozicije(std::string s)
+{
+    std::string kopija(s.length(), '0');
+
+    for(int i=0; i&lt;kopija.length(); i++)
+        if(!LegalanZnak(s.at(i))) kopija.at(i) = '_';
+
+    std::cout &lt;&lt; std::endl &lt;&lt; s &lt;&lt; std::endl &lt;&lt; kopija &lt;&lt; std::endl;
+//    std::vector&lt;std::pair&lt;std::string, std::vector&gt;&gt; vektor;
+    
+    int p=0;
+    while(p&lt;s.length()) {
+        
+        //preskace sve prije prve rijeci
+        while(p&lt;s.length() &amp;&amp; kopija.at(p)=='_') {
+            p++;
+        }
+        
+        if(p==s.length()) break;
+        
+        std::string rijec;
+        std::vector&lt;int&gt;v;
+        
+        while (p&lt;kopija.length() &amp;&amp; kopija.at(p)=='0') {
+            rijec += s.at(p);
+            kopija.at(p) = '_';
+            p++;
+        }
+        
+        v.push_back(p-rijec.length());
+        
+        for(int j=p; j&lt;s.length()-rijec.length();j++) {
+            if(PorediRijeci(rijec, s.substr(j,rijec.length())) &amp;&amp; (j-1==0 || kopija.at(j-1)=='_') 
+                    &amp;&amp; (j+rijec.length()==s.length() || kopija.at(j+rijec.length())=='_')) {
+                v.push_back(j);
+                for(int z=j; z&lt;j+rijec.length(); z++)
+                    kopija.at(z) = '_';
+            }
+            
+        }
+        
+        std::cout &lt;&lt;std::endl &lt;&lt; rijec ;
+        for(int br:v) std::cout &lt;&lt;  " " &lt;&lt; br;
+    
+ //   vektor.push_back(std::make_pair(rijec, v));
+    p++;
+    }
+        std::cout &lt;&lt; std::endl &lt;&lt; s &lt;&lt; std::endl &lt;&lt; kopija &lt;&lt; std::endl;
+    return;
+}
+
+
+
+
+int main()
+{
+
+    for(;;) {
+        std::string naziv_poglavlja;
+        std::cout &lt;&lt; "Unesite naziv poglavlja: ";
+        std::cin &gt;&gt; naziv_poglavlja;
+        std::cin.get();
+        if(naziv_poglavlja==".") break;
+        std::vector&lt;std::string&gt; v;
+
+        for(int i=0; ; i++) {
+            std::string sadrzaj_stranice;
+            std::cout &lt;&lt; "Unesite sadrzaj stranice " &lt;&lt; i+1 &lt;&lt; ": ";
+            std::getline(std::cin, sadrzaj_stranice);
+            if(sadrzaj_stranice==".") break;
+
+            v.push_back(sadrzaj_stranice);
+            RijeciIPozicije(sadrzaj_stranice);
+</font>        }
+    }
+
+}</pre>
+</body>
+</html>

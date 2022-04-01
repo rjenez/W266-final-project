@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z3/student9081.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z3/student5774.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;sstream&gt;
+#include &lt;cctype&gt;
+#include &lt;cmath&gt;
+
+std::string int_str(int x)
+{
+    std::ostringstream o; o &lt;&lt; x; return o.str();
+}
+class Datum
+{
+    int d, m, g;
+    static int BrojDana(int, int);
+<a name="0"></a><font color="#FF0000"><a href="match857-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+    static bool Validan(int d, int m, int g) { return m &gt;= 1 &amp;&amp; m &lt;= 12 &amp;&amp; d &gt;= 1 &amp;&amp; d &lt;= BrojDana(m, g) &amp;&amp; g &gt;= 1800; }
+public:
+    enum Mjeseci { Januar = 1, Februar, Mart, April, Maj, Juni, Juli, August,
+        Septembar, Oktobar, Novembar, Decembar };
+    enum Dani { Ponedjeljak = 1, Utorak, Srijeda, Cetvrtak, Petak, Subota, Nedjelja };
+    Datum(int d, int m, int g) { Postavi(d, m, g); }
+    Datum(int d, Mjeseci m, int g) { Postavi(d, m, g); }
+</font><a name="1"></a><font color="#00FF00"><a href="match857-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+    void Postavi(int dan, int mjesec, int godina);
+    void Postavi(int dan, Mjeseci mjesec, int godina) { Postavi(dan, int(mjesec), godina); }
+    int DajDan() const { return d; }
+    Mjeseci DajMjesec() const { return Mjeseci(m); }
+    int DajGodinu() const { return g; }
+    const char *DajImeMjeseca() const;
+    Dani DanUSedmici() const;
+</font>    const char *DajImeDanaUSedmici() const;
+    
+    Datum &amp;operator ++();
+    Datum &amp;operator --();
+    Datum operator ++(int);
+    Datum operator --(int);
+    Datum &amp;operator +=(int x);
+    Datum &amp;operator -=(int x) { return *this += -x; }
+    Datum operator +(int x) const { Datum pom(*this); return pom += x; }
+    Datum operator -(int x) const { return *this + (-x); }
+    int operator -(const Datum &amp;x) const { return int(*this) - int(x); }
+    bool operator ==(const Datum &amp;x) const { return d == x.d &amp;&amp; m == x.m &amp;&amp; g == x.g; }
+    bool operator !=(const Datum &amp;x) const { return !(*this == x); }
+    bool operator &lt;(const Datum &amp;x) const { return g &lt; x.g || (g == x.g &amp;&amp; (m &lt; x.m || (m == x.m &amp;&amp; d &lt; x.d))); }
+    bool operator &gt;=(const Datum &amp;x) const { return !(*this &lt; x); }
+    bool operator &lt;=(const Datum &amp;x) const { return *this &lt; x || *this == x; }
+    bool operator &gt;(const Datum &amp;x) const { return !(*this &lt;= x); }
+    friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;o, const Datum &amp;x) { return o &lt;&lt; std::string(x); }
+    friend std::istream &amp;operator &gt;&gt;(std::istream &amp;i, Datum &amp;x);
+    operator std::string() const;
+    explicit operator int() const;
+};
+int Datum::BrojDana(int m, int g)
+{
+    static int br_dana[12] { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    return br_dana[m-1] + (m == 2 &amp;&amp; ((g % 100 != 0 &amp;&amp; g % 4 == 0) || g % 400 == 0));
+}
+void Datum::Postavi(int dan, int mjesec, int godina)
+{
+    if (!Validan(dan, mjesec, godina)) throw std::domain_error("Nelegalan datum");
+    d = dan; m = mjesec; g = godina;
+}
+const char *Datum::DajImeMjeseca() const
+{
+<a name="2"></a><font color="#0000FF"><a href="match857-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+    static const char *imena[]{ "Januar", "Februar", "Mart", "April", "Maj", "Juni", "Juli", "August", "Septembar", "Oktobar", "Novembar", "Decembar" };
+    return imena[m-1];
+</font>}
+//Greska u postavci, pise da je 1.1.1800 nedjelja a treba srijeda
+Datum::Dani Datum::DanUSedmici() const
+{
+    return Dani(1 + (int(*this) + 2) % 7);
+}
+const char *Datum::DajImeDanaUSedmici() const
+{
+    static const char *dani[] { "Ponedjeljak", "Utorak", "Srijeda", "Cetvrtak", "Petak", "Subota", "Nedjelja" };
+    return dani[int(DanUSedmici()) - 1];
+}
+Datum &amp;Datum::operator ++()
+{
+    if (Validan(d+1, m, g)) Postavi(d+1, m, g);
+    else if (Validan(1, m+1, g)) Postavi(1, m+1, g);
+    else Postavi(1, 1, g+1);
+    return *this;
+}
+Datum &amp;Datum::operator --()
+{
+    if (Validan(d-1, m, g)) Postavi(d-1, m, g);
+    else if (Validan(BrojDana(m-1, g), m-1, g)) Postavi(BrojDana(m-1, g), m-1, g);
+    else Postavi(BrojDana(12, g-1), 12, g-1);
+    return *this;
+}
+Datum Datum::operator ++(int)
+{
+    Datum d(*this);
+    ++*this;
+    return d;
+}
+Datum Datum::operator --(int)
+{
+    Datum d(*this);
+    --*this;
+    return d;
+}
+Datum &amp;Datum::operator +=(int x)
+{
+    Datum dat(*this);
+    int br_god(x / 365.2425), br_mj((x - br_god * 365.2425) / 30.44), br_d(x - br_mj * 30.44);
+    g = std::max(g + br_god, 1800);
+    m = std::min(std::max(m + br_mj, 1), 12);
+    d = std::min(std::max(d + br_d, 1), 28);
+    while (int razlika = int(*this) - int(dat) - x)
+        if (razlika &gt; 0) --*this;
+        else ++*this;
+    return *this;
+}
+bool slash(std::istream &amp;cin) { return cin.peek() == '/' &amp;&amp; (cin.get() || true); }
+//?Da li smije datum pocinjati sa razmakom (tj. znakom koji ne dovodi da cin &gt;&gt; int upadne u neispravno stanje)
+//Ako ne smije onda se javlja pitanje da li je dozvoljeno koristiti cin.ignore()
+//Jer sta ako je korisnik unosio nesto prije ovog datuma, onda je ostao onaj \n u spremniku
+//Sta ako je jos znakova ostalo u spremniku od prethodnog unosa, da li se tok postavlja u neispravno stanje ili?
+std::istream &amp;operator &gt;&gt;(std::istream &amp;cin, Datum &amp;x)
+{
+    int a(0), b(0), c(0);
+    if (/*!std::isdigit(cin.peek()) || */!(cin &gt;&gt; a) || !slash(cin) || !std::isdigit(cin.peek())
+    || !(cin &gt;&gt; b) || !slash(cin) || !std::isdigit(cin.peek())
+    || !(cin &gt;&gt; c) || cin.peek() != '\n' || !Datum::Validan(a, b, c))
+        cin.setstate(std::ios::failbit);
+    else x.Postavi(a, b, c);
+    return cin;
+}
+Datum::operator std::string() const
+{
+    return int_str(d) + ". " + DajImeMjeseca() + " " + int_str(g) + ". (" + DajImeDanaUSedmici() + ")";
+}
+Datum::operator int() const
+{
+    int br_dana((g - 1800) * 365 + (g - 1797) / 4 - (g - 1701) / 100 + (g - 1601) / 400);
+    for (int i(1); i &lt; m; ++i) br_dana += BrojDana(i, g);
+    return br_dana + d - 1;
+}
+
+int main()
+{
+    //Test operatora +=, -(Datum, Datum), !=, a ujedno i operatora ++, --
+    //Ako ne ispise "BAD", onda su operatori dobri
+    for (int i(0); i &lt; 100; ++i)
+    {
+        Datum izvor(1 + std::rand() % 28, 1 + std::rand() % 12, 1800 + rand() % 999999),
+        odrediste(1 + std::rand() % 28, 1 + std::rand() % 12, 1800 + rand() % 999999);
+        if ((izvor += (odrediste - izvor)) != odrediste) std::cout &lt;&lt; "BAD";
+    }
+    Datum dat1(18, 6, 2018), dat2(18, Datum::Juni, 2018), dat3(7, 4, 1934);
+    std::cout &lt;&lt; "Jednaki: " &lt;&lt; std::boolalpha &lt;&lt; (dat1 == dat2);
+    std::cout &lt;&lt; '\n' &lt;&lt; dat1 &lt;&lt; '\n';
+    if (dat3 &lt; dat1) std::cout &lt;&lt; "Manji\n";
+    if (dat3 &gt; dat1) std::cout &lt;&lt; "Veci\n";
+    if (dat3 != dat1) std::cout &lt;&lt; "Razliciti\n";
+    if (dat3 &lt;= dat1) std::cout &lt;&lt; "Manji ili jednak\n";
+    if (dat3 &gt;= dat1) std::cout &lt;&lt; "Veci ili jednak\n";
+    std::cout &lt;&lt; "Unesite datum: ";
+    std::cin &gt;&gt; dat1;
+    int n;
+    std::cout &lt;&lt; "Unesite broj dana: ";
+    std::cin &gt;&gt; n;
+    std::cout &lt;&lt; "Datum pomjeren za uneseni broj dana unaprijed je: " &lt;&lt; (dat1+n) &lt;&lt; " , a unazad: " &lt;&lt; (dat1-n);
+	return 0;
+}</pre>
+</body>
+</html>

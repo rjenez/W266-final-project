@@ -1,0 +1,326 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student5162.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student5162.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 3
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+#include &lt;new&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+#include &lt;limits&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match17-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+template&lt;typename tip&gt;
+bool TestPerioda (std::vector&lt;tip&gt; z, int p){
+	if(p&gt;=1 &amp;&amp; p&lt;z.size()){
+		for(int i(0); i&lt;z.size()-p; i++){
+				if(z.at(i)!=z.at(p+i)) return false;
+			}
+	return true;
+	}
+	else return false;
+}
+template&lt;typename tip&gt;
+int OdrediOsnovniPeriod (std::vector&lt;tip&gt; z){
+	int osnovni_period(std::numeric_limits&lt;int&gt;::max());
+	for(int i(1); i&lt;z.size(); i++){
+		if(TestPerioda(z,i)){
+			int period=i;
+			if(period&lt;osnovni_period) osnovni_period=period;
+		}
+	}
+	if(osnovni_period==std::numeric_limits&lt;int&gt;::max()) return 0;
+	else
+	return osnovni_period;
+}
+
+template&lt;typename tip&gt;
+int** AlocirajFragmentirano(const std::vector&lt;tip&gt; &amp;vek, int &amp;koliko_puta){
+	if(vek.size()==0) throw std::logic_error("Prazan vektor!");
+		for(int i(0); i&lt;vek.size(); i++){
+				if(vek.at(i)&lt;=0){
+					throw std::domain_error("Neispravan vektor!");
+				}
+		}
+	bool Periodican(false);
+	for(int i(1); i&lt;vek.size(); i++){
+		if(TestPerioda(vek,i)) Periodican=true;
+	}
+	if(Periodican==true){
+		int T(OdrediOsnovniPeriod(vek));
+		int produzenje=vek.size();
+		while(produzenje%T!=0) produzenje++;
+		koliko_puta=int(produzenje/T);
+		try{
+		int**pok=new int*[koliko_puta*T]{};
+		try{
+			int t(1);
+			for(int i(0); i&lt;koliko_puta*T; i++){
+					pok[i]=new int[vek.at(t-1)];
+					if(t&lt;T) t++;
+					else t=1;
+				}
+			int max(0);
+			for(int i(0); i&lt;vek.size(); i++)
+				if(vek.at(i)&gt;max) max=vek.at(i);
+			t=1;	
+			for(int i(0); i&lt;koliko_puta*T; i++){
+				int brojac(0);
+				for(int j(vek.at(t-1)-1); j&gt;=0; j--){
+					pok[i][j]=max-brojac;
+					brojac++;
+				}
+				if(t&lt;T) t++;
+				else t=1;
+			}
+			return pok;
+		}catch(std::bad_alloc){
+			for(int i(0); i&lt;koliko_puta*T; i++) delete[] pok[i];
+			delete[] pok;
+			throw;
+		}
+		}catch(...){
+			throw;
+		}
+	}
+	else{
+		int T(vek.size());
+		koliko_puta=2;
+		try{
+			int**pok=new int*[T*koliko_puta]{};
+			try{
+			int t(1);
+			for(int i(0); i&lt;koliko_puta*T; i++){
+					pok[i]=new int[vek.at(t-1)];
+					if(t&lt;T) t++;
+					else t=1;
+				}
+			int max(0);
+			for(int i(0); i&lt;vek.size(); i++)
+				if(vek.at(i)&gt;max) max=vek.at(i);
+			t=1;	
+			for(int i(0); i&lt;koliko_puta*T; i++){
+				int brojac(0);
+				for(int j(vek.at(t-1)-1); j&gt;=0; j--){
+					pok[i][j]=max-brojac;
+					brojac++;
+				}
+				if(t&lt;T) t++;
+				else t=1;
+			}
+			return pok;
+		}catch(std::bad_alloc){
+			for(int i(0); i&lt;koliko_puta*T; i++) delete[] pok[i];
+			delete[] pok;
+			throw;
+		}
+		}catch(...){
+			throw;
+		}
+	}
+}
+template&lt;typename tip&gt;
+int** AlocirajKontinualno(const std::vector&lt;tip&gt; &amp;vek, int &amp;koliko_puta){
+	if(vek.size()==0) throw std::logic_error("Prazan vektor!");
+		for(int i(0); i&lt;vek.size(); i++){
+				if(vek.at(i)&lt;=0){
+					throw std::domain_error("Neispravan vektor!");
+				}
+		}
+	bool Periodican(false);
+	for(int i(1); i&lt;vek.size(); i++){
+		if(TestPerioda(vek,i)) Periodican=true;
+	}
+	if(Periodican){
+		int T(OdrediOsnovniPeriod(vek));
+		int produzenje=vek.size();
+		while(produzenje%T!=0) produzenje++;
+		koliko_puta=int(produzenje/T);
+		try{
+		int**pok=new int*[koliko_puta*T]{};
+		try{
+			int brojelemenata(0);
+			int t(1);
+			for(int i(0); i&lt;koliko_puta*T; i++){
+					brojelemenata=brojelemenata+vek.at(t-1);
+					if(t&lt;T) t++;
+					else t=1;
+				}
+			pok[0]=new int[brojelemenata];
+			t=1;
+			for(int i(1); i&lt;koliko_puta*T; i++){
+				pok[i]=pok[i-1]+vek.at(t-1);
+				if(t&lt;T) t++;
+				else t=1;
+			}
+			t=1;	
+			for(int i(0); i&lt;koliko_puta*T; i++){
+				int brojac(1);
+				for(int j(vek.at(t-1)-1); j&gt;=0; j--){
+					pok[i][j]=brojac;
+					brojac++;
+				}
+				if(t&lt;T) t++;
+				else t=1;
+			}
+			return pok;
+		}catch(...){
+			delete[] pok;
+			throw;
+		}
+		}catch(...){
+			throw;
+		}
+	}
+	else{
+		int T(vek.size());
+		koliko_puta=2;
+		try{
+			int**pok=new int*[T*koliko_puta]{};
+			try{
+			int brojelemenata(0);
+			int t(1);
+			for(int i(0); i&lt;koliko_puta*T; i++){
+					brojelemenata=brojelemenata+vek.at(t-1);
+					if(t&lt;T) t++;
+					else t=1;
+				}
+			pok[0]=new int[brojelemenata];
+			t=1;
+			for(int i(1); i&lt;koliko_puta*T; i++){
+				pok[i]=pok[i-1]+vek.at(t-1);
+				if(t&lt;T) t++;
+				else t=1;
+			}
+			t=1;	
+			for(int i(0); i&lt;koliko_puta*T; i++){
+				int brojac(1);
+				for(int j(vek.at(t-1)-1); j&gt;=0; j--){
+					pok[i][j]=brojac;
+					brojac++;
+				}
+				if(t&lt;T) t++;
+				else t=1;
+			}
+			return pok;
+		}catch(...){
+			delete[] pok;
+			throw;
+		}
+		}catch(...){
+			throw;
+		}
+	}
+}
+int main ()
+{
+	try{
+		int n,fragmentacija;
+		std::cout&lt;&lt;"Unesite broj elemenata vektora: ";
+		std::cin&gt;&gt;n;
+		std::vector&lt;int&gt; vektor(n);
+		std::cout&lt;&lt;"Unesite elemente vektora: ";
+		for(int i(0); i&lt;n; i++){
+			std::cin&gt;&gt;vektor.at(i);
+		}
+		std::cout&lt;&lt;"Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+		std::cin&gt;&gt;fragmentacija;
+		if(fragmentacija){
+			int koliko(0);
+			int Period(OdrediOsnovniPeriod(vektor));
+			int t(1);
+			if(Period!=0){
+			int** pok=AlocirajFragmentirano(vektor,koliko);
+			std::cout&lt;&lt;"Dinamicki alocirana matrica: \n";
+			for(int i(0); i&lt;koliko*Period; i++){
+				for(int j(0); j&lt;vektor.at(t-1); j++){
+					std::cout&lt;&lt;pok[i][j]&lt;&lt;"  ";
+				}
+				if(t&lt;Period) t++;
+				else t=1;
+				std::cout&lt;&lt;"\n";
+			}
+			for(int i(0); i&lt;koliko*Period; i++) delete[] pok[i];
+			delete[] pok;
+		}
+		else{
+			Period=vektor.size();
+			int t(1);
+			int** pok=AlocirajFragmentirano(vektor,koliko);
+			std::cout&lt;&lt;"Dinamicki alocirana matrica: \n";
+			for(int i(0); i&lt;koliko*Period; i++){
+				for(int j(0); j&lt;vektor.at(t-1); j++){
+					std::cout&lt;&lt;pok[i][j]&lt;&lt;"  ";
+				}
+				if(t&lt;Period) t++;
+				else t=1;
+				std::cout&lt;&lt;"\n";
+			}
+			for(int i(0); i&lt;koliko*Period; i++) delete[] pok[i];
+			delete[] pok;
+		}
+		}
+		else{
+			int koliko(0);
+			int Period(OdrediOsnovniPeriod(vektor));
+			int t(1);
+			if(Period!=0){
+			int** pok=AlocirajKontinualno(vektor,koliko);
+			std::cout&lt;&lt;"Dinamicki alocirana matrica: \n";
+			for(int i(0); i&lt;koliko*Period; i++){
+				for(int j(0); j&lt;vektor.at(t-1); j++){
+					std::cout&lt;&lt;pok[i][j]&lt;&lt;"  ";
+				}
+				if(t&lt;Period) t++;
+				else t=1;
+				std::cout&lt;&lt;"\n";
+			}
+			delete[] pok[0];
+			delete[] pok;
+		}
+		else{
+			Period=vektor.size();
+			int t(1);
+			int** pok=AlocirajKontinualno(vektor,koliko);
+			std::cout&lt;&lt;"Dinamicki alocirana matrica: \n";
+			for(int i(0); i&lt;koliko*Period; i++){
+				for(int j(0); j&lt;vektor.at(t-1); j++){
+					std::cout&lt;&lt;pok[i][j]&lt;&lt;"  ";
+				}
+				if(t&lt;Period) t++;
+				else t=1;
+				std::cout&lt;&lt;"\n";
+			}
+			delete[] pok[0];
+			delete[] pok;
+		}
+		}	
+	}catch(std::logic_error logicki){
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;logicki.what();
+	}catch(std::domain_error domena){
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;domena.what();
+	}catch(...){
+		std::cout&lt;&lt;"Izuzetak: Neuspjela alokacija";
+	}
+	return 0;
+</font>}</pre>
+</body>
+</html>

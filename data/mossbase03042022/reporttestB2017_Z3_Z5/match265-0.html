@@ -1,0 +1,345 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student1624.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student1624.cpp<p></p><pre>
+<a name="2"></a><font color="#0000FF"><a href="match265-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;list&gt;
+#include &lt;map&gt;
+#include &lt;algorithm&gt;
+#include &lt;string&gt;
+#include &lt;stack&gt;
+
+enum class Boje
+{
+    Pik, Tref, Herc, Karo
+};
+
+struct Karta {
+    Boje boja;
+    std::string vrijednost;
+};
+
+struct Cvor {
+    Karta karta;
+    Cvor *sljedeci;
+};
+
+const std::vector&lt;std::string&gt; vrijednosti = {"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+</font>
+Boje StringUBoju(std::string s)
+{
+    if(s=="pik") return Boje::Pik;
+    else if(s=="tref") return Boje::Tref;
+    else if(s=="herc") return Boje::Herc;
+    else return Boje::Karo;
+}
+
+std::string BojaUString(Boje boja)
+{
+    if(boja == Boje::Pik) return "pik";
+    else if(boja == Boje::Tref) return "tref";
+    else if(boja == Boje::Herc) return "herc";
+    else return "karo";
+}
+
+Cvor *KreirajSpil()
+{
+    std::vector&lt;Boje&gt; boje = {Boje::Pik, Boje::Tref, Boje::Herc, Boje::Karo};
+    Cvor *prvi(new Cvor {Karta{Boje::Pik,"2"}, nullptr});
+    Cvor *zadnji(prvi);
+
+    for(int i=0; i&lt;4; i++) {
+        for(int j=0; j&lt;13; j++) {
+            if(i==0 &amp;&amp; j==0) continue;
+            zadnji-&gt;sljedeci = new Cvor {Karta{boje[i], vrijednosti[j]}, nullptr};
+            zadnji=zadnji-&gt;sljedeci;
+        }
+    }
+    zadnji-&gt;sljedeci = prvi;
+
+    return prvi;
+}
+
+void UnistiSpil(Cvor *prvi)
+{
+    if(!prvi) return;
+    Cvor *p = prvi-&gt;sljedeci;
+    Cvor *temp;
+
+    do {
+        temp = p;
+        p = p-&gt;sljedeci;
+        delete temp;
+    } while (p!=prvi);
+
+    delete prvi;
+    return;
+}
+
+int VelicinaSpila(Cvor *prvi)
+{
+    int k=0;
+    Cvor *p = prvi;
+
+    do {
+        k++;
+        p = p-&gt;sljedeci;
+    } while (p!=prvi);
+
+    return k;
+}
+
+void IspisiSpil(Cvor *prvi)
+{
+    Cvor *p = prvi;
+
+    std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; VelicinaSpila(prvi) &lt;&lt; " karata, i to:" &lt;&lt; std::endl;
+
+    std::cout &lt;&lt; "Pik: ";
+    do {
+        if(BojaUString(p-&gt;karta.boja)=="pik")
+            std::cout &lt;&lt; p-&gt;karta.vrijednost &lt;&lt; " ";
+
+        p = p-&gt;sljedeci;
+    } while (p!=prvi);
+    std::cout &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Tref: ";
+    do {
+        if(BojaUString(p-&gt;karta.boja)=="tref")
+            std::cout &lt;&lt; p-&gt;karta.vrijednost &lt;&lt; " ";
+
+        p = p-&gt;sljedeci;
+    } while (p!=prvi);
+    std::cout &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Herc: ";
+    do {
+        if(BojaUString(p-&gt;karta.boja)=="herc")
+            std::cout &lt;&lt; p-&gt;karta.vrijednost &lt;&lt; " ";
+
+        p = p-&gt;sljedeci;
+    } while (p!=prvi);
+    std::cout &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Karo: ";
+    do {
+        if(BojaUString(p-&gt;karta.boja)=="karo")
+            std::cout &lt;&lt; p-&gt;karta.vrijednost &lt;&lt; " ";
+
+        p = p-&gt;sljedeci;
+    } while (p!=prvi);
+    std::cout &lt;&lt; std::endl;
+}
+
+Cvor *NadjiKartu(Cvor *prvi, Karta karta)
+{
+    Cvor *p(prvi);
+
+    while(p-&gt;sljedeci!=prvi) {
+        if(p-&gt;sljedeci-&gt;karta.boja == karta.boja &amp;&amp; p-&gt;sljedeci-&gt;karta.vrijednost == karta.vrijednost)
+            return p;
+
+        p=p-&gt;sljedeci;
+    }
+    return nullptr;
+}
+
+bool KartaComp(Karta a, Karta b)
+{
+    if (int(a.boja) == int(b.boja)) {
+        if(a.vrijednost == b.vrijednost) return false;
+        return std::find(vrijednosti.begin(), vrijednosti.end(), a.vrijednost)&lt;std::find(vrijednosti.begin(), vrijednosti.end(), b.vrijednost);
+    };
+    return int(a.boja) &lt; int(b.boja);
+}
+
+Cvor *NadjiManjuKartu(Cvor *prvi, Karta karta)
+{
+    Cvor *p(prvi);
+
+    while(p-&gt;sljedeci!=prvi) {
+        if(!KartaComp(p-&gt;sljedeci-&gt;karta, karta))
+            return p;
+
+        p=p-&gt;sljedeci;
+    }
+    return p;
+}
+
+void IzbaciKartu(Cvor *prvi)
+{
+    auto temp = prvi-&gt;sljedeci;
+    prvi-&gt;sljedeci = temp-&gt;sljedeci;
+    delete temp;
+}
+
+void UbaciKartu(Cvor *prvi, Karta karta)
+{
+    auto temp = prvi-&gt;sljedeci;
+    prvi-&gt;sljedeci = new Cvor {karta, temp};
+}
+
+void IzbaciKarte(Cvor *&amp;prvi, std::multimap&lt;Boje, std::string&gt; karte)
+{
+    auto it = karte.begin();
+
+    while(it != karte.end() &amp;&amp; prvi) {
+        Karta karta {it-&gt;first, it-&gt;second};
+        auto pozicija = NadjiKartu(prvi, karta);
+        if(pozicija) {
+            IzbaciKartu(pozicija);
+            it=karte.erase(it);
+            continue;
+        }
+        it++;
+    }
+    return;
+}
+
+bool SortiranSpil(Cvor *prvi)
+{
+    auto p = prvi;
+
+    while(p-&gt;sljedeci!=prvi) {
+        if(!KartaComp(p-&gt;karta, p-&gt;sljedeci-&gt;karta)) return false;
+        p=p-&gt;sljedeci;
+    }
+
+    return true;
+}
+
+bool NemaDuplih(Cvor *prvi)
+{
+    auto p = prvi;
+
+    while(p-&gt;sljedeci!=prvi) {
+        if(p-&gt;sljedeci-&gt;karta.boja == p-&gt;karta.boja &amp;&amp; p-&gt;sljedeci-&gt;karta.vrijednost == p-&gt;karta.vrijednost) return false;
+
+        p=p-&gt;sljedeci;
+    }
+
+    return true;
+}
+
+bool IspravnaKarta(Karta karta)
+{
+    return std::find(vrijednosti.begin(), vrijednosti.end(), karta.vrijednost)!=vrijednosti.end();
+}
+
+
+bool IspravanSpil(Cvor *prvi)
+{
+    auto p = prvi;
+
+    while(p-&gt;sljedeci!=prvi) {
+        if(!IspravnaKarta(p-&gt;karta)) return false;
+
+        p=p-&gt;sljedeci;
+    }
+    return VelicinaSpila(prvi)&lt;=52 &amp;&amp; SortiranSpil(prvi) &amp;&amp; NemaDuplih(prvi);
+}
+
+<a name="3"></a><font color="#00FFFF"><a href="match265-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt;IzbaciKarteRazbrajanjem(Cvor *&amp;prvi, const short int &amp;r, const int &amp;b)
+</font>{
+    if(!IspravanSpil(prvi)) throw std::logic_error("Neispravna lista!");
+    if(r&lt;1 || r&gt;52 || b&lt;1) throw std::logic_error("Neispravni elementi za izbacivanje!");
+
+    std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; stek;
+    std::multimap&lt;Boje, std::string&gt; karte;
+
+    int i=0;
+    Cvor *p = prvi;
+    int size = VelicinaSpila(prvi);
+
+    while(i&lt;b &amp;&amp; size&gt;0) {
+        bool wrap = false;
+        for(int j=1; j&lt;r; j++) {
+            if(p-&gt;sljedeci==prvi) wrap=true;
+            p=p-&gt;sljedeci;
+        }
+
+        karte.insert(std::pair&lt;Boje, std::string&gt;(p-&gt;karta.boja, p-&gt;karta.vrijednost));
+        stek.push(std::pair&lt;std::string, std::string&gt;(BojaUString(p-&gt;karta.boja), p-&gt;karta.vrijednost));
+        i++;
+        if(wrap)  p=p-&gt;sljedeci;
+        p=p-&gt;sljedeci;
+    }
+
+    try {
+        IzbaciKarte(prvi, karte);
+    } catch(...) {
+        throw;
+    }
+    return stek;
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match265-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+void VratiPosljednjihNKarata(Cvor *&amp;prvi, std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; &amp;stek, int n)
+{
+    if(n&lt;0) throw std::domain_error("Broj n je besmislen!");
+    if(n&gt;stek.size()) throw std::range_error("Nedovoljno karata u steku!");
+</font>    if(!IspravanSpil(prvi)) throw std::logic_error("Neispravna lista!");
+
+    std::vector&lt;std::string&gt; boje = {"Pik", "Tref", "Herc", "Karo"};
+
+    Cvor *p = prvi;
+
+    while(stek.size()&gt;0 &amp;&amp; n&gt;0) {
+        auto karta = Karta {StringUBoju(stek.top().first), stek.top().second};
+        if(!IspravnaKarta(karta)) throw std::logic_error("Neispravne karte!");
+
+        if(!NadjiKartu(p, karta)) {
+            UbaciKartu(NadjiManjuKartu(prvi, karta), karta);
+            n--;
+        }
+        stek.pop();
+    }
+}
+
+int main ()
+{
+    auto spil = KreirajSpil();
+
+    int r, b;
+<a name="4"></a><font color="#FF00FF"><a href="match265-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+    std::cout &lt;&lt; "Unesite korak razbrajanja: ";
+    std::cin &gt;&gt; r;
+    std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    std::cin &gt;&gt; b;
+
+    try {
+        auto stek = IzbaciKarteRazbrajanjem(spil, r, b);
+</font><a name="0"></a><font color="#FF0000"><a href="match265-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+
+        IspisiSpil(spil);
+
+        std::cout &lt;&lt; "Unesite broj karata koje zelite vratiti u spil: ";
+        std::cin &gt;&gt; r;
+
+        VratiPosljednjihNKarata(spil, stek, r);
+        IspisiSpil(spil);
+        UnistiSpil(spil);
+
+    } catch(std::logic_error izuzetak) {
+        UnistiSpil(spil);
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+    } catch(std::range_error izuzetak) {
+        UnistiSpil(spil);
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+</font>    }
+
+    return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student1581.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student3483.cpp<p></p><pre>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;functional&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+
+double Funkcija(double x)
+{
+    return x*x+sin(x);
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::vector&lt;std::pair&lt;double,double&gt;&gt; &amp;cvor)
+{
+    //Provjeravamo ima li prvo onih sa istim prvim elementom
+    for(int i=0; i&lt;cvor.size(); i++) {
+        double pom(cvor.at(i).first);
+        if((count_if(cvor.begin(), cvor.end(), [pom](std::pair&lt;double,double&gt; par) {
+        return par.first==pom;0
+    }))&gt;1) throw std::domain_error("Neispravni cvorovi");
+    }
+    std::sort(cvor.begin(), cvor.end());
+
+    return[cvor] (double x) {
+        if(x&lt;cvor.at(0).first || x&gt;cvor.at(cvor.size()-1).first) throw std::range_error("Argument izvan opsega");
+
+        //Ako ima neki par koji ima isti prvi element kao "x" odmah vracamo njegovo f(x)
+        auto pok(find_if(cvor.begin(), cvor.end(), [x](std::pair&lt;double,double&gt; par) {
+            return par.first==x;
+        }));
+        if(pok!=cvor.end()) return pok-&gt;second;
+
+        std::pair&lt;double,double&gt; par(x,0);
+        auto gornja_granica(lower_bound(cvor.begin(), cvor.end(), par));
+<a name="0"></a><font color="#FF0000"><a href="match603-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+        auto donja_granica(upper_bound(cvor.begin(), cvor.end(), par));
+        return (donja_granica-1)-&gt;second+((gornja_granica-&gt;second-(donja_granica-1)-&gt;second)/(gornja_granica-&gt;first-(donja_granica-1)-&gt;first))*(x-(donja_granica-1)-&gt;first);
+    };
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::function&lt;double(double)&gt; f, double x_min, double x_max, double korak)
+</font>{
+    if(x_min&gt;x_max || korak&lt;=0) throw std::domain_error("Nekorektni parametri");
+    std::vector&lt;std::pair&lt;double,double&gt;&gt; cvor(1);
+    cvor.at(0)=std::make_pair(x_min,f(x_min));
+    int i=1;
+    while(x_min+i*korak&lt;x_max) {
+        cvor.resize(i+1);
+        cvor.at(i)=std::make_pair(x_min+i*korak,f(x_min+i*korak));
+        i++;
+    }
+    cvor.resize(i+1);
+    cvor.at(i)=std::make_pair(x_max,f(x_max));
+
+    return[cvor] (double x) {
+        if(x&lt;cvor.at(0).first || x&gt;cvor.at(cvor.size()-1).first) throw std::range_error("Argument izvan opsega");
+
+        //Ako ima neki par koji ima isti prvi element kao "x" odmah vracamo njegovo f(x)
+        auto pok(find_if(cvor.begin(), cvor.end(), [x](std::pair&lt;double,double&gt; par) {
+            return par.first==x;
+        }));
+        if(pok!=cvor.end()) return pok-&gt;second;
+
+        std::pair&lt;double,double&gt; par(x,0);
+        auto gornja_granica(lower_bound(cvor.begin(), cvor.end(), par));
+<a name="1"></a><font color="#00FF00"><a href="match603-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+        auto donja_granica(upper_bound(cvor.begin(), cvor.end(), par));
+        return (donja_granica-1)-&gt;second+((gornja_granica-&gt;second-(donja_granica-1)-&gt;second)/(gornja_granica-&gt;first-(donja_granica-1)-&gt;first))*(x-(donja_granica-1)-&gt;first);
+    };
+}
+
+int main ()
+</font>{
+<a name="2"></a><font color="#0000FF"><a href="match603-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+    try {
+        int stanje;
+        std::cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+        std::cin &gt;&gt; stanje;
+
+        if(stanje==1) {
+            int br_cvorova;
+            std::cout &lt;&lt; "Unesite broj cvorova: ";
+</font>            std::cin &gt;&gt; br_cvorova;
+
+            std::cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+            double x, y;
+            std::vector&lt;std::pair&lt;double,double&gt;&gt; cvor(br_cvorova);
+            for(int i=0; i&lt;br_cvorova; i++) {
+                std::cin &gt;&gt; x &gt;&gt; y;
+                cvor.at(i)=std::make_pair(x,y);
+            }
+            auto fun(LinearnaInterpolacija(cvor));
+
+            double argument;
+            std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            while(std::cin &gt;&gt; argument) {
+                try {
+                    std::cout &lt;&lt; "f(" &lt;&lt; argument &lt;&lt; ") = " &lt;&lt; fun(argument) &lt;&lt; std::endl;
+                } catch(std::range_error izuzetak) {
+                    std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                }
+                std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            }
+        } else if(stanje==2) {
+<a name="3"></a><font color="#00FFFF"><a href="match603-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+            double x_min, x_max, korak;
+            std::cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+            std::cin &gt;&gt; x_min &gt;&gt; x_max &gt;&gt; korak;
+            auto fun(LinearnaInterpolacija(Funkcija, x_min, x_max, korak));
+</font>
+            double argument;
+            std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            while(std::cin &gt;&gt; argument) {
+                try {
+                    std::cout &lt;&lt; "f(" &lt;&lt; argument &lt;&lt; ") = " &lt;&lt; Funkcija(argument) &lt;&lt; " fapprox("  &lt;&lt; argument &lt;&lt; ") = " &lt;&lt; fun(argument) &lt;&lt;  std::endl;
+                } catch (std::range_error izuzetak) {
+                    std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                }
+                std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            }
+        }
+
+    } catch(std::domain_error izuzetak) {
+        std::cout &lt;&lt; izuzetak.what()&lt;&lt; std::endl;
+    }
+
+    return 0;
+}
+
+</pre>
+</body>
+</html>

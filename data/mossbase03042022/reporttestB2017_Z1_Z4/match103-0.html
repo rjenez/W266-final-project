@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student6728.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student6728.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match103-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+typedef std::string String;
+
+int Podstring (String s1, String s2, int start) {
+	
+	for (int i=start; i&lt;s1.length(); i++) {
+		int j=i;
+		int k=0;
+		while (j&lt;s1.length() &amp;&amp; k&lt;s2.length() &amp;&amp; s1.at(j)==s2.at(k)) {
+				k++; j++;
+			// Smatra se da je prekid rijeci bilo koji znak koji nije slovo, odnosno pocetak ili kraj stringa (u uslovu su granice slova po ASCII vrijednostima).
+			if (k==s2.length()-1 &amp;&amp; ((i-1&lt;0 &amp;&amp; ((s1.at(i+k+1)&gt;=0 &amp;&amp; s1.at(i+k+1)&lt;'A') || (s1.at(i+k+1)&gt;'Z' &amp;&amp; s1.at(i+k+1)&lt;'a') || s1.at(i+k+1)&gt;'z')) || 
+			(i+k+1&gt;=s1.length() &amp;&amp; ((s1.at(i-1)&gt;=0 &amp;&amp; s1.at(i-1)&lt;'A') || (s1.at(i-1)&gt;'Z' &amp;&amp; s1.at(i-1)&lt;'a') || s1.at(i+k+1)&gt;'z')) || (s1.at(i-1)==' ' &amp;&amp; 
+			((s1.at(i+k+1)&gt;=0 &amp;&amp; s1.at(i+k+1)&lt;'A') || (s1.at(i+k+1)&gt;'Z' &amp;&amp; s1.at(i+k+1)&lt;'a') || s1.at(i+k+1)&gt;'z'))))
+				return i+k+1;
+		}
+	}
+	
+	return start;
+}
+
+
+String Obrni (String s) {
+	
+	String obrnut;
+	
+	for (int i=s.length()-1; i&gt;=0; i--)
+		obrnut.push_back(s.at(i));
+
+	return obrnut;
+}
+
+
+String ObrniPola (String s) {
+	
+	String poluobrnut;
+	
+	for (int i=0; i&lt;int(s.length()/2); i++)
+		poluobrnut.push_back(s.at(i));
+
+	poluobrnut=Obrni(poluobrnut);
+	
+	return poluobrnut;
+}
+
+
+String NapraviPalindrom (String recenica, std::vector&lt;String&gt; fraze) {
+	
+	int pozicija, prethodna;
+	
+	for (int i=0; i&lt;fraze.size(); i++) {
+		pozicija=0; prethodna=0;
+		do {
+			prethodna=pozicija;
+			pozicija=Podstring(recenica, fraze.at(i), pozicija);
+			
+			if (pozicija&gt;0 &amp;&amp; prethodna!=pozicija) {
+				String rijec=Obrni(fraze.at(i));
+				recenica.insert(pozicija, rijec);
+			}
+			
+		} while (prethodna!=pozicija &amp;&amp; pozicija&lt;recenica.length());
+	}
+	
+	return recenica;
+}
+
+
+String NapraviPoluPalindrom (String recenica, std::vector&lt;String&gt; fraze) {
+	
+	int pozicija, prethodna;
+	
+	for (int i=0; i&lt;fraze.size(); i++) {
+		pozicija=0; prethodna=0;
+		do {
+			prethodna=pozicija;
+			pozicija=Podstring(recenica, fraze.at(i), pozicija);
+			
+			if (pozicija&gt;0 &amp;&amp; prethodna!=pozicija) {
+				String rijec=ObrniPola(fraze.at(i));
+				int srednjapozicija=pozicija-(int(fraze.at(i).length()/2));
+				int k(0);
+				for (int j=srednjapozicija; j&lt;pozicija &amp;&amp; k&lt;rijec.length(); j++, k++)
+					recenica.at(j)=rijec.at(k);
+			}
+			
+		} while (prethodna!=pozicija &amp;&amp; pozicija&lt;recenica.length());
+	}
+	
+	return recenica;
+	
+}
+int main ()
+{
+	String recenica;
+	std::vector&lt;String&gt; fraze;
+	
+	std::cout &lt;&lt; "Unesite recenicu: ";
+	std::getline(std::cin, recenica);
+	
+	std::cout &lt;&lt; "Unesite fraze: ";
+	
+	for (;;) {
+		String unos;
+		std::getline(std::cin, unos);
+		if (unos.length()==0) break;
+		fraze.push_back(unos);
+	}
+	
+
+	String palindromi=NapraviPalindrom(recenica, fraze);
+	String polupalindromi=NapraviPoluPalindrom(recenica, fraze);
+	
+	std::cout &lt;&lt; "Recenica nakon Palindrom transformacije: " &lt;&lt; palindromi &lt;&lt; std::endl;
+	std::cout &lt;&lt; "Recenica nakon PoluPalindrom transformacije: " &lt;&lt; polupalindromi &lt;&lt; std::endl;
+	
+	return 0;
+</font>}</pre>
+</body>
+</html>

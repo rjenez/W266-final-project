@@ -1,0 +1,151 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student7735.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student6999.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+/*NE ZABORAVITI DODATI RUBNE SLUCAJEVE PLUS STA AKO JE LISTA PRAZNA !!!*/
+bool slovo(char s){
+    if((s&gt;='A' &amp;&amp; s&lt;='Z')||(s&gt;='a' &amp;&amp; s&lt;='z')) return true;
+    return false;
+}
+std::string okreni(std::string s){
+    std::string izlaz;
+    izlaz.resize(s.size());
+    int j=0;
+    for(int i=s.size()-1;i&gt;=0;i--){
+        izlaz[j++] =s[i];
+    }
+    return izlaz;
+}
+std::string zamijeniprvoizadnje(std::string s){ //Ne mijenja prvo i zadnje
+//u pocetku izrade zadace sam pogresno shvatio sta piglatin radi pa sam ispravio sad
+//ostalo je zamijeniprvoizadnje zbog ljenosti.
+    char temp(s[0]);
+    for(int i=0;i&lt;s.size();i++){
+        s[i] = s[i+1];
+    }
+    s[s.size()-1] = temp;
+    return s;
+}
+<a name="0"></a><font color="#FF0000"><a href="match913-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+std::string ObrniFraze(std::string s, std::vector&lt;std::string&gt; lista){
+    for(int i=0;i&lt;lista.size();i++){
+        std::string trenutna_fraza=lista[i];
+        int duzina_fraze=trenutna_fraza.length();
+</font>        for(int j=0;j&lt;s.length();j++){
+            bool isti_su=true;
+            for(int k=0;k&lt;duzina_fraze;k++){
+                if(s[k+j] != trenutna_fraza[k]){
+                    isti_su=false;
+                    break;
+                }
+            }
+            if(isti_su){
+                std::string zamjena =okreni(trenutna_fraza);
+                for(int h=0;h&lt;trenutna_fraza.length();h++){
+                    s[j+h]=zamjena[h];
+                }
+            }
+        }
+    }
+    return s;
+}
+<a name="1"></a><font color="#00FF00"><a href="match913-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+std::string IzmijeniUPigLatin(std::string s,std::vector&lt;std::string&gt; lista){
+    if(lista.size()!=0){
+        for(int i=0;i&lt;lista.size();i++){
+</font>            for(int j=0;j&lt;lista[i].size();j++){
+<a name="2"></a><font color="#0000FF"><a href="match913-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+                if(!slovo(lista[i][j])) throw std::domain_error("Nekorektan izbor rijeci");
+            }
+        }
+        
+        
+    for(int i=0;i&lt;lista.size();i++){
+        std::string trenutna_fraza=lista[i];
+</font>        for(int j=0;j&lt;s.size();j++){
+            if(s[j]==lista[i][0]){
+                if(j!=0){
+                    if(slovo(s[j-1])) continue;
+                }
+                //nasao prvo isto slovo, sad dalje treba ici
+                bool isti_su=true;
+                int pocetni_index=j;
+                for(int k=0;k&lt;lista[i].size();k++){
+                    if(s[j+k]!=lista[i][k]) { isti_su=false; break;}
+                    if((k==lista[i].size()-1) &amp;&amp; (j+k)!=s.size() &amp;&amp; slovo(s[j+k+1])) isti_su=false;
+                    
+                } 
+                if(j!=0 &amp;&amp; isti_su &amp;&amp; slovo(s[j-1])) isti_su=false;
+                if(isti_su){
+                    //nasao odg. rijec
+//                    if(j!=0 &amp;&amp; j+trenutna_fraza.length()!= s.length() &amp;&amp; slovo(s[j-1]) &amp;&amp; slovo(s[j+trenutna_fraza.length()])) continue;
+//                    if(j==0 &amp;&amp; j+trenutna_fraza.length()!= s.length() &amp;&amp; slovo(s[j+trenutna_fraza.length()])) continue;
+                    std::string zamjena=zamijeniprvoizadnje(lista[i]);
+                    for(int k=0;k&lt;lista[i].size();k++){
+                        s[j+k]=zamjena[k];
+                    }s.insert(s.begin()+pocetni_index+lista[i].size(),'a');
+                    s.insert(s.begin()+pocetni_index+lista[i].size()+1,'y');
+                }
+            }
+        }
+    }
+}else if(lista.size()==0){
+    for(int i=0;i&lt;s.size();i++){
+        // ide kroz string
+        while(!slovo(s[i])){ i++; if(i==s.length()-1) return s;} //dolazimo do prve rijeci;
+        //sad smo na prvoj rijeci
+        int pocetak(i);
+        std::string zamjena;
+        while(slovo(s[pocetak])){
+            //sve dok imas rijec
+            zamjena.push_back(s[pocetak++]);
+        }
+        if(zamjena.size()){
+        zamjena = zamijeniprvoizadnje(zamjena);
+        for(int k=0;k&lt;zamjena.size();k++){
+            //prelijepi preko svega zamjenu
+            s[i+k]=zamjena[k];
+        }s.insert(s.begin()+i+zamjena.size(),'a');
+        s.insert(s.begin()+i+zamjena.size()+1,'y');
+        i=pocetak+2;
+        }
+    }
+}
+    return s;
+}
+int main ()
+{
+    std::cout&lt;&lt;"Unesite recenicu: ";
+    std::string ulaz;
+    std::getline(std::cin,ulaz);
+    std::vector&lt;std::string&gt; lista;
+    int i=0;
+    std::cout&lt;&lt;"Unesite fraze: ";
+    while(1){
+        std::string temp;
+        std::getline(std::cin,temp);
+        if(temp.size() != 0) lista.push_back(temp);
+        if(temp.size() == 0)break;
+    }
+    std::string izlaz1=ObrniFraze(ulaz,lista);
+    try{
+    std::string izlaz2=IzmijeniUPigLatin(ulaz,lista);
+    std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: "&lt;&lt;izlaz2;
+    }catch(std::exception &amp;a){
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;a.what();
+    }
+    std::cout&lt;&lt;std::endl&lt;&lt;"Recenica nakon obrtanja fraza: "&lt;&lt;izlaz1;
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student8006.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4471.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;tuple&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match143-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_91.gif"/></a>
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+typedef std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; Pojam;
+
+std::string PretvoriUMala(const std::string &amp;rijec) {
+    std::string nova(rijec);
+    for (char &amp;c : nova) c = tolower(c);
+    return nova;
+}
+
+bool Ponavljanje(const std::map&lt;std::string, Pojam&gt; &amp;m, const std::string &amp;rijec) {
+    for (auto it = m.begin(); it != m.end(); it++)
+        if (PretvoriUMala(it-&gt;first) == PretvoriUMala(rijec)) return true;
+    return false;
+}
+
+bool SlovoBroj(char c) {
+    if ((c &gt;= 'A' &amp;&amp; c &lt;= 'Z') || (c &gt;= 'a' &amp;&amp; c &lt;= 'z') || (c &gt;= '0' &amp;&amp; c &lt;= '9'))
+        return true;
+    return false;
+}
+
+std::map&lt;std::string, Pojam&gt; KreirajIndeksPojmova(const Knjiga &amp;k) {
+    std::map&lt;std::string, Pojam&gt; pojmovi;
+    for (auto poglavlje = k.begin(); poglavlje != k.end(); poglavlje++) {
+        const std::vector&lt;std::string&gt; &amp;v(poglavlje-&gt;second);
+        for (int i = 0; i &lt; v.size(); i++) {
+            for (int j = 0; j &lt; v[i].size(); j++) {
+                while (j &lt; v[i].size() &amp;&amp; !SlovoBroj(v[i][j])) j++;
+                int pocetak(j);
+                while (j &lt; v[i].size() &amp;&amp; SlovoBroj(v[i][j])) j++;
+                std::string rijec(PretvoriUMala(v[i].substr(pocetak, j-pocetak)));
+                pojmovi[rijec].insert(std::make_tuple(poglavlje-&gt;first, i+1, pocetak));
+            }
+        }
+    }
+    return pojmovi;
+}
+
+Pojam PretraziIndeksPojmova(const std::string &amp;rijec, const std::map&lt;std::string, Pojam&gt; &amp;m) {
+    auto p(m.find(rijec));
+    if (p == m.end()) throw std::logic_error("Pojam nije nadjen");
+    return p-&gt;second;
+}
+
+void IspisiIndeksPojmova(const std::map&lt;std::string, Pojam&gt; &amp;m) {
+    for (auto it = m.begin(); it != m.end(); it++) {
+        std::cout &lt;&lt; PretvoriUMala(it-&gt;first) &lt;&lt; ": ";
+        int br(0);
+        for (auto s = it-&gt;second.begin(); s != it-&gt;second.end(); s++) {
+            std::cout &lt;&lt; std::get&lt;0&gt;(*s) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*s)
+            &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(*s);
+            if (br++ &lt; it-&gt;second.size()-1) std::cout &lt;&lt; ", ";
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+
+int main ()
+{
+    try {
+        Knjiga k;
+        std::string poglavlje;
+        for (;;) {
+            std::cout &lt;&lt; "Unesite naziv poglavlja: "; 
+            std::string poglavlje;
+            if (std::getline(std::cin, poglavlje), poglavlje == ".") break;
+            std::vector&lt;std::string&gt; v;
+            for (int i = 1;; i++) {
+                std::cout &lt;&lt; "Unesite sadrzaj stranice " &lt;&lt; i &lt;&lt; ": ";
+                std::string stranica;
+                if (std::getline(std::cin, stranica), stranica == ".") break;
+                v.push_back(stranica);
+            }
+            k[poglavlje] = v;
+        }
+        auto pojmovi(KreirajIndeksPojmova(k));
+        std::cout &lt;&lt; std::endl &lt;&lt; "Kreirani indeks pojmova:" &lt;&lt; std::endl;
+        IspisiIndeksPojmova(pojmovi);
+        std::cout &lt;&lt; std::endl;
+        for (;;) {
+            std::cout &lt;&lt;"Unesite rijec: ";
+            std::string rijec;
+            if (std::cin &gt;&gt; rijec, rijec == ".") break;
+            Pojam p;
+            try {
+                p = PretraziIndeksPojmova(rijec, pojmovi);
+            }
+            catch (std::logic_error e) {
+                std::cout &lt;&lt; "Unesena rijec nije nadjena!";
+            }
+            for (auto it = p.begin(); it != p.end(); it++)
+                std::cout &lt;&lt; std::get&lt;0&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*it)
+</font><a name="1"></a><font color="#00FF00"><a href="match143-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+                &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(*it) &lt;&lt; " ";
+            std::cout &lt;&lt; std::endl;
+        }
+    }
+    catch (std::logic_error e) {
+        std::cout &lt;&lt; e.what();
+    }
+    catch (...) {
+</font>        
+    }
+	return 0;
+}
+</pre>
+</body>
+</html>

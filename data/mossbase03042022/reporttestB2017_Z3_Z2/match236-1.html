@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student7341.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student2208.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+
+std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; KreirajIndeksPojmova (Knjiga k)
+{
+<a name="0"></a><font color="#FF0000"><a href="match236-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_83.gif"/></a>
+
+    std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; indeks_pojmova;
+    for (auto it=k.begin(); it!=k.end(); it++) {
+        auto ime_poglavlja = it-&gt;first;
+        auto tekst = it-&gt;second;
+        for(int i(0); i&lt;tekst.size(); i++) {
+            int brojac(0);
+            for (int j(0); j&lt;tekst.at(i).size(); j++) {
+                //for (int l(0); l&lt;tekst.at(i).at(j).size(); l++)
+                    if (tekst.at(i).at(j)&gt;='A' &amp;&amp; tekst.at(i).at(j)&lt;='Z') tekst.at(i).at(j)+=32;
+                //j++;
+                brojac++;
+                if (brojac==0) {
+                    i++;
+                    continue;
+                }
+                bool da_li_ima = false;
+                int br(0);
+                std::string rijec;
+                while (br!=tekst.size()) {
+                    if (tekst.at(i) == tekst.at(i).substr(j-brojac, brojac)) da_li_ima = true;
+                    rijec=tekst.at(i).substr(j-brojac, brojac);
+                    br++;
+                }
+
+                if(da_li_ima) {
+                    std::tuple&lt;std::string, int, int&gt; pom_tuple = std::make_tuple(ime_poglavlja,i+1, j);
+                    std::set&lt;std::tuple&lt;std::string&lt;std::string, int, int&gt;&gt;&gt; skup;
+                    skup.insert(pom_tuple);
+                    indeks_pojmova.insert(std::make_pair(rijec, skup));
+
+                }
+            }
+        }
+    }
+    return indeks_pojmova;
+}
+
+int main ()
+{
+    Knjiga knjiga;
+    for (;;) {
+        std::string ime_poglavlja;
+        std::cout &lt;&lt; "Unesite naziv poglavlja: ";
+        std::getline(std::cin, ime_poglavlja);
+        std::vector&lt;std::string&gt; sadrzaj;
+        if (ime_poglavlja==".") break;
+        for (;;) {
+            std::string tekst;
+            std::cout&lt;&lt;"Unesite sadrzaj stranice" &lt;&lt; i&lt;&lt;": ";
+            std::getline(std::cin, tekst);
+            if(tekst==".") break;
+            sadrzaj.push_back(tekst);
+            i++;
+        }
+        auto par = std::make_pair(ime_poglavlja, sadrzaj);
+        knjiga.insert(par);
+    }
+    std::cout &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Kreirani indeks pojmova:" &lt;&lt; std::endl;
+    auto indeks_pojmova = KreirajIndeksPojmova(knjiga);
+    for (auto it=indeks_pojmova.begin(); it!=indeks_pojmova.end(); it++) {
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        for (auto pok=(it-&gt;second).begin(); pok!=(it-&gt;second).end(); pok++;) {
+            auto kraj=it-&gt;second.end();
+            kraj--;
+            if (pok!=kraj) std::cout &lt;&lt; std::get&lt;0&gt;(*pok)&lt;&lt;std::get&lt;1&gt;(*pok)&lt;&lt;std::get&lt;2&gt;(*pok) &lt;&lt; std::endl;
+</font>        }
+    }
+    return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z4/student9805.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z4/student9805.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match171-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 4, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+#include &lt;tuple&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;initializer_list&gt;
+
+class Datum{
+    int Dan,Mj,God;
+    
+    public: 
+    Datum(int dan=1, int mjesec=1, int godina=2000){
+        if(dan&lt;1 or dan&gt;31 or mjesec&lt;1 or mjesec&gt;12) throw std::domain_error{"Neispravan datum"};
+        else{
+            Dan=dan;
+            Mj=mjesec;
+            God=godina;
+        }
+    };
+    void Postavi(int dan, int mjesec, int godina){
+        if(dan&lt;1 or dan&gt;31 or mjesec&lt;1 or mjesec&gt;12) throw std::domain_error{"Neispravan datum"};
+        else {
+            Dan=dan;
+            Mj=mjesec;
+            God=godina;
+        }
+    };
+    std::tuple&lt;int, int, int&gt; Ocitaj() const{
+        std::tuple&lt;int,int,int&gt; a=std::make_tuple(Dan,Mj,God);
+        return a;
+    };
+    void Ispisi() const{
+        std::cout&lt;&lt;Dan&lt;&lt;"/"&lt;&lt;Mj&lt;&lt;"/"&lt;&lt;God;
+    };  
+};
+class Vrijeme{
+    int S,Min;
+    
+    public:
+    Vrijeme(int sati=0, int minute=0){
+        if(sati&lt;0 or sati&gt;23 or minute &lt;0 or minute &gt;59) throw std::domain_error{"Neispravno vrijeme"};
+        else{
+            S=sati;
+            Min=minute;
+        }
+    };
+    void Postavi(int sati, int minute){
+        if(sati&lt;0 or sati&gt;23 or minute &lt;0 or minute &gt;59) throw std::domain_error{"Neispravno vrijeme"};
+        else{
+            S=sati;
+            Min=minute;
+        }
+    };
+    std::pair&lt;int, int&gt; Ocitaj () const{
+        std::pair&lt;int,int&gt; a=std::make_pair(S,Min);
+        return a;
+    };
+    void Ispisi() const{
+        if(S&lt;10) std::cout&lt;&lt;"0"&lt;&lt;S&lt;&lt;":"&lt;&lt;Min;
+        else std::cout&lt;&lt;S&lt;&lt;":"&lt;&lt;Min;
+    };
+};
+
+
+class Pregled{
+    Datum D;
+    Vrijeme V;
+    std::string ime;
+    public:
+    Pregled(const std::string &amp;ime_pacijenta, const Datum &amp;datum_pregleda,const Vrijeme &amp;vrijeme_pregleda){         //
+        this-&gt;ime=ime_pacijenta;
+        this-&gt;D=datum_pregleda;
+        this-&gt;V=vrijeme_pregleda;
+    };
+    Pregled(const std::string &amp;ime_pacijenta, int dan_pregleda, int mjesec_pregleda,int godina_pregleda, int sati_pregleda, int minute_pregleda){
+        D.Postavi(dan_pregleda,mjesec_pregleda,godina_pregleda);
+        V.Postavi(sati_pregleda,minute_pregleda);
+        this-&gt;ime=ime_pacijenta;
+    };
+    void PromijeniPacijenta(const std::string &amp;ime_pacijenta){                                                      //
+        this-&gt;ime=ime_pacijenta;
+    };
+    void PromijeniDatum(const Datum &amp;novi_datum){                                                                   //
+        this-&gt;D=novi_datum;
+    };
+    void PromijeniVrijeme(const Vrijeme &amp;novo_vrijeme){                                                             //
+        this-&gt;V=novo_vrijeme;
+    };
+    void PomjeriDanUnaprijed(){
+        std::tuple&lt;int,int,int&gt; a=D.Ocitaj();
+        int tmp=std::get&lt;0&gt;(a);
+        int tmp2=std::get&lt;1&gt;(a);
+        int tmp3=std::get&lt;2&gt;(a);
+        D.Postavi(tmp+1,tmp2,tmp3);
+    };
+    void PomjeriDanUnazad(){
+        std::tuple&lt;int,int,int&gt; b=D.Ocitaj();
+        int tmp=std::get&lt;0&gt;(b);
+        int tmp2=std::get&lt;1&gt;(b);
+        int tmp3=std::get&lt;2&gt;(b);
+        D.Postavi(tmp-1,tmp2,tmp3);
+    };
+    std::string DajImePacijenta() const{
+        return this-&gt;ime;
+    };
+    Datum DajDatumPregleda() const{
+        return this-&gt;D;
+    };
+    Vrijeme DajVrijemePregleda() const{
+        return this-&gt;V;
+    };
+    static bool DolaziPrije(const Pregled &amp;p1, const Pregled &amp;p2){
+        bool rez=false;
+        std::tuple&lt;int,int,int&gt;tmp=p1.D.Ocitaj();
+        std::tuple&lt;int,int,int&gt;tmp2=p2.D.Ocitaj();
+        std::pair&lt;int,int&gt;tmp3=p1.V.Ocitaj();
+        std::pair&lt;int,int&gt;tmp4=p2.V.Ocitaj();
+        if(std::get&lt;2&gt;(tmp)&lt;std::get&lt;2&gt;(tmp2)){rez=true;return rez;}
+        else if(std::get&lt;2&gt;(tmp)==std::get&lt;2&gt;(tmp2)and std::get&lt;1&gt;(tmp)&lt;std::get&lt;1&gt;(tmp2)){rez=true;return rez;}
+        else if(std::get&lt;2&gt;(tmp)==std::get&lt;2&gt;(tmp2)and std::get&lt;1&gt;(tmp)==std::get&lt;1&gt;(tmp2) and std::get&lt;0&gt;(tmp)&lt;std::get&lt;0&gt;(tmp2)){rez=true;return rez;}
+        else if(std::get&lt;2&gt;(tmp)==std::get&lt;2&gt;(tmp2)and std::get&lt;1&gt;(tmp)==std::get&lt;1&gt;(tmp2) and std::get&lt;0&gt;(tmp)==std::get&lt;0&gt;(tmp2) and std::get&lt;1&gt;(tmp3)&lt;std::get&lt;1&gt;(tmp4)){rez=true;return rez;}
+        else if(std::get&lt;2&gt;(tmp)==std::get&lt;2&gt;(tmp2)and std::get&lt;1&gt;(tmp)==std::get&lt;1&gt;(tmp2) and std::get&lt;0&gt;(tmp)&lt;std::get&lt;0&gt;(tmp2) and std::get&lt;1&gt;(tmp3)==std::get&lt;1&gt;(tmp4)and std::get&lt;0&gt;(tmp3)&lt;std::get&lt;0&gt;(tmp4)){rez=true;return rez;}
+        else if(std::get&lt;2&gt;(tmp)==std::get&lt;2&gt;(tmp2)and std::get&lt;1&gt;(tmp)==std::get&lt;1&gt;(tmp2) and std::get&lt;0&gt;(tmp)&lt;std::get&lt;0&gt;(tmp2) and std::get&lt;1&gt;(tmp3)==std::get&lt;1&gt;(tmp4)and std::get&lt;0&gt;(tmp3)==std::get&lt;0&gt;(tmp4)){rez=true;return rez;}
+        return rez;
+    };
+    void Ispisi()const{
+        std::cout&lt;&lt;std::setw(30)&lt;&lt;std::left&lt;&lt;ime&lt;&lt;" ";D.Ispisi();std::cout&lt;&lt;" ";V.Ispisi();std::cout&lt;&lt;std::endl;
+    };
+};
+
+int main ()
+{
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

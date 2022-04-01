@@ -1,0 +1,190 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student8055.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student2652.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 3
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.	
+*/
+#include &lt;iostream&gt;
+#include &lt;deque&gt;
+#include &lt;vector&gt; 
+<a name="0"></a><font color="#FF0000"><a href="match28-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum Smjer {Opadajuci, Rastuci};
+typedef std::vector&lt;int&gt; vektor;
+std::vector&lt;vektor&gt; Monotonost (vektor v, int p, Smjer s){
+int temp(v.at(p));
+vektor pomocni;
+int brojac(1);
+for (int i=p+1; i&lt;v.size(); i++)
+    {
+    if (s) {
+    if (v.at(i)&gt;=temp) {
+        temp = v.at(i);
+        brojac++;
+    }
+    else  {
+    break;
+    }
+    }
+    if (!s) {
+    if (v.at(i)&lt;=temp) {
+        temp = v.at(i);
+        brojac++;
+    }
+    else  {
+    break;
+    }
+    }
+
+
+
+    }
+    std::vector&lt;vektor&gt; finalni;
+    while  (brojac != 1){
+    pomocni.resize(0);
+    for (int i=p; i&lt;p+brojac; i++){   //udari enter ako nije...
+        pomocni.push_back(v.at(i)); }
+        finalni.push_back(pomocni);
+    
+        brojac--;
+        
+    }
+
+return finalni;
+}
+
+bool StepenDvojke (int x){
+for (;;){
+if (x&lt;=0) return 0;
+if (x==1) return 1;
+if (x%2 != 0) return 0;
+x=x/2;
+}
+}
+
+bool validacija (vektor v) {
+	if (v.size()) {
+	for (int i=0; i&lt;v.size(); i++)
+		if (!StepenDvojke(v.at(i))) return false;
+	} 
+return true; 
+}
+bool uporedi (vektor a, vektor b) {
+	int j;
+	for (int k=0; k&lt;b.size(); k++) {
+	int i(0);
+	j = k; 
+	int pogodak(0);
+	  while (i&lt;a.size() &amp;&amp; j&lt;b.size()){
+	  	if (a.at(i)==b.at(j)) { 
+	  		i++; 
+	  		j++; 
+	  		pogodak++;
+	  		if (pogodak == a.size()) return true;
+	  	} 
+	  	else break; 
+	  }
+	}
+	  return false;
+}
+bool provjeriDaLiSeSarzi (vektor v, int p, vektor pomocni, int q){
+		int x(p+v.size());
+		int y (q+pomocni.size()); 
+	for (int k=0; k&lt;pomocni.size(); k++){
+	int a(p);
+	int b(q+k); 
+	int i(0);
+	int j(k);
+	int pogodak(0);
+	while (a&lt;x &amp;&amp; b&lt;y &amp;&amp; i&lt;v.size() &amp;&amp; j&lt;pomocni.size()){
+		if (a==b &amp;&amp; v.at(i) == pomocni.at(j)){
+			a++; 
+			b++;
+			i++;
+			j++; 
+			pogodak++; 
+		}
+		else break; 
+		if (pogodak==v.size()) return true;
+	}
+		
+}
+	return false;
+}
+bool daLiJePodniz (vektor v, int p, std::deque&lt;vektor&gt; pomocni, vektor indeks, int j  ){
+	for (int i=0; i&lt;pomocni.size(); i++){
+		if (i ==j) continue; 
+		if (provjeriDaLiSeSarzi(v, p, pomocni.at(i), indeks.at(i)) )  return true;
+	}
+	return false; 
+}
+
+std::deque&lt;vektor&gt; MaksimalniPodnizoviStepenaDvojke (vektor v, Smjer smjer) {
+	std::deque&lt;vektor&gt; pomocni, dek;
+	vektor pozicija; 
+	for (int i=0; i&lt;v.size(); i++){
+		for (int j=0; j&lt;Monotonost(v,i,smjer).size(); j++) {
+			if (validacija(Monotonost(v,i,smjer).at(j))) {
+				pomocni.push_back(Monotonost(v,i,smjer).at(j));
+				pozicija.push_back(i);
+			}
+		}
+	}
+
+	if (pomocni.size()){
+		for (int i=0; i&lt;pomocni.size(); i++)
+			{
+				if (!daLiJePodniz(pomocni.at(i), pozicija.at(i), pomocni, pozicija, i)) dek.push_back(pomocni.at(i)); 
+			}
+	}
+return dek; 
+}
+int main ()
+{
+	
+int x,z;
+std::cout&lt;&lt;"Unesite broj elemenata vektora: "; 
+std::cin&gt;&gt;x;
+vektor y;
+std::cout&lt;&lt;"Unesite elemente vektora: ";
+for (int i=0; i&lt;x; i++)
+	{
+		std::cin&gt;&gt;z;
+		y.push_back(z);
+	}
+std::cout&lt;&lt;"Unesite: 1 - za rastuce podnizove, 2 - za opadajuce podnizove: ";
+int k;
+std::cin&gt;&gt;k;
+Smjer smjer;
+if(k==1) smjer = Rastuci ;
+else smjer=Opadajuci; 
+auto final (MaksimalniPodnizoviStepenaDvojke (y, smjer));
+std::cout&lt;&lt;"Maksimalni ";
+if (k==1) std::cout&lt;&lt;"rastuci "; 
+else std::cout&lt;&lt;"opadajuci "; 
+std::cout&lt;&lt;"podnizovi: \n"; 
+for (int i=0; i&lt;final.size(); i++){
+	for (auto q : final.at(i)) std::cout&lt;&lt;q&lt;&lt;" "; 
+std::cout&lt;&lt;std::endl;
+</font>}
+ 
+ 
+ 
+
+	return 0;
+}</pre>
+</body>
+</html>

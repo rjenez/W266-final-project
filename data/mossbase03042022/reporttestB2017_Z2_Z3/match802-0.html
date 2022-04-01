@@ -1,0 +1,155 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student9438.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student9438.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 3
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+template &lt;typename Tip&gt;
+bool periodican(const std::vector&lt;Tip&gt; &amp;vek, int period) {
+<a name="2"></a><font color="#0000FF"><a href="match802-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+	for(int i(0); i &lt; vek.size(); i++) {
+		for(int j(i + period); j &lt; vek.size(); j += period) {
+			if(vek.at(j) != vek.at(i)) return false;
+</font>		}
+	}
+	return true;
+}
+
+template &lt;typename Tip&gt;
+int period(const std::vector&lt;Tip&gt; &amp;vek) {
+	int period(-1);	
+	for(int i(1); i &lt;= vek.size() - 1; i++) {
+		if(periodican(vek, i)) {
+			period = i;
+			break;
+		}
+	}
+	return period;
+}
+
+template &lt;typename Tip&gt;
+Tip maksimum(const std::vector&lt;Tip&gt; &amp;vek) {
+	Tip max(vek.at(0));
+	for(int i(0); i &lt; vek.size(); i++) {
+		if(vek.at(i) &gt; max) max = vek.at(i);
+	}
+	return max;
+}
+
+template &lt;typename Tip&gt;
+int **AlocirajFragmentirano(const std::vector&lt;Tip&gt; &amp;vek, int &amp;koliko_puta) {
+	if(vek.size() == 0) throw ("Prazan vektor!");
+	for(int i(0); i &lt; vek.size(); i++) {
+		if(vek.at(i) &lt; 1) throw std::domain_error("Neispravan vektor!");
+	}
+	int osnovni_period(period(vek));
+	int rezultat, za_dodati;
+	if(osnovni_period != -1) {
+		rezultat = vek.size() % osnovni_period;
+		za_dodati = osnovni_period - rezultat;
+		if(za_dodati == osnovni_period) za_dodati = 0;
+		koliko_puta = (vek.size() + za_dodati) / osnovni_period;
+	}
+	else {
+		koliko_puta = 2;
+		osnovni_period = vek.size();
+	}
+	try {
+		int **matrica = new int*[osnovni_period * koliko_puta]{};
+		try {
+<a name="1"></a><font color="#00FF00"><a href="match802-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+			for(int i(0); i &lt; koliko_puta * osnovni_period; i++) {
+				matrica[i] = new int[vek.at(i % osnovni_period)]{};
+			}
+			
+			int maksimalni = maksimum(vek);
+</font>			for(int i(0); i &lt; osnovni_period * koliko_puta; i++) {
+			int vrijednost(vek.at(i % osnovni_period));
+				for(int j(vrijednost - 1); j &gt;= 0; j--) {
+<a name="0"></a><font color="#FF0000"><a href="match802-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_9.gif"/></a>
+
+					if(j == vrijednost - 1) matrica[i][j] = maksimalni;
+					else matrica[i][j] = matrica[i][j + 1] - 1;
+				}
+			}
+			
+			return matrica;
+		}
+		catch(...) {
+			for(int i(0); i &lt; koliko_puta * osnovni_period; i++) {
+				delete[] matrica[i];
+			}
+			delete[] matrica;
+			throw;
+		}
+	}
+	catch(...) {
+</font>		throw;
+	}
+}
+
+int main () {
+	try {
+		std::cout &lt;&lt; "Unesite broj elemenata vektora: ";
+		int n;
+		std::cin &gt;&gt; n;
+		std::cout &lt;&lt; "Unesite elemente vektora: ";
+		std::vector&lt;int&gt; vek(n);
+		for(int i(0); i &lt; n; i++) {
+			std::cin &gt;&gt; vek.at(i);
+		}
+		std::cout &lt;&lt; "Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+		bool f;
+		std::cin &gt;&gt; f;
+		int koliko_puta;
+		int osnovni_period = period(vek);
+		if(osnovni_period == -1) osnovni_period = vek.size();
+		int **matrica = AlocirajFragmentirano(vek, koliko_puta);
+		std::cout &lt;&lt; "Dinamicki alocirana matrica: " &lt;&lt; std::endl;
+		for(int i(0); i &lt; osnovni_period * koliko_puta; i++) {
+			int vrijednost(vek.at(i % osnovni_period));
+			for(int j(0); j &lt; vrijednost; j++) {
+				std::cout &lt;&lt; std::setw(3) &lt;&lt; std::left &lt;&lt; matrica[i][j];
+			}
+			std::cout &lt;&lt; std::endl;
+		}
+		for(int i(0); i &lt; koliko_puta * osnovni_period; i++) {
+			delete[] matrica[i];
+		}
+		delete[] matrica;
+	}
+	
+	catch(const char *poruka) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; poruka;
+	}
+	catch(std::domain_error e) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what();
+	}
+	catch(...) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; "Neuspjela alokacija!";
+	}
+	
+	return 0;
+}</pre>
+</body>
+</html>

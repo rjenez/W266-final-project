@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z4/Z4/student4456.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z4/Z4/student4456.c<p></p><pre>
+#include &lt;stdio.h&gt;
+
+int provjeri (char* s) {
+	int i=0, j, k=0, l;
+	char* temp=s;
+	char niz_otvorenih[1000][1000];
+	char niz_zatvorenih[1000][1000];
+	
+	while (*s!='\0') {
+		j=0;
+		if (*s=='&lt;' &amp;&amp; *(s+1)!='/') {
+<a name="0"></a><font color="#FF0000"><a href="match568-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+			temp=s+1;
+			while ((*temp&gt;='A' &amp;&amp; *temp&lt;='Z') || (*temp&gt;='a' &amp;&amp; *temp&lt;='z') || (*temp&gt;='0' &amp;&amp; *temp&lt;='9')) {
+				if (*temp&gt;='a') niz_otvorenih[i][j]=*temp-32;
+</font>				else niz_otvorenih[i][j]=*temp;
+				j++;
+				temp++;
+			}
+			
+			/* Svaki otvoreni tag mora biti pravilno zatvoren: */
+			if (*temp!=' ' &amp;&amp; *temp!='&gt;') return 0;
+			niz_otvorenih[i][j]='\0';
+			i++;
+			
+			/* Potreban znak "&gt;": */
+			while (*temp!='&gt;' &amp;&amp; *temp!='\0') {
+				temp++;
+				if (*temp=='&lt;') return 0;
+			}
+			
+			/* Nepotreban znak "&gt;": */
+			while (*temp!='&lt;' &amp;&amp; *temp!='\0') {
+				temp++;
+				if (*temp=='&gt;') return 0;
+			}
+			 
+		}
+		else if (*s=='&lt;' &amp;&amp; *(s+1)=='/') {
+			
+			/* Tag mora biti prethodno otvoren: */
+			if (i==0) return 0;
+			
+			temp=s+2;
+			while ((*temp&gt;='A' &amp;&amp; *temp&lt;='Z') || (*temp&gt;='a' &amp;&amp; *temp&lt;='z') || (*temp&gt;='0' &amp;&amp; *temp&lt;='9')) {
+				if (*temp&gt;='a') niz_zatvorenih[k][j]=*temp-32;
+				else niz_zatvorenih[k][j]=*temp;
+				
+				j++;
+				temp++;
+			}
+			/* Ne smije biti prazan tag: */
+			if (j==0) return 0;
+			
+			/* Svaki otvoreni tag mora biti pravilno zatvoren: */
+			if (*temp!='&gt;' &amp;&amp; *temp!=' ') return 0;
+			
+			
+			/* Potreban znak "&gt;": */
+			while (*temp!='&gt;' &amp;&amp; *temp!='\0') {
+				temp++;
+				if (*temp=='&lt;') return 0;
+				if (*temp=='\0') return 0;
+			}
+			
+			/* Nepotreban znak "&gt;": */
+			while (*temp!='&lt;' &amp;&amp; *temp!='\0') {
+				temp++;
+				if (*temp=='&gt;') return 0;
+			}
+			
+			niz_zatvorenih[k][j]='\0';
+			k++;
+			
+			for (l=0; l&lt;=j; l++) {
+				if (niz_otvorenih[i-1][l]!=niz_zatvorenih[k-1][l]) return 0;
+			}
+			i--;
+		}
+		s++;
+	}
+	/* Ne smije biti više otvorenih nego zatvorenih tagova: */
+	if (i!=0) return 0;
+	
+	return 1;
+}
+
+
+int main() {
+	printf ("Zadaća 4, Zadatak 4");
+	return 0;
+}
+</pre>
+</body>
+</html>

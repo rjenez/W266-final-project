@@ -1,0 +1,162 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student8100.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student8100.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match16-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+int Najvecii(vector&lt;vector&lt;double&gt;&gt; *mat)
+{
+	int najveci=*mat.at(0).at(0);
+	int najvecii=0;
+	for(int i=0; i&lt;(int)*mat.size(); i++)
+		for(int j=0; j&lt;(int)*mat.at(i).size(); j++)
+			if(*mat.at(i).at(j)&gt;najveci)
+			{
+				najveci=*mat.at(i).at(j);
+				najvecii=i;
+			}
+	return najvecii;
+}
+
+int Najvecij(vector&lt;vector&lt;double&gt;&gt; *mat)
+{
+	int najveci=*mat.at(0).at(0);
+	int najvecij=0;
+	for(int i=0; i&lt;(int)*mat.size(); i++)
+		for(int j=0; j&lt;(int)*mat.at(i).size(); j++)
+			if(*mat.at(i).at(j)&gt;najveci)
+			{
+				najveci=*mat.at(i).at(j);
+				najvecij=i;
+			}
+	return najvecij;
+}
+
+
+int NajveciElement(vector&lt;vector&lt;double&gt;&gt; *mat)
+{
+	int najveci=*mat.at(0).at(0);
+	for(int i=0; i&lt;(int)*mat.size(); i++)
+		for(int j=0; j&lt;(int)*mat.at(i).size(); j++)
+			if(*mat.at(i).at(j)&gt;najveci)
+				najveci=*mat.at(i).at(j);
+	return najveci;
+}
+
+int SumaOko(int i, int j, int br, vector&lt;vector&lt;double&gt;&gt; *matrica)
+{
+	int suma(0);
+	for(int k=j-br; k&lt;=j+br; k++) {
+		if(i+br&gt;=(int)*matrica.size() || i-br&lt;0 || k&lt;0 || k&gt;=(int)*matrica.at(i).size())
+			return suma;
+		suma+=*matrica.at(i-br).at(k)+*matrica.at(i+br).at(k);
+	}
+	for(int l=i-br+1; l&lt;=i+br-1; l++) {
+		if(l&lt;0 || l&gt;=(int)*matrica.size() || j-br&gt;=(int)*matrica.at(i).size() || j&lt;0)
+			return suma;
+		suma+=*matrica.at(l).at(j-br)+*matrica.at(l).at(j+br);
+	}
+	return suma;
+}
+
+vector&lt;vector&lt;double&gt;&gt; KatujMatricu(int i, int j, int br, vector&lt;vector&lt;double&gt;&gt; *matrica)
+{
+	vector&lt;vector&lt;double&gt;&gt; matrica2(2*br+1, vector&lt;double&gt;(2*br+1));
+
+	for(int l=i-br; l&lt;=i+br; l++)
+		for(int s=j-br; s&lt;=j+br; s++) {
+			if(l-i+br&gt;=0 &amp;&amp; l-i+br&lt;2*br+1 &amp;&amp; s-j+br&gt;=0 &amp;&amp; s-j+br&lt;2*br+1 &amp;&amp; l&gt;=0 &amp;&amp; l&lt;int(*matrica.size()) &amp;&amp; s&gt;=0 &amp;&amp; s&lt;int(*matrica.at(0).size()))
+				matrica2.at(l-i+br).at(s-j+br)=*matrica.at(l).at(s);
+		}
+	return matrica2;
+}
+
+
+vector&lt;vector&lt;double&gt;&gt; NajvecaPlaninaMatrice(vector&lt;vector&lt;double&gt;&gt; matrica)
+{
+	vector&lt;vector&lt;double&gt;&gt; pomocna;
+	if(matrica.size()==0)
+		return pomocna;
+	for(int i=1; i&lt;int(matrica.size()); i++)
+		if(matrica.at(i).size()!=matrica.at(0).size())
+			throw domain_error("Matrica nije korektna");
+	if(matrica.at(0).size()==0)
+		return pomocna;
+
+
+	int br(0), br1(0), cuvari(0), cuvarj(0);
+	vector&lt;vector&lt;double&gt;&gt; MaksimalnaMatrica(1, vector&lt;double&gt;(1));
+	MaksimalnaMatrica.at(0).at(0)=NajveciElement(&amp;matrica);
+
+	int koi, koj;
+	koi=Najvecii(&amp;matrica);
+	koj=Najvecij(&amp;matrica);
+	
+	for(int i=1; i&lt;(int)matrica.size()-1; i++) {
+		for(int j=1; j&lt;(int)matrica.at(i).size()-1; j++) {
+			if(SumaOko(i, j, 1, &amp;matrica)&lt;matrica.at(i).at(j)) {
+				br=2;
+				while(br&lt;=i &amp;&amp; br&lt;=j &amp;&amp; br&lt;=(int)matrica.size()-1-i &amp;&amp; br&lt;=(int)matrica.at(i).size()-1-j &amp;&amp; SumaOko(i, j, br-1, &amp;matrica)&gt;SumaOko(i, j, br, &amp;matrica))
+					br++;
+				if(br-1&gt;br1) {
+					MaksimalnaMatrica=KatujMatricu(i, j, br-1, &amp;matrica);
+					cuvari=KatujMatricu(i, j, br-1, &amp;matrica).size()/2+1;
+					cuvarj=KatujMatricu(i, j, br-1, &amp;matrica).size()/2+1;
+					br1=br-1;
+				} else if(br-1==br1) {
+					if(KatujMatricu(i, j, br-1, &amp;matrica).at(br-1).at(br-1)&gt;MaksimalnaMatrica.at(cuvari).at(cuvarj) &amp;&amp; ((i&lt;koi) || (i==koi &amp;&amp; j&lt;koj))){
+						MaksimalnaMatrica=KatujMatricu(i, j, br-1, &amp;matrica);
+					koi=i;
+					koj=j;
+					cuvari=br-1;
+					cuvarj=br-1;}
+					br1=br-1;
+				}
+			}
+		}
+	}
+	return MaksimalnaMatrica;
+}
+
+int main ()
+{
+	int red, kol;
+	double a;
+	vector&lt;vector&lt;double&gt;&gt; matrica(0);
+	cout&lt;&lt;"Unesite dimenzije matrice (m i n): ";
+	cin&gt;&gt;red&gt;&gt;kol;
+	if(red&lt;0 || kol&lt;0) {
+		cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+		return 1;
+	}
+	matrica.resize(red);
+	for(int i=0; i&lt;red; i++)
+		matrica.at(i).resize(kol);
+	cout&lt;&lt;"Unesite elemente matrice: ";
+	for(int i=0; i&lt;red; i++)
+		for(int j=0; j&lt;kol; j++) {
+			cin&gt;&gt;a;
+			matrica.at(i).at(j)=a;
+		}
+	vector&lt;vector&lt;double&gt;&gt; d=NajvecaPlaninaMatrice(matrica);
+	cout&lt;&lt;"\nNajveca planina unesene matrice je: "&lt;&lt;endl;
+	for(int i=0; i&lt;(int)d.size(); i++) {
+		for(int j=0; j&lt;(int)d.at(i).size(); j++)
+			cout&lt;&lt;setw(6)&lt;&lt;right&lt;&lt;d.at(i).at(j);
+		cout&lt;&lt;endl;
+</font>	}
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4370.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student5770.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;iterator&gt;
+#include &lt;set&gt;
+#include &lt;map&gt;
+#include &lt;utility&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match120-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+std::map&lt;std::string,std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string s){
+    std::map&lt;std::string,std::set&lt;int&gt;&gt; rez;
+    for(auto it = s.begin(); it != s.end(); it++){
+        auto it_pom1 = s.begin();
+        auto it_pom2 = s.end();
+        std::string rijec;
+        int n,poc;
+        if((*it &gt;= 'a' &amp;&amp; *it &lt;= 'z') || (*it &gt;= 'A' &amp;&amp; *it &lt;= 'Z') || (*it &gt;= '0' &amp;&amp; *it &lt;= '9')){
+            it_pom1 = it;
+            for(auto i = it_pom1; i != s.end(); i++){
+                if(!((*i &gt;= 'a' &amp;&amp; *i &lt;= 'z') || (*i &gt;= 'A' &amp;&amp; *i &lt;= 'Z') || (*i &gt;= '0' &amp;&amp; *i &lt;= '9'))){
+                    it_pom2 = i;
+                    break;
+                }
+            }
+            n = std::distance(it_pom1,it_pom2);
+            poc = std::distance(s.begin(),it_pom1);
+            rijec = s.substr(poc,n);
+            if(rez.count(rijec) == 0){
+                std::set&lt;int&gt; set1;
+                set1.insert(std::distance(s.begin(),it_pom1));
+                rez.insert(std::make_pair(rijec,set1));
+            }
+            else{
+                auto it_lok = rez.find(rijec);
+                (it_lok-&gt;second).insert(std::distance(s.begin(),it_pom1));
+            }
+            it_pom2--;
+            it = it_pom2;
+        }
+    }
+    return rez;
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string rijec, std::map&lt;std::string,std::set&lt;int&gt;&gt; indeks){
+    if(indeks.count(rijec) == 0) throw std::logic_error("Pojam nije nadjen");
+    auto it = indeks.find(rijec);
+    return it-&gt;second;
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string,std::set&lt;int&gt;&gt; indeks){
+    for(auto it = indeks.begin(); it != indeks.end(); it++){
+	    std::cout &lt;&lt; it-&gt;first;
+	    std::cout &lt;&lt; ": ";
+	    int n = (it-&gt;second).size();
+	    int i(0);
+	    for(auto x : it-&gt;second) {
+	        i++;
+	        std::cout &lt;&lt; x;
+	        if(i != n) std::cout &lt;&lt; ",";
+	    }
+	    std::cout &lt;&lt; std::endl;
+	}
+}
+
+int main ()
+{
+    std::string tekst;
+	std::cout &lt;&lt; "Unesite tekst: ";
+	std::getline(std::cin,tekst);
+	std::map&lt;std::string,std::set&lt;int&gt;&gt; indeks = KreirajIndeksPojmova(tekst);
+	IspisiIndeksPojmova(indeks);
+	while(true){
+	    std::string rijec;
+	    std::cout &lt;&lt; "Unesite rijec: ";
+	    std::getline(std::cin,rijec);
+	    if(rijec == ".") break;
+	    try{
+	        std::set&lt;int&gt; rez = PretraziIndeksPojmova(rijec,indeks);
+	        int n = rez.size();
+	        int i(0);
+	        for(auto x : rez) {
+	            i++;
+	            std::cout &lt;&lt; x;
+	            if(i != n) std::cout &lt;&lt; " ";
+	        }
+	        std::cout &lt;&lt; std::endl;
+	    }
+	    catch(...){
+	        std::cout &lt;&lt; "Unesena rijec nije nadjena!" &lt;&lt; std::endl;
+</font>	    }
+	    
+	}
+	return 0;
+}</pre>
+</body>
+</html>

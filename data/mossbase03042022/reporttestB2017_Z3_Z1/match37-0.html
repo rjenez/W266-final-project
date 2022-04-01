@@ -1,0 +1,218 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student7085.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student7085.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match37-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;utility&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+#include &lt;math.h&gt;
+
+
+bool ProvjeriDuple (std::vector&lt;std::pair&lt;double,double&gt;&gt; v1)
+{
+
+    for (int i=0; i&lt;v1.size(); i++) {
+        for (int j=i+1; j&lt;v1.size(); j++) {
+
+            if (v1[i].first==v1[j].first) {
+
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija (std::vector&lt;std::pair&lt;double,double&gt;&gt; &amp;v1)
+{
+
+    std::sort (v1.begin(),v1.end());
+
+    if (ProvjeriDuple(v1)) throw std::domain_error ("Neispravni cvorovi");
+
+    return [v1] (double x) {
+
+        if (x &lt; v1[0].first || x&gt;v1[v1.size()-1].first) throw std::range_error ("Argument izvan opsega");
+
+        auto drugi (std::lower_bound(v1.begin(),v1.end(),x, [](std::pair&lt;double,double&gt; v1, double x) {
+
+            return v1.first&lt;x;
+
+        }));
+
+        auto prvi = (drugi-1);
+
+        return prvi-&gt;second + (( (drugi-&gt;second - prvi-&gt; second)) / (drugi-&gt;first - prvi-&gt;first))*(x-prvi-&gt;first) ;
+
+    };
+}
+
+double ojhaj(double x)
+{
+    return x * x + std::sin(x);
+
+}
+
+std::function&lt;double(double)&gt;
+LinearnaInterpolacija (double lopata (double),double xmin, double xmax, double deltax)
+{
+
+    if (xmin&gt;xmax || deltax&lt;0) throw std::domain_error ("Nekorektni parametri.");
+
+    std::vector&lt;std::pair&lt;double,double&gt;&gt; v1;
+    double a,b;
+    std::pair&lt;double,double&gt; temp;
+    double q = deltax;
+
+    for (double i= xmin; i &lt;=xmax; i+=q) {
+
+        a = i;
+        b = lopata(i);
+
+        temp = std::make_pair(a,b);
+        v1.push_back(temp);
+
+    }
+
+    std::sort(v1.begin(),v1.end());
+
+    return [v1] (double x) {
+
+        if (x &lt; v1[0].first || x&gt;v1[v1.size()-1].first) throw std::range_error ("Argument izvan opsega");
+
+        auto drugi(std::lower_bound(v1.begin(),v1.end(),x, [](std::pair&lt;double,double&gt; v1, double x) {
+
+            return v1.first&lt;x;
+
+        }));
+
+        auto prvi = (drugi-1);
+
+        return prvi-&gt;second + (( (drugi-&gt;second - prvi-&gt; second)) / (drugi-&gt;first - prvi-&gt;first))*(x-prvi-&gt;first) ;
+
+
+    };
+}
+
+void OcistiTok (int a)
+{
+    std::cin.clear();
+    std::cin.ignore (10000,'\n');
+}
+
+double UnosParametara (double &amp;broj)
+{
+    std::cin &gt;&gt; broj;
+    char c = std::cin.peek();
+    if (!std::cin || broj&lt;0) {
+        throw ("A");
+        OcistiTok(1);
+    }
+
+}
+
+int main ()
+{
+
+    while (true) {
+        std::cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+        std::vector&lt;std::pair&lt;double,double&gt; &gt; v1;
+        int izbor;
+        std::cin &gt;&gt; izbor;
+
+        if (izbor == 1) {
+            double a,b,c;
+            std::cout &lt;&lt; "Unesite broj cvorova: ";
+            std::cin &gt;&gt; c;
+
+            std::cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+            std::pair&lt;double,double&gt; temp;
+            for (int i(0); i &lt; c; i++) {
+
+                std::cin &gt;&gt; a;
+                std::cin &gt;&gt; b;
+
+                temp = std::make_pair (a,b);
+
+                v1.push_back (temp);
+
+
+            }
+            try {
+                auto f (LinearnaInterpolacija(v1));
+
+                for (;;) {
+                    double arg;
+                    std::cout &lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+
+                    try {
+                        UnosParametara(arg);
+                        std::cout &lt;&lt; "f(" &lt;&lt; arg &lt;&lt;")" &lt;&lt; " = " &lt;&lt; f(arg) &lt;&lt; std::endl;
+                    } catch(const std::range_error &amp;e) {
+                        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+
+                        continue;
+                    }
+                    catch(...) {
+                        return 0;
+                    }
+
+
+                }
+            } catch(const std::domain_error &amp;e) {
+                std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                return 0;
+            } catch(const std::range_error &amp;e) {
+                std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                return 0;
+
+            }
+        } else if (izbor==2) {
+            double a,b,c;
+            std::cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+            std::cin &gt;&gt; a &gt;&gt; b &gt;&gt;c;
+
+            try {
+                auto f1 (LinearnaInterpolacija(ojhaj,a,b,c));
+
+                for (;;) {
+                    double arg;
+                    std::cout &lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+
+                    try {
+                        UnosParametara(arg);
+                        std::cout &lt;&lt; "f(" &lt;&lt; arg &lt;&lt;")" &lt;&lt; " = " &lt;&lt; ojhaj(arg) &lt;&lt; " fapprox(" &lt;&lt; arg &lt;&lt; ") = " &lt;&lt; f1(arg) &lt;&lt; std::endl;
+                    } catch(const std::range_error &amp;e) {
+                        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+
+                        continue;
+                    }
+                    catch(...) {
+                        return 0;
+                    }
+                }
+            } catch(const std::domain_error &amp;e) {
+                std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                return 0;
+
+            } catch(const std::range_error &amp;e) {
+                std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+</font>
+            }
+        }
+    }
+    return 0;
+}
+</pre>
+</body>
+</html>

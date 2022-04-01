@@ -1,0 +1,126 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student6363.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student6363.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;limits&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;tuple&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+#include &lt;map&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match163-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::string;
+using std::vector;
+
+typedef std::map&lt;std::string,std::vector&lt;std::string&gt;&gt; Knjiga;
+typedef std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int,int&gt;&gt;&gt; Mapa;
+typedef std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int,int&gt;&gt;&gt;::iterator MapaIt;
+
+bool SlovoBroj(char c) {
+
+    return ((c&gt;=48 &amp;&amp; c&lt;=57) || (c&gt;='A' &amp;&amp; c&lt;='Z') || (c&gt;='a' &amp;&amp; c&lt;='z'));
+}
+Mapa KreirajIndeksPojmovaa(Knjiga k) {
+    Mapa m;
+    Knjiga::iterator It {k.begin()};
+
+    while(It!=k.end()) {
+        string poglavlje = It-&gt;first;
+        for(int i=0; i&lt;It-&gt;second.size(); i++) {
+            std::string::iterator sIt {It-&gt;second.at(i).begin()};
+            while(sIt!=It-&gt;second.at(i).end()) {
+                if(SlovoBroj(*sIt)) {
+                    std::string::iterator temp {sIt};
+                    string rijec {};
+                    while(SlovoBroj(*sIt) &amp;&amp; sIt!=It-&gt;second.at(i).end()) {
+                        rijec+=*sIt;
+                        sIt++;
+                    }
+                    string::iterator s{rijec.begin()};
+                    while(s!=rijec.end()){*s=char(std::tolower(*s)); s++;}
+                    m[rijec].insert({std::make_tuple(poglavlje,i+1,temp-It-&gt;second.at(i).begin())});
+                    sIt--;
+                }
+                sIt++;
+            }
+        }
+        It++;
+    }
+    return m;
+}
+std::set&lt;std::tuple&lt;std::string, int,int&gt;&gt; PretraziIndeksPojmova(string s, Mapa m){
+auto it(m.find(s));
+if(it == m.end()) throw std::logic_error("Pojam nije nadjen");
+return it-&gt;second;
+}
+
+void IspisiIndeksPojmova(Mapa m) {
+    for(auto it=m.begin(); it!=m.end(); it++) {
+        cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+                int i=it-&gt;second.size();
+             for(auto it2=it-&gt;second.begin(); it2!=it-&gt;second.end(); it2++){
+                 cout &lt;&lt; std::get&lt;0&gt;(*it2) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*it2) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(*it2);
+                 if(i--&gt;1) cout &lt;&lt; ", ";
+                 }cout &lt;&lt; endl;
+    }
+}
+void IspisiSkup(std::set&lt;std::tuple&lt;std::string, int,int&gt;&gt; s){
+     for(auto it=s.begin(); it!=s.end(); it++)
+    cout &lt;&lt; std::get&lt;0&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(*it) &lt;&lt; " ";
+}
+
+int main (){
+    Knjiga k;
+
+    for(;;) {
+        string poglavlje;
+        cout &lt;&lt; "Unesite naziv poglavlja: ";
+        if(cin.peek()=='.') break;
+        cin &gt;&gt; poglavlje;
+        vector&lt;string&gt; temp;
+        int i=1;
+        cin.ignore(10000,'\n');
+        for(;;) {
+            string s;
+            cout &lt;&lt; "Unesite sadrzaj stranice " &lt;&lt; i &lt;&lt; ": ";
+            if(cin.peek()=='.') {cin.get();break;}
+            getline(cin,s);
+            temp.push_back(s);
+            i++;
+        }
+        k.insert({poglavlje,temp});
+        cin.ignore(10000,'\n');
+        
+    }
+    Mapa m{KreirajIndeksPojmovaa(k)};
+    cout &lt;&lt; "\nKreirani indeks pojmova: " &lt;&lt; endl;
+    IspisiIndeksPojmova(m);
+    cin.ignore(1000,'\n');
+    for(;;){
+        string s;
+        cout &lt;&lt; "Unesite rijec: ";
+        if(cin.peek()=='.') break;
+        getline(cin,s);
+        try{
+            IspisiSkup(PretraziIndeksPojmova(s,m));}
+            catch(std::exception &amp;ex){
+                cout &lt;&lt; "Unesena rijec nije nadjena!";
+            }
+            cout &lt;&lt; endl;
+</font>    }
+    return 0;
+}
+</pre>
+</body>
+</html>

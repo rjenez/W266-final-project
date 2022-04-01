@@ -1,0 +1,184 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z1/student7823.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z1/student2967.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+#define EPSILON 0.00000001
+struct Student{
+	char ime[20],prezime[20];
+	int ocjene[50];
+	int br_ocjena;
+};
+/*Izbacivanje studenta iz niza*/
+void izbaci(struct Student *s,int i,int vel){
+	int j;
+	for(j=i;j&lt;vel-1;j++){
+		s[j]=s[j+1];
+	}
+}
+int provjera_imena(struct Student *s,int zapamti,int i){
+	char *p,*q;
+	int manji=0;
+	p=s[zapamti].prezime;
+	q=s[i].prezime;
+	/*Provjeravamo prezime*/
+	while(*p!='\0' &amp;&amp; 'q'!='\0'){
+		if(*p==*q){
+			p++;
+			q++;
+		}
+		if(*p&gt;*q){
+			manji=1;
+			break;
+		}
+		if(*p&lt;*q)
+			return zapamti;
+	}
+	
+	if(manji==1)
+		return i;
+	/*Provjeravamo ime*/ 
+	p=s[zapamti].ime;
+	q=s[i].ime;
+	while(*p!='\0' &amp;&amp; 'q'!='\0'){
+		if(*p&gt;*q)
+			manji=1;
+		p++;
+		q++;
+	}
+	if(manji==1)
+		return i;
+	return zapamti;
+}
+int genijalci(struct Student *s,int vel,float prosjek){
+	int i,j,PR=0,zapamti1=0,zapamti2=0,zapamti3=0;
+	float niz[50]={0};
+	float prosjek_studenta=0,suma=0,max=0;
+	/*Racunamo prosjek studenta i izbacujemo one studente ciji je prosjek manji od unesenog*/
+	for(i=0; i&lt;vel; i++){
+		for(j=0; j&lt;s[i].br_ocjena; j++){
+			suma+=s[i].ocjene[j];
+			if(s[i].ocjene[j]==5)
+				PR=1;
+		}
+		if(s[i].br_ocjena==0)
+			PR=1;
+		if(PR==1){
+			prosjek_studenta=5.;
+			PR=0;
+		}
+		else prosjek_studenta=suma/s[i].br_ocjena;
+		if(prosjek_studenta&lt;prosjek){
+			izbaci(s,i,vel);
+			vel--;
+			i--;
+		}
+		suma=0;
+	}
+	/*Ubacujemo prosjeke studenata u niz*/
+	for(i=0; i&lt;vel; i++){
+		for(j=0; j&lt;s[i].br_ocjena; j++){
+			suma+=s[i].ocjene[j];
+			if(s[i].ocjene[j]==5)
+				PR=1;
+		}
+		if(s[i].br_ocjena==0)
+			PR=1;
+		if(PR==1){
+			prosjek_studenta=5.;
+			PR=0;
+		}
+		else prosjek_studenta=suma/s[i].br_ocjena;
+		if(prosjek_studenta&gt;=prosjek)
+			niz[i]=prosjek_studenta;
+		suma=0;
+	}
+	max=0;
+	i=0;
+	/*Trazimo najveci prosjek*/
+	while(i&lt;=vel){
+		if(niz[i]&gt;max){
+			max=niz[i];
+			zapamti1=i;
+		}
+		i++;
+	}
+	i=0;
+	/*Provjeravmo da li ima jos neki student sa istim prosjekom*/
+	while(i&lt;=vel){
+		if(fabs(niz[i]-niz[zapamti1])&lt;EPSILON){
+			/*Ako ima, provjeravamo cije je prezime i ime ipred po leksikografskom redoslijedu*/
+			zapamti1=provjera_imena(s,zapamti1,i);
+		}
+		i++;
+	}
+	niz[zapamti1]=0;
+	max=0;
+	i=0;
+	while(i&lt;=vel){
+		if(niz[i]&gt;max){
+			max=niz[i];
+			zapamti2=i;
+		}
+		i++;
+	}
+	i=0;
+	while(i&lt;=vel){
+		if(fabs(niz[i]-niz[zapamti2])&lt;EPSILON){
+			zapamti2=provjera_imena(s,zapamti2,i);
+		}
+		i++;
+	}
+	max=0;
+	i=0;
+	niz[zapamti2]=0;
+	while(i&lt;=vel){
+		if(niz[i]&gt;max){
+			max=niz[i];
+			zapamti3=i;
+		}
+		i++;
+	}
+	i=0;
+	while(i&lt;=vel){
+		if(fabs(niz[i]-niz[zapamti3])&lt;EPSILON){
+			zapamti3=provjera_imena(s,zapamti3,i);
+		}
+		i++;
+	}
+	niz[zapamti3]=0;
+<a name="0"></a><font color="#FF0000"><a href="match482-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_13.gif"/></a>
+
+	if(vel&gt;=3){
+		printf("\n%s %s",s[zapamti1].prezime,s[zapamti1].ime);
+		printf("\n%s %s",s[zapamti2].prezime,s[zapamti2].ime);
+		printf("\n%s %s",s[zapamti3].prezime,s[zapamti3].ime);
+	}
+	if(vel==2){
+		printf("\n%s %s",s[zapamti1].prezime,s[zapamti1].ime);
+		printf("\n%s %s",s[zapamti2].prezime,s[zapamti2].ime);
+	}
+	if(vel==1)
+		printf("\n%s %s",s[zapamti1].prezime,s[zapamti1].ime);
+</font>	
+	return vel;
+}
+int main() {
+	int i;
+	float vel;
+	struct Student studenti[1000];
+	scanf("%s %s",studenti[0].ime,studenti[0].prezime);
+	for(i=0; i&lt;29; i++)
+		scanf("%d",&amp;studenti[0].ocjene[i]);
+	studenti[0].br_ocjena=30;
+	vel=genijalci(studenti,1,10);
+	printf("%.2f",vel);
+	return 0;
+}
+</pre>
+</body>
+</html>

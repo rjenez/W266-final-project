@@ -1,0 +1,100 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4766.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4766.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match162-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_96.gif"/></a>
+
+std::string ObrniFraze(std::string s, std::vector&lt;std::string&gt; fraze){
+    char x;
+    int l;
+    if(fraze.size() == 0)
+    	return s;
+	for(unsigned int i = 0; i &lt; fraze.size(); i++){
+	    if(fraze[i].length() &gt; s.length() || fraze[i].length() == 0)
+	        continue;
+	    for(unsigned int j = 0; j &lt;= s.length() - fraze[i].length(); j++){
+	        if(s.substr(j, fraze[i].length()) == fraze[i]){
+		            l = 1;
+		            for(unsigned int k = j; k &lt; j + (fraze[i].length()/2); k++){
+		                x = s[k];
+		                s[k] = s[j + fraze[i].length() - l];
+		                s[j + fraze[i].length() - l] = x;
+		                l++;
+		            }
+	        }
+	    }
+	}
+	return s;
+}
+bool jeSlovo(char x){
+	return ((x &gt;= 'A' &amp;&amp; x &lt;= 'Z') ||(x &gt;= 'a' &amp;&amp; x &lt;= 'z'));
+}
+std::string IzmijeniUPigLatin(std::string s, std::vector&lt;std::string&gt; fraze){
+    std::string tmp;
+    bool sve = false;
+    if(fraze.size() == 0){
+    	sve = true;
+    }
+    for(unsigned int i = 0; i &lt; fraze.size(); i++){
+    	for(unsigned int j = 0; j &lt; fraze[i].length(); j++){
+    		if(!jeSlovo(fraze[i][j]))
+    			throw std::domain_error("Nekorektan izbor rijeci");
+    	}
+    }
+	for(unsigned int i = 0; i &lt; fraze.size() || sve; i++){
+		unsigned int j(0), p , q;
+		while(j &lt; s.length()){
+			while(j != 0 &amp;&amp; !jeSlovo(s[j]) &amp;&amp; j &lt; s.length()) j++;
+			p = j;
+			while(jeSlovo(s[j]) &amp;&amp; j &lt; s.length()) j++;
+			q = j-1;
+			if(sve || s.substr(p, q-p+1) == fraze[i]){
+				tmp = s.substr(p, q-p+1);
+				if(tmp.length()&gt;0){
+					tmp.push_back(tmp[0]);
+					tmp += "ay";
+					tmp.erase(tmp.begin());
+					s = s.substr(0, p) + tmp + s.substr(j, s.length() - j);
+					j = q + 2;
+				}
+			}
+			j++;
+		}
+		if(sve) break;
+	}
+	return s;
+}
+int main () {
+    std::cout &lt;&lt;"Unesite recenicu: ";
+    std::string s;
+    std::getline(std::cin, s);
+    std::string s2(s);
+    std::vector &lt;std::string&gt; fraze;
+    std::string tmp;
+    std::cout &lt;&lt; "Unesite fraze: ";
+    for(;;){
+    	std::getline(std::cin, tmp);
+    	if(tmp.length() &lt; 1)
+    		break;
+    	fraze.push_back(tmp);
+    }
+    try{
+    	tmp = IzmijeniUPigLatin(s, fraze);
+    	std::cout &lt;&lt;"Recenica nakon PigLatin transformacije: ";
+    	std::cout &lt;&lt; tmp &lt;&lt; std::endl;
+    }catch(std::domain_error except){
+    	std::cout &lt;&lt; "Izuzetak: " &lt;&lt; except.what()&lt;&lt; std::endl;
+</font>    }
+    std::cout &lt;&lt;"Recenica nakon obrtanja fraza: " &lt;&lt; ObrniFraze(s2,fraze);
+	return 0;
+}</pre>
+</body>
+</html>

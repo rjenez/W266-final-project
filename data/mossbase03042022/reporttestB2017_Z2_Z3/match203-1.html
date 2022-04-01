@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student5496.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student4082.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 3
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;type_traits&gt;
+#include &lt;stdexcept&gt;
+#include &lt;new&gt;
+//Nije uradjen citav zadatak, pokusaj...
+<a name="0"></a><font color="#FF0000"><a href="match203-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+template &lt;typename NekiTip&gt;
+bool TestPerioda(std::vector&lt;NekiTip&gt; v, int p){
+	if(p&gt;=v.size() || p&lt;1) return 0;
+	bool periodican(true);
+	for(int i=0; i&lt;v.size()-p; i++){
+		if(v.at(i)!=v.at(i+p)){
+			periodican=false;
+			break;
+		}
+	}
+	return periodican;
+}
+template &lt;typename NekiTip&gt;
+int OsnovniPeriod(std::vector&lt;NekiTip&gt; v){
+	for(int i=0; i&lt;v.size(); i++)
+	if(TestPerioda(v,i)) return i;
+	return 0;
+}
+template &lt;typename NekiTip&gt;
+int OdrediKolikoPuta(const std::vector&lt;NekiTip&gt; &amp;v){
+	int period=OsnovniPeriod(v);
+	int KolikoPuta;
+	if(period!=0){
+		int test;
+		test=v.size()%period;
+		if(test!=0){
+			int i=0;
+			while(test!=0){
+				i++;
+				test=(v.size()+i)%period;
+			}
+			KolikoPuta=period+1;
+		}
+	}else{
+		KolikoPuta=2;
+	}
+	return KolikoPuta;
+}
+template &lt;typename NekiTip&gt;
+auto AlocirajFragmentirano(const std::vector&lt;NekiTip&gt; &amp;v, int &amp;koliko_puta)
+-&gt;NekiTip**{
+	if(v.size()&lt;=0) throw std::domain_error("Prazan vektor!");
+	for(int i=0; i&lt;v.size(); i++)
+	if(v[i]&lt;0) throw std::domain_error("Neispravan vektor!");
+	koliko_puta=OdrediKolikoPuta(v);
+	int br_elemenata=0;
+	if(OsnovniPeriod(v)!=0) br_elemenata=koliko_puta*OsnovniPeriod(v);
+	else br_elemenata=v.size()*koliko_puta;
+	int period=OsnovniPeriod(v);
+	if(period==0) period=v.size();
+	NekiTip **a=nullptr;
+	a= new NekiTip*[koliko_puta];
+	for(int i=0; i&lt;br_elemenata; i++) a[i]=nullptr;
+	try{
+		for(int i=0; i&lt;period; i++){
+			a[i]=new NekiTip[i+1];
+		}/*
+		for(int i=0; i&lt;koliko_puta; i++){
+			for(int j=0; j&lt;period; j++){
+				a[i][j]=1;
+			}
+		}*/
+	} catch(std::bad_alloc){
+		throw;
+		for(int i=0; i&lt;koliko_puta; i++) delete[] a[i];
+		delete[] a;
+		a=nullptr;
+	}
+	return a;
+}
+template &lt;typename NekiTip&gt;
+auto AlocirajKontinualno(const std::vector&lt;NekiTip&gt; &amp;v, int &amp;koliko_puta) 
+-&gt;NekiTip**{
+	if(v.size()==0) throw std::domain_error("Prazan vektor!");
+	for(int i=0; i&lt;v.size(); i++)
+	if(v[i]&lt;0) throw std::domain_error("Neispravan vektor!"); 
+	koliko_puta=OdrediKolikoPuta(v);
+	
+	
+}
+template &lt;typename NekiTip&gt;
+void Ispisi(NekiTip **a, int koliko_puta){
+	for(int i=0; i&lt;koliko_puta; i++){
+		for(int j=0; j&lt;i+1; j++) std::cout&lt;&lt;a[i][j]&lt;&lt;" ";
+		std::cout&lt;&lt;std::endl;
+	}
+}
+int main ()
+{
+	try{
+		int n;
+		std::cout&lt;&lt;"Unesite broj elemenata vektora: ";
+		std::cin&gt;&gt;n;
+		std::vector&lt;int&gt; v(n);
+		std::cout&lt;&lt;"Unesite elemente vektora: ";
+		for(int i=0; i&lt;v.size(); i++)
+		std::cin&gt;&gt;v[i];
+	    int alokacija;
+	    std::cout&lt;&lt;"Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+	    std::cin&gt;&gt;alokacija;
+	    if(alokacija){
+			int koliko_puta;
+			auto a=AlocirajFragmentirano&lt;int&gt;(v,koliko_puta);
+			std::cout&lt;&lt;"Dinamicki alocirana matrica:\n";
+			Ispisi(a,koliko_puta);
+			for(int i=0; i&lt;koliko_puta; i++) delete [] a[i];
+			delete [] a;
+		} else{
+			int koliko_puta;
+		    auto a=AlocirajKontinualno&lt;int&gt;(v,koliko_puta);	
+		    std::cout&lt;&lt;"Dinamicki alocirana matrica:\n";
+		    Ispisi(a,koliko_puta);
+		}
+	}catch(std::domain_error izuzetak){
+			std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+		}
+	return 0;
+</font>}</pre>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student2675.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student5744.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match149-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;list&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+struct Dijete
+{
+    std::string ime;
+    Dijete* sljedeci;
+};
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; vek,int k)
+{
+    int n=vek.size();
+    if(k&lt;=0 || k&gt;vek.size()) throw std::logic_error("Razvrstavanje nemoguce");
+    int clan=0;
+    Dijete *tr=nullptr,*poc=nullptr;
+    std::vector&lt;std::set&lt;std::string&gt;&gt; timovi(k);
+    for(int i=0;i&lt;n;i++)
+    {
+        Dijete *novi=nullptr;
+        try
+        {
+            novi=new Dijete;
+            novi-&gt;ime=vek[i];
+            if(!poc) poc=novi;
+            else (tr-&gt;sljedeci)=novi;
+            novi-&gt;sljedeci=poc;
+            tr=novi;
+        }
+        catch(std::bad_alloc x)
+        {
+            delete novi;
+            for(int k=0;k&lt;i;k++)
+            {
+                tr-&gt;sljedeci=poc-&gt;sljedeci;
+                delete poc;
+                poc=tr-&gt;sljedeci;
+            }
+            throw x;
+        }
+    }
+    int vel=n,skup=0,uskupu=0;
+    while(poc)
+    {
+        if(clan&lt;=1)
+        {
+            tr-&gt;sljedeci=poc-&gt;sljedeci;
+            clan=std::count_if(poc-&gt;ime.begin(),poc-&gt;ime.end(),[](char x){return ((x&gt;='A'&amp;&amp;x&lt;='Z')||(x&gt;='a'&amp;&amp;x&lt;='z')||(x&gt;='0'&amp;&amp;x&lt;='9'));});
+            timovi[skup].insert(poc-&gt;ime);
+            uskupu++;
+            vel--;
+            if(skup&lt;n%k &amp;&amp; uskupu==n/k+1) skup++,uskupu=0;
+            if(skup&gt;=n%k &amp;&amp; uskupu==n/k) skup++,uskupu=0;
+            delete poc;
+            if(vel)poc=tr-&gt;sljedeci;
+            else break;
+        }
+        else
+        {
+            clan--;
+            tr=tr-&gt;sljedeci;
+            poc=poc-&gt;sljedeci;
+        }
+    }
+    return timovi;
+}
+
+int main ()
+{
+    std::cout &lt;&lt; "Unesite broj djece: ";
+    int n;
+    std::cin &gt;&gt; n;
+    std::cout &lt;&lt; "Unesite imena djece:\n";
+    if(n&gt;0)std::cin &gt;&gt; std::ws;
+    std::vector&lt;std::string&gt; vek (n);
+    for(std::string &amp;s:vek) std::getline(std::cin, s);
+    std::cout &lt;&lt; "Unesite broj timova: ";
+    std::cin &gt;&gt; n;
+    try
+    {
+        std::vector&lt;std::set&lt;std::string&gt;&gt; s=Razvrstavanje(vek,n);
+        for(int i=0;i&lt;n;i++)
+        { 
+            std::cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+            bool prvi=true;
+            for(auto b:s[i])
+            {
+                if(!prvi) std::cout &lt;&lt; ", ";
+                std::cout &lt;&lt; b; 
+                prvi=false;
+            }
+            std::cout &lt;&lt; "\n";
+        }
+    }
+    catch(std::logic_error x){std::cout&lt;&lt; "Izuzetak: " &lt;&lt; x.what();}
+    catch(std::bad_alloc){}
+</font>	return 0;
+}</pre>
+</body>
+</html>

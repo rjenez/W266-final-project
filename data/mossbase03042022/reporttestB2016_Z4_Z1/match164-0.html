@@ -1,0 +1,314 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z1/student4128.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z1/student4128.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;utility&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+<a name="5"></a><font color="#FF0000"><a href="match164-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+double eps=pow(10,-8);
+const double pi=4*atan(1);
+typedef std::pair&lt;double,double&gt; Tacka;
+
+bool uporedi(double x,double y){
+  if(abs(x-y)&lt;eps) return true;
+  return false;
+}
+
+class Trougao{
+  Tacka tacka1,tacka2,tacka3;
+  public:
+  Trougao(const Tacka &amp;t1,const Tacka &amp;t2,const Tacka &amp;t3){
+      if(Orijentacija(t1,t2,t3)==0) throw std::domain_error("Nekorektne pozicije tjemena");
+</font>          tacka1=t1; tacka2=t2; tacka3=t3;
+  }
+  void Postavi(const Tacka &amp;t1,const Tacka &amp;t2,const Tacka &amp;t3){
+<a name="8"></a><font color="#00FFFF"><a href="match164-1.html#8" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+      if(Orijentacija(t1,t2,t3)==0) throw std::domain_error("Nekorektne pozicije tjemena");
+          tacka1=t1; tacka2=t2; tacka3=t3;
+  }
+  void Postavi(int indeks,const Tacka &amp;t);
+  static int Orijentacija(const Tacka &amp;t1,const Tacka &amp;t2,const Tacka &amp;t3);
+</font>  Tacka DajTjeme(int indeks) const;
+  double DajStranicu(int indeks) const;
+  double DajUgao(int indeks) const;
+  Tacka DajCentar() const;
+  double DajObim() const;
+  double DajPovrsinu() const;
+  bool DaLiJePozitivnoOrijentiran() const;
+  bool DaLiJeUnutra(const Tacka &amp;t) const;
+  void Ispisi() const;
+  void Transliraj(double delta_x,double delta_y);
+  void Centriraj(const Tacka &amp;t);
+  void Rotiraj(const Tacka &amp;t,double ugao);
+  void Skaliraj(const Tacka &amp;t,double faktor);
+  void Rotiraj(double ugao);
+  void Skaliraj(double faktor);
+  friend bool DaLiSuIdenticni(const Trougao &amp;t1,const Trougao &amp;t2);
+<a name="2"></a><font color="#0000FF"><a href="match164-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_10.gif"/></a>
+
+  friend bool DaLiSuPodudarni(const Trougao &amp;t1,const Trougao &amp;t2);
+  friend bool DaLiSuSlicni(const Trougao &amp;t1,const Trougao &amp;t2);
+};
+
+int Trougao::Orijentacija(const Tacka &amp;t1,const Tacka &amp;t2,const Tacka &amp;t3){
+    if(t1.first*(t2.second-t3.second)-t2.first*(t1.second-t3.second)+t3.first*(t1.second-t2.second)&gt;eps) return 1;
+    else if(t1.first*(t2.second-t3.second)-t2.first*(t1.second-t3.second)+t3.first*(t1.second-t2.second)&lt;0) return -1;
+    return 0;
+}
+
+void Trougao::Postavi(int indeks,const Tacka &amp;t1){
+  if(indeks!=1 &amp;&amp; indeks!=2 &amp;&amp; indeks !=3) throw std::range_error("Nekorektan indeks");
+  if (indeks==1){
+    try{
+      Postavi(t1,tacka2,tacka3);
+    }
+    catch(...){
+      throw;
+    }
+  }
+  if (indeks==2){
+    try{
+      Postavi(tacka1,t1,tacka3);
+    }
+    catch(...){
+      throw;
+    }
+  }
+  if (indeks==3){
+    try{
+      Postavi(tacka1,tacka2,t1);
+    }
+    catch(...){
+      throw;
+    }
+  }
+}
+
+Tacka Trougao::DajTjeme(int indeks) const {
+  if(indeks!=1 &amp;&amp; indeks!=2 &amp;&amp; indeks !=3) throw std::range_error("Nekorektan indeks");
+  if(indeks==1) return Trougao::tacka1;
+  if(indeks==2) return Trougao::tacka2;
+  return Trougao::tacka3;
+}
+
+double Trougao::DajStranicu(int indeks) const {
+   if(indeks!=1 &amp;&amp; indeks!=2 &amp;&amp; indeks !=3) throw std::range_error("Nekorektan indeks");
+   if(indeks==1) return sqrt((tacka3.first-tacka2.first)*(tacka3.first-tacka2.first)+(tacka3.second-tacka2.second)*(tacka3.second-tacka2.second));
+</font><a name="1"></a><font color="#00FF00"><a href="match164-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_14.gif"/></a>
+
+   else if(indeks==2) return sqrt((tacka3.first-tacka1.first)*(tacka3.first-tacka1.first)+(tacka3.second-tacka1.second)*(tacka3.second-tacka1.second));
+   else return sqrt((tacka2.first-tacka1.first)*(tacka2.first-tacka1.first)+(tacka2.second-tacka1.second)*(tacka2.second-tacka1.second));
+}
+
+double Trougao::DajUgao(int indeks) const {
+   if(indeks!=1 &amp;&amp; indeks!=2 &amp;&amp; indeks !=3) throw std::range_error("Nekorektan indeks");
+   if(indeks==1) return acos((tacka2.first*tacka3.first+tacka2.second*tacka3.second)/this-&gt;DajStranicu(2)*this-&gt;DajStranicu(3));
+   else if(indeks==2) return acos((tacka1.first*tacka3.first+tacka1.second*tacka3.second)/this-&gt;DajStranicu(1)*this-&gt;DajStranicu(3));
+   else return acos((tacka1.first*tacka2.first+tacka1.second*tacka2.second)/this-&gt;DajStranicu(1)*this-&gt;DajStranicu(2));
+}
+
+Tacka Trougao::DajCentar() const {
+  double t1,t2;
+  t1=(tacka1.first+tacka2.first+tacka3.first)/3;
+  t2=(tacka1.second+tacka2.second+tacka3.second)/3;
+  Tacka t=std::make_pair(t1,t2);
+  return t;
+}
+
+double Trougao::DajObim() const{
+  return (this-&gt;DajStranicu(1)+this-&gt;DajStranicu(2)+this-&gt;DajStranicu(3));
+}
+
+double Trougao::DajPovrsinu() const{
+  double p=abs(tacka1.first*(tacka2.second-tacka3.second)-tacka2.first*(tacka1.second-tacka3.second)+tacka3.first*(tacka1.second-tacka2.second));
+  return p/2;
+}
+
+bool Trougao::DaLiJePozitivnoOrijentiran() const {
+  if(Orijentacija(tacka1,tacka2,tacka3)==1) return true;
+  return false;
+}
+
+bool Trougao::DaLiJeUnutra(const Tacka &amp;t) const {
+  if(Orijentacija(this-&gt;tacka1,this-&gt;tacka2,this-&gt;tacka3)==Orijentacija(this-&gt;tacka1,this-&gt;tacka2,t)==Orijentacija(this-&gt;tacka2,this-&gt;tacka3,t)==Orijentacija(this-&gt;tacka3,this-&gt;tacka1,t)) return true;
+  return false;
+}
+
+void Trougao::Ispisi() const{
+  std::cout&lt;&lt;"(("&lt;&lt;tacka1.first&lt;&lt;","&lt;&lt;tacka1.second&lt;&lt;"),("&lt;&lt;tacka2.first&lt;&lt;","&lt;&lt;tacka2.second&lt;&lt;"),("&lt;&lt;tacka3.first&lt;&lt;","&lt;&lt;tacka3.second&lt;&lt;"))";
+</font>}
+
+void Trougao::Transliraj(double delta_x,double delta_y){
+  tacka1.first+=delta_x;
+  tacka2.first+=delta_x;
+  tacka3.first+=delta_x;
+<a name="3"></a><font color="#00FFFF"><a href="match164-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_4.gif"/></a>
+
+  tacka1.second+=delta_y;
+  tacka2.second+=delta_y;
+  tacka3.second+=delta_y;
+}
+
+void Trougao::Centriraj(const Tacka &amp;t){
+  Tacka nova=this-&gt;DajCentar();
+  double x,y;
+  if(t.first&lt;nova.first) x=t.first-nova.first;
+  if(t.first&gt;nova.first) x=nova.first-t.first;
+  if(t.second&lt;nova.second) y=t.second-nova.second;
+  if(t.second&gt;nova.second) y=nova.second-t.second;
+  this-&gt;Transliraj(x,y);
+}
+
+void Trougao::Rotiraj(const Tacka &amp;t,double ugao){
+  tacka1.first=t.first+(tacka1.first-t.first)*cos(ugao)-(tacka1.second-t.second)*sin(ugao);
+</font>  tacka2.first=t.first+(tacka2.first-t.first)*cos(ugao)-(tacka2.second-t.second)*sin(ugao);
+  tacka3.first=t.first+(tacka3.first-t.first)*cos(ugao)-(tacka3.second-t.second)*sin(ugao);
+  tacka1.second=t.second+(tacka1.first-t.first)*cos(ugao)-(tacka1.second-t.second)*sin(ugao);
+  tacka2.second=t.second+(tacka2.first-t.first)*cos(ugao)-(tacka2.second-t.second)*sin(ugao);
+<a name="6"></a><font color="#00FF00"><a href="match164-1.html#6" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+  tacka3.second=t.second+(tacka3.first-t.first)*cos(ugao)-(tacka3.second-t.second)*sin(ugao);
+}
+
+void Trougao::Skaliraj(const Tacka &amp;t,double faktor){
+  if(abs(faktor)&lt;eps) throw std::domain_error("Nekorektan faktor skaliranja");
+  double k=abs(faktor);
+  tacka1.first=t.first+k*(tacka1.first-t.first);
+  tacka2.first=t.first+k*(tacka2.first-t.first);
+</font>  tacka3.first=t.first+k*(tacka3.first-t.first);
+  tacka1.second=t.second+k*(tacka1.second-t.second);
+<a name="7"></a><font color="#0000FF"><a href="match164-1.html#7" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+  tacka2.second=t.second+k*(tacka2.second-t.second);
+  tacka3.second=t.second+k*(tacka3.second-t.second);
+  if(faktor&lt;0) this-&gt;Rotiraj(t,pi);
+}
+
+void Trougao::Rotiraj(double ugao){
+  Tacka t=this-&gt;DajCentar();
+  tacka1.first=t.first+(tacka1.first-t.first)*cos(ugao)-(tacka1.second-t.second)*sin(ugao);
+</font>  tacka2.first=t.first+(tacka2.first-t.first)*cos(ugao)-(tacka2.second-t.second)*sin(ugao);
+  tacka3.first=t.first+(tacka3.first-t.first)*cos(ugao)-(tacka3.second-t.second)*sin(ugao);
+  tacka1.second=t.second+(tacka1.first-t.first)*cos(ugao)-(tacka1.second-t.second)*sin(ugao);
+  tacka2.second=t.second+(tacka2.first-t.first)*cos(ugao)-(tacka2.second-t.second)*sin(ugao);
+<a name="4"></a><font color="#FF00FF"><a href="match164-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+  tacka3.second=t.second+(tacka3.first-t.first)*cos(ugao)-(tacka3.second-t.second)*sin(ugao);
+}
+
+void Trougao::Skaliraj(double faktor){
+  if(abs(faktor)&lt;eps) throw std::domain_error("Nekorektan faktor skaliranja");
+  Tacka t=this-&gt;DajCentar();
+  double k=abs(faktor);
+  tacka1.first=t.first+k*(tacka1.first-t.first);
+  tacka2.first=t.first+k*(tacka2.first-t.first);
+</font>  tacka3.first=t.first+k*(tacka3.first-t.first);
+  tacka1.second=t.second+k*(tacka1.second-t.second);
+<a name="0"></a><font color="#FF0000"><a href="match164-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_33.gif"/></a>
+
+  tacka2.second=t.second+k*(tacka2.second-t.second);
+  tacka3.second=t.second+k*(tacka3.second-t.second);
+  if(faktor&lt;0) this-&gt;Rotiraj(t,pi);
+}
+
+bool DaLiSuIdenticni(const Trougao &amp;t1,const Trougao &amp;t2){
+  if((t1.tacka1==t2.tacka1 || t1.tacka1==t2.tacka2 || t1.tacka1==t2.tacka3) &amp;&amp; (t1.tacka2==t2.tacka1 || t1.tacka2==t2.tacka2 || t1.tacka2==t2.tacka3) &amp;&amp; (t1.tacka3==t2.tacka1 || t1.tacka3==t2.tacka2 || t1.tacka3==t2.tacka3)) return true;
+  return false;
+}
+
+bool DaLiSuPodudarni(const Trougao &amp;t1,const Trougao &amp;t2){
+  if((uporedi(t1.DajStranicu(1),t2.DajStranicu(1)) || uporedi(t1.DajStranicu(1),t2.DajStranicu(2)) || uporedi(t1.DajStranicu(1),t2.DajStranicu(3))) &amp;&amp; (uporedi(t1.DajStranicu(2),t2.DajStranicu(1)) || uporedi(t1.DajStranicu(2),t2.DajStranicu(2)) || uporedi(t1.DajStranicu(2),t2.DajStranicu(3))) &amp;&amp; (uporedi(t1.DajStranicu(3),t2.DajStranicu(1)) || uporedi(t1.DajStranicu(3),t2.DajStranicu(2)) || uporedi(t1.DajStranicu(3),t2.DajStranicu(3))) &amp;&amp;
+  (uporedi(t1.DajUgao(1),t2.DajUgao(1)) || uporedi(t1.DajUgao(1),t2.DajUgao(2)) || uporedi(t1.DajUgao(1),t2.DajUgao(3))) &amp;&amp; (uporedi(t1.DajUgao(2),t2.DajUgao(1)) || uporedi(t1.DajUgao(2),t2.DajUgao(2)) || uporedi(t1.DajUgao(2),t2.DajUgao(3))) &amp;&amp; (uporedi(t1.DajUgao(3),t2.DajUgao(1)) || uporedi(t1.DajUgao(3),t2.DajUgao(2)) || uporedi(t1.DajUgao(3),t2.DajUgao(3)))) return true;
+  return false;
+}
+
+bool DaLiSuSlicni(const Trougao &amp;t1,const Trougao &amp;t2){
+  if((uporedi(t1.DajUgao(1),t2.DajUgao(1)) || uporedi(t1.DajUgao(1),t2.DajUgao(2)) || uporedi(t1.DajUgao(1),t2.DajUgao(3))) &amp;&amp; (uporedi(t1.DajUgao(2),t2.DajUgao(1)) || uporedi(t1.DajUgao(2),t2.DajUgao(2)) || uporedi(t1.DajUgao(2),t2.DajUgao(3))) &amp;&amp; (uporedi(t1.DajUgao(3),t2.DajUgao(1)) || uporedi(t1.DajUgao(3),t2.DajUgao(2)) || uporedi(t1.DajUgao(3),t2.DajUgao(3)))) return true;
+  return false;
+}
+
+
+
+int main ()
+{
+	try{
+	  int n;
+	Tacka t[3];
+	std::cin&gt;&gt;n;
+	std::vector&lt;std::shared_ptr&lt;Trougao&gt;&gt; trokuti(n,nullptr);
+	for(int i=0;i&lt;n;i++){
+	  for(int j=0;j&lt;3;j++){
+	    double prva,druga;
+	    std::cin&gt;&gt;prva&gt;&gt;druga;
+	    t[j]=std::make_pair(prva,druga);
+	  }
+	  try{
+	    trokuti[i]=std::make_shared&lt;Trougao&gt;(t[0],t[1],t[2]);
+	  }
+	  catch(std::domain_error e){
+	    std::cout&lt;&lt;e.what();
+	    i--;
+	  }
+	}
+	std::transform(trokuti.begin(),trokuti.end(),trokuti.begin(),[](std::shared_ptr&lt;Trougao&gt; trokut) {
+	  double dx,dy;
+	  std::cin&gt;&gt;dx&gt;&gt;dy;
+	  trokut-&gt;Transliraj(dx,dy);
+	  double ugao;
+	  std::cin&gt;&gt;ugao;
+	  trokut-&gt;Rotiraj(ugao);
+	  double faktor;
+	  std::cin&gt;&gt;faktor;
+	  trokut-&gt;Skaliraj(trokut-&gt;DajTjeme(1),faktor);
+	  return trokut;
+	  
+	});
+	std::sort(trokuti.begin(),trokuti.end(),[](std::shared_ptr&lt;Trougao&gt; trokut1,std::shared_ptr&lt;Trougao&gt; trokut2) {
+	  return trokut1-&gt;DajPovrsinu()&lt;trokut2-&gt;DajPovrsinu();
+	});
+	
+	std::for_each(trokuti.begin(),trokuti.end(),[](std::shared_ptr&lt;Trougao&gt; trokut){
+	  trokut-&gt;Ispisi();
+	  std::cout&lt;&lt;std::endl;
+	});
+	
+	
+	auto pok=*std::min_element(trokuti.begin(),trokuti.end(),[] (std::shared_ptr&lt;Trougao&gt; trokut1,std::shared_ptr&lt;Trougao&gt; trokut2) {
+	  return trokut1-&gt;DajObim()&lt;trokut2-&gt;DajObim();
+	});
+	pok-&gt;Ispisi();
+	std::vector&lt;std::pair&lt;Trougao,Trougao&gt;&gt; slicni;
+	std::vector&lt;std::pair&lt;Trougao,Trougao&gt;&gt; identicni;
+	std::vector&lt;std::pair&lt;Trougao,Trougao&gt;&gt; podudarni;
+	for(int i=0;i&lt;n;i++){
+	  for(int j=i+1;j&lt;n;j++){
+	    if(DaLiSuIdenticni(*trokuti[i],*trokuti[j])) identicni.push_back(std::make_pair(*trokuti[i],*trokuti[j]));
+	    if(DaLiSuSlicni(*trokuti[i],*trokuti[j])) slicni.push_back(std::make_pair(*trokuti[i],*trokuti[j]));
+	    if(DaLiSuPodudarni(*trokuti[i],*trokuti[j])) podudarni.push_back(std::make_pair(*trokuti[i],*trokuti[j]));
+	  }
+	}
+	}
+	catch(...){
+</font>	  
+	}
+	
+	
+	
+	
+	
+	
+	
+	return 0;
+}</pre>
+</body>
+</html>

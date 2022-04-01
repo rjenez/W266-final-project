@@ -1,0 +1,120 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student7193.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student7193.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;set&gt;
+#include&lt;string&gt;
+#include&lt;stdexcept&gt;
+#include&lt;list&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match147-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_93.gif"/></a>
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; djeca, int brojSkupova)
+{
+    std::vector&lt;std::set&lt;std::string&gt;&gt; rezultat;
+    std::list&lt;std::string&gt; listaDjece;
+    if(brojSkupova&lt;1 || brojSkupova&gt;djeca.size()) throw std::logic_error("Razvrstavanje nemoguce");
+    int cijeliDio=djeca.size()/brojSkupova;
+    int ostatak=djeca.size()%brojSkupova;
+    int brojDjece=djeca.size();
+    for(int i=0; i&lt;djeca.size(); i++)
+    {
+        listaDjece.push_back(djeca[i]);
+
+    }
+    //nakon što su sva djeca dodana u listu, počinje razvrstavanje
+    //prvi koji ide u tim 1 je prvi iz liste
+    auto trenutni=listaDjece.begin();
+    int brojacDjeceUSkupu=0;
+    std::set&lt;std::string&gt; skup;
+    for(int i=0;i&lt;brojDjece;i++)
+    {
+        int brojac=-1;
+        for(int j=0;j&lt;(*trenutni).length();j++)
+        if((*trenutni)[j]!=' ' &amp;&amp; (*trenutni)[j]!='-' &amp;&amp; (*trenutni)[j]!='_') brojac++;
+        //dodajemo trenutni u skup;
+        skup.insert(*trenutni);
+        brojacDjeceUSkupu++;
+        int potrebanBrojDjece=cijeliDio;
+        if(ostatak&gt;0) potrebanBrojDjece+=1;
+        //ako je skup popunjen
+        if(brojacDjeceUSkupu==potrebanBrojDjece)
+        {
+            rezultat.push_back(skup);
+            ostatak--;
+            skup.clear();
+            brojacDjeceUSkupu=0;
+        }
+        
+        trenutni=listaDjece.erase(trenutni);
+        if(i==(brojDjece-1)) break;
+        if(trenutni==listaDjece.end()) trenutni=listaDjece.begin();
+        //pošto je trenutni iterator onda ga trebamo dereferencirati
+       
+        //sad idi kroz listu dok brojac ne bude 0;
+        while(brojac!=0)
+        {
+            trenutni++;
+            if(trenutni==listaDjece.end()) trenutni=listaDjece.begin();
+            brojac--;
+        }
+        //sad smo došli do novog trenutnog
+    }
+    return rezultat;
+}
+int main ()
+{
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    int brojDjece;
+    std::cin&gt;&gt;brojDjece;
+    std::cin.clear();
+    std::cin.ignore(256,'\n');
+    std::vector&lt;std::string&gt; vektorDjece;
+    std::cout&lt;&lt;"Unesite imena djece: ";
+    for(int i=0;i&lt;brojDjece;i++)
+    {
+        std::string ime;
+        getline(std::cin,ime);
+        vektorDjece.push_back(ime);
+        
+    }
+    int brojTimova;
+    std::cout&lt;&lt;std::endl&lt;&lt;"Unesite broj timova: ";
+    std::cin&gt;&gt;brojTimova;
+    std::vector&lt;std::set&lt;std::string&gt;&gt; x;
+    try {
+        x=Razvrstavanje(vektorDjece,brojTimova);
+    }
+    catch (std::logic_error err) {
+        std::cout &lt;&lt;"Izuzetak: "&lt;&lt; err.what() &lt;&lt; std::endl;
+    }
+    
+    for(int i=0;i&lt;x.size();i++)
+    {
+        //sad imamo skupove
+         auto it=begin(x[i]);
+         int brojac=0;
+        while(it!=end(x[i]))
+        {
+            brojac++;
+            it++;
+        }
+        it=begin(x[i]);
+        std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+         for(int i=0; i&lt;brojac; i++)
+        {
+            if(i&lt;(brojac-1)) std::cout&lt;&lt;*it++&lt;&lt;", ";
+            else std::cout&lt;&lt;*it;
+        }
+        std::cout&lt;&lt;std::endl;
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

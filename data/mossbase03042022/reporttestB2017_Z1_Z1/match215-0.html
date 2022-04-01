@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z1/student9207.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z1/student9207.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;limits&gt;
+#include &lt;cmath&gt;
+<a name="0"></a><font color="#FF0000"><a href="match215-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cout;
+using std::vector;
+using std::cin;
+bool DaLiJeSimetrican(int n)
+{
+	//vraca bool u zavisnosti da li je sim ili ne sim broj
+	vector&lt;int&gt;cifre;
+	int cifra;
+	while (n!=0) {
+		cifra=abs(n%10);
+		cifre.push_back(cifra);
+		n/=10;
+	}
+	for(int i=0; i&lt;cifre.size()/2; i++) {
+		if(cifre.at(i)!=cifre.at(cifre.size()-1-i)){
+		return false;
+		}
+	}
+	return true;
+}
+int dec2tern(int n)
+{
+	//"Skolska" konverzija dijeljenjem iz dec u tern sistem
+	vector&lt;int&gt; rez;
+	int final(0),broj(1),ostatak;
+	while(n!=0) {
+		ostatak=n%3;
+		rez.push_back(ostatak);
+		n/=3;
+	}
+	//slijedeci blok broj naopako stvori
+	for(int i=0; i&lt;rez.size(); i++) {
+		final+=rez.at(i)*broj;
+		broj*=10;
+	}
+	return final;
+}
+vector&lt;int&gt; UnesiVektor()
+{
+	//Jednostavni unos vektora
+	vector&lt;int&gt; vektor;
+	int a;
+	while(true) {
+		cin&gt;&gt;a;
+		if (a==-1) {
+			break;
+		}
+		vektor.push_back(a);
+	}
+	return vektor;
+}
+bool DaLiJeProst(int n)
+{
+	//Provjera da li je prost sa zanemarenjem predznaka, long int zbog
+	//potencijalnog prekoracenja kada bi se minimum int-u promijenio predznak
+	if(n==1||n==0||n==-1) {
+		return false;
+	}
+	long int temp(n);
+	if(temp&lt;0) {
+		temp*=(-1);
+	}
+	for(int i=2; i&lt;=sqrt(temp); i++) {
+		if((temp%i)==0) {
+			return false;
+		}
+	}
+
+
+	return true;
+}
+vector&lt;int&gt; IzdvojiSimetricneTernarne(vector&lt;int&gt; vektor,bool logika)
+{
+	//Funkcija ide element po element i gleda da li je blok 1 uslova ili blok 2 uslova zadovoljen
+	//I puni vektor rez sa elementima
+	vector&lt;int&gt; rez;
+	for(int i=0; i&lt;vektor.size(); i++) {
+		if(logika&amp;&amp;DaLiJeProst(vektor.at(i))&amp;&amp;DaLiJeSimetrican(dec2tern(vektor.at(i)))) {
+			rez.push_back(vektor.at(i));
+		} else if(!logika&amp;&amp;!DaLiJeProst(vektor.at(i))&amp;&amp;DaLiJeSimetrican(dec2tern(vektor.at(i)))) {
+			rez.push_back(vektor.at(i));
+		}
+	}
+	for(int i=0;i&lt;(int)rez.size()-1;i++){
+		for(int j=i+1;j&lt;rez.size();j++){
+			if(rez.at(i)==rez.at(j)){
+				rez.erase(rez.begin()+j);
+				j--;
+			}
+		}
+	}
+	return rez;
+}
+void IspisiVektor(vector&lt;int&gt;vektor, bool logika)
+{
+	if(vektor.size()==0&amp;&amp;logika) {
+		cout&lt;&lt;"Nema prostih simetricnih brojeva u vektoru.";
+	} else if (vektor.size()==0) {
+		cout&lt;&lt;"Nema slozenih simetricnih brojeva u vektoru.";
+	} else {
+		if(logika){
+			cout&lt;&lt;"Prosti simetricni brojevi iz vektora su: ";
+		} else {
+			cout&lt;&lt;"Slozeni simetricni brojevi iz vektora su: ";
+			}
+			int i;
+		for(i=0;i&lt;vektor.size()-1;i++) {
+			cout&lt;&lt;vektor.at(i)&lt;&lt;", ";
+		}
+		cout&lt;&lt;vektor.at(i)&lt;&lt;".";
+	}
+}
+int main ()
+{
+	int logika;
+	vector&lt;int&gt; vektor;
+	cout&lt;&lt;"Unesite elemente vektora (-1 za kraj): ";
+	vektor=UnesiVektor();
+	cout&lt;&lt;"Unesite: 1 - za proste brojeve, 0 - za slozene brojeve: ";
+	while(true) {
+		cin&gt;&gt;logika;
+		if(logika==0||logika==1) {
+			break;
+		} else {
+			cout&lt;&lt;"Neispravan unos! Unesite ponovo: ";
+		}
+	}
+
+	vektor=IzdvojiSimetricneTernarne(vektor,logika);
+	IspisiVektor(vektor,logika);
+</font>
+	return 0;
+}</pre>
+</body>
+</html>

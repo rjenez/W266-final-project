@@ -1,0 +1,150 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z1/student1192.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z1/student1192.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdio.h&gt;
+
+    /*Funkcija za unos stringa*/
+    
+void unesi(char niz[], int velicina){
+	char znak=getchar();
+	int i=0;
+<a name="4"></a><font color="#FF00FF"><a href="match93-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_5.gif"/></a>
+
+	while(i&lt;velicina-1 &amp;&amp; znak!='\0'){
+		niz[i]=znak;
+		i++;
+		znak=getchar();
+	}
+	niz[i]='\0';
+}
+
+    /*Funkcija trazi iste rijeci u stringu*/
+    
+int uporedi(char *rijec1, char *rijec2,int velicina1,int velicina2){
+</font>	int i;
+	char *pokazivac1,*pokazivac2;
+	pokazivac1=rijec1;
+	pokazivac2=rijec2;
+<a name="2"></a><font color="#0000FF"><a href="match93-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_12.gif"/></a>
+
+	if(velicina1!=velicina2)
+		return 0;
+	else{
+		for(i=0;i&lt;velicina1-1;i++){
+			if(*(pokazivac1+i)&gt;='A'&amp;&amp;*(pokazivac1+i)&lt;='Z'){
+				if(*(pokazivac1+i)+32!=*(pokazivac2+i))
+					return 0;
+				continue;
+			}
+			
+			if(*(pokazivac2+i)&gt;='A'&amp;&amp;*(pokazivac2+i)&lt;='Z'){
+				if(*(pokazivac1+i)!=*(pokazivac2+i)+32)
+					return 0;
+				continue;
+			}
+			
+			if(*(pokazivac2+i)&gt;='A'&amp;&amp;*(pokazivac2+i)&lt;='Z'&amp;&amp;*(pokazivac1+i)&gt;='A'&amp;&amp;*(pokazivac1+i)&lt;='Z'){
+</font>				if(*(pokazivac1+i)+32!=*(pokazivac2+i)+32)
+					return 0;
+				continue;
+			}
+			
+			if(*(pokazivac1+i)!=*(pokazivac2+i))
+					return 0;
+		}
+	}
+	return 1;
+}
+
+    /*Funkcija izbacuje najcescu rijec koju pronadje*/
+char* izbaci_najcescu(char *string){
+	char *reset, *pok[100];
+<a name="0"></a><font color="#FF0000"><a href="match93-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_28.gif"/></a>
+
+	int i=0, j=0,max=0,brojac_slova[100]={0}, brojac_rijeci=1, brojac_najcesce[100]={0};
+	reset=string;
+	pok[j]=string;
+	if(*string=='\0')
+		return 0;
+		
+    /*Stavljamo pokazivac na svaku rijec i brojimo slova svake rijeci*/		
+	while(*string!='\0'){
+		if((*string&gt;31&amp;&amp;*string&lt;'A')||(*string&gt;'Z'&amp;&amp;*string&lt;'a')||(*string&gt;'z'&amp;&amp;*string&lt;127)){
+			brojac_rijeci++;
+			do{
+				string++;
+			}while((*string&gt;31&amp;&amp;*string&lt;'A')||(*string&gt;'Z'&amp;&amp;*string&lt;'a')||(*string&gt;'z'&amp;&amp;*string&lt;127));
+			j++;
+			i++;
+			pok[j]=string;
+			continue;
+		}
+		brojac_slova[i]++;
+		string++;
+	}
+	
+	/*Brojimo rijeci koje se ponavljaju*/
+	for(i=0;i&lt;brojac_rijeci-1;i++){
+		for(j=i+1;j&lt;brojac_rijeci;j++){
+			if(uporedi(pok[i], pok[j],brojac_slova[i], brojac_slova[j]))
+				brojac_najcesce[i]++;
+</font>		}
+	}
+	
+	/*Trazimo koja je rijec najvise puta ponovljena*/
+<a name="3"></a><font color="#00FFFF"><a href="match93-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_12.gif"/></a>
+
+	for(i=0;i&lt;brojac_rijeci;i++){
+		if(brojac_najcesce[i]&gt;brojac_najcesce[max]) 	//fali uslov kada se neka rijec ponavlja isti broj puta
+			max=i;
+	}
+	
+	/*Izbacujemo sva ponavljanja najcesce rijeci u stringu*/
+	for(i=0;i&lt;brojac_rijeci;i++){
+		if(max==i) i++;
+		if(uporedi(pok[max], pok[i], brojac_slova[max], brojac_slova[i])){
+			string=pok[i];
+			if(i==brojac_rijeci-1){
+				*string='\0';
+				break;
+			}
+			while(*string!='\0'){
+				*string=*(string+brojac_slova[i]);	
+</font><a name="1"></a><font color="#00FF00"><a href="match93-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_13.gif"/></a>
+
+				if(*string=='\0') break;
+				string++;
+			}
+			do{
+				pok[i]++;
+			}while((*string&gt;31&amp;&amp;*string&lt;'A')||(*string&gt;'Z'&amp;&amp;*string&lt;'a')||(*string&gt;'z'&amp;&amp;*string&lt;127));
+			for(j=i+1;j&lt;brojac_rijeci;j++){
+				pok[j]-=brojac_slova[i];
+				
+			}
+		}
+	}
+	
+	/*Izbacujemo jos samo prvo pojavljivanje najcesce rijeci*/
+	string=pok[max];
+	while(*string!='\0'){
+		*string=*(string+brojac_slova[max]);	
+</font>		if(*string=='\0') break;
+		string++;
+	}
+	
+	return reset;
+}
+int main() {
+	char string[]="You ____will---never,never,!!.never walk alone,....alone";
+	printf("%s",izbaci_najcescu(string));
+	return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z3/student8428.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z3/student8428.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 3
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Berina Cocalic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: bcocalic1@etf.unsa.ba
+	
+*/
+
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;type_traits&gt;
+#include &lt;deque&gt;
+#include &lt;cmath&gt;
+
+
+template&lt;typename T, typename U, typename Ret, typename Arg&gt;
+auto UvrnutiPresjek(T first1, T last1, U first2, U last2, Ret (f)(Arg)) -&gt;
+	std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt;&gt; 
+{
+<a name="0"></a><font color="#FF0000"><a href="match702-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+	std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt;&gt;  mat;
+	typedef std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt; vec;
+</font>	
+	while (first1 != last1) {
+		for(auto i = first2; i &lt; last2 ; i++)
+			if( f(*i) == f(*first1))
+				mat.push_back(vec{*first1, *i, f(*i)});
+		++first1;
+	}
+	
+	std::sort(mat.begin(), mat.end(), [](const vec&amp; f, const vec&amp; l)
+	{
+		const auto&amp; t_1 = f[2];
+		const auto&amp; t_2 = l[2];
+		if(t_1 == t_2)
+		{
+			auto s_1 = f[0];
+			auto s_2 = l[0];
+			if(s_1 == s_2)
+				return f[1] &lt; l[1];
+			
+			return s_1 &lt; s_2;
+		}
+		return t_1 &lt; t_2;
+	});
+	
+	return mat;
+}
+
+
+
+template&lt;typename T, typename U&gt;
+auto UvrnutiPresjek(T first1, T last1, U first2, U last2) -&gt;
+	std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt;&gt; 
+{
+<a name="1"></a><font color="#00FF00"><a href="match702-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+	std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt;&gt;  mat;
+	typedef std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt; vec;
+</font>	
+	while (first1 != last1) {
+		for(auto i = first2; i &lt; last2 ; i++)
+			if( *i == *first1)
+				mat.push_back(vec{*first1, 0, 0});
+		++first1;
+	}
+	
+	std::sort(mat.begin(), mat.end(), [](const vec&amp; f, const vec&amp; l)
+	{
+		return f[2] &lt; l[2];
+	});
+	
+	return mat;
+}
+
+
+template&lt;typename T, typename U, typename Ret, typename Arg&gt;
+auto UvrnutaRazlika(T first1, T last1, U first2, U last2, Ret (*f)(Arg)) -&gt;
+	std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt;&gt; 
+{
+<a name="2"></a><font color="#0000FF"><a href="match702-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+	std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt;&gt; mat;
+	typedef std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt; vec;
+</font>	auto pom = first1;
+	
+<a name="4"></a><font color="#FF00FF"><a href="match702-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+	while (first1 != last1) 
+	{
+		bool ima = false;
+		for(auto i = first2; i &lt; last2 ; i++)
+			if( f(*i) == f(*first1))
+				ima = true;
+</font>		if(!ima)
+			mat.push_back(vec{*first1, f(*first1)});
+		++first1;
+	}
+	
+<a name="5"></a><font color="#FF0000"><a href="match702-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+	while (first2 != last2) {
+		bool ima = false;
+		for( auto i = pom; i &lt; last1; i++)
+			if( f(*i) == f(*first2))
+				ima = true;
+</font>		if(!ima)
+			mat.push_back(vec{*first2, f(*first2)});
+		++first2;
+	}
+	
+	std::sort(mat.begin(), mat.end(), [](const vec&amp; f, const vec&amp; l)
+	{
+		const auto&amp; t_1 = f[0];
+		const auto&amp; t_2 = l[0];
+		if(t_1 == t_2)
+			return f[1] &gt; l[1];
+		
+		return t_1 &gt; t_2;
+	});
+	return mat;
+}
+
+
+template&lt;typename T, typename U&gt;
+auto UvrnutaRazlika(T first1, T last1, U first2, U last2) -&gt;
+	std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt;&gt; 
+{
+<a name="3"></a><font color="#00FFFF"><a href="match702-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+	std::vector&lt;std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt;&gt; mat;
+	typedef std::vector&lt;typename std::remove_reference&lt;decltype(*first1)&gt;::type &gt; vec;
+</font>	auto pom = first1;
+	
+	while (first1 != last1) 
+	{
+		bool ima = false;
+		for(auto i = first2; i &lt; last2 ; i++)
+			if( *i == *first1)
+				ima = true;
+		if(!ima)
+			mat.push_back(vec{*first1, 0});
+		++first1;
+	}
+	
+	while (first2 != last2) {
+		bool ima = false;
+		for( auto i = pom; i &lt; last1; i++)
+			if( *i == *first2)
+				ima = true;
+		if(!ima)
+			mat.push_back(vec{*first2, 0});
+		++first2;
+	}
+	
+	std::sort(mat.begin(), mat.end(), [](const vec&amp; f, const vec&amp; l)
+	{
+		return f[0] &gt; l[0];
+	});
+	return mat;
+}
+
+
+
+int SumaDjelilaca(long long int br)
+{
+	int suma = 0;
+	for( int i = 1; i &lt;= br; i++)
+		if( br % i == 0)
+			suma += i;
+	return suma;
+}
+
+
+int BrojProstihFaktora(long long int n)
+{
+	int brojac = 0;
+	while(n % 2 == 0)
+	{
+		brojac++;
+		n /=2;
+	}
+	for( int i = 3; i &lt; std::sqrt(n); i+= 2)
+		while( n % i == 0)
+		{
+			brojac++;
+			n /= i;
+		}
+	if( n &gt; 2)
+		brojac++;
+	return brojac;
+}
+
+bool JelPerfektan(long long int n)
+{
+	long long int suma = 0;
+	for( int i = 1; i &lt; n; i++)
+		if( n % i == 0)
+			suma += i;
+	return suma == n;
+}
+
+
+int BrojSavrsenihDjelilaca(long long int n)
+{
+	int brojac = 0;
+	for( int i = 1; i &lt;= n ; i++)
+		if(  n % i == 0 &amp;&amp; JelPerfektan(i))
+			brojac++;
+	return brojac;
+}
+
+int SumaCifara(long long int x)
+{
+		int suma_1 = 0;
+		while (x != 0) {
+			suma_1 += x % 10;
+			x /= 10;
+		}
+		return suma_1;
+}
+
+int main ()
+{
+	std::cout &lt;&lt; "Unesite broj elemenata prvog kontejnera: ";
+	int n;
+	std::cin &gt;&gt; n;
+	std::deque&lt;long long int&gt; d1;
+	std::cout &lt;&lt; "Unesite elemente prvog kontejnera: ";
+	for(int i = 0; i &lt; n; i++)
+	{
+		long long int p;
+		std::cin &gt;&gt; p;
+		if( std::find(d1.begin(), d1.end(), p) == d1.end() )
+			d1.push_back(p);
+		else
+		 i--;
+		
+	}
+	std::cout &lt;&lt; "Unesite broj elemenata drugog kontejnera: ";
+	
+	std::cin &gt;&gt; n;
+	std::deque&lt;long long int&gt; d2;
+	std::cout &lt;&lt; "Unesite elemente drugog kontejnera: ";
+	for(int i = 0; i &lt; n; i++)
+	{
+		long long int p;
+		std::cin &gt;&gt; p;
+		if( std::find(d2.begin(), d2.end(), p) == d2.end() )
+			d2.push_back(p);
+			else
+		 i--;
+	
+	}
+	std::cout &lt;&lt; "Uvrnuti presjek kontejnera:\n";
+	auto presjek = UvrnutiPresjek(d1.begin(), d1.end(), d2.begin(), d2.end(), SumaCifara );
+	
+	for(const auto&amp; i : presjek)
+	{
+		for(const auto&amp; j : i)
+			std::cout &lt;&lt; std::setw(6) &lt;&lt; std::right &lt;&lt; j &lt;&lt; " ";
+		std::cout &lt;&lt; "\n";
+	}
+	std::cout &lt;&lt; "Uvrnuta razlika kontejnera:\n";	
+	auto razlika = UvrnutaRazlika(d1.begin(), d1.end(), d2.begin(), d2.end(), BrojProstihFaktora);
+	for(const auto&amp; i : razlika)
+	{
+		for(const auto&amp; j : i)
+			std::cout &lt;&lt; std::setw(6) &lt;&lt; std::right &lt;&lt; j &lt;&lt; " ";
+		std::cout &lt;&lt; "\n";
+	}	
+	std::cout &lt;&lt; "Dovidjenja!";
+		
+	return 0;
+}</pre>
+</body>
+</html>

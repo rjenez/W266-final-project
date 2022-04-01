@@ -1,0 +1,173 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student9097.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student9097.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match506-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; mat;
+
+mat KreirajMatricu(int br_redova, int br_kolona){
+	return mat (br_redova, std::vector&lt;double&gt;(br_kolona));
+}
+
+mat UnesiMatricu(int m, int n){
+	auto k(KreirajMatricu(m, n));
+	for(int i=0; i&lt;m; i++){
+	for(int j=0; j&lt;n; j++){
+	std::cin&gt;&gt;k.at(i).at(j);}}
+	return k;
+}
+
+void  DaLiJeGrbava(mat d){
+	for(int i=0; i&lt;d.size()-1;i++){
+</font>		if(d.at(i).size()!=d.at(i+1).size()) throw std::domain_error("Matrica nije korektna");
+	}
+}
+
+mat NajvecaPlaninaMatrice(mat M){
+	mat nula, m;
+	if(M.size()==0||M.at(0).size()==0)
+	return nula;
+	else if(M.size()==1&amp;&amp;M.at(0).size()==1)
+	return M;
+	DaLiJeGrbava(M);
+	if(M.size()&lt;=2||M.at(0).size()&lt;=2){
+		double max_br(M.at(0).at(0));
+		for(int i=0; i&lt;M.size(); i++)
+		{
+<a name="1"></a><font color="#00FF00"><a href="match506-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+			for(int j=0; j&lt;M.at(i).size(); j++){
+				if(M.at(i).at(j)&gt;max_br)
+				max_br=M.at(i).at(j);
+			}
+		}
+			m.resize(1);
+			m.at(0).resize(1);
+			m.at(0).at(0)=max_br;
+			return m;
+</font>	}
+	mat n;
+	double w(0), eps(0.00001);
+	std::vector&lt;double&gt; v, v0, v1;
+	v1.push_back(0);
+	v1.push_back(0);
+	for(int i=1; i&lt;M.size(); i++){
+		for(int j=1; j&lt;M.at(i).size(); j++){
+			int p(1), q(1), x(0), y(0);
+			double s(0), s1(M.at(i).at(j));
+			while(p&lt;(M.size()-i)&amp;&amp;q&lt;(M.at(0).size()-j)){
+				if(i-p&lt;0||j-q&lt;0) break;
+				s=M.at(i-p).at(j-q)+M.at(i).at(j-q)+M.at(i-p).at(j)+M.at(i+p).at(j+q)+M.at(i+p).at(j)+M.at(i).at(j+q)+M.at(p+i).at(j-q)+M.at(i-p).at(q+j);
+				if(p&gt;1&amp;&amp;q&gt;1){
+				while(x&lt;p&amp;&amp;y&lt;q){
+						s+=M.at(i-p).at(j-q+y)+M.at(i-x).at(j-q)+M.at(i-p).at(j+y)+M.at(i+p).at(j+q-y)+M.at(i+p).at(j-y)+M.at(i+x).at(j+q)+M.at(p+i-y).at(j-q)+M.at(i-p+x).at(q+j);
+						x++;
+						y++;
+					}
+				}
+				if(s1&gt;s){
+				v.push_back(s1);
+				v0.push_back(i);
+				v0.push_back(j);}
+				else break;
+				s1=s;
+				p++;
+				q++;
+				x++;
+				y++;
+			}
+		if(v.size()&gt;0){
+			w=v.at(0);
+				int q1(q);
+				int brojac(0);
+				m.resize(p+q-1);
+				while(brojac!=m.size()){
+						m.at(brojac).resize(p+q-1);
+						brojac++;}
+							for(int k=0; k&lt;m.size(); k++){ 
+						for(int l=0; l&lt;m.size(); l++){
+							m.at(k).at(l)=M.at(i-(p-1)).at(j-(q-1));
+							q--;
+							if(l==m.size()-1) 
+								q=q1;
+						}
+							p--;
+							}
+							if((n.size()==m.size()&amp;&amp;n.at(n.size()/2).at(n.size()/2)-w&lt;eps)&amp;&amp;v1.at(0)&lt;v0.at(0)&amp;&amp;w&lt;n.at(n.size()/2).at(n.size()/2))
+							m=n;
+							else if((n.size()==m.size()&amp;&amp;n.at(n.size()/2).at(n.size()/2)-w&lt;eps)&amp;&amp;v1.at(1)&lt;v0.at(1)&amp;&amp;w&lt;n.at(n.size()/2).at(n.size()/2))
+							m=n;
+							if((n.size()==m.size()&amp;&amp;n.at(n.size()/2).at(n.size()/2)&lt;w)||(n.size()&lt;m.size())){
+							n=m;
+							v1.at(0)=v0.at(0);
+							v1.at(1)=v0.at(1);}
+		}
+			v.clear();
+			v0.clear();
+		}
+	}
+	if(n.size()==0){
+		double maxi(M.at(0).at(0));
+		for(int i=0; i&lt;M.size(); i++){
+			for(int j=0; j&lt;M.at(i).size(); j++){
+				if(maxi&lt;M.at(i).at(j))
+				maxi=M.at(i).at(j);
+			}
+		}
+		n.resize(1);
+		n.at(0).resize(1);
+		n.at(0).at(0)=maxi;
+	}
+	return n;
+}
+
+
+int main ()
+{
+	try{
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m i n): ";
+	int m, n;
+	std::cin&gt;&gt;m&gt;&gt;n;
+	if(m&lt;0||n&lt;0)
+	std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+	else{
+		std::cout&lt;&lt;"Unesite elemente matrice:"&lt;&lt;std::endl;
+		mat M(UnesiMatricu(m, n));
+		mat z=NajvecaPlaninaMatrice(M);
+		std::cout&lt;&lt;"Najveca planina unesene matrice je:"&lt;&lt;std::endl;
+		for(int i=0; i&lt;z.size(); i++){
+		for(int j=0; j&lt;z.at(i).size(); j++)
+		std::cout&lt;&lt;std::setw(6)&lt;&lt;z.at(i).at(j);
+		std::cout&lt;&lt;std::endl;}
+	}}
+	catch(std::domain_error izuzetak){
+		std::cout&lt;&lt;izuzetak.what();
+	}
+	catch(...){
+		std::cout&lt;&lt;"Pogresan izuzetak!";
+	}
+	return 0;
+}</pre>
+</body>
+</html>

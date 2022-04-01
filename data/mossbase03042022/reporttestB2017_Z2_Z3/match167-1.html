@@ -1,0 +1,180 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student8724.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student7249.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match167-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+
+template &lt;typename Tip&gt; 
+bool TestPerioda(vector&lt;Tip&gt;v, int p){
+   
+    if(v.empty()) return false;
+    if(v.size()&lt;=p || p==0) return false;
+        for(int i=0; i&lt;v.size(); i++){
+            if(i+p==v.size()) break;
+            if(v[i]!=v[i+p]) return false;
+        }
+        return true;
+}
+
+template&lt;typename Tip&gt;
+int OdrediOsnovniPeriod(vector&lt;Tip&gt;v){
+    for(int i=1;i&lt;=v.size()-1;i++){
+        if(TestPerioda(v,i)) return i;
+    }
+    return 0;
+}
+
+template&lt;typename Tip&gt;
+void PostavljanjeParametara(int &amp;period, int &amp;koliko_puta, vector&lt;Tip&gt; vektor){
+	if(period==0){
+		period = vektor.size();
+		koliko_puta = 2;
+	}
+	else if(vektor.size() % period == 0) koliko_puta = vektor.size()/period;
+	else  koliko_puta = int(vektor.size() / period + 1);
+}
+
+int  **UnosElemenata(int **pok, int koliko_puta, int period, vector&lt;int&gt; vektor, bool br){
+	int k=0;
+	for(int i=0; i&lt;koliko_puta*period; i++){
+		int brojac=0;
+		if(br) brojac=1;
+		for(int j=vektor.at(k)-1; j&gt;=0; j--){
+			if(br) pok[i][j]=brojac;
+			else pok[i][j]=period-brojac;
+			brojac++;
+		}
+		k++;
+		if(k==period) k=0;
+	}
+	return pok;
+}
+
+template&lt;typename Tip&gt;
+void SmislenVektor(vector&lt;Tip&gt; vektor){
+	for(int i = 0; i &lt; vektor.size(); i++){
+		if(vektor.at(i) &lt;= 0) throw domain_error("Neispravan vektor!");
+	}
+	if(vektor.size() == 0) throw ("Prazan vektor! ");
+}
+
+template&lt;typename Tip&gt;
+int **AlocirajFragmentirano(const vector&lt;Tip&gt; &amp;vektor, int &amp;koliko_puta){
+	SmislenVektor(vektor);
+	
+	int period=OdrediOsnovniPeriod(vektor);
+	PostavljanjeParametara(period, koliko_puta, vektor);
+	int **pok(new int *[koliko_puta*period]);
+	int j=0;
+	for(int i=0; i&lt;koliko_puta*period; i++){
+			pok[i]=new int [vektor.at(j)+1];
+			j++;
+			if(j==period) j=0;
+	}
+    pok=UnosElemenata(pok, koliko_puta, period, vektor, false);
+	return pok;
+	
+}
+
+template&lt;typename Tip&gt;
+int **AlocirajKontinualno(const vector&lt;Tip&gt; &amp;vektor, int &amp;koliko_puta){
+	SmislenVektor(vektor);
+	int period=OdrediOsnovniPeriod(vektor);
+	PostavljanjeParametara(period, koliko_puta, vektor);
+	int **pok(new int *[koliko_puta * period]);
+	int k=0;
+	int suma=0;
+	for(int i=0; i&lt;period; i++){
+		suma+=vektor.at(i);
+	}
+	suma*=koliko_puta;
+	pok[0]=new int[suma];
+	for(int i=1; i&lt;koliko_puta*period; i++){
+		pok[i]=pok[i-1]+vektor.at(k);
+		k++;
+		if(k==period) k=0;
+	}
+	pok=UnosElemenata(pok, koliko_puta, period, vektor, true);
+	return pok;
+}
+
+template&lt;typename Tip&gt;
+void Ispis(int koliko_puta, int period, int **pok, vector&lt;Tip&gt; vektor){
+	int k=0;
+	for(int i=0; i&lt;period*koliko_puta; i++){
+		for(int j=0; j&lt;vektor.at(k); j++){
+			cout&lt;&lt;setw(3)&lt;&lt;left&lt;&lt;pok[i][j];
+			
+		}
+		k++; 
+		if(k == period) k = 0;
+		cout&lt;&lt;endl;
+	}
+}
+
+int main (){
+	try{
+	cout&lt;&lt;"Unesite broj elemenata vektora: ";
+	int n;
+	cin&gt;&gt;n;
+	cout&lt;&lt;"Unesite elemente vektora: ";
+	vector&lt;int&gt; vektor(n);
+	for(int i=0; i&lt;n; i++){
+		cin&gt;&gt;vektor.at(i);
+	}
+	int temp;
+	cout&lt;&lt;"Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+	cin&gt;&gt;temp;
+	int koliko_puta;
+	int **pok;
+	if(temp == 1) pok = AlocirajFragmentirano(vektor, koliko_puta);
+	else pok = AlocirajKontinualno(vektor, koliko_puta);
+	cout&lt;&lt;"Dinamicki alocirana matrica: \n";
+	int period=OdrediOsnovniPeriod(vektor);
+	if(period==0){
+		period=vektor.size();
+		koliko_puta=2;
+	}
+	Ispis(koliko_puta, period, pok, vektor);
+	
+	if(temp == 1){
+	for(int i = 0; i &lt; koliko_puta*period; i++){
+		delete[] pok[i];
+	}
+	delete[] pok;
+	}
+	else{
+		delete[] pok[0]; delete[] pok;
+	}
+	
+	}
+	catch(domain_error izuzetak){
+		cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+	}
+	catch(bad_alloc){
+		cout&lt;&lt;"Izuzetak: Problemi sa memorijom! ";
+	}
+	catch(const char poruka[]){
+		cout&lt;&lt;"Izuzetak: "&lt;&lt;poruka;
+	}
+
+	return 0;
+</font>}
+
+
+
+</pre>
+</body>
+</html>

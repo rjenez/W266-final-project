@@ -1,0 +1,138 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student8599.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student8599.cpp<p></p><pre>
+// B 16/17, Zadaća 2, Zadatak 2
+//	Autotestovi by Enil Pajic (epajic1@etf.unsa.ba | @eon : etf.ba)
+//	NAPOMENA: i javni ATo-vi su dio postavke!	
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;stdexcept&gt;
+#include &lt;type_traits&gt;
+
+ enum class SmjerKretanja{NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo};
+template &lt;typename NekiTIp&gt;
+
+auto IzdvojiDijagonale3D(NekiTIp &amp;kont, enum SmjerKretanja smjer) -&gt; typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type{
+    typedef typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type Tip;
+    typedef typename std::remove_reference&lt;decltype(kont.at(0).at(0))&gt;::type Tip2;
+     int duzina(kont.at(0).at(0).size());
+     int visina(kont.at(0).size());
+     int sirina(kont.size());
+     if(visina==0 || sirina==0 || duzina==0){
+     Tip NoviKontejner(0, Tip2(0));
+     return NoviKontejner;
+     }
+     for(int i=0; i&lt;sirina; i++)
+        for(int j=0; j&lt;visina; j++)
+            if(kont.at(i).at(j).size()!=duzina) throw std::domain_error("Redovi nemaju isti broj elemenata");
+            
+     for(int i=0; i&lt;sirina; i++)
+            if(kont.at(i).size()!=visina) throw std::domain_error("Plohe nemaju isti broj redova");
+            
+    int min;
+    if(smjer==SmjerKretanja::NaprijedNazad || smjer==SmjerKretanja::NazadNaprijed){
+    if(duzina&lt;visina)
+    min=duzina;
+    else min=visina;
+    Tip NoviKontejner(sirina,Tip2(min));
+            for(int i=0; i&lt;sirina; i++){
+                for(int j=0; j&lt;visina; j++)
+                    for(int k=0; k&lt;duzina; k++)
+                    if(smjer==SmjerKretanja::NaprijedNazad &amp;&amp; k==j)
+                    NoviKontejner.at(i).at(j)=kont.at(i).at(j).at(k);
+            }
+            for(int i=sirina-1; i&gt;=0; i--){
+                for(int j=0; j&lt;visina; j++)
+                    for(int k=duzina-1; k&gt;=0; k--)
+                    
+                    if(smjer==SmjerKretanja::NazadNaprijed &amp;&amp; k==duzina-1-j)
+                    NoviKontejner.at(sirina-1-i).at(j)=kont.at(i).at(j).at(k);
+            }       
+             return NoviKontejner;       
+    }
+    
+    if(smjer==SmjerKretanja::GoreDolje || smjer==SmjerKretanja::DoljeGore){
+        if(duzina&lt;sirina)
+            min=duzina;
+        else min=sirina;
+        Tip NoviKontejner(visina, Tip2(min));
+        for(int i=0; i&lt;visina; i++)
+            for(int j=sirina-1; j&gt;=0; j--)
+                for(int k=0; k&lt;duzina; k++){
+                    if(smjer==SmjerKretanja::GoreDolje &amp;&amp; j+k==sirina-1)
+                        NoviKontejner.at(i).at(sirina-1-j)=kont.at(j).at(i).at(k);
+                    if(smjer==SmjerKretanja::DoljeGore &amp;&amp; k-j==duzina-sirina)
+                        NoviKontejner.at(visina-1-i).at(sirina-1-j)=kont.at(j).at(i).at(k);
+                }
+            return NoviKontejner;
+    }
+                
+    if(smjer==SmjerKretanja::LijevoDesno || smjer==SmjerKretanja::DesnoLijevo){
+        if(visina&lt;sirina)
+            min=visina;
+        else min=sirina; 
+        Tip NoviKontejner(duzina, Tip2(min));
+        for(int i=0; i&lt;duzina; i++)
+            for(int j=0; j&lt;visina; j++){
+                for(int k=sirina-1; k&gt;=0; k--){
+                if(smjer==SmjerKretanja::LijevoDesno &amp;&amp; j+k==sirina-1)
+                    NoviKontejner.at(i).at(j)=kont.at(k).at(j).at(i);
+                if(smjer==SmjerKretanja::DesnoLijevo &amp;&amp; j==k)
+                    NoviKontejner.at(duzina-1-i).at(k)=kont.at(k).at(j).at(i);
+            }}
+                    return NoviKontejner;
+    }  
+}        
+
+int main() 
+{
+<a name="1"></a><font color="#00FF00"><a href="match694-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+    int x, y, z;
+    std::cout &lt;&lt; "Unesite dimenzije (x y z): ";
+    std::cin &gt;&gt; x &gt;&gt; y &gt;&gt; z;
+    if(x&lt;0 || y&lt;0 || z&lt;0){
+        std::cout &lt;&lt; "Neispravne dimenzije kontejnera!";
+        return 0;
+    }
+  std::deque&lt;std::deque&lt;std::vector&lt;short int&gt;&gt;&gt; kont(x, std::deque&lt;std::vector&lt;short int&gt;&gt;(y, std::vector&lt;short int&gt;(z)));
+</font>  std::cout &lt;&lt; "Unesite elemente kontejnera: ";
+  for(int i=0; i&lt;x; i++)
+    for(int j=0; j&lt;y; j++)
+        for(int k=0; k&lt;z; k++)
+            std::cin &gt;&gt; kont[i][j][k];
+            int s;
+<a name="2"></a><font color="#0000FF"><a href="match694-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+std::cout &lt;&lt; std::endl &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+    std::cin &gt;&gt; s;
+    if(s&lt;0 || s&gt;5){
+        std::cout &lt;&lt; "Smjer kretanja nije ispravan!" &lt;&lt; std::endl;
+</font>        return 0;
+    }
+<a name="0"></a><font color="#FF0000"><a href="match694-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+    if(s==0) std::cout &lt;&lt; "NaprijedNazad: ";
+    else if(s==1) std::cout &lt;&lt; "NazadNaprijed: ";
+    else if(s==2) std::cout &lt;&lt;"GoreDolje: ";
+    else if(s==3) std::cout &lt;&lt; "DoljeGore: ";
+    else if(s==4) std::cout &lt;&lt; "LijevoDesno: ";
+    else if(s==5) std::cout &lt;&lt; "DesnoLijevo: ";
+    std::cout &lt;&lt; std::endl;
+ for (const auto &amp;red : IzdvojiDijagonale3D(kont,SmjerKretanja(s)))
+</font> {
+ for (const auto &amp;x : red)
+ std::cout.width (4), std::cout &lt;&lt; x;
+ std::cout &lt;&lt; std::endl;
+ }
+
+    
+	return 0;
+}</pre>
+</body>
+</html>

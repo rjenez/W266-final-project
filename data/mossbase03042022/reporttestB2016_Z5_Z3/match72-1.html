@@ -1,0 +1,386 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student5939.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student4471.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match72-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_9.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 3)
+//Autotestovi by Enil Pajic (mail: epajic1@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;limits&gt;
+#include &lt;iomanip&gt;
+
+const long long int M = std::numeric_limits&lt;long long int&gt;::max();
+const long long int m = std::numeric_limits&lt;long long int&gt;::min();
+
+//provjeriti da li nzd radi za negativne brojeve
+class Razlomak{
+    long long int br,naz;
+    static long long int NZD(long long int br1,long long int br2){
+        if(br2==0)return br1;
+        else{
+            return NZD(br2,br1%br2);
+        }
+    }
+    static long long int PR(long long int br1, long long int br2,char znak); //prekoracenje
+    static void Izuzetak(){ throw std::overflow_error("Nemoguce dobiti tacan rezultat");};
+    
+    public:
+    Razlomak(long long int br1,long long int br2);
+    Razlomak(long long int br1){
+        naz=1;
+        br=br1;
+    }
+    Razlomak(){br=0;naz=1;}
+    long long int DajBrojnik()const {return br;}
+    long long int DajNazivnik()const {return naz;}
+    friend Razlomak operator+(const Razlomak &amp;r1, const Razlomak &amp;r2);
+</font>    friend Razlomak operator-(const Razlomak &amp;r1, const Razlomak &amp;r2);
+<a name="2"></a><font color="#0000FF"><a href="match72-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+    friend Razlomak operator*(const Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend Razlomak operator/(const Razlomak &amp;r1, const Razlomak &amp;r2);
+    
+    //unarni operatori
+    friend Razlomak operator+(const Razlomak &amp;r1){ return r1; }
+    friend Razlomak operator-(const Razlomak &amp;r1){
+        if(r1.br/r1.naz==m)throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+        else if(r1.br==m)throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+        else return Razlomak(-r1.br,r1.naz); 
+        
+    } //STA AKO JE MIN 
+    
+    //binarni operatori koji vracaju referencu
+    //+= -= *= /=
+    friend Razlomak &amp;operator+=(Razlomak &amp;r1,const Razlomak &amp;r2);
+    friend Razlomak &amp;operator-=(Razlomak &amp;r1,const Razlomak &amp;r2);
+</font><a name="0"></a><font color="#FF0000"><a href="match72-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_81.gif"/></a>
+
+    friend Razlomak &amp;operator*=(Razlomak &amp;r1,const Razlomak &amp;r2);
+    friend Razlomak &amp;operator/=(Razlomak &amp;r1,const Razlomak &amp;r2);
+    
+    //unarni operatori koji vracaju referencu
+    friend Razlomak &amp;operator++(Razlomak &amp;r1);
+    friend Razlomak &amp;operator--(Razlomak &amp;r1);
+    
+    //unarni operatori koji ne vracaju referencu
+    friend Razlomak operator++(Razlomak &amp;r1, int);
+    friend Razlomak operator--(Razlomak &amp;r1, int);
+    
+    //poredbeni operatori
+    friend bool operator==(Razlomak &amp;r1,const Razlomak &amp;r2);
+    friend bool operator!=(Razlomak &amp;r1,const Razlomak &amp;r2);
+    friend bool operator&gt;(Razlomak &amp;r1,const Razlomak &amp;r2);
+    friend bool operator&lt;(Razlomak &amp;r1,const Razlomak &amp;r2);
+    friend bool operator&gt;=(Razlomak &amp;r1,const Razlomak &amp;r2);
+    friend bool operator&lt;=(Razlomak &amp;r1,const Razlomak &amp;r2);
+    
+    //operatori za upis i ispis(UVIJEK KAO PRIJATELJESKE FJE ZBOG PRVOG PARAMETRA)
+    friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok,const Razlomak &amp;r1){
+       tok&lt;&lt;r1.br; r1.naz==1 ? tok&lt;&lt;"" : tok&lt;&lt;"/"&lt;&lt;r1.naz;
+       return tok;
+    }
+    friend std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, Razlomak &amp;r1);
+    
+    //zadnja fja za pretvorbu u long double
+    operator long double () const{
+        long double r((long double)br/naz);
+        return r;
+    }
+   
+};
+
+
+
+Razlomak::Razlomak(long long int br1,long long int br2){
+    if(br1==m &amp;&amp; br2&lt;0 || br2==m &amp;&amp; br1&lt;0)throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    long long int br3(std::abs(br1));long long int br4(std::abs(br2)); //paziti ovdje sa int min !!!!!!!
+    if(br4==0)throw std::logic_error("Nekorektan razlomak");   
+    long long int nzd=NZD(br3,br4);   
+    br3/=nzd;                                    //NZD NEGATIVAN 
+    br4/=nzd;                                       //ako je u nazivniku MIN ne moze onda da se dole stavi -Min jer ne moze stati u LInt
+  
+    if(br1&lt;=0 &amp;&amp; br2&lt;0){
+        br=br3;naz=br4;
+    }else if(br1&lt;=0 &amp;&amp; br2&gt;0){
+        br=-br3; naz=br4;
+    }else if(br1&gt;=0 &amp;&amp; br2&lt;0){
+        br=-br3;
+        naz=br4;
+    }else
+    br=br3;naz=br4;
+}
+
+long long int Razlomak::PR(long long int x, long long int y,char znak){
+    long long int rez(0);
+    bool izuzetak(false);
+    
+    if(znak == '+'){
+        
+        if(x&gt;=0 &amp;&amp; y&gt;=0 &amp;&amp; x &gt; M -y){
+            izuzetak = true;
+        }else if(x&lt;=0 &amp;&amp; y&lt;=0 &amp;&amp; x&lt;m-y){ //druge slucajeve (X&lt;0 &amp;&amp; y&gt;0)ne treba jer oni ne mogu prekoraciti zbog parametara fje
+            izuzetak = true;
+        }else
+        rez= x+y;
+        
+    }else if(znak == '-'){
+        
+        if(x&gt;=0 &amp;&amp; y&lt;=0 &amp;&amp; x &gt;M +y){
+            izuzetak = true;
+        }else if(x&lt;=0 &amp;&amp; y&gt;=0 &amp;&amp; x&lt;m+y){ //druge slucajeve (X&lt;0 &amp;&amp; y&lt;0)ne treba jer oni ne mogu prekoraciti zbog parametara fje
+            izuzetak = true;
+        }else
+        rez= x-y;
+        
+    }else if(znak == '*'){
+        if(y&gt;0){
+            if(x &lt; m/y || x &gt; M/y){
+                izuzetak=true;
+            }else
+            rez = x*y;
+        }else if(y&lt;0){
+            if(x==m || -x&gt;M/(-y) || -x&lt;m/(-y)){
+                izuzetak = true;
+            }else
+            rez = x*y;
+        }
+    }
+    
+    if(izuzetak)throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    else return rez;
+}
+
+Razlomak operator+(const Razlomak &amp;r1, const Razlomak &amp;r2){
+    
+    long long int r(Razlomak::NZD(r1.naz,r2.naz)) ,  s(Razlomak::NZD(r1.br,r2.naz));
+    long long int brojnik,nazivnik;
+    
+    try{
+        brojnik = Razlomak::PR(Razlomak::PR(r1.br ,r2.naz/r,'*') , Razlomak::PR(r2.br, (r1.naz/r),'*'),'+' );
+        nazivnik = Razlomak::PR(r1.naz,r2.naz/r,'*');
+        
+    }catch(std::overflow_error e){
+        throw e;
+    }
+    
+    return Razlomak(brojnik,nazivnik);      
+}
+
+Razlomak operator-(const Razlomak &amp;r1, const Razlomak &amp;r2){
+    try{
+        return r1 + (-r2);
+    }catch(std::overflow_error e){
+        throw e;
+    }    
+}
+
+Razlomak operator*(const Razlomak &amp;r1, const Razlomak &amp;r2){
+    long long int s(Razlomak::NZD(r1.br,r2.naz)) ,  t(Razlomak::NZD(r2.br,r2.naz));
+    long long int brojnik,nazivnik;
+    
+    try{
+        brojnik = Razlomak::PR(r1.br/s,r2.br/t,'*');
+        nazivnik = Razlomak::PR(r1.naz/t,r2.naz/s,'*');
+        
+    }catch(std::overflow_error e){
+        throw e;
+    }
+    
+    return Razlomak(brojnik,nazivnik); 
+}
+
+Razlomak operator/(const Razlomak &amp;r1, const Razlomak &amp;r2){
+     
+     Razlomak r3(r2.naz,r2.br);
+     try{
+        return r1 * (r3);
+    }catch(std::overflow_error e){
+        throw e;
+    }  
+}
+
+inline Razlomak &amp;operator+=(Razlomak &amp;r1,const Razlomak &amp;r2){
+    
+     try{
+        return r1 = r1 + r2;
+    }catch(std::overflow_error e){
+        throw e;
+    } 
+}
+
+inline Razlomak &amp;operator-=(Razlomak &amp;r1,const Razlomak &amp;r2){
+     try{
+        return r1= r1-r2;
+    }catch(std::overflow_error e){
+        throw e;
+    } 
+}
+
+inline Razlomak &amp;operator*=(Razlomak &amp;r1,const Razlomak &amp;r2){
+     try{
+        return r1 = r1 * r2;
+    }catch(std::overflow_error e){
+        throw e;
+    } 
+}
+
+inline Razlomak &amp;operator/=(Razlomak &amp;r1,const Razlomak &amp;r2){
+     try{
+        return r1 = r1 / r2;
+    }catch(std::overflow_error e){
+        throw e;
+    } 
+}
+
+
+Razlomak &amp;operator++(Razlomak &amp;r1){
+    Razlomak r3(1,1);
+    try{
+        return r1 = r1 + r3;
+    }catch(std::overflow_error e){
+        throw e;
+    } 
+}
+
+Razlomak &amp;operator--(Razlomak &amp;r1){
+    Razlomak r3(1,1);
+    try{
+        return r1 = r1 - r3;
+    }catch(std::overflow_error e){
+        throw e;
+    }
+}
+
+Razlomak operator++(Razlomak &amp;r1, int){
+    Razlomak pomocni(r1);
+    Razlomak r3(1,1);
+    try{
+        r1 = r1 + r3;
+        return pomocni;
+    }catch(std::overflow_error e){
+        throw e;
+    }
+}
+
+Razlomak operator--(Razlomak &amp;r1, int){
+    Razlomak pomocni(r1);
+    Razlomak r3(1,1);
+    try{
+        r1 = r1 - r3;
+        return pomocni;
+    }catch(std::overflow_error e){
+        throw e;
+    } 
+}
+
+bool operator==(Razlomak &amp;r1,const Razlomak &amp;r2){
+    long double x((long double)r1.br/r1.naz) , y((long double)r2.br/r2.naz);
+    return x==y;
+}
+bool operator!=(Razlomak &amp;r1,const Razlomak &amp;r2){
+    return !(r1==r2);
+}
+bool operator&gt;(Razlomak &amp;r1,const Razlomak &amp;r2){
+    long double x((long double)r1.br/r1.naz) , y((long double)r2.br/r2.naz);
+    return x&gt;y;
+}
+bool operator&lt;(Razlomak &amp;r1,const Razlomak &amp;r2){
+   long double x((long double)r1.br/r1.naz) , y((long double)r2.br/r2.naz);
+    return x&lt;y;
+}
+bool operator&gt;=(Razlomak &amp;r1,const Razlomak &amp;r2){
+    long double x((long double)r1.br/r1.naz) , y((long double)r2.br/r2.naz);
+    return x&gt;=y;
+}
+bool operator&lt;=(Razlomak &amp;r1,const Razlomak &amp;r2){
+    long double x((long double)r1.br/r1.naz) , y((long double)r2.br/r2.naz);
+    return x&lt;=y;
+}
+
+std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, Razlomak &amp;r1){
+    
+    char znak;
+    r1.naz = 1;
+    tok&gt;&gt;std::ws;
+    znak = tok.peek();
+    if(znak&lt;='0' || znak&gt;='9')tok.setstate(std::ios::failbit);
+    else{
+        tok&gt;&gt;r1.br;
+        znak = tok.peek();
+        
+        if(znak == ' ' || znak == tok.eof() || znak == '\n'){
+            return tok;
+        }
+        else if(znak == '/'){
+            tok.get();
+            tok&gt;&gt;r1.naz;
+            znak = tok.peek();
+            if(znak != ' ' &amp;&amp; znak != '\n' &amp;&amp; znak != tok.eof())tok.setstate(std::ios::failbit);
+            
+        }else{
+            tok.setstate(std::ios::failbit);
+        }
+    
+    }
+    r1 = Razlomak(r1.br,r1.naz);
+    return tok;
+
+}
+
+
+int main ()
+{
+    try{
+    Razlomak r(m,-1);
+    //auto t= -r;
+    std::cout&lt;&lt;r;
+    }catch(std::exception &amp;e){
+        std::cout&lt;&lt;e.what();
+</font>    }
+    
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</body>
+</html>

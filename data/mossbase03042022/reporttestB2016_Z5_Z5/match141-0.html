@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student3899.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student3899.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match141-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 5)
+//Autotestovi by Berina Cocalic (mail: bcocalic1@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include&lt;list&gt;
+#include&lt;utility&gt;
+#include&lt;stdexcept&gt;
+#include&lt;algorithm&gt;
+#include&lt;functional&gt;
+class Temperatura{
+    int min_dozvoljena;
+    int max_dozvoljena;
+    std::list&lt;int&gt; min;
+    std::list&lt;int&gt; max;
+    public:
+    Temperatura(int min_temp,int max_temp);
+    void RegistrirajTemperature(std::pair&lt;int, int&gt; par);
+    void BrisiSve();
+    void BrisiTemperature(std::pair&lt;int, int&gt; par);
+    int DajBrojRegistriranihTemperatura() const{ return min.size();};
+    int DajMinimalnuTemperaturu() const;
+    int DajMaksimalnuTemperaturu() const;
+    int DajBrojTemperaturaVecihOd(int temp) const;
+    int DajBrojTemepraturaManjihOd(int temp) const;
+    
+    friend bool operator !(const Temperatura &amp;temp);
+    friend Temperatura operator ++(Temperatura &amp;temp);
+    friend Temperatura operator ++(Temperatura &amp;temp,int);
+    friend Temperatura operator --(Temperatura &amp;temp);
+    friend Temperatura operator --(Temperatura &amp;temp,int);
+    
+    
+};
+
+bool operator !(const Temperatura &amp;temp){
+    int a(temp.min.size()),b(temp.max.size());
+    if(a+b!=0) return false;
+    else return true;
+}
+
+Temperatura::Temperatura(int min_temp,int max_temp){
+    if(min_temp&gt;max_temp) throw std::range_error("Nekorektne temperature");
+    min_dozvoljena=min_temp;
+    max_dozvoljena=max_temp;
+}
+void Temperatura::RegistrirajTemperature(std::pair&lt;int,int&gt; par){
+    if(par.first&lt;min_dozvoljena || par.second&gt;max_dozvoljena || par.first&gt;par.second)  throw std::range_error("Nekorektne temperature");
+    
+    min.push_back(par.first);
+    max.push_back(par.second);
+}
+void Temperatura::BrisiSve(){
+    int br(min.size());
+    for(int i=0;i&lt;br;i++){
+        min.erase(min.begin());
+        max.erase(max.begin());
+    }
+}
+void Temperatura::BrisiTemperature(std::pair&lt;int,int&gt; par){
+    auto it1(min.begin());
+    auto it2(max.begin());
+    bool provjera(false);
+    while(it1!=min.end()){
+        if(*it1==par.first &amp;&amp; *it2==par.second){
+            min.erase(it1);
+            max.erase(it2);
+            provjera=true;
+        }
+        else{
+            it1++;
+            it2++;
+        }
+  
+    }
+    if(!provjera) throw std::logic_error("Takve temperature nisu registrirane");
+   
+}
+int Temperatura::DajMinimalnuTemperaturu() const{
+    auto it(min_element(min.begin(),min.end()));
+    if(it==min.end()) throw std::logic_error("Nema registriranih temperatura");
+    return *it;
+}
+int Temperatura::DajMaksimalnuTemperaturu()const{
+    auto it(max_element(max.begin(),max.end()));
+    if(it==max.end()) throw std::logic_error("Nema registriranih temperatura");
+    return *it;
+}
+int Temperatura::DajBrojTemepraturaManjihOd(int temp) const{
+    auto a(count_if(min.begin(),min.end(),std::bind(std::less&lt;int&gt;(),std::placeholders::_1,temp)));
+    auto b(count_if(max.begin(),max.end(),std::bind(std::less&lt;int&gt;(),std::placeholders::_1,temp)));
+    return a+b;
+    
+}
+int Temperatura::DajBrojTemperaturaVecihOd(int temp) const{
+     auto a(count_if(min.begin(),min.end(),std::bind(std::greater&lt;int&gt;(),std::placeholders::_1,temp)));
+    auto b(count_if(max.begin(),max.end(),std::bind(std::greater&lt;int&gt;(),std::placeholders::_1,temp)));
+    return a+b;
+}
+
+
+int main ()
+</font>{
+	return 0;
+}</pre>
+</body>
+</html>

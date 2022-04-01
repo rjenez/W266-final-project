@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student7341.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student2208.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;deque&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match60-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum Smjer {Rastuci=1, Opadajuci};
+
+bool DaLiJeStepenDva (int broj)
+{
+	if (broj==0) return false;
+	if (broj&lt;0) return false;
+	while (broj!=0) {
+		if (broj==1) return true;
+		if (broj%2!=0) return false;
+		broj = broj / 2;
+	}
+	return true;
+}
+
+std::deque&lt;std::vector&lt;int&gt;&gt;  MaksimalniPodnizoviStepenaDvojke (std::vector&lt;int&gt; v, Smjer smjer)
+{
+	std::deque&lt;std::vector&lt;int&gt;&gt; konacni;
+	std::vector&lt;int&gt; podniz;
+	//Trazenje rastucih podnizova
+	if (smjer==Rastuci) {
+		for (int i(0); i&lt;v.size()-1; i++) {
+			if (DaLiJeStepenDva(v.at(i))) {
+
+				while (v.at(i)&lt;=v.at(i+1) &amp;&amp; i&lt;v.size()-1 &amp;&amp; DaLiJeStepenDva(v.at(i))) {
+					podniz.push_back(v.at(i));
+					i++;
+					if (i==v.size()-1) break;
+				}
+				//Spremanje vektora u dek i provjera ispravnosti krajnjih clanova
+				if (i==0 &amp;&amp; DaLiJeStepenDva(v.at(i))) podniz.push_back(v.at(i)); // Da ne dode do izlaska u zabranjeni dio memorije
+				else if (v.at(i)&gt;=v.at(i-1) &amp;&amp; DaLiJeStepenDva(v.at(i))) podniz.push_back(v.at(i));
+				if (podniz.size()==1) {
+					podniz.resize(0);
+					continue;
+				}
+				bool ima=false;
+				for (int i(0); i&lt;konacni.size(); i++) {
+					if (podniz==konacni.at(i)) ima=true;
+				}
+				if (!ima) konacni.push_back(podniz);
+				podniz.resize(0);
+
+			}
+		}
+	}
+	//Trazenje opadajucih podnizova
+	if (smjer==Opadajuci) {
+		for (int i(0); i&lt;v.size()-1; i++) {
+			if (DaLiJeStepenDva(v.at(i))) {
+				while (v.at(i)&gt;=v.at(i+1) &amp;&amp; i&lt;v.size()-1 &amp;&amp; DaLiJeStepenDva(v.at(i))) {
+					podniz.push_back(v.at(i));
+					i++;
+					if (i==v.size()-1) break;
+				}
+				if (i==0 &amp;&amp; DaLiJeStepenDva(v.at(i))) podniz.push_back(v.at(i));
+				else if (v.at(i)&lt;=v.at(i-1) &amp;&amp; DaLiJeStepenDva(v.at(i))) podniz.push_back(v.at(i));
+				if (podniz.size()==1) {
+					podniz.resize(0);
+					continue;
+				}
+				bool ima=false;
+				for  (int i(0); i&lt;konacni.size(); i++) {
+					if (podniz==konacni.at(i))  ima=true;
+				}
+
+				if (!ima) konacni.push_back(podniz);
+				podniz.resize(0);
+			}
+		}
+	}
+
+	return konacni;
+}
+
+int main ()
+{
+	std::vector&lt;int&gt; niz_brojeva;
+	std::cout &lt;&lt; "Unesite broj elemenata vektora: ";
+	int broj_elemenata;
+	std::cin &gt;&gt; broj_elemenata;
+	std::cout &lt;&lt; "Unesite elemente vektora: ";
+	for (int i(0); i &lt; broj_elemenata; i++) {
+		int broj;
+		std::cin &gt;&gt; broj;
+		niz_brojeva.push_back(broj);
+	}
+
+	std::cout &lt;&lt; "Unesite: 1 - za rastuce podnizove, 2 - za opadajuce podnizove: ";
+	int smjer;
+	std::cin &gt;&gt; smjer;
+	std::deque&lt;std::vector&lt;int&gt;&gt; max_niz;
+	if (smjer==1) {
+		max_niz=MaksimalniPodnizoviStepenaDvojke(niz_brojeva, Rastuci);
+		std::cout&lt;&lt;"Maksimalni rastuci podnizovi: \n";
+		for (int i(0); i&lt;max_niz.size(); i++) {
+			for (int j(0); j&lt;max_niz.at(i).size(); j++) {
+				std::cout &lt;&lt; max_niz.at(i).at(j) &lt;&lt; " ";
+				if (j==max_niz.at(i).size()-1) std::cout &lt;&lt; std::endl;
+			}
+		}
+	}
+
+	else if (smjer==2) {
+		max_niz=MaksimalniPodnizoviStepenaDvojke(niz_brojeva, Opadajuci);
+		std::cout &lt;&lt; "Maksimalni opadajuci podnizovi: " &lt;&lt; std::endl;
+		for (int i(0); i&lt;max_niz.size(); i++) {
+			for (int j(0); j&lt;max_niz.at(i).size(); j++) {
+				std::cout &lt;&lt; max_niz.at(i).at(j) &lt;&lt; " ";
+				if (j==max_niz.at(i).size()-1) std::cout &lt;&lt; std::endl;
+			}
+		}
+
+
+	}
+	return 0;
+</font>}</pre>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student7678.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student7970.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match865-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 1
+//Autotestovi by Enil Pajic (epajic1@etf.unsa.ba)
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+#include &lt;functional&gt;
+#include &lt;string&gt;
+#include &lt;cmath&gt;
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::vector;
+using std::pair;
+using std::string;
+using std::function;
+using std::domain_error;
+</font>
+
+double funkcija (double x)
+{
+    double rez;
+    
+    rez=pow(x,2)+sin(x);
+    
+    return rez;
+}
+
+int minimum (int i, int razlika)
+{
+    if (i&gt;razlika)
+    {
+        return razlika;
+    }
+    
+    if (razlika&gt;i)
+    {
+        return i;
+    }
+    
+    return razlika;
+}
+
+int maksimum (int i, int razlika)
+{
+    if (i&gt;razlika)
+    {
+        return i;
+    }
+    
+    if (razlika&gt;i)
+    {
+        return razlika;
+    }
+    
+    return razlika;
+}
+
+
+double w (int brojcvorova, int d, int i, vector&lt;pair&lt;double, double&gt;&gt; grupa)
+{
+    int n1;
+    double rezd1, rezd2, rez(0);
+    
+    n1=minimum(i,brojcvorova-d);
+    
+    for (int k=maksimum(1,i-d); k&lt;=n1; k++)
+    {
+        rezd1=pow((-1),(k-1));
+        rezd2=1;
+        for (int j=k; j&lt;=k+d; j++)
+        {
+            if (j!=i)
+            {
+<a name="3"></a><font color="#00FFFF"><a href="match865-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+                rezd2=rezd2*(1./(grupa[i-1].first-grupa[j-1].first));
+            }
+        }
+        
+        rez=rez+rezd1*rezd2;
+</font>    }
+    
+    return rez;
+}
+
+
+function&lt;double(double)&gt; BaricentricnaInterpolacija (vector&lt;pair&lt;double, double&gt;&gt; grupa, int d)
+{
+    return [grupa,d](double x)
+    {
+        int brojcvorova, tik(0);
+        double rez, rezgornji(0), rezdonji(0), wi, temp;
+        brojcvorova=grupa.size();
+        
+        if (d&lt;0 || d&gt;brojcvorova) throw domain_error ("Neispravni cvorovi");
+        
+        for (int i=1; i&lt;=brojcvorova; i++)
+        {
+            wi=w(brojcvorova, d, i, grupa);
+            if (x==grupa[i-1].first)
+            {
+                tik++;
+                temp=grupa[i-1].second;
+                break;
+            }
+            else
+            {
+                rezgornji=rezgornji+((wi*grupa[i-1].second)/(x-grupa[i-1].first));
+                rezdonji=rezdonji+(wi/(x-grupa[i-1].first));
+            }
+
+        }
+        
+        if (tik&gt;0)
+        {
+            rez=temp;
+        }
+        
+        else
+        {
+<a name="2"></a><font color="#0000FF"><a href="match865-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+            rez=rezgornji/rezdonji;
+        }
+        
+        return rez;
+    };
+}
+
+function&lt;double(double)&gt; BaricentricnaInterpolacija (function&lt;double(double)&gt; f, double xmin, double xmax, double korak, int d)
+</font>{
+    double pov(xmin), temp;
+    int cvorovi(0);
+    pair &lt;double, double&gt; par;
+    vector &lt;pair &lt;double, double&gt;&gt; grupa;
+    
+    while (pov!=xmax &amp;&amp; pov&lt;xmax)
+    {
+        cvorovi++;
+        pov=pov+korak;
+    }
+    
+    for (int i=0; i&lt;cvorovi; i++)
+    {
+        temp=xmin+i*korak;
+        par.first=temp;
+        par.second=f(temp);
+        grupa.push_back(par);
+    }
+    
+    return [grupa,d](double x)
+    {
+        int brojcvorova, tik(0);
+        double rez, rezgornji(0), rezdonji(0), wi, temp;
+        brojcvorova=grupa.size();
+        
+        if (d&lt;0 || d&gt;brojcvorova) throw domain_error ("Neispravni cvorovi");
+        
+        for (int i=1; i&lt;=brojcvorova; i++)
+        {
+            wi=w(brojcvorova, d, i, grupa);
+            if (x==grupa[i-1].first)
+            {
+                tik++;
+                temp=grupa[i-1].second;
+                break;
+            }
+            else
+            {
+                rezgornji=rezgornji+((wi*grupa[i-1].second)/(x-grupa[i-1].first));
+                rezdonji=rezdonji+(wi/(x-grupa[i-1].first));
+            }
+
+        }
+        
+        if (tik&gt;0)
+        {
+            rez=temp;
+        }
+        
+        else
+        {
+            rez=rezgornji/rezdonji;
+        }
+        
+        return rez;
+    };
+}
+
+
+
+int main ()
+{
+    int opcija, cvorovi, temp1, temp2, d;
+    bool tacnost(true);
+    pair &lt;double, double&gt; par;
+    vector &lt;pair &lt;double, double&gt;&gt; grupa;
+    string var;
+    double poslati, korak, xmin, xmax;
+
+    cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    cin&gt;&gt;opcija;
+    
+    if (opcija==1)
+    {  
+        try
+        {
+            cout&lt;&lt;"Unesite broj cvorova: ";
+            cin&gt;&gt;cvorovi;
+    
+            cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+    
+            for (int i=0; i&lt;cvorovi; i++)
+            {
+                cin&gt;&gt;temp1&gt;&gt;temp2;
+                par.first=temp1;
+                par.second=temp2;
+                grupa.push_back(par);
+            }
+    
+            cout&lt;&lt;"Unesite red interpolacije: ";
+            cin&gt;&gt;d;
+            
+            if (d&lt;0 || d&gt;cvorovi) throw domain_error ("Neispravni cvorovi");
+
+            while (tacnost==true)
+            {
+                cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+                cin&gt;&gt;poslati;
+        
+                if (!cin)
+                {
+                    tacnost=false;
+                }
+        
+                else if (poslati&gt;0)
+                {
+                    auto f(BaricentricnaInterpolacija(grupa,d));
+                    cout&lt;&lt;"f("&lt;&lt;poslati&lt;&lt;") = "&lt;&lt;f(poslati)&lt;&lt;endl;
+                }
+            }
+        }
+        
+        catch (domain_error izuzetak)
+        {
+            cout&lt;&lt;izuzetak.what();
+        }
+    }
+    
+    if (opcija==2)
+    {
+        try
+        {
+            cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+            cin&gt;&gt;xmin&gt;&gt;xmax&gt;&gt;korak;
+            
+            if (xmin&gt;xmax) throw domain_error ("Nekorektni parametri");
+    
+            cout&lt;&lt;"Unesite red interpolacije: ";
+            cin&gt;&gt;d;
+
+            while (tacnost==true)
+            {
+                cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+                cin&gt;&gt;poslati;
+        
+                if (!cin)
+                {
+                    tacnost=false;
+                }
+        
+                else if (poslati&gt;0||poslati&lt;0)
+                {
+<a name="0"></a><font color="#FF0000"><a href="match865-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+                    auto f(BaricentricnaInterpolacija([](double x){double rez; rez=pow(x,2)+sin(x); return rez;},xmin,xmax,korak,d));
+                    cout&lt;&lt;"f("&lt;&lt;poslati&lt;&lt;") = "&lt;&lt;funkcija(poslati)&lt;&lt;" ";
+                    cout&lt;&lt;"fapprox("&lt;&lt;poslati&lt;&lt;") = "&lt;&lt;f(poslati)&lt;&lt;endl;
+                }
+            }
+        }
+        
+        catch (domain_error izuzetak)
+</font>        {
+            cout&lt;&lt;izuzetak.what();
+        }
+    }
+    
+	return 0;
+}</pre>
+</body>
+</html>

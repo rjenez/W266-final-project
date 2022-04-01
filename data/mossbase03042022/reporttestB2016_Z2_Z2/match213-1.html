@@ -1,0 +1,189 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student8089.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student6874.cpp<p></p><pre>
+// B 16/17, Zadaća 2, Zadatak 2
+//	Autotestovi by Enil Pajic (epajic1@etf.unsa.ba | @eon : etf.ba)
+//	NAPOMENA: i javni ATo-vi su dio postavke!	
+
+#include &lt;iostream&gt;
+#include &lt;deque&gt;
+#include &lt;vector&gt; 
+#include &lt;type_traits&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+enum class SmjerKretanja {
+<a name="5"></a><font color="#FF0000"><a href="match213-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+    NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo
+};
+
+
+template &lt;typename KontTip&gt;
+auto IzdvojiDijagonale3D (KontTip kont, SmjerKretanja smjer) -&gt;typename std::remove_reference&lt;decltype(kont[0])&gt;::type {
+</font>    typename  std::remove_reference&lt;decltype(kont[0])&gt;::type matrica;
+    if(kont.size()==0 || kont[0].size()==0)
+      return matrica;
+    for(int i=0; i&lt;kont.size(); i++){
+        if(kont[i].size()!=kont[0].size())
+          throw std::domain_error("Plohe nemaju isti broj redova");
+        for(int j=0; j&lt;kont[i].size(); j++)
+          if(kont[i][j].size()!=kont[i][0].size())
+            throw std::domain_error("Redovi nemaju isti broj elemenata");
+    }
+    if(smjer==SmjerKretanja::NaprijedNazad){
+       int a(0);
+       for(int i=0; i&lt;kont.size(); i++){
+         matrica.resize(matrica.size() + 1);
+         for(int j=0; j&lt;kont[i].size(); j++){
+            //matrica.resize(matrica.size() + 1);
+            for(int k=0; k&lt;kont[i][j].size(); k++  ){
+                if(j==k){
+                    matrica[a].push_back(kont[i][j][k]);
+                }
+            }
+            
+        }
+        a++;
+     }
+    }
+    if(smjer==SmjerKretanja::NazadNaprijed){
+        int a(0);
+        for(int i=kont.size()-1; i&gt;=0; i--){
+            matrica.resize(matrica.size() + 1);
+            for(int j=0; j&lt;kont[i].size(); j++){
+                for(int k=kont[i][j].size()-1; k&gt;=0; k--){
+                    if(j+k == kont[i][j].size() - 1)
+                       matrica[a].push_back(kont[i][j][k]);
+                }
+            }
+            a++;
+        }
+    }
+    if(smjer==SmjerKretanja::GoreDolje){
+        int a(0);
+        for(int i=0; i&lt;kont[0].size(); i++){
+            matrica.resize(matrica.size() + 1);
+            for(int j=kont.size() - 1; j&gt;=0; j--){
+                for(int k=0; k&lt;kont[0][0].size(); k++){
+                    if(j+k==kont.size() - 1)
+                      matrica[a].push_back(kont[j][i][k]);
+                }
+            }
+            a++;
+        }
+    }
+    if(smjer==SmjerKretanja::DoljeGore){
+        int a(0);
+        for(int i=kont[0].size()-1; i&gt;=0; i--){
+            matrica.resize(matrica.size() + 1);
+            for(int j=kont.size() -1; j&gt;=0;  j--){
+                for(int k=kont[0][0].size() - 1; k&gt;=0;   k--){
+                    if(k-j==kont.size())
+                      matrica[a].push_back(kont[j][i][k]);
+                }
+            }
+            a++;
+        }
+    }
+    if(smjer==SmjerKretanja::LijevoDesno){
+        int a(0);
+        for(int i=0; i&lt;kont[0][0].size(); i++){
+            matrica.resize(matrica.size() + 1);
+<a name="3"></a><font color="#00FFFF"><a href="match213-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+            for(int j=0; j&lt;kont[0].size(); j++){
+                for(int k=kont.size() -1; k&gt;=0;  k--){
+                    if(j+k==kont.size() - 1)
+</font>                      matrica[a].push_back(kont[k][j][i]);
+                }
+            }
+            a++;
+        }
+    }
+    if(smjer==SmjerKretanja::DesnoLijevo){
+        int a(0);
+        for(int i=kont[0][0].size() - 1; i&gt;=0; i--){
+            matrica.resize(matrica.size() + 1);
+<a name="4"></a><font color="#FF00FF"><a href="match213-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+            for(int j=0; j&lt;kont[0].size(); j++){
+                for(int k=0; k&lt;kont.size(); k++){
+                    if(j==k)
+</font>                      matrica[a].push_back(kont[k][j][i]);
+                }
+            }
+            a++;
+        }
+    }
+<a name="1"></a><font color="#00FF00"><a href="match213-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+return matrica;
+}
+
+
+
+
+int main ()
+{
+    int x,y,z;
+    std::cout&lt;&lt;"Unesite dimenzije (x y z): ";
+    std::cin&gt;&gt;x&gt;&gt;y&gt;&gt;z;
+    if(x&lt;0 || y&lt;0 || z&lt;0){
+</font>        std::cout&lt;&lt;"Neispravne dimenzije kontejnera!"&lt;&lt;std::endl;
+        return 0;
+    }
+    std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt;  kontejner(x, std::deque&lt;std::deque&lt;int&gt;&gt;(y, std::deque&lt;int&gt;(z)) );
+    std::cout&lt;&lt;"Unesite elemente kontejnera: "&lt;&lt;std::endl;
+    for(int i=0; i&lt;x; i++)
+<a name="2"></a><font color="#0000FF"><a href="match213-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+      for(int j=0; j&lt;y; j++)
+        for(int k=0; k&lt;z; k++)
+          std::cin&gt;&gt;kontejner[i][j][k];
+</font>    std::cout&lt;&lt;"Unesite smjer kretanja [0 - 5]: ";
+    int l;
+    std::cin&gt;&gt;l;
+<a name="0"></a><font color="#FF0000"><a href="match213-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+    try{
+        //auto mat(IzdvojiDijagonale3D(kontejner, SmjerKretanja(l)));
+       if(l==0)
+         std::cout&lt;&lt;"NaprijedNazad: "&lt;&lt;std::endl;
+       else if(l==1)
+         std::cout&lt;&lt;"NazadNaprijed: "&lt;&lt;std::endl;
+       else if(l==2)
+         std::cout&lt;&lt;"GoreDolje: "&lt;&lt;std::endl;
+    else if(l==3)
+       std::cout&lt;&lt;"DoljeGore: "&lt;&lt;std::endl;
+       else if(l==4)
+         std::cout&lt;&lt;"LijevoDesno: "&lt;&lt;std::endl;
+       else if(l==5)
+         std::cout&lt;&lt;"DesnoLijevo: "&lt;&lt;std::endl;
+</font>       else  
+         std::cout&lt;&lt;"Smjer kretanja nije ispravan!"&lt;&lt;std::endl;
+        if(l&gt;=0 &amp;&amp; l&lt;=5){
+        auto mat(IzdvojiDijagonale3D(kontejner, SmjerKretanja(l)));
+        
+        for(int i=0; i&lt;mat.size(); i++){
+          for(int j=0; j&lt;mat[i].size(); j++)
+<a name="6"></a><font color="#00FF00"><a href="match213-0.html#6" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+            std::cout&lt;&lt;std::setw(4)&lt;&lt;mat[i][j];
+        std::cout&lt;&lt;std::endl;
+            
+        }
+        }
+    }
+    catch(std::domain_error e){
+</font>        std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+    }
+    
+	return 0;
+}</pre>
+</body>
+</html>

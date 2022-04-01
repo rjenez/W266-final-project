@@ -1,0 +1,172 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student2967.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student4296.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;deque&gt;
+#include &lt;algorithm&gt;
+#include &lt;cstring&gt;
+#include &lt;iterator&gt;
+#include &lt;list&gt;
+#include &lt;set&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match40-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::vector;
+using std::string;
+struct Dijete {
+    std::string ime;
+    Dijete *sljedeci;
+};
+
+int broj_slova(string s){
+    int i{},brojac{};
+    while(i&lt;s.size()){
+        if((s[i]&gt;='0' &amp;&amp; s[i]&lt;='9') || (s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') || (s[i]&gt;='a' &amp;&amp; s[i]&lt;='z'))
+            brojac++;
+    i++;
+}
+return brojac;
+}
+  Dijete *KreirajPovezanuListu(std::vector&lt;string&gt; V){
+        Dijete *pocetak(nullptr), *prethodni;
+        for(int i=0;i&lt;V.size(); i++) {
+            
+            Dijete *novi=nullptr;
+            novi=(new Dijete); // Kreiranje novog čvora
+            novi-&gt;ime = V[i];
+            novi-&gt;sljedeci = nullptr;
+            if(!pocetak) pocetak = novi; // Prvi čvor...
+            else prethodni-&gt;sljedeci = novi; // Svi osim prvog...
+            prethodni = novi;
+            if(i+1==V.size())
+                        novi-&gt;sljedeci= pocetak;
+
+        }
+        return pocetak;
+    }
+
+vector&lt;std::set&lt;string&gt;&gt; Razvrstavanje(std::vector&lt;string&gt; V, int k){
+    if(k&lt;1 || k&gt;V.size()) throw std::logic_error("Razvrstavanje nemoguce");
+    int  n(V.size());
+    
+    int broj_clanova,brojac{};
+    broj_clanova=n/k;
+    int broj_dodatnih;
+    broj_dodatnih=n%k;
+    Dijete *L;
+    L=KreirajPovezanuListu(V);
+    vector&lt;int&gt; M(k);
+    for(int i=0; i&lt;k; i++){
+        if(i&lt;broj_dodatnih)
+            M[i]=(broj_clanova+1);
+        else M[i]=(broj_clanova);
+    }
+    vector&lt;std::set&lt;string&gt;&gt; T(k);
+    auto it=L;
+    int i=0;
+    T[0].insert(L-&gt;ime);
+    int l=1;
+    auto zadnji(L);
+    while(l&lt;n){
+        l++;
+        zadnji=zadnji-&gt;sljedeci;
+    }
+    brojac=broj_slova(L-&gt;ime);
+
+    auto kt=L;
+    auto d=kt-&gt;sljedeci;
+     zadnji-&gt;sljedeci=d;
+    delete kt;
+    kt=d;
+    auto L1(kt);
+    n--;
+    while(n&gt;=0 &amp;&amp; i&lt;M.size()){
+        if(T[i].size()==M[i])
+            i++;
+        it=kt;
+        for(int i=1; i&lt; brojac; i++)
+            kt=kt-&gt;sljedeci;
+
+        T[i].insert(kt-&gt;ime);
+        if(n&gt;1){
+            auto p1(L1);
+            auto p2(p1);
+            brojac=broj_slova(kt-&gt;ime);
+            if(p1==kt)
+                p1=p1-&gt;sljedeci;
+            for(;p1!=kt; p1=p1-&gt;sljedeci)
+                p2=p1;
+            auto d(kt);
+            d=d-&gt;sljedeci;
+            p2-&gt;sljedeci=d;
+            delete kt;
+            kt=d;
+            L1=d;
+        }
+        if(n==1){
+            n--;
+            delete kt;
+        }
+        n--;
+        if(T[i].size()==M[i])
+            i++;
+    }
+    
+    return T;
+    
+}
+
+int main (){
+    int n=1,k;
+    vector&lt;string&gt; V;
+    cout&lt;&lt;"Unesite broj djece: ";
+    cin&gt;&gt;n;
+    V.resize(n);
+    cin.ignore(1000,'\n');
+    cout&lt;&lt;"Unesite imena djece: ";
+    for(int i=0; i&lt;n; i++)
+        	std::getline(std::cin, V[i]);
+    cout&lt;&lt;endl&lt;&lt;"Unesite broj timova: ";
+    cin&gt;&gt;k;
+    try{
+        vector&lt;std::set&lt;string&gt;&gt; K;
+        K=Razvrstavanje(V,k);
+        for(int i=0; i&lt;K.size(); i++){
+            cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+             auto ita=K[i].begin();
+        while(ita!=K[i].end()) {
+            ita++;
+            if(ita==K[i].end()) {
+                ita--;
+                cout&lt;&lt;*ita;
+                break;
+            } else {
+                ita--;
+                std::cout &lt;&lt;*ita&lt;&lt;", ";
+            }
+            ita++;
+
+        }
+            cout&lt;&lt;endl;
+        }
+    }
+    catch(std::logic_error e){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what()&lt;&lt;endl;        
+</font>    }
+
+
+	return 0;
+}</pre>
+</body>
+</html>

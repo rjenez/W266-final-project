@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student7197.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student7197.cpp<p></p><pre>
+// B 16/17, Zadaća 2, Zadatak 2
+//	Autotestovi by Enil Pajic (epajic1@etf.unsa.ba | @eon : etf.ba)
+//	NAPOMENA: i javni ATo-vi su dio postavke!	
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+enum class SmjerKretanja {NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo};
+//IZDVAJA IZ 3D KONTEJNERA ODREDJENE DIJAGONALE, I SMJESTAU 2D MATRICU, U ZAVISNOSTI OD ZADANOG SMJERA
+template &lt;typename Tip&gt;
+auto IzdvojiDijagonale3D (Tip kont, SmjerKretanja smjer)-&gt;typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type {
+    typename std::remove_reference &lt;decltype(kont.at(0))&gt;::type mat;
+    if (kont.size()==0) return mat;
+    for (int i=0; i&lt;kont.size()-1; i++){
+        if (kont.at(i).size() != kont.at(i+1).size()) throw std::domain_error ("Plohe nemaju isti broj redova");
+        for (int j=0; j&lt;kont.at(i).size()-1; j++)
+        if (kont.at(i).at(j).size() != kont.at(i).at(j+1).size()) throw std::domain_error ("Redovi nemaju isti broj elemenata");
+    }
+<a name="2"></a><font color="#0000FF"><a href="match877-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+    for (int i=0; i&lt;kont.size(); i++)
+        for (int j=0; j&lt;kont.at(i).size(); j++) {
+            if (smjer==SmjerKretanja::NaprijedNazad || smjer==SmjerKretanja::NazadNaprijed)
+</font>                mat.resize(kont.size());
+            else if (smjer==SmjerKretanja::DesnoLijevo || smjer==SmjerKretanja::LijevoDesno)
+                mat.resize(kont.at(i).at(j).size());
+            else mat.resize(kont.at(i).size());
+        }
+        
+<a name="1"></a><font color="#00FF00"><a href="match877-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+    for (int i=0; i&lt;kont.size(); i++)
+        for (int j=0; j&lt;kont.at(i).size(); j++)
+            for (int k=0; k&lt;kont.at(i).at(j).size(); k++){
+</font>                if (smjer==SmjerKretanja::NaprijedNazad &amp;&amp; j==k)
+                    mat.at(i).push_back(kont.at(i).at(j).at(k));
+<a name="3"></a><font color="#00FFFF"><a href="match877-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+                else if (smjer==SmjerKretanja::NazadNaprijed &amp;&amp; j+k==kont.at(i).at(j).size()-1)
+                    mat.at(i).push_back(kont.at(i).at(j).at(k));
+</font>                else if (smjer==SmjerKretanja::DesnoLijevo &amp;&amp; i==j)
+                    mat.at(k).push_back(kont.at(i).at(j).at(k));
+                else if (smjer==SmjerKretanja::LijevoDesno &amp;&amp; i+j==kont.size()-1)
+                    mat.at(k).push_back(kont.at(i).at(j).at(k));
+                else if (smjer==SmjerKretanja::GoreDolje &amp;&amp; i+k==kont.size()-1)
+                    mat.at(j).push_back(kont.at(i).at(j).at(k));
+                else if (smjer==SmjerKretanja::DoljeGore &amp;&amp; i+kont.at(i).at(j).size()==k+kont.size())
+                    mat.at(j).push_back(kont.at(i).at(j).at(k));
+            }
+
+
+    if (smjer==SmjerKretanja::NazadNaprijed || smjer==SmjerKretanja::DesnoLijevo || smjer==SmjerKretanja::DoljeGore)
+        for (int i=0; i&lt;mat.size()/2; i++){
+            auto temp=mat.at(i);
+            mat.at(i)=mat.at(mat.size()-1-i);
+            mat.at(mat.size()-1-i)=temp;
+        }
+    if (smjer==SmjerKretanja::LijevoDesno || smjer==SmjerKretanja::GoreDolje || smjer==SmjerKretanja::DoljeGore)
+        for (int i=0; i&lt;mat.size(); i++)
+            for (int j=0; j&lt;mat.at(i).size()/2; j++){
+                auto temp=mat.at(i).at(j);
+                mat.at(i).at(j)=mat.at(i).at(mat.at(i).size()-1-j);
+                mat.at(i).at(mat.at(i).size()-1-j)=temp;
+            }
+    return mat;
+}
+
+//STRING, KOJI SMIJER KRETANJA SE TRAZI
+std::string Koji_je_smjer (int s,SmjerKretanja &amp;gdje) {
+    std::string smjer="";
+    if (s==0) {smjer="NaprijedNazad: \n"; gdje=SmjerKretanja::NaprijedNazad;}
+    else if (s==1) {smjer="NazadNaprijed: \n"; gdje=SmjerKretanja::NazadNaprijed;}
+    else if (s==2) {smjer="GoreDolje: \n"; gdje=SmjerKretanja::GoreDolje;}
+    else if (s==3) {smjer="DoljeGore: \n"; gdje=SmjerKretanja::DoljeGore;}
+    else if (s==4) {smjer="LijevoDesno: \n"; gdje=SmjerKretanja::LijevoDesno;}
+    else if (s==5) {smjer="DesnoLijevo: \n"; gdje=SmjerKretanja::DesnoLijevo;}
+    return smjer;
+}
+//UNOS ELEMENATA KONTEJNERA
+std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt; Unos_kontejnera (int x, int y, int z) {
+    std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt; kont;
+    int broj;
+    kont.resize(x);
+    for (int i=0; i&lt;x; i++)
+        for (int j=0; j&lt;y; j++) {
+            kont.at(i).resize(y);
+            for (int k=0; k&lt;z; k++){
+                std::cin&gt;&gt;broj;
+                kont.at(i).at(j).push_back(broj);
+            }
+        }
+    return kont;
+}
+int main ()
+{
+    try {
+        int x,y,z;
+        std::cout&lt;&lt;"Unesite dimenzije (x y z): ";
+        std::cin&gt;&gt;x&gt;&gt;y&gt;&gt;z;
+        if (x&lt;0 || y&lt;0 || z&lt;0) {
+            std::cout&lt;&lt;"Neispravne dimenzije kontejnera!\n";
+            return 1;
+        }
+        std::cout&lt;&lt;"Unesite elemente kontejnera: \n";
+        auto kont=Unos_kontejnera(x,y,z);
+        int smjer_br;
+        std::cout&lt;&lt;"Unesite smjer kretanja [0 - 5]: ";
+        std::cin&gt;&gt;smjer_br;
+        if (smjer_br!=5 &amp;&amp; smjer_br!=4 &amp;&amp; smjer_br!=3 &amp;&amp; smjer_br!=2 &amp;&amp; smjer_br!=1 &amp;&amp; smjer_br!=0) {
+            std::cout&lt;&lt;"Smjer kretanja nije ispravan!\n";
+            return 1;
+        }
+        SmjerKretanja smjer;
+        auto s=Koji_je_smjer(smjer_br,smjer);
+        std::cout&lt;&lt;s;
+        auto mat=IzdvojiDijagonale3D(kont,smjer);
+<a name="0"></a><font color="#FF0000"><a href="match877-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+        for (int i=0; i&lt;mat.size(); i++){
+            for (int j=0; j&lt;mat.at(i).size(); j++)
+                std::cout&lt;&lt;std::setw(4)&lt;&lt;mat.at(i).at(j);
+            std::cout&lt;&lt;std::endl;
+        }
+    }
+    catch (std::domain_error a){
+        std::cout&lt;&lt;a.what()&lt;&lt;std::endl;
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

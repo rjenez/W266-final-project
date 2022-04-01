@@ -1,0 +1,227 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student7125.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student2254.cpp<p></p><pre>
+// B 16/17, Zadaća 2, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;type_traits&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+<a name="1"></a><font color="#00FF00"><a href="match35-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_23.gif"/></a>
+
+typedef std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt; kontri;
+typedef std::deque&lt;std::deque&lt;int&gt;&gt; kontdva;
+typedef std::deque&lt;int&gt; kont;
+
+enum class SmjerKretanja
+{
+    NaprijedNazad,NazadNaprijed,GoreDolje,DoljeGore, LijevoDesno,DesnoLijevo
+};
+template &lt;typename T&gt;
+auto IzdvojiDijagonale3D(T kont, SmjerKretanja smjer) -&gt; typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type;
+template &lt;typename T&gt;
+void Resize(T &amp;kont, unsigned int n, unsigned int m);
+template &lt;typename T&gt;
+int Pogresanformat(T &amp;kont);
+
+int main ()
+{
+    std::cout&lt;&lt; "Unesite dimenzije (x y z): ";
+    int x, y ,z;
+    std::cin &gt;&gt; x&gt;&gt;y&gt;&gt;z;
+    if(x &lt; 0 || y &lt; 0 || z &lt; 0) {
+        std::cout &lt;&lt;"Neispravne dimenzije kontejnera!";
+        return 0;
+    }
+    std::cout&lt;&lt;"Unesite elemente kontejnera: ";
+
+    kontri kontejner(x,kontdva(y,kont(z)));
+
+    for(int i(0); i &lt; x; i++)
+        for(int j(0); j &lt; y; j++)
+            for(int k(0); k &lt; z; k++)
+                std::cin &gt;&gt; kontejner.at(i).at(j).at(k);
+    int smjer;
+
+    std::cout&lt;&lt;std::endl&lt;&lt;"Unesite smjer kretanja [0 - 5]: ";
+    std::cin &gt;&gt; smjer;
+    if(smjer &lt; 0 || smjer &gt; 5) {
+        std::cout&lt;&lt;"Smjer kretanja nije ispravan!" &lt;&lt; std::endl;
+        return 0;
+    }
+
+    try {
+        auto kontejner2(IzdvojiDijagonale3D(kontejner,SmjerKretanja(smjer)));
+        switch(smjer) {
+        case 0:
+            std::cout&lt;&lt; "NaprijedNazad: "&lt;&lt;std::endl;
+            break;
+        case 1:
+            std::cout&lt;&lt; "NazadNaprijed: "&lt;&lt;std::endl;
+</font>            break;
+        case 2:
+            std::cout&lt;&lt; "GoreDolje: "&lt;&lt;std::endl;
+            break;
+        case 3:
+            std::cout&lt;&lt; "DoljeGore: "&lt;&lt;std::endl;
+            break;
+        case 4:
+<a name="0"></a><font color="#FF0000"><a href="match35-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_72.gif"/></a>
+
+            std::cout&lt;&lt; "LijevoDesno: "&lt;&lt;std::endl;
+            break;
+        case 5:
+            std::cout&lt;&lt; "DesnoLijevo: "&lt;&lt;std::endl;
+            break;
+        }
+        for(auto &amp;i : kontejner2) {
+            for(auto &amp;j : i)
+                std::cout &lt;&lt;std::setw(4)&lt;&lt; j;
+            std::cout&lt;&lt;std::endl;
+        }
+    } catch(std::domain_error error) {
+        std::cout &lt;&lt;  error.what();
+    }
+
+    return 0;
+}
+template &lt;typename T&gt;
+void Resize(T &amp;kont, unsigned int n, unsigned int m)
+{
+    //mjenjamo veličinu kont na onu koja nam treba
+    for(int i(0); i &lt; m; i++) {
+        kont.push_back(typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type(n));
+    }
+}
+template &lt;typename T&gt;
+int Pogresanformat(T &amp;kont)
+{
+
+    //ako redovi nemaju isti broj elemanata vrati 0
+    for(int i(0); i &lt; kont.size(); i++)
+        for(int j(0); j &lt; kont[i].size(); j++)
+            if(kont.at(0).at(0).size() != kont.at(i).at(j).size())
+                return 0;
+
+
+    //ako plohe nisu iste veličine vrati -1
+    for(int i(0); i &lt; kont.size(); i++)
+        if(kont.at(0).size() != kont.at(i).size())
+            return -1;
+
+
+
+    return 1;
+}
+
+template &lt;typename T&gt;
+auto IzdvojiDijagonale3D(T kont, SmjerKretanja smjer) -&gt; typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type {
+    typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type izlaz;
+    bool nijepromjenjenavelicina(true);
+
+    //testiraj i eventualno baci izuzetak
+    if(!Pogresanformat(kont))  throw std::domain_error("Redovi nemaju isti broj elemenata");
+    else if(Pogresanformat(kont) == -1) throw std::domain_error("Plohe nemaju isti broj redova");
+
+//Za neke smjerove dodaje u obrnutom smjeru da bi dobili ispravan redoslijed elemenata
+    for(int i(0); i &lt; kont.size(); i++)
+        for(int j(0); j &lt; kont.at(0).size(); j++)
+            for(int k(0); k &lt; kont.at(0).at(0).size(); k++)
+                if(smjer == SmjerKretanja::NaprijedNazad) {
+                    if(j == k) {
+                        if(nijepromjenjenavelicina) {
+                            if(kont.at(0).at(0).size() &gt;= kont.at(0).size()) {  //uslov za dodavanje elementa nekog
+                                Resize(izlaz,kont.at(0).size(),kont.size());
+                                nijepromjenjenavelicina = false;    //samo jednom mjenjaj veličinu
+                            } else {
+                                Resize(izlaz,kont.at(0).at(0).size(),kont.size());  //javljaju se anomalije kada je y &gt; z, ovo ih ispravlja
+                                nijepromjenjenavelicina = false;
+                            }
+                        }
+
+
+                        izlaz.at(i).at(j) = kont.at(i).at(j).at(k); //dodaj elemente koji ispunjavaju uslov
+                    }
+                } else if (smjer == SmjerKretanja::NazadNaprijed) {
+                    if(j == kont.at(0).at(0).size()-1-k) {  //uslov za dodavanje elementa nekog
+                        if(nijepromjenjenavelicina) { 
+                            if(kont.at(0).at(0).size() &gt;= kont.at(0).size()) {
+                                Resize(izlaz,kont.at(0).size(),kont.size());
+                                nijepromjenjenavelicina = false;
+                            } else {
+                                Resize(izlaz,kont.at(0).at(0).size(),kont.size()); //javljaju se anomalije kada je y &gt; z, ovo ih ispravlja
+                                nijepromjenjenavelicina = false;
+                            }
+                        }
+
+                        izlaz.at(kont.size()-1-i).at(j) = kont.at(i).at(j).at(k); //dodaj elemente koji ispunjavaju uslov
+
+                    }
+                } else if(smjer == SmjerKretanja::GoreDolje) {
+                    if(k == kont.size()-1 - i) {  //uslov za dodavanje elementa nekog
+                        if(nijepromjenjenavelicina) {
+                            if( kont.at(0).size() &gt;= kont.size()) {
+                                Resize(izlaz,kont.size(),kont.at(0).size());
+                                nijepromjenjenavelicina = false;
+                            } else {
+                                Resize(izlaz,kont.at(0).size(),kont.at(0).size()); //javljaju se anomalije kada je x &gt; y, ovo ih ispravlja
+                                nijepromjenjenavelicina = false;
+                            }
+                        }
+
+                        izlaz.at(j).at(kont.size()-1-i) = kont.at(i).at(j).at(k); //dodaj elemente koji ispunjavaju uslov
+
+                    }
+                } else if (smjer == SmjerKretanja::DoljeGore) {
+                    if(k == kont.at(0).at(0).size() - kont.size() + i) {  //uslov za dodavanje elementa nekog
+                        if(nijepromjenjenavelicina) {
+                            if( kont.at(0).size() &gt;= kont.size()) {
+                                Resize(izlaz,kont.size(),kont.at(0).size());
+                                nijepromjenjenavelicina = false;
+                            } else {
+                                Resize(izlaz,kont.at(0).size(),kont.at(0).size());  //javljaju se anomalije kada je x &gt; y, ovo ih ispravlja
+                                nijepromjenjenavelicina = false;
+                            }
+                        }
+
+                        izlaz.at(kont.at(0).size()-1-j).at(kont.size()-1-i) = kont.at(i).at(j).at(k); //dodaj elemente koji ispunjavaju uslov
+                    }
+                } else if(smjer == SmjerKretanja::LijevoDesno) {
+                    if(j == kont.size()-1-i) {      //uslov za dodavanje elementa nekog
+                        if(nijepromjenjenavelicina) {
+                            if(kont.at(0).at(0).size() &gt;= kont.size()) {
+                                Resize(izlaz,kont.size(),kont.at(0).at(0).size());
+                                nijepromjenjenavelicina = false;
+                            } else {
+                                Resize(izlaz,kont.at(0).size(),kont.at(0).at(0).size());    //javljaju se anomalije kada je x &gt; z, ovo ih ispravlja
+                                nijepromjenjenavelicina = false;
+                            }
+                        }
+
+                        izlaz.at(k).at(kont.size()-1-i) = kont.at(i).at(j).at(k);       //dodaj elemente koji ispunjavaju uslov
+                    }
+                } else if (smjer == SmjerKretanja::DesnoLijevo) {
+                    if(j == i) {  //uslov za dodavanje elementa nekog
+                        if(nijepromjenjenavelicina) {
+                            if(kont.at(0).at(0).size() &gt;= kont.size()) {
+                                Resize(izlaz,kont.size(),kont.at(0).at(0).size());
+                                nijepromjenjenavelicina = false;
+                            } else {
+                                Resize(izlaz,kont.at(0).size(),kont.at(0).at(0).size());    //javljaju se anomalije kada je x &gt; z, ovo ih ispravlja
+                                nijepromjenjenavelicina = false;
+                            }
+                        }
+
+                        izlaz.at(kont.at(0).at(0).size()-1-k).at(i) = kont.at(i).at(j).at(k); //dodaj elemente koji ispunjavaju uslov
+</font>                    }
+                }
+    return izlaz;
+}</pre>
+</body>
+</html>

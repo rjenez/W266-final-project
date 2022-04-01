@@ -1,0 +1,114 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4011.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4011.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;string&gt;
+#include&lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match177-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+string ObrniFraze(string recenica,vector&lt;string&gt; spisak)
+{
+	for(int i(0);i&lt;spisak.size();i++){
+		if(spisak[i].length()&gt;0){
+			int j(0);
+			while(j&lt;recenica.length()){
+				while(j&lt;recenica.length() &amp;&amp; recenica[j]!=spisak[i][0]) j++;
+				int k(j+1);
+				int brojac(1);
+				while(k&lt;recenica.length() &amp;&amp; brojac&lt;spisak[i].length()){
+					if(recenica[k]!=spisak[i][brojac]) break;
+					k++;
+					brojac++;
+				}
+				int pamti(k);
+				if(brojac==spisak[i].length()){
+					while(j&lt;k){
+						recenica[j]=spisak[i][brojac-1];
+						brojac--;
+						j++;
+					}
+				}
+				j=pamti;
+			}
+		}
+	}
+	return recenica;
+}
+
+string IzmijeniUPigLatin(string recenica,vector&lt;string&gt; rijeci)
+{
+	string dodaj("ay");
+//	bool mijenaj(false);
+//	if(rijeci.size()==0) mijenaj=true;
+	for(int i(0);i&lt;rijeci.size();i++){
+		for(int j(0);j&lt;rijeci[i].size();j++){
+			if((rijeci[i][j]&lt;'a' &amp;&amp; rijeci[i][j]&gt;'Z')|| rijeci[i][j]&lt;'A' || rijeci[i][j]&gt;'z' ) throw domain_error("Nekorektan izbor rijeci");
+		}
+	}
+	
+	int j(0);
+	while(j&lt;recenica.length()){
+		while(j&lt;recenica.length() &amp;&amp; recenica[j]==' ') j++;
+		int k(j);
+		while(k&lt;recenica.length() &amp;&amp; recenica[k]!=' ') k++;
+		for(int i=0;i&lt;rijeci.size();i++){
+			if(recenica.substr(j,k-j)==rijeci[i]){
+				recenica=recenica.substr(0,j)+recenica.substr(j+1,k-j-1)+recenica.substr(j,1)+dodaj+recenica.substr(k,recenica.length()-k);
+				break;
+			}
+		}
+		j=k;
+	}
+	return recenica;
+}
+	
+
+
+
+int main()
+{
+	string recenica;
+	string unos;
+	vector&lt;string&gt;vektor;
+	try{
+	cout&lt;&lt;"Unesite recenicu: ";
+	getline(cin,recenica);
+	cout&lt;&lt;"Unesite fraze: ";
+	while(cin.peek()!='\n'){
+		getline(cin,unos);
+		vektor.push_back(unos);
+	}
+	
+	cout&lt;&lt;"Recenica nakon PigLatin transformacije: "&lt;&lt;IzmijeniUPigLatin(recenica,vektor);
+	cout&lt;&lt;endl;
+	cout&lt;&lt;"Recenica nakon obrtanja fraza: "&lt;&lt;ObrniFraze(recenica,vektor);
+	}
+	catch(domain_error e){
+		cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what()&lt;&lt;endl;
+		cout&lt;&lt;"Recenica nakon obrtanja fraza: "&lt;&lt;ObrniFraze(recenica,vektor);
+	}
+	return 0;
+</font>}
+
+</pre>
+</body>
+</html>

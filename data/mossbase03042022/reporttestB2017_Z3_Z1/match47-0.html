@@ -1,0 +1,218 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student2956.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student2956.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match47-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;limits&gt;
+#include &lt;algorithm&gt;
+
+double Nesto(double x){
+    return x*x+std::sin(x);
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::vector&lt;std::pair&lt;double, double&gt;&gt; vektor){
+    return [vektor](double x) -&gt; double{
+        auto it = vektor.begin(), it1 = vektor.begin();
+        //bool ima = false, nema = false;
+        double vrijednost(0);
+        it=std::lower_bound(vektor.begin(), vektor.end(), std::make_pair(x, std::numeric_limits&lt;double&gt;::min()));
+        if(it-vektor.begin()==0||it-vektor.end()==0){
+            if(it-vektor.end()==0) throw std::range_error("Argument izvan opsega");
+            if(it-&gt;first==x) return it-&gt;second;
+            throw std::range_error("Argument izvan opsega");
+        }
+        it1=it;
+        it1--;
+        if(it-&gt;first==x) return it-&gt;second;
+        else vrijednost = it1-&gt;second + (it-&gt;second - it1-&gt;second)/(it-&gt;first - it1-&gt;first)*(x-it1-&gt;first);
+        return vrijednost;
+    };
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(double funkcija(double), double xmin, double xmax, double deltax){
+    return [=](double x) -&gt; double{
+        if(xmin&gt;xmax||deltax==0||(xmin==xmax&amp;&amp;deltax!=0)) throw std::domain_error("Nekorektrni parametri");
+        std::vector&lt;std::pair&lt;double, double&gt;&gt; vektor;
+        //std::cout&lt;&lt;"broj je: "&lt;&lt;xmax/deltax&lt;&lt;std::endl;
+        for(int i = 0 ; i &lt;xmax/deltax-1; i++ )
+        {
+            vektor.push_back(std::make_pair(xmin + i*deltax, funkcija(xmin+i*deltax)));
+        }
+        auto it = vektor.begin(), it1 = vektor.begin();
+        //bool ima = false, nema = false;
+        double vrijednost(0);
+        it=std::lower_bound(vektor.begin(), vektor.end(), std::make_pair(x, std::numeric_limits&lt;double&gt;::min()));
+        //for(auto i : vektor) std::cout&lt;&lt;"*it iznosi: "&lt;&lt;i.first&lt;&lt;std::endl;
+        if(it-vektor.begin()==0||it-vektor.end()==0){
+            if(it-vektor.end()==0) throw std::range_error("Argument izvan opsega");
+            if(it-&gt;first==x) return it-&gt;second;
+            throw std::range_error("Argument izvan opsega");
+        }
+        it1=it;
+        it1--;
+        if(it-&gt;first==x) return it-&gt;second;
+        else vrijednost = it1-&gt;second + (it-&gt;second - it1-&gt;second)/(it-&gt;first - it1-&gt;first)*(x-it1-&gt;first);
+        return vrijednost;
+    };
+}
+
+int main ()
+{
+    std::function&lt;double(double)&gt; f;
+    double pomocna(0),pomocna1(0);
+    try{
+    std::cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    std::vector&lt;std::pair&lt;double, double&gt;&gt; vektor;
+    std::cin &gt;&gt; pomocna;
+    if(pomocna == 1){
+        double velicina(0);
+        std::cout &lt;&lt; "Unesite broj cvorova: ";
+        std::cin &gt;&gt; velicina;
+        std::cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+        for(int i = 0; i &lt; velicina; i++){
+            std::cin &gt;&gt; pomocna &gt;&gt; pomocna1;
+            vektor.push_back(std::make_pair(pomocna, pomocna1));
+        }
+        std::sort(vektor.begin(), vektor.end(), [](const std::pair&lt;double, double&gt; &amp;prvi,const std::pair&lt;double, double&gt; &amp;drugi){
+            return prvi.first &lt; drugi.first;
+        });
+        auto test = std::unique(vektor.begin(), vektor.end(), [](const std::pair&lt;double, double&gt; &amp;prvi,const std::pair&lt;double, double&gt; &amp;drugi){
+            return prvi.first == drugi.first;
+        });
+        if (test-vektor.end()&lt;0) throw std::domain_error("Neispravni cvorovi");
+        f=LinearnaInterpolacija(vektor);
+        std::string rijec;
+        for(;;){
+            std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            std::cin &gt;&gt; rijec;
+            if(rijec == "kraj") break;
+            pomocna1 = std::stod(rijec);
+            std::cout &lt;&lt; "f(" &lt;&lt; pomocna1 &lt;&lt; ") = " &lt;&lt; f(pomocna1) &lt;&lt; std::endl;
+            rijec.clear();
+        }
+    }
+    if(pomocna==2){
+        std::cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+        double pocetak(0), kraj(0), korak(0);
+        std::cin &gt;&gt; pocetak &gt;&gt; kraj &gt;&gt; korak;
+        f=LinearnaInterpolacija(Nesto, pocetak, kraj, korak);
+        std::string rijec;
+        for(;;){
+            try{
+            std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            std::cin &gt;&gt; rijec;
+            if(rijec == "kraj") break;
+            pomocna1 = std::stod(rijec);
+            std::cout &lt;&lt; "f(" &lt;&lt; pomocna1 &lt;&lt; ") = " &lt;&lt; pomocna1*pomocna1+std::sin(pomocna1) &lt;&lt; " fapprox(" &lt;&lt; pomocna1&lt;&lt; ") = " &lt;&lt;f(pomocna1) &lt;&lt; std::endl;
+            rijec.clear();}
+            catch(std::range_error greska){
+	            std::cout&lt;&lt;greska.what()&lt;&lt;std::endl;
+	        }
+	        catch(std::domain_error greska){
+	        std::cout&lt;&lt;greska.what();
+	        return 0;
+	        }
+        }
+    }
+	return 0;}
+	catch(std::range_error greska){
+	    std::cout&lt;&lt;greska.what()&lt;&lt;std::endl;
+	    /*if(pomocna==2){
+	        std::string rijec;
+            for(;;){
+                std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                std::cin &gt;&gt; rijec;
+                if(rijec == "kraj") break;
+                pomocna1 = std::stod(rijec);
+                if(pomocna==2) std::cout &lt;&lt; "f(" &lt;&lt; pomocna1 &lt;&lt; ") = " &lt;&lt; pomocna1*pomocna1+std::sin(pomocna1) &lt;&lt; " fapprox(" &lt;&lt; pomocna1&lt;&lt; ") = " &lt;&lt;f(pomocna1) &lt;&lt; std::endl;
+                else std::cout &lt;&lt; "f(" &lt;&lt; pomocna1 &lt;&lt; ") = " &lt;&lt; f(pomocna1) &lt;&lt; std::endl;
+                rijec.clear();
+            }
+	    }*/
+	}
+	catch(std::domain_error greska){
+	    std::cout&lt;&lt;greska.what();
+</font>	}
+}
+/*
+
+bekap 1
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::vector&lt;std::pair&lt;double, double&gt;&gt; vektor){
+    return [vektor](double x) -&gt; double{
+        auto it = vektor.begin(), it1 = vektor.begin();
+        //bool ima = false, nema = false;
+        double vrijednost(0);
+        for(;it!=vektor.end();it++){
+            if(it-&gt;first==x){
+                ima = true;
+                vrijednost = it-&gt;second;
+                break;
+            }
+        }
+        if(!ima){
+            it=vektor.begin();
+            for(;it!=vektor.end();it++){
+                if(it-&gt;first &gt; x){
+                    nema = true;
+                    it1 = it;
+                    it1--;
+                    vrijednost = it1-&gt;second + (it-&gt;second - it1-&gt;second)/(it-&gt;first - it1-&gt;first)*(x-it1-&gt;first);
+                    break;
+                }
+            }
+        }
+        return vrijednost;
+    };
+}
+
+int main ()
+{
+    std::vector&lt;std::pair&lt;double, double&gt;&gt; vektor;
+    std::cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    double pomocna(0),pomocna1(0);
+    std::cin &gt;&gt; pomocna;
+    if(pomocna == 1){
+        double velicina(0);
+        std::cout &lt;&lt; "Unesite broj cvorova: ";
+        std::cin &gt;&gt; velicina;
+        std::cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+        for(int i = 0; i &lt; velicina; i++){
+            std::cin &gt;&gt; pomocna &gt;&gt; pomocna1;
+            vektor.push_back(std::make_pair(pomocna, pomocna1));
+        }
+    }
+    auto f(LinearnaInterpolacija(vektor)); 
+    std::string rijec;
+    for(;;){
+        std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+        std::cin &gt;&gt; rijec;
+        if(rijec == "kraj") break;
+        pomocna = std::stod(rijec);
+        std::cout &lt;&lt; "f(" &lt;&lt; pomocna &lt;&lt; ") = " &lt;&lt; f(pomocna) &lt;&lt; std::endl;
+        rijec.clear();
+    }
+	return 0;
+}
+*/
+
+</pre>
+</body>
+</html>

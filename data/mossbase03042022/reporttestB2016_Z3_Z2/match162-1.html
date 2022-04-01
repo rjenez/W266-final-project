@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student7589.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student8580.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match162-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_98.gif"/></a>
+
+bool UslovZaRijec(char s) {
+    return ((s &gt;= 'A' &amp;&amp; s &lt;= 'Z') || (s &gt;= 'a' &amp;&amp; s &lt;= 'z') || (s &gt;= '0' &amp;&amp; s &lt;= '9'));
+}
+
+void PrebaciUMala(std::string &amp;s) {
+    for(int i = 0; i &lt; s.length(); i++) {
+        if(s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z') s[i] += 32;
+    }
+}
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string s) {
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa;
+    int i = 0;
+    while(i &lt; s.length()) {
+        //preskace znakove interpunkcije i razmake
+        if(!UslovZaRijec(s[i])) {
+            while(!UslovZaRijec(s[i]) &amp;&amp; i &lt; s.length()) {
+                i++;
+            }
+        }
+        
+        if(i == s.length()) break;
+        std::string rijec;
+        int j = i;
+        while(j &lt; s.length() &amp;&amp; UslovZaRijec(s[j])) {
+            rijec.push_back(s[j]);
+            j++;
+        }
+        
+        PrebaciUMala(rijec);
+        
+        mapa[rijec].insert(i);
+        i = j - 1;
+        i++;
+    }
+    
+    return mapa;
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa) {
+    auto it = mapa.begin();
+    while(it != mapa.end()) {
+        std::cout &lt;&lt; it -&gt; first &lt;&lt; ": ";
+        
+        auto p = (it-&gt;second).begin();
+        auto k = (it-&gt;second).end();
+        while(p != k) {
+            auto pomocni = p;
+            pomocni++;
+            if(pomocni == k) { std::cout &lt;&lt; *p; break; }
+            std::cout &lt;&lt; *p &lt;&lt; ",";
+            p++;
+        }
+        std::cout &lt;&lt; std::endl;
+        it++;
+    }
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string s, std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa) {
+    PrebaciUMala(s);
+    auto it = mapa.find(s);
+    if(it == mapa.end()) throw std::logic_error("Pojam nije nadjen");
+    else return it-&gt;second;
+}
+
+
+int main ()
+{
+    std::string recenica;
+    std::cout &lt;&lt; "Unesite tekst: ";
+    std::getline(std::cin, recenica);
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa = KreirajIndeksPojmova(recenica);
+    IspisiIndeksPojmova(mapa);
+    std::string pomocni = ".";
+    for(;;) {
+        std::cout &lt;&lt; "Unesite rijec: ";
+        std::string rijec;
+        std::getline(std::cin, rijec);
+        if(rijec == pomocni) break;
+        try {
+            std::set&lt;int&gt; skup = PretraziIndeksPojmova(rijec, mapa);
+            for(auto x : skup) std::cout &lt;&lt; x &lt;&lt; " ";
+        }
+        catch(std::logic_error) {
+            std::cout &lt;&lt; "Unesena rijec nije nadjena!";
+        }
+        std::cout &lt;&lt; std::endl;
+</font>    }
+    
+	return 0;
+}</pre>
+</body>
+</html>

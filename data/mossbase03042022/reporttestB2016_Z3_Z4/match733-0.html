@@ -1,0 +1,175 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student3178.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student3178.cpp<p></p><pre>
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;cstring&gt;
+#include &lt;iostream&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+#include &lt;set&gt;
+#include &lt;functional&gt;
+#include &lt;list&gt;
+
+
+int CijeliDio(double x, double Eps = 1e-10){
+    return int(x+Eps*std::fabs(x));
+}
+int DuzinaImena(std::string s){
+    int duzina {0};
+    for(int i=0; i&lt;s.size(); i++){
+        if( ((s[i]&gt;= 'A') &amp;&amp; (s[i] &lt;= 'Z'))  || ((s[i]&gt;= 'a') &amp;&amp; (s[i] &lt;= 'z')) || ((s[i]&gt;= '0') &amp;&amp; (s[i] &lt;= '9')) ) duzina++;
+    }
+    return duzina;
+}
+
+std::vector&lt;std::set&lt;std::string&gt;&gt;  Razvrstavanje(std::vector&lt;std::string&gt; v, int k){
+    if(k&lt;1 || k&gt;v.size()) throw std::logic_error("Razvrstavanje nemoguce");
+    std::vector&lt;std::set&lt;std::string&gt;&gt; a;
+    
+    int n(v.size());
+    
+    int broj_brojnijih_timova(n%k);
+   // std::cout&lt;&lt;broj_brojnijih_timova;
+    int broj_clanova_brojnijih_timova(CijeliDio(n/k)+1);
+   // std::cout &lt;&lt;broj_clanova_brojnijih_timova;
+    
+    int broj_ostalih_timova(k-broj_brojnijih_timova);
+   // std::cout&lt;&lt;broj_ostalih_timova;
+    int broj_clanova_ostalih_timova(CijeliDio(n/k));
+   // std::cout&lt;&lt;broj_clanova_ostalih_timova;
+    
+    std::list&lt;std::string&gt; lista_imena;
+    for(int i{0}; i&lt;v.size(); i++){
+        lista_imena.push_back(v.at(i));
+    }  
+    auto f(lista_imena.begin()), g(lista_imena.end());
+    
+    
+    //prvo radim za brojnije timove
+    
+    for(int i=1; i&lt;=broj_brojnijih_timova; i++){
+        std::set&lt;std::string&gt; tim;
+        for(int j=1; j&lt;=broj_clanova_brojnijih_timova; j++){//ovde se krila greska za testove 4 i 6!!
+       
+           if(i==1 &amp;&amp; f !=g) {  //ovo mi se odnosi na slucaj Damir, pocetni, koji odmah izbacujem
+              int vel(DuzinaImena(*f));
+            
+              tim.insert(*f);
+              f=lista_imena.erase(f);
+              if(f==g) f=lista_imena.begin();
+              j++;
+              int br(1);
+              while(br&lt;vel){
+                f++;
+                br++;
+                if(f==g) f=lista_imena.begin();}
+                }
+              
+           int vel(DuzinaImena(*f)); 
+          
+           tim.insert(*f);
+           f=lista_imena.erase(f);   
+           if(f==g) f=lista_imena.begin();
+           int br(1);
+           while(br&lt;vel){
+              f++;
+              br++;
+              if(f==g) f=lista_imena.begin();}
+    }
+    a.push_back(tim);
+    }
+    
+    for(int i=1; i&lt;=broj_ostalih_timova; i++){
+        std::set&lt;std::string&gt; tim;
+        for(int j=1; j&lt;=broj_clanova_ostalih_timova; j++){
+        int vel(DuzinaImena(*f));
+        
+        tim.insert(*f);
+        f=lista_imena.erase(f);   
+        if(f==g) f=lista_imena.begin();
+         int br(1);
+        
+        while(br&lt;vel){//ili &lt;=
+            f++;
+            br++;
+            if(f==g) f=lista_imena.begin();}
+        }
+<a name="0"></a><font color="#FF0000"><a href="match733-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+        a.push_back(tim);
+    }  
+        
+
+    return a;
+}
+
+
+
+int main ()
+{
+    try{
+    int n;
+    std::cout&lt;&lt; "Unesite broj djece: ";
+    std::cin &gt;&gt;n;
+    std::cin.ignore(10000, '\n');
+    std::vector&lt;std::string&gt; vektor_imena;
+</font>    std::cout&lt;&lt; "Unesite imena djece: " &lt;&lt;std::endl;
+    int i{0};
+    
+    while(i&lt;n){
+       
+        std::string ime;
+        std::getline(std::cin, ime);
+        vektor_imena.push_back(ime);
+        i++;
+    }
+    
+    int m{0};
+<a name="1"></a><font color="#00FF00"><a href="match733-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+    std::cout&lt;&lt; "Unesite broj timova: ";
+    std::cin &gt;&gt; m;
+    
+    std::vector&lt;std::set&lt;std::string&gt;&gt;  timovi(Razvrstavanje(vektor_imena, m));
+</font>    
+<a name="2"></a><font color="#0000FF"><a href="match733-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+    for(int i=0; i&lt;timovi.size(); i++) {
+        std::cout&lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+        int brojac{0};
+        for(auto it=timovi[i].begin(); it!=timovi[i].end(); it++){
+</font>            brojac++;
+            if(brojac == timovi[i].size()) std::cout &lt;&lt; *it;
+            else  std::cout &lt;&lt; *it&lt;&lt; ", ";
+            }
+<a name="3"></a><font color="#00FFFF"><a href="match733-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+        std::cout&lt;&lt; std::endl;
+        }
+    }
+    catch(std::logic_error e){
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; std::endl;
+</font>    }
+	return 0;
+}
+/*
+Damir
+Ana
+Muhamed
+Marko
+Ivan
+Mirsad
+Nikolina
+Alen
+Jasmina
+Merima*/</pre>
+</body>
+</html>

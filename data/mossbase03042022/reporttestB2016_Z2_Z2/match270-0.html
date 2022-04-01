@@ -1,0 +1,293 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student5185.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student5185.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+<a name="2"></a><font color="#0000FF"><a href="match270-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+enum class SmjerKretanja {NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo};
+
+template &lt;typename Kontejner&gt;
+auto IzdvojiDijagonale3D(Kontejner Kvadar, SmjerKretanja trenutniSmjer) -&gt; typename std::remove_reference&lt;decltype(Kvadar[0])&gt;::type{
+</font>    
+    typedef typename std::remove_reference&lt;decltype(Kvadar[0])&gt;::type Kontejner1;
+    typedef typename std::remove_reference&lt;decltype(Kvadar[0][0])&gt;::type Kontejner2;
+    
+    Kontejner1 ElementiDijagonala;
+    
+    
+    
+    
+    if (trenutniSmjer ==  SmjerKretanja::NaprijedNazad || trenutniSmjer ==  SmjerKretanja::NazadNaprijed) {
+        ElementiDijagonala.resize(Kvadar.size());
+        if (trenutniSmjer ==  SmjerKretanja::NaprijedNazad) {
+            for (int i = 0; i &lt; Kvadar.size(); i++) {
+                int k = 0;
+                for (int j = 0; j &lt; Kvadar[0].size(); j++) {
+                    if (k == Kvadar[0][0].size()) {
+                        break;
+                    }
+                    else{
+                        ElementiDijagonala[i].push_back(Kvadar[i][j][k++]);
+                    }
+                }
+            }
+        }
+        else if (trenutniSmjer ==  SmjerKretanja::NazadNaprijed){
+            int o(Kvadar.size()-1);
+            for (int i = Kvadar.size()-1; i &gt;= 0; i--) {
+                int k = Kvadar[0][0].size()-1;
+                
+                for (int j = 0; j &lt; Kvadar[0].size(); j++) {
+                    if (k == 0) {
+                        break;
+                    }
+                    else{
+                        ElementiDijagonala[o].push_back(Kvadar[Kvadar.size()-i-1][j][k--]);
+                    }
+                }o--;
+            }
+        } //promjeniti na x y z
+    } // Kod za NaprijedNazad i NazadNaprijed
+    
+    else if(trenutniSmjer ==  SmjerKretanja::GoreDolje || trenutniSmjer ==  SmjerKretanja::DoljeGore){
+        ElementiDijagonala.resize(Kvadar[0].size());
+        if (trenutniSmjer ==  SmjerKretanja::GoreDolje){
+            for (int j = 0; j &lt; Kvadar[0].size(); j++) {
+                int o(1);
+                for (int i = 0; i &lt; Kvadar.size(); i++) {
+<a name="3"></a><font color="#00FFFF"><a href="match270-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+                    for (int k = 0; k &lt; Kvadar[0][0].size(); k++) {
+                        if (k == i) ElementiDijagonala[j].push_back(Kvadar[i+o][j][i]);
+</font>                    }
+                    o *= -1;
+                }
+            }
+        }
+        else  if (trenutniSmjer ==  SmjerKretanja::DoljeGore){
+            for (int j = Kvadar[0].size()-1; j &gt;= 0; j--) {
+                int o = Kvadar[0][0].size()-1;
+                for (int i = Kvadar.size()-1; i &gt;= 0; i--) {
+                    if (o == 0) break;
+                    
+                    ElementiDijagonala[Kvadar[0].size()-1-j].push_back(Kvadar[i][j][o--]);
+                }
+            }
+        }
+    } // Kod za GoreDolje i DoljeGore
+    
+    else if(trenutniSmjer ==  SmjerKretanja::LijevoDesno || trenutniSmjer ==  SmjerKretanja::DesnoLijevo){
+        ElementiDijagonala.resize(Kvadar[0][0].size());
+        if (trenutniSmjer ==  SmjerKretanja::LijevoDesno){
+            for (int k = 0; k &lt; Kvadar[0][0].size(); k++) {
+                for (int j = 0; j &lt; Kvadar[0].size(); j++) {
+                    for (int i = Kvadar.size()-1; i &gt;= 0; i--) {
+                        if (Kvadar.size()-1-i == j) ElementiDijagonala[k].push_back(Kvadar[i][j][k]);
+                        
+                    }
+                }
+            }
+        }
+        else  if (trenutniSmjer ==  SmjerKretanja::DesnoLijevo){
+            for (int k = Kvadar[0][0].size()-1; k &gt;=0; k--) {
+                for (int j = 0; j &lt; Kvadar[0].size(); j++) {
+                    for (int i = 0; i &lt; Kvadar.size(); i++) {
+                        if (i == j) ElementiDijagonala[Kvadar[0][0].size()-1-k].push_back(Kvadar[i][j][k]);
+                        
+                    }
+                }
+            } 
+        }
+    }
+   
+<a name="1"></a><font color="#00FF00"><a href="match270-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+    return ElementiDijagonala;
+}
+
+/* Safe copy{
+std::deque&lt;std::vector&lt;int&gt;&gt; IzdvojiDijagonale3D(std::vector&lt;std::deque&lt;std::vector&lt;int&gt;&gt;&gt; Kvadar, SmjerKretanja trenutniSmjer){
+    std::deque&lt;std::vector&lt;int&gt;&gt; ElementiDijagonala;
+    
+    bool ekvidistantni(true);
+    int duzina = Kvadar[0].size();
+    for (int i = 0; i &lt; Kvadar[i].size(); i++) {
+        if (Kvadar[i].size() != duzina) {
+            ekvidistantni = false;
+            break;
+        }
+    }
+    if (!ekvidistantni) {
+        throw std::domain_error ("Plohe nemaju isti broj redova");
+    }
+    
+    int duzina = Kvadar[0][0].size();
+    for (int i = 0; i &lt; Kvadar.size(); i++) {
+        for (int j = 0; j &lt; Kvadar[i].size(); j++) {
+            if (duzina != Kvadar[i][j]) {
+                ekvidistantni = false;
+                break;
+            }
+        }
+            
+    }
+    
+    
+    if (trenutniSmjer ==  SmjerKretanja::NaprijedNazad || trenutniSmjer ==  SmjerKretanja::NazadNaprijed) {
+        ElementiDijagonala.resize(Kvadar.size());
+        if (trenutniSmjer ==  SmjerKretanja::NaprijedNazad) {
+            for (int i = 0; i &lt; Kvadar.size(); i++) {
+                int k = 0;
+                for (int j = 0; j &lt; Kvadar[0].size(); j++) {
+                    if (k == Kvadar[0][0].size()) {
+                        break;
+                    }
+                    else{
+                        ElementiDijagonala[i].push_back(Kvadar[i][j][k++]);
+                    }
+                }
+            }
+        }
+        else if (trenutniSmjer ==  SmjerKretanja::NazadNaprijed){
+            int o(Kvadar.size()-1);
+            for (int i = Kvadar.size()-1; i &gt;= 0; i--) {
+                int k = Kvadar[0][0].size()-1;
+                
+                for (int j = 0; j &lt; Kvadar[0].size(); j++) {
+                    if (k == 0) {
+                        break;
+                    }
+                    else{
+                        ElementiDijagonala[o].push_back(Kvadar[Kvadar.size()-i-1][j][k--]);
+                    }
+                }o--;
+            }
+        } //promjeniti na x y z
+    } // Kod za NaprijedNazad i NazadNaprijed
+    
+    else if(trenutniSmjer ==  SmjerKretanja::GoreDolje || trenutniSmjer ==  SmjerKretanja::DoljeGore){
+        ElementiDijagonala.resize(Kvadar[0].size());
+        if (trenutniSmjer ==  SmjerKretanja::GoreDolje){
+            for (int j = 0; j &lt; Kvadar[0].size(); j++) {
+                int o(1);
+                for (int i = 0; i &lt; Kvadar.size(); i++) {
+                    for (int k = 0; k &lt; Kvadar[0][0].size(); k++) {
+                        if (k == i) ElementiDijagonala[j].push_back(Kvadar[i+o][j][i]);
+                    }
+                    o *= -1;
+                }
+            }
+        }
+        else  if (trenutniSmjer ==  SmjerKretanja::DoljeGore){
+            for (int j = Kvadar[0].size()-1; j &gt;= 0; j--) {
+                int o = Kvadar[0][0].size()-1;
+                for (int i = Kvadar.size()-1; i &gt;= 0; i--) {
+                    if (o == 0) break;
+                    
+                    ElementiDijagonala[Kvadar[0].size()-1-j].push_back(Kvadar[i][j][o--]);
+                }
+            }
+        }
+    } // Kod za GoreDolje i DoljeGore
+    
+    else if(trenutniSmjer ==  SmjerKretanja::LijevoDesno || trenutniSmjer ==  SmjerKretanja::DesnoLijevo){
+        ElementiDijagonala.resize(Kvadar[0][0].size());
+        if (trenutniSmjer ==  SmjerKretanja::LijevoDesno){
+            for (int k = 0; k &lt; Kvadar[0][0].size(); k++) {
+                for (int j = 0; j &lt; Kvadar[0].size(); j++) {
+                    for (int i = Kvadar.size()-1; i &gt;= 0; i--) {
+                        if (Kvadar.size()-1-i == j) ElementiDijagonala[k].push_back(Kvadar[i][j][k]);
+                        
+                    }
+                }
+            }
+        }
+        else  if (trenutniSmjer ==  SmjerKretanja::DesnoLijevo){
+            for (int k = Kvadar[0][0].size()-1; k &gt;=0; k--) {
+                for (int j = 0; j &lt; Kvadar[0].size(); j++) {
+                    for (int i = 0; i &lt; Kvadar.size(); i++) {
+                        if (i == j) ElementiDijagonala[Kvadar[0][0].size()-1-k].push_back(Kvadar[i][j][k]);
+                        
+                    }
+                }
+            } 
+        }
+    }
+   
+    return ElementiDijagonala;
+}
+
+}*/
+
+int main (){
+    int x, y, z;
+    std::cout &lt;&lt; "Unesite dimenzije (x y z): ";
+    std::cin &gt;&gt; x &gt;&gt; y &gt;&gt; z;
+    
+    if (x &lt;= 0 || y &lt;= 0 || z &lt;= 0) {
+</font>        std::cout &lt;&lt; "Neispravne dimenzije kontejnera!";
+        return 0;
+    }
+    
+    
+    std::cout &lt;&lt; "Unesite elemente kontejnera: " &lt;&lt; std::endl;
+    std::deque&lt;std::vector&lt;int&gt;&gt; Y(y, std::vector&lt;int&gt;(z));
+    std::vector&lt;std::deque&lt;std::vector&lt;int&gt;&gt;&gt; Kvadar(x, Y);
+    
+    for (int i = 0; i &lt; x; i++) {
+        for (int j = 0; j &lt; y; j++) {
+            for (int k = 0; k &lt; z; k++) {
+                std::cin &gt;&gt; Kvadar[i][j][k];
+            }
+        }
+    }  //Elementi sigurno uspjesno ucitani
+    
+    int s;
+    std::cout &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+<a name="4"></a><font color="#FF00FF"><a href="match270-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+    std::cin &gt;&gt; s;
+    
+    if (s &lt; 0 || s &gt; 5) {
+        std::cout &lt;&lt; "Smjer kretanja nije ispravan!" &lt;&lt; std::endl;
+        return 0;
+</font>    }
+    
+    
+    try{
+<a name="0"></a><font color="#FF0000"><a href="match270-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_9.gif"/></a>
+
+        Y = IzdvojiDijagonale3D (Kvadar, SmjerKretanja(s));
+        
+        if (s == 0) std::cout &lt;&lt; "NaprijedNazad: " &lt;&lt; std::endl;
+        else if (s == 1)  std::cout &lt;&lt; "NazadNaprijed: " &lt;&lt; std::endl;
+        else if (s == 2)  std::cout &lt;&lt; "GoreDolje: " &lt;&lt; std::endl;
+        else if (s == 3)  std::cout &lt;&lt; "DoljeGore: " &lt;&lt; std::endl;
+        else if (s == 4)  std::cout &lt;&lt; "LijevoDesno: " &lt;&lt; std::endl;
+        else if (s == 5)  std::cout &lt;&lt; "DesnoLijevo: " &lt;&lt; std::endl;
+        
+        for (int i = 0; i &lt; Y.size(); i++) {
+</font>            for (int j = 0; j &lt; Y[0].size(); j++) {
+<a name="5"></a><font color="#FF0000"><a href="match270-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+                std::cout &lt;&lt; std::setw(4) &lt;&lt; Y[i][j];
+            }
+            std::cout  &lt;&lt; std::endl;
+        }
+    }
+    catch (...){
+</font>        std::cout &lt;&lt; "Nesto se neocekivano desilo" &lt;&lt; std::endl;
+    }
+	return 0;
+}</pre>
+</body>
+</html>

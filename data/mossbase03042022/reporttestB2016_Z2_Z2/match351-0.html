@@ -1,0 +1,160 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student4273.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student4273.cpp<p></p><pre>
+// B 16/17, Zadaća 2, Zadatak 2
+//	Autotestovi by Enil Pajic (epajic1@etf.unsa.ba | @eon : etf.ba)
+//	NAPOMENA: i javni ATo-vi su dio postavke!
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;iomanip&gt;
+#include &lt;string&gt;
+
+using std::cin; using std::cout; using std::endl; using std::vector;
+
+enum class SmjerKretanja {
+ NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo
+};
+
+
+template &lt;typename Kontejner&gt;
+auto IzdvojiDijagonale3D (Kontejner &amp;kont, SmjerKretanja smjer) -&gt; typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type {
+    //Indeksiranje ne smijemo koristiti, podrzano kopiranje i dodjeljivanje
+    //size, at i push_back moze
+    int x(kont.size()), y(kont.at(0).size()), z(kont.at(0).at(0).size());
+    
+    typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type mat; //Moras inicijalizovati matricu
+<a name="0"></a><font color="#FF0000"><a href="match351-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+    if (smjer==SmjerKretanja::NaprijedNazad) {
+        mat.resize(x);
+        for (int i=0; i&lt;x; i++) {
+            for (int j=0; j&lt;y; j++) {
+                for (int k=0; k&lt;z; k++) {
+                    if (j==k) mat.at(i).push_back(kont.at(i).at(j).at(k));
+</font>                }
+            }
+        }
+        return mat;
+    }
+    else if (smjer==SmjerKretanja::NazadNaprijed) {
+        mat.resize(x);
+<a name="3"></a><font color="#00FFFF"><a href="match351-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_4.gif"/></a>
+
+        for (int i=x-1; i&gt;=0; i--) {
+            for (int j=0; j&lt;y; j++) {
+                for (int k=0; k&lt;z; k++) {
+                    if ((j+k)==(z-1)) mat.at(x-i-1).push_back(kont.at(i).at(j).at(k));
+</font>                }
+            }
+        }
+        return mat;
+    }
+    else if (smjer==SmjerKretanja::GoreDolje) {
+        mat.resize(y);
+        for (int j=0; j&lt;y; j++) {
+            for (int i=x-1; i&gt;=0; i--) {
+                for (int k=0; k&lt;z; k++) {
+                    if ((i+k)==(x-1)) mat.at(j).push_back(kont.at(i).at(j).at(k));
+                }
+            }
+        }
+        return mat;
+    }
+<a name="4"></a><font color="#FF00FF"><a href="match351-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_4.gif"/></a>
+
+    else if (smjer==SmjerKretanja::DoljeGore) {
+        mat.resize(y);
+        for (int j=y-1; j&gt;=0; j--) {
+            for (int i=x-1; i&gt;=0; i--) {
+                for (int k=0; k&lt;z; k++) {
+</font>                    if ((k-i)==x) mat.at(y-j-1).push_back(kont.at(i).at(j).at(k));
+                }
+            }
+        }
+        return mat;
+    }
+    
+<a name="1"></a><font color="#00FF00"><a href="match351-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+    else if (smjer==SmjerKretanja::LijevoDesno) {
+        mat.resize(z);
+        for (int k=0; k&lt;z; k++) {
+            for (int j=0; j&lt;y; j++) {
+                for (int i=x-1; i&gt;=0; i--) {
+                    if ((j+i)==(x-1)) mat.at(k).push_back(kont.at(i).at(j).at(k));
+</font>                }
+            }
+        }
+        return mat;
+    }
+<a name="2"></a><font color="#0000FF"><a href="match351-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+    else if (smjer==SmjerKretanja::DesnoLijevo) {
+        mat.resize(z);
+        for (int k=z-1; k&gt;=0; k--) {
+            for (int j=0; j&lt;y; j++) {
+                for (int i=0; i&lt;x; i++) {
+                    if ((i-j)==0) mat.at(z-k-1).push_back(kont.at(i).at(j).at(k));
+</font>                }
+            }
+        }
+        return mat;
+    }
+    return mat;
+}
+//1 2 3 0 3 1 2 5 4 2 1 4 5 2 3 1 3 5 2 5 1 7 7 0
+int main () {
+    int x, y, z;
+    cout &lt;&lt; "Unesite dimenzije (x y z): ";
+    cin &gt;&gt; x &gt;&gt; y &gt;&gt; z;
+    if (x&lt;0 || y&lt;0 || z&lt;0) {
+        cout &lt;&lt; "Neispravne dimenzije kontejnera!";
+        return 0;
+    }
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; vek;
+    cout &lt;&lt; "Unesite elemente kontejnera: " &lt;&lt; endl;
+    for (int i=0; i&lt;x; i++) {
+        vek.resize(i+1);
+        for (int j=0; j&lt;y; j++) {
+            vek[i].resize(j+1);
+            for (int k=0; k&lt;z; k++) {
+                int broj;
+                cin &gt;&gt; broj;
+                vek[i][j].push_back(broj);
+            }
+        }
+    }
+    int smjer;
+    cout &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+    cin &gt;&gt; smjer;
+    if (smjer&lt;0 || smjer&gt;5) {
+        cout &lt;&lt; "Smjer kretanja nije ispravan!" &lt;&lt; endl;
+        return 0;
+    }
+
+        auto mat=IzdvojiDijagonale3D(vek, SmjerKretanja(smjer));
+        if (smjer==0) cout &lt;&lt; "NaprijedNazad: " &lt;&lt; endl;
+        else if (smjer==1) cout &lt;&lt; "NazadNaprijed: " &lt;&lt; endl;
+        else if (smjer==2) cout &lt;&lt; "GoreDolje: " &lt;&lt; endl;
+        else if (smjer==3) cout &lt;&lt; "DoljeGore: " &lt;&lt; endl;
+        else if (smjer==4) cout &lt;&lt; "LijevoDesno: " &lt;&lt; endl;
+        else if (smjer==5) cout &lt;&lt; "DesnoLijevo: " &lt;&lt; endl;
+        
+        for (int i=0; i&lt;mat.size(); i++) {
+            for (int j=0; j&lt;mat.at(i).size(); j++) {
+                cout &lt;&lt; std::setw(4) &lt;&lt; mat.at(i).at(j);
+            }
+            cout &lt;&lt; endl;
+        }
+    
+    
+	return 0;
+}</pre>
+</body>
+</html>

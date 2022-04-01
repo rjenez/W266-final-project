@@ -1,0 +1,274 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student5957.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student8753.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match67-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+#include &lt;queue&gt;
+using std::queue;
+using std::multimap;
+using std::vector;
+using std::string;
+using std::pair;
+using std::list;
+using std::cout;
+using std::cin;
+enum class Boje
+{
+    Pik, Tref, Herc, Karo
+};
+typedef list&lt;pair&lt;Boje,string&gt;&gt; SPIL;
+typedef multimap&lt;Boje,string&gt; MAPA;
+typedef queue&lt;pair&lt;string,string&gt;&gt; RED;
+
+SPIL KreirajSpil()
+{
+    vector&lt;string&gt; v {"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+    list&lt;pair&lt;Boje,string&gt;&gt; spil;
+    for(int i(0); i&lt;13; i++) spil.push_back(std::make_pair(Boje::Pik,v[i]));
+    for(int i(0); i&lt;13; i++) spil.push_back(std::make_pair(Boje::Tref,v[i]));
+    for(int i(0); i&lt;13; i++) spil.push_back(std::make_pair(Boje::Herc,v[i]));
+    for(int i(0); i&lt;13; i++) spil.push_back(std::make_pair(Boje::Karo,v[i]));
+    return spil;
+}
+
+bool TestKarte(Boje &amp;boja,string &amp;s)
+{
+    if(!(boja==Boje::Pik || boja==Boje::Tref || boja==Boje::Herc || boja==Boje::Karo)) return true;
+    if(s!="2" &amp;&amp; s!="3" &amp;&amp; s!="4" &amp;&amp; s!="5" &amp;&amp; s!="6" &amp;&amp; s!="7" &amp;&amp; s!="8"
+            &amp;&amp; s!="9" &amp;&amp; s!="10" &amp;&amp; s!="J" &amp;&amp; s!="Q" &amp;&amp; s!="K" &amp;&amp; s!="A") return true;
+    return false;
+}
+
+bool PoBojama(Boje boja1,Boje boja2)
+{
+    if(boja1==boja2) return true;
+    if(boja1==Boje::Pik) return true;
+    if(boja1==Boje::Tref &amp;&amp; (boja2==Boje::Herc || boja2==Boje::Karo)) return true;
+    if(boja1==Boje::Herc &amp;&amp; boja2==Boje::Karo) return true;
+    return false;
+}
+
+bool PoVelicini(string s1,string s2)
+{
+    vector&lt;string&gt; vec {"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+    int a(0),b(0);
+    for(int i(0); i&lt;vec.size(); i++) {
+        if(s1==vec[i]) a=i;
+        if(s2==vec[i]) b=i;
+    }
+    return a&lt;=b;
+}
+
+void SortirajBoje(SPIL &amp;spil)
+{
+    for(auto it(spil.begin()); it!=spil.end(); it++) {
+        for(auto it1(it); it1!=spil.end(); it1++) {
+            if(PoBojama(it1-&gt;first,it-&gt;first)) {
+                auto pom(std::move(*it));
+                *it=std::move(*it1);
+                *it1=std::move(pom);
+            }
+        }
+    }
+}
+
+void SortirajSpil(SPIL &amp;spil)
+{
+    SortirajBoje(spil);
+    auto it(spil.begin());
+    for(; it!=spil.end() &amp;&amp; it-&gt;first==Boje::Pik; it++) {
+        for(auto it1(it); it1!=spil.end() &amp;&amp; it1-&gt;first==Boje::Pik; it1++) {
+            if(PoVelicini(it1-&gt;second,it-&gt;second)) {
+                auto pom(std::move(*it));
+                *it=std::move(*it1);
+                *it1=std::move(pom);
+            }
+        }
+    }
+    for(; it!=spil.end() &amp;&amp; it-&gt;first==Boje::Tref; it++) {
+        for(auto it1(it); it1!=spil.end() &amp;&amp; it1-&gt;first==Boje::Tref; it1++) {
+            if(PoVelicini(it1-&gt;second,it-&gt;second)) {
+                auto pom(std::move(*it));
+                *it=std::move(*it1);
+                *it1=std::move(pom);
+            }
+        }
+    }
+    for(; it!=spil.end() &amp;&amp; it-&gt;first==Boje::Herc; it++) {
+        for(auto it1(it); it1!=spil.end() &amp;&amp; it1-&gt;first==Boje::Herc; it1++) {
+            if(PoVelicini(it1-&gt;second,it-&gt;second)) {
+                auto pom(std::move(*it));
+                *it=std::move(*it1);
+                *it1=std::move(pom);
+            }
+        }
+    }
+    for(; it!=spil.end() &amp;&amp; it-&gt;first==Boje::Karo; it++) {
+        for(auto it1(it); it1!=spil.end() &amp;&amp; it1-&gt;first==Boje::Karo; it1++) {
+            if(PoVelicini(it1-&gt;second,it-&gt;second)) {
+                auto pom(std::move(*it));
+                *it=std::move(*it1);
+                *it1=std::move(pom);
+            }
+        }
+    }
+}
+
+void TestirajSpil(SPIL &amp;spil)
+{
+    if(spil.size()&gt;52) throw std::logic_error("Neispravna lista!");
+    if(spil.size()==1) return;
+    auto it1(spil.begin());
+    if(TestKarte(it1-&gt;first,it1-&gt;second)) throw std::logic_error("Neispravna lista!");
+    it1++;
+    for(auto it(spil.begin()); it1!=spil.end(); it++,it1++) {
+        if(!PoBojama(it-&gt;first,it1-&gt;first))
+            throw std::logic_error("Neispravna lista!");
+        if(TestKarte(it1-&gt;first,it1-&gt;second)) throw std::logic_error("Neispravna lista!");
+    }
+    it1=spil.begin();
+    it1++;
+    for(auto it(spil.begin()); it1!=spil.end(); it++,it1++) {
+        if(!(PoVelicini(it-&gt;second,it1-&gt;second))) {
+            if(!PoBojama(it-&gt;first,it1-&gt;first))
+                throw std::logic_error("Neispravna lista!");
+        } else if(it-&gt;second==it1-&gt;second &amp;&amp; it-&gt;first==it1-&gt;first)
+            throw std::logic_error("Neispravna lista!");
+    }
+    for(auto it1(spil.begin()); it1!=spil.end(); it1++) {
+        auto it2(it1);
+        it2++;
+        for(; it2!=spil.end(); it2++) {
+            if(*it1==*it2) throw std::logic_error("Neispravna lista!");
+        }
+    }
+}
+
+void IzbaciKarte(SPIL &amp;spil,MAPA &amp;mapa)
+{
+    TestirajSpil(spil);
+    for(auto it1(mapa.begin()); it1!=mapa.end(); it1++) {
+        for(auto it2(spil.begin()); it2!=spil.end(); it2++) {
+            if((it1-&gt;first==it2-&gt;first) &amp;&amp; (it1-&gt;second==it2-&gt;second)) {
+                it2=spil.erase(it2);
+                it1=mapa.erase(it1);
+            }
+        }
+    }
+}
+
+RED IzbaciKarteRazbrajanjem(SPIL &amp;spil,const short int r,const int b)
+{
+    if(r&lt;1 || r&gt;52 || b&lt;1) throw std::logic_error("Neispravni elementi za izbacivanje!");
+    TestirajSpil(spil);
+    RED red;
+    auto it(spil.begin());
+    for(int i(0); i&lt;b &amp;&amp; spil.size()!=0; i++) {
+        for(int j(0); j&lt;r-1; j++) {
+            it++;
+            if(it==spil.end()) it=spil.begin();
+        }
+        string pom;
+        if(it-&gt;first==Boje::Pik) pom="Pik";
+        if(it-&gt;first==Boje::Tref) pom="Tref";
+        if(it-&gt;first==Boje::Herc) pom="Herc";
+        if(it-&gt;first==Boje::Karo) pom="Karo";
+        red.push(std::make_pair(pom,it-&gt;second));
+        it=spil.erase(it);
+    }
+    return red;
+}
+
+void VratiPrvihNKarata(SPIL &amp;spil,RED &amp;red,int n)
+{
+    if(n&lt;0) throw std::domain_error("Broj n je besmislen!");
+    if(n&gt;red.size()) throw std::range_error("Nedovoljno karata u redu!");
+    for(int i(0); i&lt;n; i++) {
+        Boje boje;
+        if(red.front().first=="Pik") boje=Boje::Pik;
+        if(red.front().first=="Tref") boje=Boje::Tref;
+        if(red.front().first=="Herc") boje=Boje::Herc;
+        if(red.front().first=="Karo") boje=Boje::Karo;
+        if(TestKarte(boje,red.front().second)) throw std::logic_error("Neispravne karte!");
+        spil.push_back(std::make_pair(boje,red.front().second));
+        red.pop();
+    }
+    SortirajSpil(spil);
+    TestirajSpil(spil);
+}
+
+void IspisiSpil(SPIL &amp;spil)
+{
+    auto it(spil.begin());
+    cout&lt;&lt;"Pik: ";
+    for(;;) {
+        if(it==spil.end()) break;
+        if(it-&gt;first==Boje::Pik) cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+        it++;
+    }
+    cout&lt;&lt;"\nTref: ";
+    it=spil.begin();
+    for(;;) {
+        if(it==spil.end()) break;
+        if(it-&gt;first==Boje::Tref) cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+        it++;
+    }
+    cout&lt;&lt;"\nHerc: ";
+    it=spil.begin();
+    for(;;) {
+        if(it==spil.end()) break;
+        if(it-&gt;first==Boje::Herc) cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+        it++;
+    }
+    cout&lt;&lt;"\nKaro: ";
+    it=spil.begin();
+    for(;;) {
+        if(it==spil.end()) break;
+        if(it-&gt;first==Boje::Karo) cout&lt;&lt;it-&gt;second&lt;&lt;" ";
+        it++;
+    }
+}
+
+int main ()
+{
+    short int r(0);
+    int b(0);
+    try {
+        SPIL spil(KreirajSpil());
+        cout&lt;&lt;"Unesite korak razbrajanja: ";
+        cin&gt;&gt;r;
+        cout&lt;&lt;"Unesite broj karata koje zelite izbaciti: ";
+        cin&gt;&gt;b;
+        auto red(IzbaciKarteRazbrajanjem(spil,r,b));
+        cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;spil.size()&lt;&lt;" karata, i to:"&lt;&lt;std::endl;
+        IspisiSpil(spil);
+        int n(0);
+        cout&lt;&lt;"\nUnesite broj karata koje zelite vratiti u spil: ";
+        cin&gt;&gt;n;
+        VratiPrvihNKarata(spil,red,n);
+        cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;spil.size()&lt;&lt;" karata, i to:"&lt;&lt;std::endl;
+        IspisiSpil(spil);
+    } catch(std::domain_error izuzetak) {
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+    } catch(std::logic_error izuzetak) {
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+    } catch(std::range_error izuzetak) {
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+    }
+
+    return 0;
+</font>}
+</pre>
+</body>
+</html>

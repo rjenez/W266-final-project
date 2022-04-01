@@ -1,0 +1,225 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student7597.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student1132.cpp<p></p><pre>
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;vector&gt;
+#include&lt;new&gt;
+#include&lt;stdexcept&gt;
+#include&lt;cstring&gt;
+#include&lt;algorithm&gt;
+int PotencijalniKrivci(char**&amp; a,std::vector&lt;std::string&gt; v)
+{
+<a name="3"></a><font color="#00FFFF"><a href="match260-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+	int N = v.size();
+	try
+	{
+		a = new char*[N];
+		for(int i=0;i&lt;N;i++) a[i] = nullptr;
+</font>	}
+	catch(std::bad_alloc)
+	{
+		throw std::bad_alloc();
+	}
+	
+	for(int i=0;i&lt;N;i++)
+	{
+		try
+		{
+			a[i] = new char[v[i].size()+1];
+		}
+		catch(std::bad_alloc)
+		{
+			for(int j=0;j&lt;N;j++) delete[] a[j];
+			delete[] a;
+			throw std::bad_alloc();
+		}
+		strcpy(a[i],v[i].c_str());
+	}
+<a name="1"></a><font color="#00FF00"><a href="match260-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+	return N;
+}
+
+int OdbaciOptuzbu(char**&amp; a,int N,std::string s)
+{
+	bool ima = false;
+	for(int i=0;i&lt;N;i++)
+	{
+		if(a[i]==nullptr) continue;
+</font>		if(s == std::string(a[i]))
+		{
+			ima = true;
+			break;
+		}
+	}
+	if(!ima) 
+	{
+		throw std::domain_error("Osoba sa imenom "+s+" nije bila optuzena");
+	}
+	for(int i=0;i&lt;N;i++)
+	{
+		if(a[i]==nullptr) continue;
+		if(s == std::string(a[i]))
+		{
+			delete[] a[i];
+			a[i] = nullptr;
+		}
+	}
+	int cnt = std::count(a,a+N,nullptr);
+	if(cnt&gt;10)
+	{
+		char** b;
+		try 
+		{
+			b = new char*[N-cnt];	
+		}
+		catch (std::bad_alloc) 
+		{
+			return N;
+		}
+		int k = 0;
+		for(int i=0;i&lt;N;i++)
+		{
+			if(a[i]!=nullptr)
+			{
+				b[k] = a[i];
+				k++;
+			}
+		}
+		delete[] a;
+		a = b;
+		return N-cnt;
+	}
+	return N;
+}
+int DodajOptuzbu(char**&amp; a,int N,std::string s)
+{
+	char* pok = new char[s.size()+1];//
+	strcpy(pok,s.c_str());
+	
+	if(std::count(a,a+N,nullptr) == 0)
+	{
+		char** b;
+		try
+		{
+			b = new char*[N+1];
+		}
+		catch(...)
+		{
+<a name="0"></a><font color="#FF0000"><a href="match260-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+			return N;
+		}
+		for(int i=0;i&lt;N;i++)
+		{
+		  b[i] = a[i];
+		}
+		delete[] a;
+		b[N] = pok;
+		a = b;
+		return N+1;
+</font>	}
+	else
+	{
+		for(int i=0;i&lt;N;i++)
+		{
+			if(a[i]==nullptr)
+			{
+				a[i] = pok;
+				break;
+			}
+		}
+		return N;
+	}
+}
+
+void IzlistajOptuzbu(char** a,int N)
+{
+<a name="4"></a><font color="#FF00FF"><a href="match260-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+	for(int i=0;i&lt;N;i++)
+	{
+		if(a[i]!=nullptr)
+		{
+			std::cout&lt;&lt;a[i]&lt;&lt;"\n";
+</font>		}
+	}
+}
+
+int main ()
+{
+	
+	std::cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? \n";
+	int N, opt;
+	std::cin&gt;&gt; N;
+	std::vector&lt;std::string&gt; v(N);
+	std::cout&lt;&lt;"Unesite potencijalne krivce: \n";
+	std::cin.ignore(1000,'\n');
+	for(auto&amp; e:v) std::getline(std::cin, e);
+	char** a;
+	try
+	{
+	PotencijalniKrivci(a,v);
+	}
+	catch(...)
+	{
+		std::cout&lt;&lt;"Izuzetak";
+		return 0;
+	}
+	while(true)
+	{
+	std::cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: \n";
+	std::cin&gt;&gt; opt;
+	if(opt == 0) break;
+	else if(opt == 1)
+	{
+		std::cout&lt;&lt;"Unesite ime novog optuzenog: \n";
+<a name="5"></a><font color="#FF0000"><a href="match260-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+		std::string s;
+		std::cin.ignore(10000,'\n');
+		std::getline(std::cin, s);
+		try
+		{
+			N =	DodajOptuzbu(a, N, s);
+</font>		}
+		catch(...)
+		{
+			std::cout&lt;&lt;"Izuzetak";
+			break;
+		}
+	}
+	else if(opt == 2)
+	{
+		std::cout&lt;&lt;"Unesite ime koje zelite izbaciti: \n";
+<a name="2"></a><font color="#0000FF"><a href="match260-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+		std::string s;
+		std::cin.ignore(10000,'\n');
+		std::getline(std::cin, s);
+		try
+		{
+			N =	OdbaciOptuzbu(a, N, s);
+		}
+		catch(std::domain_error e)
+		{
+			std::cout&lt;&lt;e.what()&lt;&lt;"\n";
+</font>			break;
+		}
+	}
+<a name="6"></a><font color="#00FF00"><a href="match260-0.html#6" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+	else if(opt == 3) IzlistajOptuzbu(a, N);
+	}
+	for(int i=0;i&lt;N;i++) delete[] a[i];
+	delete[] a;
+</font>	return 0;
+}</pre>
+</body>
+</html>

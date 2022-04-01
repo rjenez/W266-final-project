@@ -1,0 +1,138 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student4471.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student4471.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt;
+
+int duzina__rijeci(std::string s){
+    int brojac = 0;
+    for(auto c: s){
+        if((c&gt;='a' &amp;&amp; c&lt;='z') || (c&gt;='A' &amp;&amp; c&lt;='Z') || (c&gt;='0' &amp;&amp; c&lt;='9') )brojac++;
+    }
+    return brojac;
+}
+
+struct Dijete{
+    std::string ime;
+    std::shared_ptr&lt;Dijete&gt;sljedeci;
+};
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; v, int k){
+    
+    if(k&lt;1 || k&gt;v.size())throw std::logic_error("Razvrstavanje nemoguce");
+    
+    int vel = v.size();                               //23 i 3
+    int br_prvih_timova = vel%k;                     //2
+    int br_clanova1 = vel/k+1;                       //8
+    int br_clanova2 = vel/k;                         //7
+   
+    std::vector&lt;std::set&lt;std::string&gt;&gt; t;
+    t.resize(k);
+    
+    std::shared_ptr&lt;Dijete&gt; pocetak(nullptr),prethodni(nullptr);
+    for(int i=0;i&lt;v.size();i++){
+        std::shared_ptr&lt;Dijete&gt; novi(std::make_shared&lt;Dijete&gt;());
+        novi-&gt;ime = v[i]; novi-&gt;sljedeci = nullptr; 
+       
+        if(pocetak == nullptr)pocetak = novi;
+        else prethodni-&gt;sljedeci = novi;
+        prethodni = novi;
+    }
+    
+    prethodni-&gt;sljedeci = pocetak;// zadnji pok na cvor postavljamo da pokazuje na pocetak
+   
+   int tr_vel = 0;
+   std::shared_ptr&lt;Dijete&gt; trenutni = nullptr;
+   for(int i=0;i&lt;k;i++){
+            for(int j=0;(i&gt;=br_prvih_timova) ? (j&lt;br_clanova2) : (j&lt;br_clanova1);j++){
+                //brisem pocetak, prethodni i dalje pokazuje prije pocetka !!
+                if(i==0 &amp;&amp; j==0){
+                t[i].insert(pocetak-&gt;ime);
+                tr_vel = duzina__rijeci(pocetak-&gt;ime);  
+                prethodni-&gt;sljedeci = pocetak-&gt;sljedeci;
+           
+                pocetak = pocetak-&gt;sljedeci;
+                
+                trenutni = pocetak;
+                
+                }else{
+                    std::shared_ptr&lt;Dijete&gt; prijetrenutnog = nullptr;
+                for(int h=0;h&lt;tr_vel-1;h++){
+                    if(h==tr_vel-2)prijetrenutnog = trenutni;
+                    trenutni = trenutni-&gt;sljedeci;
+                    
+                }
+                
+                t[i].insert(trenutni-&gt;ime);
+                
+                tr_vel = duzina__rijeci(trenutni-&gt;ime);
+                prijetrenutnog-&gt;sljedeci = trenutni-&gt;sljedeci;
+               
+                trenutni = trenutni-&gt;sljedeci;
+               
+                }
+            }
+    }
+   trenutni-&gt;sljedeci = nullptr;
+   trenutni = nullptr;
+   
+    return t;
+}
+
+
+int main ()
+{
+<a name="1"></a><font color="#00FF00"><a href="match532-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+  std::cout&lt;&lt;"Unesite broj djece: ";
+  int br;
+  std::cin&gt;&gt;br;
+  std::cin.ignore(1,'\n');
+  std::cout&lt;&lt;"Unesite imena djece: \n";
+</font><a name="2"></a><font color="#0000FF"><a href="match532-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+  std::vector&lt;std::string&gt; v(br);
+  for(int i=0;i&lt;br;i++){
+      std::getline(std::cin,v[i]);
+</font>      
+  }
+   //std::cin.ignore(1,'\n');
+  int k;
+  std::cout&lt;&lt;"Unesite broj timova: ";
+<a name="0"></a><font color="#FF0000"><a href="match532-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_11.gif"/></a>
+
+  std::cin&gt;&gt;k;
+ 
+  
+  std::vector&lt;std::set&lt;std::string&gt;&gt; t;
+  try{
+       t = Razvrstavanje(v,k);
+  }catch(std::logic_error temp){
+      std::cout&lt;&lt;"Izuzetak: "&lt;&lt;temp.what()&lt;&lt;std::endl;
+      return 0;
+  }
+  
+  
+  for(int i=0;i&lt;k;i++){
+      std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+      auto q = t[i].begin();
+</font>      int vel = t[i].size();
+      for(int j=0;j&lt;vel-1;j++)q++;
+      
+      for(auto p = t[i].begin();p!=t[i].end();p++){
+          if(p != q)std::cout&lt;&lt;*p&lt;&lt;", ";
+          else std::cout&lt;&lt;*p&lt;&lt;std::endl;
+      }
+  }
+	return 0;
+}</pre>
+</body>
+</html>

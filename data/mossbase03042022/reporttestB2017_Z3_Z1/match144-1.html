@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student5961.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student7795.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match144-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+
+// predefined data
+using Par = std::pair&lt;double, double&gt;;
+using VeomaVelikTip = unsigned long long;
+constexpr double _ERROR (0.0000001);
+enum class InputType {PAIRS = 1, FUNCTION = 2};
+
+// 2 parameters function to approximate function
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::vector&lt;Par&gt; inputArr) {
+     int _len (inputArr.size());
+     std::sort(inputArr.begin(), inputArr.end(), [](const Par &amp;p1, const Par &amp;p2) { return p1.first &lt; p2.first; });
+     
+     if(std::unique(inputArr.begin(), inputArr.end(), [](const Par&amp; a, const Par&amp; b) {
+          return std::fabs(a.first - b.first) &lt;= _ERROR;
+     }) != inputArr.end())
+          throw std::domain_error("Neispravni cvorovi");
+          
+     return [=](double x) {
+          if(inputArr.empty() || x &lt; inputArr.at(0).first || inputArr.at(_len-1).first &lt; x)
+               throw std::range_error("Argument izvan opsega");
+               
+          // special case x = xn
+          if(std::fabs(x - inputArr.at(_len-1).first) &lt;= _ERROR)
+               return inputArr.at(_len-1).second;
+               
+          // calculate function
+          auto pos = std::upper_bound (inputArr.begin(), inputArr.end(), Par(x, x)) - 1;
+          if(pos &lt; inputArr.begin()) pos++;
+          
+          return (pos-&gt;second + ((pos+1)-&gt;second - pos-&gt;second)/((pos+1)-&gt;first - pos-&gt;first) * (x - pos-&gt;first));
+     };
+}
+
+// 4 parameters function to approximate function
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::function&lt;double(double)&gt; f, const double &amp;x_min, const double &amp;x_max, const double &amp;dx) {
+     if(x_min &gt; x_max || dx &lt;= 0.)
+          throw std::domain_error("Nekorektni parametri");
+     
+     return [=](double x) {
+          if(x &lt; x_min || x &gt; x_max)
+               throw std::range_error("Argument izvan opsega");
+          
+          if(std::fabs(x_min - x_max) &lt; _ERROR) return f(x_min);
+          
+          VeomaVelikTip k (static_cast&lt;VeomaVelikTip&gt;((x - x_min) / dx));
+          double _prev (x_min + k*dx), _next (k ? x_min + (k + 1)*dx : x_max);
+          
+          if(_next &gt; x_max) _next = x_max;
+          if(std::fabs(_next - _prev) &lt; _ERROR) return f(_prev);
+          return (f(_prev) + (f(_next) - f(_prev))/(_next - _prev) * (x - _prev));
+     };
+}
+
+// main program logic
+int main () {
+     auto g = [](double x) -&gt; double { 
+          return x*x + std::sin(x); 
+     };
+
+     int _tip;
+     std::cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+     for(;;) {
+          std::cin &gt;&gt; _tip;
+          if(_tip != 1 &amp;&amp; _tip != 2) std::cout &lt;&lt; "Greska, unesite ponovo!";
+          else break;
+     }
+
+     /* create variables */
+     InputType _type (static_cast&lt;InputType&gt;(_tip));
+     int _size;
+     double x_min, x_max, dx, args;
+     std::vector&lt;Par&gt; inputArr;
+     std::function&lt;double(double)&gt; fapprox;
+     
+     if(_type == InputType::PAIRS) {
+          Par _temp;
+          std::cout &lt;&lt; "Unesite broj cvorova: "; std::cin &gt;&gt; _size;
+          std::cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+          for(int i(0); i &lt; _size; ++i) {
+               std::cin &gt;&gt; _temp.first &gt;&gt; _temp.second;
+               inputArr.push_back(_temp);
+          }
+     }
+     else if(_type == InputType::FUNCTION) {
+          std::cout &lt;&lt; "Unesite krajeve intervala i korak: "; std::cin &gt;&gt; x_min &gt;&gt; x_max &gt;&gt; dx;
+     }
+     
+     // create function and start apr.
+     try {
+          if(_type == InputType::PAIRS) fapprox = LinearnaInterpolacija(inputArr);
+          else fapprox = LinearnaInterpolacija(g, x_min, x_max, dx);
+     }
+     catch(std::exception&amp; e) {
+          std::cout &lt;&lt; e.what();
+          return -1;
+     }
+     
+     for(;;) {
+          std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+          std::cin &gt;&gt; args;
+          if(!std::cin || std::cin.peek() != '\n')
+               return -1;
+          try {
+               if(_type == InputType::PAIRS) 
+                    std::cout &lt;&lt; "f(" &lt;&lt; args &lt;&lt; ") = " &lt;&lt; fapprox(args) &lt;&lt; std::endl;
+               else if(_type == InputType::FUNCTION) 
+                    std::cout &lt;&lt; "f(" &lt;&lt; args &lt;&lt; ") = " &lt;&lt; g(args) &lt;&lt; " fapprox(" &lt;&lt; args &lt;&lt; ") = " &lt;&lt; fapprox(args) &lt;&lt; std::endl;
+          }
+          catch(std::exception&amp; e) {
+               std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+</font>          }
+     }
+	return 0;
+}</pre>
+</body>
+</html>

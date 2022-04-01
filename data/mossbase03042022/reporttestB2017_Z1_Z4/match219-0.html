@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student1237.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student1237.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;cctype&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match219-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+bool isIndependentWord(std::string s, int begin, int end)
+{
+	if (begin &gt; 0 &amp;&amp; end &lt; s.size() - 1 &amp;&amp; (isalpha(s.at(begin - 1)) || isalpha(s.at(end + 1))))
+		return false;
+	else if (begin == 0 &amp;&amp; end == s.size() - 1)
+		return true;
+	else if (begin == 0 &amp;&amp; isalpha(s.at(end + 1)))
+		return false;
+	else if (end == s.size() - 1 &amp;&amp; isalpha(s.at(begin - 1)))
+		return false;
+	
+	return true;
+}
+
+int findMatch(std::string sentence, std::vector&lt;std::string&gt; target_words, int *i, int *current_word)
+{
+	int len(0);
+	while (len &lt; target_words.at(*current_word).size() &amp;&amp; *i &lt; sentence.size())
+	{
+		if (sentence.at(*i) == target_words.at(*current_word).at(len))
+		{
+			len++;
+			(*i)++;
+		}
+		else
+		{
+			(*i) -= len;
+			break;
+		}
+	}
+	
+	return len;
+}
+	
+std::string NapraviPalindrom(std::string sentence, std::vector&lt;std::string&gt; target_words)
+{
+	for (int current_word(0); current_word &lt; target_words.size(); current_word++)
+	{
+		for (int i(0); i &lt; sentence.size(); i++)
+		{
+			int len(findMatch(sentence, target_words, &amp;i, &amp;current_word));
+			if (len == target_words.at(current_word).size() &amp;&amp; isIndependentWord(sentence, i - len, i - 1))
+			{
+				int p(sentence.size() - 1);
+				sentence.resize(sentence.size() + len);
+				for (; p &gt;= i; p--)
+					sentence.at(p + len) = sentence.at(p);
+				
+				for (int e(target_words.at(current_word).size() - 1); e &gt;= 0; e--, i++)
+					sentence.at(i) = target_words.at(current_word).at(e);
+			}
+		}
+	}
+	
+	return sentence;
+}
+ 
+std::string NapraviPoluPalindrom(std::string sentence, std::vector&lt;std::string&gt; target_words)
+{
+	for (int current_word(0); current_word &lt; target_words.size(); current_word++)
+	{
+		for (int i(0); i &lt; sentence.size(); i++)
+		{
+			int len((findMatch(sentence, target_words, &amp;i, &amp;current_word)));
+			if (len == target_words.at(current_word).size() &amp;&amp; isIndependentWord(sentence, i - len, i - 1))
+				for (int j(i - len), e(i - 1); j &lt; e; j++, e--)
+						sentence.at(e) = sentence.at(j);
+		}
+	}
+	
+	return sentence;
+}	
+	
+int main (void)
+{
+	std::string sentence, temp;
+	std::cout &lt;&lt; "Unesite recenicu: ";
+	std::getline(std::cin, sentence);
+	
+	std::vector&lt;std::string&gt; target_words;
+	std::cout &lt;&lt; "Unesite fraze: ";
+	while (std::getline(std::cin, temp))
+	{
+		if (!temp.empty())
+			target_words.push_back(temp);
+		if (std::cin.peek() == '\n')
+			break;
+	}
+	
+	std::cout &lt;&lt; "Recenica nakon Palindrom transformacije: " &lt;&lt; NapraviPalindrom(sentence, target_words)
+			  &lt;&lt; "\nRecenica nakon PoluPalindrom transformacije: " &lt;&lt; NapraviPoluPalindrom(sentence, target_words);
+	
+	return 0;
+</font>}</pre>
+</body>
+</html>

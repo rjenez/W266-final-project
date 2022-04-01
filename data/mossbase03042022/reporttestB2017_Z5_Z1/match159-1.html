@@ -1,0 +1,119 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z1/student5381.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z1/student4740.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match159-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 5, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;map&gt;
+
+class Student{
+    int br_indeksa;
+    std::string ime_i_prezime, adresa, god_studija, br_tel;
+    bool jel_broj(char a){return (a&gt;'0' &amp;&amp; a&lt;'9');}
+    bool jel_slovo(char a){return((a&gt;'a' &amp;&amp; a&lt;'z')||(a&gt;'A' &amp;&amp; a&lt;'Z'));}
+    public:
+    Student(int index,  std::string god,std::string ime, std::string adr, std::string telefon);
+    std::string DajImePrezime()const{return ime_i_prezime;}
+    std::string DajAdresu()const{return adresa;}
+    std::string DajTelefon()const{return br_tel;}
+    std::string DajGodinuStudija()const{if(god_studija=="1") return "1/B";
+    else if(god_studija=="2") return "2/B";
+    else if(god_studija=="3") return "3/B";
+        else return god_studija;
+    }
+    int DajIndeks()const{return br_indeksa;}
+    void Ispisi()const;
+};
+void Student::Ispisi() const{
+    std::cout &lt;&lt; "Broj indeksa: "&lt;&lt;br_indeksa &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Godina studija: ";
+    std::cout &lt;&lt; god_studija &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Ime i prezime: "&lt;&lt;ime_i_prezime &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Adresa: " &lt;&lt; adresa&lt;&lt; std::endl;
+    std::cout &lt;&lt; "Telefon: "&lt;&lt;br_tel &lt;&lt; std::endl;
+}
+Student::Student(int index,std::string god, std::string ime, std::string adr, std::string telefon){
+        if(index&lt;10000 || index&gt;99999) throw std::domain_error ("Neispravni parametri");
+        if(!(god=="1" || god=="2" || god=="3" || god=="1/B" || god=="2/B" || god=="3/B" || god=="1/M" || god=="2/M" || god=="1/D" || god=="2/D"|| god=="3/D" ))
+            throw std::domain_error ("Neispravni parametri");
+       /*for(int i=0;i&lt;telefon.length()-1;i++){
+          if(((i==0 || i==telefon.length()-1) &amp;&amp; !jel_broj(telefon[i])) || (!(jel_broj(telefon[i])) &amp;&amp; (telefon[i]!='/'|| telefon[i]!='-')))  
+          throw std::domain_error ("Neispravni parametri");
+        }*/
+        br_indeksa=index;
+        god_studija=god;
+        br_tel=telefon;
+        for(int i=1;i&lt;ime.length()-1;i++){
+            if(ime[i]==' ' &amp;&amp; (ime [i-1]==' ' || ime[i+1]==' ')) ime.erase(ime.begin()+i);
+        }
+        auto it(ime.begin()); while(!jel_slovo(*it)) ime.erase(it);
+        while(ime.length()==' '){
+        if(ime[ime.length()]==' ') ime.erase(ime.begin()+ime.length());
+        }
+        if(god_studija=="1") god_studija= "1/B";
+    else if(god_studija=="2") god_studija= "2/B";
+    else if(god_studija=="3") god_studija= "3/B";
+        else god_studija=god;
+        ime_i_prezime = ime;
+        adresa=adr;
+    }
+class Laptop{
+  int ev_broj;
+  std::string naziv, karakteristike;
+  Student* kod_koga_je;
+  public:
+  Laptop(int br, std::string ime, std::string karak){
+      if(br&lt;0) throw std::domain_error("Neispravni parametri");
+      ev_broj=br; naziv=ime; karakteristike=karak; kod_koga_je=nullptr;
+  }
+  int DajEvidencijskiBroj()const{return ev_broj;}
+  std::string DajNaziv()const{return naziv;}
+  std::string DajKarakteristike()const{return karakteristike;}
+  void Zaduzi(Student &amp;s){
+      if(kod_koga_je!=nullptr) throw std::domain_error("Laptop vec zaduzen");
+      Student* x(&amp;s); kod_koga_je=x;
+  }
+  void Razduzi(){
+      if(kod_koga_je!=nullptr) kod_koga_je=nullptr;
+  }
+  bool DaLiJeZaduzen() const{ return (kod_koga_je!=nullptr);  }
+  Student&amp; KodKogaJe()const{if(kod_koga_je==nullptr)throw std::domain_error("Laptop nije zaduzen");
+      return *kod_koga_je;
+  }
+  Student* DajPokKodKogaJe()const{return kod_koga_je;}
+  void Ispisi()const;
+};
+void Laptop::Ispisi() const{
+    std::cout &lt;&lt; "Evidencijski broj: "&lt;&lt;ev_broj &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Naziv: "&lt;&lt;naziv &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Karakteristike: "&lt;&lt;karakteristike &lt;&lt; std::endl;
+}
+class Administracija{
+    std::map&lt;int, Student*&gt; studenti;
+    std::map&lt;int, Laptop*&gt; laptopi;
+    public:
+    Administracija()=default;
+    
+};
+
+int main ()
+{
+        //AT3 - (javni) Test klase Student - metoda Ispisi
+    Student s1(12345, "1/D", "Neko Nekic", "Bascarsija 1", "1/1-1");
+    Student s2(12346, "1", "    Neko  Nekic    ", "Bascarsija 2", "1/1-1");
+    s1.Ispisi();
+    std::cout &lt;&lt; std::endl;
+    s2.Ispisi();
+
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

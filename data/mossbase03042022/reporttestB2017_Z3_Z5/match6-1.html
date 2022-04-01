@@ -1,0 +1,455 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student5804.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student6008.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;map&gt;
+#include &lt;array&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;utility&gt;
+#include &lt;stack&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match6-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum class Boje
+{
+    Pik, Tref, Herc, Karo
+};
+
+
+struct Karta {
+    Boje boja;
+    std::string vrijednost;
+};
+
+struct Cvor {
+    Karta karta;
+    Cvor *sljedeci;
+};
+
+int Pretvaranje (std::string s)
+{
+    int y;
+    if (s=="2") y=2;
+    if (s=="3") y=3;
+    if (s=="4") y=4;
+    if (s=="5") y=5;
+    if (s=="6") y=6;
+    if (s=="7") y=7;
+    if (s=="8") y=8;
+    if (s=="9") y=9;
+    if (s=="10") y=10;
+    if (s=="J") y=11;
+    if (s=="Q") y=12;
+    if (s=="K") y=13;
+    if (s=="A") y=14;
+    return y;
+}
+
+bool Ispravan (Cvor *&amp;pocetak)
+{
+    std::vector&lt;std::string&gt; karte {"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+    auto p(pocetak);
+    if (!pocetak) return true;
+    do {
+        for (int i=0; i&lt;karte.size(); i++) {
+            if (p-&gt;karta.vrijednost==karte.at(i)) {
+                p=p-&gt;sljedeci;
+                break;
+            }
+            if (i==karte.size()-1) return false;
+        }
+    } while (p!=pocetak);
+    return true;
+}
+
+bool IspravnoSortiran (Cvor *&amp;pocetak)
+{
+    auto p(pocetak);
+    if (!pocetak) return true;
+    p=p-&gt;sljedeci;
+    while (p!=pocetak) {
+        auto pom(pocetak);
+        while (pom!=p) {
+            if (pom-&gt;karta.boja&lt;p-&gt;karta.boja) pom=pom-&gt;sljedeci;
+            else if (pom-&gt;karta.boja==p-&gt;karta.boja) {
+                int x,y;
+                x=Pretvaranje(pom-&gt;karta.vrijednost);
+                y=Pretvaranje(p-&gt;karta.vrijednost);
+                if (x&lt;y) pom=pom-&gt;sljedeci;
+                else if (x&gt;y || x==y) return false;
+            } else if (pom-&gt;karta.boja&gt;p-&gt;karta.boja) return false;
+        }
+        p=p-&gt;sljedeci;
+    }
+    return true;
+}
+
+void IzbaciJednu (Cvor *&amp;pocetak,Cvor *&amp;prethodni,Cvor *&amp;p)
+{
+    if (p == pocetak) {
+        prethodni=pocetak;
+        while (prethodni -&gt; sljedeci != pocetak)
+            prethodni = prethodni -&gt; sljedeci;
+        pocetak = p-&gt;sljedeci;
+        prethodni-&gt;sljedeci = pocetak;
+        auto a=p;
+        p=p-&gt;sljedeci;
+        delete a;
+    } else {
+        prethodni-&gt;sljedeci = p-&gt;sljedeci;
+        auto a=p;
+        p=p-&gt;sljedeci;
+        delete a;
+    }
+}
+
+Cvor *KreirajSpil()
+{
+    Cvor *pocetak(nullptr), *prethodni;
+    std::vector&lt;std::string&gt; karte {"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+    int j(0);
+    for (int i=0; i&lt;52; i++) {
+        Karta k;
+        if (j==13) j=0;
+        k.vrijednost=karte.at(j);
+        if (i&lt;13) k.boja=Boje::Pik;
+        if (i&gt;=13 &amp;&amp; i&lt;26) k.boja=Boje::Tref;
+        if (i&gt;=26 &amp;&amp; i&lt;39) k.boja=Boje::Herc;
+        if (i&gt;=39 &amp;&amp; i&lt;52) k.boja=Boje::Karo;
+        Cvor *novi (new Cvor {k, pocetak});
+        if(!pocetak) pocetak=novi;
+        else prethodni-&gt;sljedeci = novi;
+        prethodni=novi;
+        j++;
+    }
+    return pocetak;
+}
+
+void IzbaciKarte (Cvor *&amp;pocetak, std::multimap&lt;Boje, std::string&gt; &amp;karte)
+{
+    auto ispravan(Ispravan(pocetak));
+    if (ispravan==false) throw std::logic_error ("Neispravna lista!");
+    auto sortiran(IspravnoSortiran(pocetak));
+    if (sortiran==false) throw std::logic_error ("Neispravna lista!");
+    Cvor *p=pocetak;
+    auto pomocna(pocetak);
+    int brojac(0);
+    do {
+        brojac++;
+    } while (pomocna!=pocetak);
+    if (brojac&gt;52) throw std::logic_error ("Neispravna lista!");
+    Cvor *prethodni(pocetak);
+    while (prethodni-&gt;sljedeci!=pocetak) {
+        prethodni=prethodni-&gt;sljedeci;
+    }
+    do {
+        for (auto it2(karte.begin()); it2!=karte.end(); it2++) {
+            if (p-&gt;karta.boja==it2-&gt;first &amp;&amp; p-&gt;karta.vrijednost==it2-&gt;second) {
+                if (pocetak-&gt;sljedeci==pocetak) {
+                    pocetak = nullptr;
+                    delete p;
+                    break;
+                }
+                IzbaciJednu(pocetak,prethodni,p);
+            }
+        }
+        if (pocetak==nullptr) break;
+        prethodni=p;
+        p=p-&gt;sljedeci;
+    } while (p!=pocetak);
+}
+
+std::stack&lt;std::pair&lt;std::string,std::string&gt;&gt; IzbaciKarteRazbrajanjem (Cvor *&amp;pocetak,const short int &amp;korak,const int &amp;broj)
+{
+    if (korak&lt;1 || korak&gt;52 || broj&lt;1) throw std::logic_error ("Neispravni elementi za izbacivanje!");
+    auto ispravan(Ispravan(pocetak));
+    if (ispravan==false) throw std::logic_error ("Neispravna lista!");
+    auto sortiran(IspravnoSortiran(pocetak));
+    if (sortiran==false) throw std::logic_error ("Neispravna lista!");
+    Cvor *p=pocetak;
+    auto pomocna(pocetak);
+    int brojanje(0);
+    do {
+        brojanje++;
+    } while (pomocna!=pocetak);
+    if (brojanje&gt;52) throw std::logic_error ("Neispravna lista!");
+    std::stack&lt;std::pair&lt;std::string,std::string&gt;&gt; izbacene;
+    int brojac(0);
+    int i(1),prolaz(0);
+    Cvor *prethodni(pocetak);
+    while (prethodni-&gt;sljedeci!=pocetak) {
+        prethodni=prethodni-&gt;sljedeci;
+    }
+    while (brojac!=broj) {
+        while (i!=korak  ) {
+            i++;
+            prethodni=p;
+            p=p-&gt;sljedeci;
+        }
+        if (i==korak) {
+            if (p-&gt;karta.boja==Boje::Pik) izbacene.push({"Pik",p-&gt;karta.vrijednost});
+            else if (p-&gt;karta.boja==Boje::Tref) izbacene.push({"Tref",p-&gt;karta.vrijednost});
+            else if (p-&gt;karta.boja==Boje::Herc) izbacene.push({"Herc",p-&gt;karta.vrijednost});
+            else if (p-&gt;karta.boja==Boje::Karo) izbacene.push({"Karo",p-&gt;karta.vrijednost});
+            brojac++;
+            if (pocetak-&gt;sljedeci==pocetak) {
+                pocetak = nullptr;
+                delete p;
+                return izbacene;
+            }
+            IzbaciJednu(pocetak,prethodni,p);
+        }
+        prethodni=p;
+        i=1;
+        prolaz++;
+        if (brojac==broj) break;
+    }
+    return izbacene;
+}
+
+void VratiPosljednjihNKarata (Cvor *&amp;pocetak, std::stack&lt;std::pair&lt;std::string,std::string&gt;&gt; &amp;bacene, int n)
+{
+    if (n!=int(n) || n&lt;0) throw std::domain_error ("Broj n je besmislen!");
+    if (n&gt;bacene.size()) throw std::range_error ("Nedovoljno karata u steku!");
+    auto ispravan(Ispravan(pocetak));
+    if (ispravan==false) throw std::logic_error ("Neispravna lista!");
+    auto sortiran(IspravnoSortiran(pocetak));
+    if (sortiran==false) throw std::logic_error ("Neispravna lista!");
+    auto pomocna(pocetak);
+    int brojanje(0);
+    Karta k;
+    do {
+        brojanje++;
+    } while (pomocna!=pocetak);
+    if (brojanje&gt;52) throw std::logic_error ("Neispravna lista!");
+    int brojac(0);
+    while (brojac!=n) {
+        Cvor *p=pocetak, *prethodni;
+        if(!pocetak) {
+            if (bacene.top().first=="Pik")
+                k.boja=Boje::Pik;
+            if (bacene.top().first=="Tref")
+                k.boja=Boje::Tref;
+            if (bacene.top().first=="Herc")
+                k.boja=Boje::Herc;
+            if (bacene.top().first=="Karo")
+                k.boja=Boje::Karo;
+            k.vrijednost=bacene.top().second;
+            Cvor *novi (new Cvor {k, nullptr});
+            pocetak=novi;
+            pocetak-&gt;sljedeci=pocetak;
+            bacene.pop();
+            brojac++;
+            continue;
+        } else if (pocetak-&gt;sljedeci==pocetak) {
+            if (bacene.top().first=="Pik")
+                k.boja=Boje::Pik;
+            if (bacene.top().first=="Tref")
+                k.boja=Boje::Tref;
+            if (bacene.top().first=="Herc")
+                k.boja=Boje::Herc;
+            if (bacene.top().first=="Karo")
+                k.boja=Boje::Karo;
+            k.vrijednost=bacene.top().second;
+            Cvor *novi (new Cvor {k, pocetak});
+            if (k.boja&lt;p-&gt;karta.boja)  {
+                prethodni=novi;
+                pocetak=prethodni;
+            } else if (k.boja&gt;p-&gt;karta.boja) {
+                pocetak-&gt;sljedeci=novi;
+                p=novi;
+            } else {
+                if (Pretvaranje(k.vrijednost)&lt;Pretvaranje(p-&gt;karta.vrijednost)) {
+                    prethodni=novi;
+                    pocetak=prethodni;
+                } else if (Pretvaranje(k.vrijednost)&gt;Pretvaranje(p-&gt;karta.vrijednost)) {
+                    pocetak-&gt;sljedeci=novi;
+                    p=novi;
+                }
+            }
+            bacene.pop();
+            brojac++;
+            continue;
+        } else {
+            for(prethodni=pocetak; prethodni-&gt;sljedeci!=pocetak; prethodni=prethodni-&gt;sljedeci);
+        }
+        int x,y;
+        y=Pretvaranje(bacene.top().second);
+        x=Pretvaranje(p-&gt;karta.vrijednost);
+        if (bacene.top().first=="Pik") {
+            while (p-&gt;karta.boja==Boje::Pik &amp;&amp; x&lt;=y) {
+                prethodni=prethodni-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+                x=Pretvaranje(p-&gt;karta.vrijednost);
+            }
+        } else if (bacene.top().first=="Tref") {
+            while (p-&gt;karta.boja==Boje::Pik) {
+                prethodni=prethodni-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+                x=Pretvaranje(p-&gt;karta.vrijednost);
+            }
+            while (p-&gt;karta.boja==Boje::Tref &amp;&amp; x&lt;=y) {
+                prethodni=prethodni-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+                x=Pretvaranje(p-&gt;karta.vrijednost);
+            }
+        } else if (bacene.top().first=="Herc") {
+            while (p-&gt;karta.boja==Boje::Pik) {
+                prethodni=prethodni-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+                x=Pretvaranje(p-&gt;karta.vrijednost);
+            }
+            while (p-&gt;karta.boja==Boje::Tref) {
+                prethodni=prethodni-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+                x=Pretvaranje(p-&gt;karta.vrijednost);
+            }
+            while (p-&gt;karta.boja==Boje::Herc &amp;&amp; x&lt;=y) {
+                prethodni=prethodni-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+                x=Pretvaranje(p-&gt;karta.vrijednost);
+            }
+        } else if (bacene.top().first=="Karo") {
+            while (p-&gt;karta.boja==Boje::Pik) {
+                prethodni=prethodni-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+                x=Pretvaranje(p-&gt;karta.vrijednost);
+            }
+            while (p-&gt;karta.boja==Boje::Tref) {
+                prethodni=prethodni-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+                x=Pretvaranje(p-&gt;karta.vrijednost);
+            }
+            while (p-&gt;karta.boja==Boje::Herc) {
+                prethodni=prethodni-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+                x=Pretvaranje(p-&gt;karta.vrijednost);
+            }
+            while (p-&gt;karta.boja==Boje::Karo &amp;&amp; x&lt;=y) {
+                prethodni=prethodni-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+                x=Pretvaranje(p-&gt;karta.vrijednost);
+            }
+        }
+        if (bacene.top().first=="Pik")
+            k.boja=Boje::Pik;
+        if (bacene.top().first=="Tref")
+            k.boja=Boje::Tref;
+        if (bacene.top().first=="Herc")
+            k.boja=Boje::Herc;
+        if (bacene.top().first=="Karo")
+            k.boja=Boje::Karo;
+        k.vrijednost=bacene.top().second;
+        Cvor *novi (new Cvor {k, p});
+        prethodni-&gt;sljedeci=novi;
+        if(p==pocetak &amp;&amp; (novi-&gt;karta.boja&lt;p-&gt;karta.boja || (novi-&gt;karta.boja==p-&gt;karta.boja &amp;&amp; Pretvaranje(novi-&gt;karta.vrijednost)&lt;Pretvaranje(p-&gt;karta.vrijednost)))) {
+            pocetak=novi;
+        }
+        p=novi;
+
+        bacene.pop();
+        brojac++;
+        if (brojac==n) break;
+    }
+}
+
+void UnistiSpil (Cvor *pocetak)
+{
+    if (pocetak!=nullptr) {
+        Cvor *prethodni(nullptr);
+        Cvor *p;
+        for(p=pocetak; p-&gt;sljedeci!=pocetak; p=p-&gt;sljedeci) {
+            delete prethodni;
+            prethodni=p;
+        }
+        delete prethodni;
+        delete p;
+    }
+}
+
+void IspisiSpil (Cvor *pocetak)
+{
+    int brojac(1);
+    int brojac2(0);
+    if (pocetak!=nullptr)
+        for (Cvor *p=pocetak; p-&gt;sljedeci!=pocetak; p=p-&gt;sljedeci) brojac++;
+    std::cout&lt;&lt;"Pik: ";
+    if (pocetak!=nullptr)
+        while (pocetak-&gt;karta.boja==Boje::Pik &amp;&amp; brojac2!=brojac) {
+            std::cout&lt;&lt;pocetak-&gt;karta.vrijednost&lt;&lt;" ";
+            pocetak=pocetak-&gt;sljedeci;
+            brojac2++;
+        }
+    std::cout&lt;&lt;std::endl&lt;&lt;"Tref: ";
+    if (pocetak!=nullptr)
+        while (pocetak-&gt;karta.boja==Boje::Tref &amp;&amp; brojac2!=brojac) {
+            std::cout&lt;&lt;pocetak-&gt;karta.vrijednost&lt;&lt;" ";
+            pocetak=pocetak-&gt;sljedeci;
+            brojac2++;
+        }
+    std::cout&lt;&lt;std::endl&lt;&lt;"Herc: ";
+    if (pocetak!=nullptr)
+        while (pocetak-&gt;karta.boja==Boje::Herc &amp;&amp; brojac2!=brojac) {
+            std::cout&lt;&lt;pocetak-&gt;karta.vrijednost&lt;&lt;" ";
+            pocetak=pocetak-&gt;sljedeci;
+            brojac2++;
+        }
+    std::cout&lt;&lt;std::endl&lt;&lt;"Karo: ";
+    if (pocetak!=nullptr) {
+        while (pocetak-&gt;karta.boja==Boje::Karo &amp;&amp; brojac2!=brojac) {
+            std::cout&lt;&lt;pocetak-&gt;karta.vrijednost&lt;&lt;" ";
+            pocetak=pocetak-&gt;sljedeci;
+            brojac2++;
+        }
+    }
+
+}
+
+int main ()
+{
+    auto pocetak (KreirajSpil());
+    try {
+        short int n;
+        int r;
+        std::cout&lt;&lt;"Unesite korak razbrajanja: ";
+        std::cin&gt;&gt;n;
+        std::cout&lt;&lt;"Unesite broj karata koje zelite izbaciti: ";
+        std::cin&gt;&gt;r;
+        std::stack&lt;std::pair&lt;std::string,std::string&gt;&gt; izbacene(IzbaciKarteRazbrajanjem(pocetak,n,r));
+        Cvor *p;
+        int brojac(1);
+        if (pocetak!=nullptr) for (p=pocetak; p-&gt;sljedeci!=pocetak; p=p-&gt;sljedeci) brojac++;
+        else brojac=0;
+        std::cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;brojac&lt;&lt;" karata, i to: "&lt;&lt;std::endl;
+        IspisiSpil(pocetak);
+        std::cout&lt;&lt;std::endl&lt;&lt;"Unesite broj karata koje zelite vratiti u spil: ";
+        int m;
+        std::cin&gt;&gt;m;
+        VratiPosljednjihNKarata(pocetak,izbacene,m);
+        int brojac2(1);
+        for(p=pocetak; p-&gt;sljedeci!=pocetak; p=p-&gt;sljedeci) brojac2++;
+        std::cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;brojac2&lt;&lt;" karata, i to: "&lt;&lt;std::endl;
+        IspisiSpil(pocetak);
+        UnistiSpil(pocetak);
+    } catch (std::domain_error l) {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;l.what();
+        UnistiSpil(pocetak);
+    } catch (std::logic_error r) {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;r.what();
+        UnistiSpil(pocetak);
+    } catch (std::range_error d) {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;d.what();
+        UnistiSpil(pocetak);
+    }
+    return 0;
+</font>}
+</pre>
+</body>
+</html>

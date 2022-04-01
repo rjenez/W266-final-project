@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student5185.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student5185.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+
+void Umanji (std::string &amp;s){
+    for (int i = 0; i &lt; s.length(); i++) {
+        if (s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z') s[i] += 32;
+    }
+}
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova (std::string recenica){
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; IndeksPojmova;
+    Umanji(recenica);
+    
+    bool nadjenaRijec(false); int index;
+    for (int i = 0; i &lt; recenica.length(); i++) {
+        
+            //Ako je odabrani znak slovo                ili     ako je cifra                               String na pocetku ili ako nije slovo ili cifra
+<a name="0"></a><font color="#FF0000"><a href="match792-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+        if (((recenica[i] &gt;= 'a' &amp;&amp; recenica[i]&lt;= 'z') || (recenica[i]&gt;= '0' &amp;&amp; recenica[i] &lt;= '9')) &amp;&amp; (i==0 || !((recenica[i-1] &gt;= 'a' &amp;&amp; recenica[i-1]&lt;= 'z') || (recenica[i-1]&gt;= '0' &amp;&amp; recenica[i-1] &lt;= '9'))) &amp;&amp; !nadjenaRijec) {
+</font>            index = i;
+            nadjenaRijec = true;
+        }
+        if (nadjenaRijec &amp;&amp; (!((recenica[i] &gt;= 'a' &amp;&amp; recenica[i]&lt;= 'z') || (recenica[i]&gt;= '0' &amp;&amp; recenica[i] &lt;= '9')) || i+1 == recenica.length())){
+            nadjenaRijec = false; if(i+1 == recenica.length()) i++;
+            bool Hi(false);
+            for (auto l : IndeksPojmova) {
+                if (recenica.substr(index, i - index) == l.first) {
+                    std::set&lt;int&gt; B (l.second);
+                    B.insert(index);
+                    IndeksPojmova[recenica.substr(index, i - index)] = B;
+                    Hi = true;
+                    
+                }
+            }
+            
+            
+            if (!Hi) {
+                      IndeksPojmova[recenica.substr(index, i - index)] = {index};
+            }
+      
+           
+        }
+        
+    }
+    return IndeksPojmova;
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match792-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+std::set&lt;int&gt; PretraziIndeksPojmova (std::string rijec, std::map&lt;std::string, std::set&lt;int&gt;&gt; IndeksPojmova){
+ 
+    for (auto i : IndeksPojmova) {
+</font>        if (rijec == i.first) {
+            return i.second;
+        }
+    }
+    
+    throw std::logic_error ("Pojam nije nadjen");
+    
+}
+
+void IspisiIndeksPojmova (const std::map&lt;std::string, std::set&lt;int&gt;&gt; IndeksPojmova){
+    for (auto i : IndeksPojmova) {
+        std::cout &lt;&lt; i.first &lt;&lt; ": ";
+        
+        int k(0);
+        
+        for (auto j : i.second) {
+            if (k == 0) {
+                std::cout &lt;&lt; j; k++;
+            }
+            else{
+<a name="1"></a><font color="#00FF00"><a href="match792-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+                std::cout &lt;&lt; "," &lt;&lt; j;
+            }
+            
+        }
+        
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+int main (){
+	
+	
+	std::cout &lt;&lt; "Unesite tekst: "; std::string recenica; std::getline(std::cin, recenica);
+	std::map&lt;std::string, std::set&lt;int&gt;&gt; Mapa(KreirajIndeksPojmova(recenica));
+</font>    IspisiIndeksPojmova(Mapa);
+	
+	
+	std::cout &lt;&lt; "Unesite rijec: ";
+	std::string rijec;
+	while (std::getline(std::cin, rijec), rijec != ".") {
+	    try{
+    	    std::set&lt;int&gt; Set = PretraziIndeksPojmova(rijec, Mapa);
+    	    int k(0);
+    	    for (auto i : Set) {
+    	        if (k == 0) {
+                    std::cout &lt;&lt; i; k++;
+                }
+                else{
+                    std::cout &lt;&lt; " " &lt;&lt; i;
+                }
+    	    }
+    	    std::cout &lt;&lt; std::endl;
+    	    std::cout &lt;&lt; "Unesite rijec: ";
+	    }
+	    catch(std::logic_error e) {
+	        std::cout &lt;&lt; "Unesena rijec nije nadjena!" &lt;&lt; std::endl;
+	        std::cout &lt;&lt; "Unesite rijec: ";
+	    }
+	}
+	
+	return 0;
+}</pre>
+</body>
+</html>

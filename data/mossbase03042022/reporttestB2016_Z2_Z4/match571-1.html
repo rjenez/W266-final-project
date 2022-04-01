@@ -1,0 +1,219 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student7597.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student2553.cpp<p></p><pre>
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;cstring&gt;
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+std::string cstringtostring(char *st1){
+	std::string st1a("");
+	while(*st1!='\0' &amp;&amp; st1!=nullptr){
+		st1a.push_back(*st1);
+		st1++;
+	}
+	return st1a;
+}
+int PotencijalniKrivci(char **&amp;a,std::vector&lt;std::string&gt; spisak){
+	char **nizpokaz(nullptr);
+	int br(0);
+	int brljudi(0);
+	for(int i=0; i&lt;spisak.size();i++)
+		if(spisak[i].size()!=0)brljudi++;
+	if(brljudi!=0)
+		try{
+			nizpokaz=new char*[brljudi];
+			for(int i=0; i&lt;brljudi;i++)
+				nizpokaz[i]=nullptr;
+		}catch(std::bad_alloc){
+			delete[] nizpokaz;
+			throw std::bad_alloc();
+		}
+	
+	for(int i=0; i&lt;spisak.size(); i++){
+		if(spisak[i].size()!=0){
+			try{
+				nizpokaz[i]=new char[spisak[i].size()+1];
+				for(int j=0; j&lt;spisak[i].size();j++)
+					nizpokaz[i][j]=spisak[i][j];
+				nizpokaz[i][spisak[i].size()]='\0';
+				br++;
+			}catch(std::bad_alloc){
+				for(int j=0; j&lt;brljudi; j++)
+					delete[] nizpokaz[j];
+				delete[] nizpokaz;
+				throw std::bad_alloc();
+			}
+		}
+	}
+	a=nizpokaz;
+	return br;
+}
+int DodajOptuzbu(char **&amp;a,int vel,std::string nekoime){
+	bool ima(false);
+	int novavel(vel);
+	for(int i=0; i&lt;vel; i++)
+		if(a[i]!= nullptr &amp;&amp; nekoime.size()!=0 &amp;&amp; cstringtostring(a[i])==nekoime){ima=true; break;}
+	if(!ima){
+		for(int i=0; i&lt;vel;i++){
+			if(a[i]==nullptr){
+			//	char *novi(nullptr);
+				try{
+					a[i]= new char[nekoime.size()+1];
+					int k=0;
+					while(k&lt;nekoime.size()){
+						a[i][k]=nekoime[k];
+						k++;
+					}
+					a[i][k]='\0';
+					return vel;
+				}catch(std::bad_alloc){
+					delete[] a[i];
+					a[i]=nullptr;
+					throw std::bad_alloc();
+				}
+			}
+		}
+		
+<a name="1"></a><font color="#00FF00"><a href="match571-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+		char **noviniz(nullptr);
+		try{
+			noviniz=new char*[vel+1];
+			for(int j=0; j&lt;vel+1;j++)
+				noviniz[j]=nullptr;
+</font>			for(int j=0; j&lt;vel;j++)
+				noviniz[j]=a[j];
+			try{
+				noviniz[vel]= new char[nekoime.size()+1];
+				int k=0;
+				while(k&lt;nekoime.size()){
+					noviniz[vel][k]=nekoime[k];
+					k++;
+				}
+				noviniz[vel][k]='\0';
+				novavel=vel+1;
+				delete[] a;
+				a=noviniz;
+			}catch(std::bad_alloc){
+				delete[] noviniz[vel];
+				//delete[] noviniz;
+				throw std::bad_alloc();
+			}
+		}catch(std::bad_alloc){
+			delete[] noviniz;
+			throw std::bad_alloc();
+		}
+		
+	}else novavel=vel;
+	return novavel;
+}
+int OdbaciOptuzbu(char **&amp;a,int vel,std::string nekoime){
+	bool ima(false);
+	int novavel(vel);
+	for(int i=0; i&lt;vel; i++){
+		if(a[i]!=nullptr &amp;&amp; cstringtostring(a[i])==nekoime){
+			ima=true;
+			delete[] a[i];
+			a[i]=nullptr;
+			int brnul(0);
+			for(int j=0; j&lt;vel;j++){
+				if (a[j]==nullptr)brnul++;
+			}
+			if(brnul&gt;10){
+				char **noviniz(nullptr);
+				try{
+					noviniz=new char*[vel-brnul];
+					int k(0);
+					for(int j=0; j&lt;vel;j++){
+						if(a[j]!=nullptr){noviniz[k]=a[j]; k++;}
+					}
+					for(int j=0; j&lt;vel;j++)
+						if(a[j]==nullptr)delete[] a[j];
+					delete[] a;
+					a=noviniz;
+					novavel=vel-brnul;
+					
+				}catch(std::bad_alloc){
+					delete[] noviniz;
+				}
+				
+			}else novavel=vel;
+		}
+	}
+	if(!ima)throw std::domain_error("Osoba sa imenom "+nekoime+" nije bila optuzena");
+	return novavel;
+}
+void IzlistajOptuzbu(char **&amp;a,int vel){
+<a name="0"></a><font color="#FF0000"><a href="match571-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+	for(int i=0; i&lt;vel;i++){
+		if(a[i]!=nullptr)std::cout&lt;&lt;a[i]&lt;&lt;std::endl;
+	}
+}
+int main (){
+/*	char **mate(nullptr);
+	
+	auto tz(PotencijalniKrivci(mate,{""}));
+	std::cout&lt;&lt;tz;
+	return 0;*/
+	std::cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? "&lt;&lt;std::endl;
+	int brpot(0);
+</font>	char **mat(nullptr);
+	std::cin&gt;&gt;brpot;
+	std::cin.ignore(10000,'\n');
+	std::cout&lt;&lt;"Unesite potencijalne krivce: "&lt;&lt;std::endl;
+	std::vector&lt;std::string&gt; lista(brpot);
+	for(int i=0; i&lt;brpot; i++){
+		std::string un;
+		std::getline(std::cin,un);
+		lista[i]=un;
+	}
+	try{
+		brpot=PotencijalniKrivci(mat,lista);
+	}catch(...){}
+	while(true){
+		std::cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: "&lt;&lt;std::endl;;
+		int opcija(0);
+		std::cin&gt;&gt;opcija;
+		std::cin.ignore(10000,'\n');
+<a name="2"></a><font color="#0000FF"><a href="match571-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+		if(opcija==0)break;
+		if(opcija==1){
+			std::cout&lt;&lt;"Unesite ime novog optuzenog: "&lt;&lt;std::endl;
+			std::string imeop;
+			std::getline(std::cin,imeop);
+</font>			try{
+				brpot=DodajOptuzbu(mat,brpot,imeop);
+			}catch(...){
+				
+			}
+		}else if(opcija==2){
+			std::cout&lt;&lt;"Unesite ime koje zelite izbaciti: "&lt;&lt;std::endl;
+			std::string izbacime;
+			std::getline(std::cin,izbacime);
+			try{
+<a name="3"></a><font color="#00FFFF"><a href="match571-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+				brpot=OdbaciOptuzbu(mat,brpot,izbacime);
+			}catch(std::domain_error a){
+				std::cout&lt;&lt;a.what()&lt;&lt;std::endl;
+</font>			}
+<a name="4"></a><font color="#FF00FF"><a href="match571-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+		}else if(opcija==3){
+			IzlistajOptuzbu(mat,brpot);
+		}
+	}
+	for(int i=0; i&lt;brpot;i++)
+		delete[] mat[i];
+	delete[] mat;
+</font>	return 0;
+}</pre>
+</body>
+</html>

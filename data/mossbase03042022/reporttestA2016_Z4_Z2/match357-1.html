@@ -1,0 +1,116 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z2/student3867.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z2/student6720.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+/*funkciju za unosenje stringa je kopirana iz ranije uradjenih zadataka*/
+<a name="0"></a><font color="#FF0000"><a href="match357-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_21.gif"/></a>
+
+void unesi(char niz[], int velicina)
+{
+	int i = 0;
+	char znak = getchar();
+	if(znak == '\n')
+		znak=getchar();
+	while(i&lt;velicina-1 &amp;&amp; znak != '\n') {
+		niz[i]=znak;
+		i++;
+		znak = getchar();
+	}
+	niz[i]='\0';
+}
+
+char* kodiraj(char* s, char* p)
+{
+	int pomocni_niz[95]= {0};
+</font>	/*pamtimo na sta je pokazivalo s(pocetak niza) da bi mogli vratiti*/
+	char* q = s;
+	char* t = p;
+
+	int i,j;
+
+	/*trazimo koji se karakter u tekstu ponavlja max broj puta*/
+	char* m = s;
+	char* n = s;
+	int brojac=0, max=0;
+
+	while(*m != '\0') {
+		n=m;
+		while(*n != '\0') {
+			if(*m == *n) {
+				brojac++;
+			}
+			n++;
+		}
+		if(brojac&gt;max) max=brojac;
+		m++;
+	}
+	/*vracamo na pocetak*/
+	s=q;
+
+	/*u pomocni niz smjestamo koliko puta se ponvalja karakter u tekstu*/
+	while(*s != '\0') {
+		pomocni_niz[*s-32]++;
+		s++;
+	}
+
+	s=q;
+
+	/*u prazan niz(tablicu) smjestano elemente teksta( niza s)*/
+	while(max&gt;-1) {
+		for(i=0; i&lt;95; i++) {
+			if (pomocni_niz[i]==max) {
+				*p=i+32;
+				p++;
+			}
+		}
+		max--;
+	}
+
+	s=q;
+
+	while(*s != '\0') {
+		p=t;
+		for(j=0; j&lt;95; j++) {
+			if(*s == p[j]) {
+				*s=126-j;
+				break;
+			}
+		}
+		s++;
+	}
+	/*vracamo pokazivac na pocetak reda*/
+	return q;
+}
+
+char* dekodiraj(char* s, char* p)
+{
+	int i, vel=0;
+	vel=strlen(s);
+	char* q;
+	q = s;
+	/*u niz s upisujemo dekodiranu vrijednost iz tablice*/
+	for(i=0; i&lt;vel; i++) {
+		s[i] = p [126 - s[i]];
+	}
+	return q;
+}
+
+int main()
+{
+	char s[95];
+	char p[95];
+	unesi(s,95);
+	kodiraj(s,p);
+	dekodiraj(s,p);
+
+	return 0;
+}
+</pre>
+</body>
+</html>

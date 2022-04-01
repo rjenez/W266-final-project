@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student2464.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student1938.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+
+void pomjer(std::list&lt;std::string&gt; &amp;tmp, std::list&lt;std::string&gt;::iterator &amp;eci){
+    int n(-1);
+<a name="0"></a><font color="#FF0000"><a href="match786-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_18.gif"/></a>
+
+    for(int i = 0; i &lt; (*eci).length(); i++)
+        if(((*eci)[i] &gt;= '0' &amp;&amp; (*eci)[i] &lt;= '9') || ((*eci)[i] &gt;= 'A' &amp;&amp; (*eci)[i] &lt;= 'Z') || ((*eci)[i] &gt;= 'a' &amp;&amp; (*eci)[i] &lt;= 'z' ))
+            n++;
+    eci = tmp.erase(eci); if(eci == tmp.end()) eci = tmp.begin();
+    for(int i = 0; i &lt; n; i++){
+        eci++;
+        if(eci == tmp.end()) eci = tmp.begin();
+</font>    }
+}
+void help(std::list&lt;std::string&gt; &amp;tmp, std::list&lt;std::string&gt;::iterator &amp;eci, int num, int pos, std::vector&lt;std::set&lt;std::string&gt;&gt; &amp;ret){
+    for(int i = 0; i &lt; num; i++) {
+        ret[pos].insert(*eci);
+        pomjer(tmp,eci);
+    }
+}
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; v, int k){
+    if(k&gt; v.size() || k&lt; 1) throw std::logic_error("Razvrstavanje nemoguce");
+    std::vector&lt;std::set&lt;std::string&gt;&gt; ret(k); int n(v.size());
+    std::list&lt;std::string&gt; tmp;
+    for(int i = 0; i &lt; v.size(); i++) tmp.push_back(v[i]);
+    std::list&lt;std::string&gt;::iterator it(tmp.begin());
+    int prvi = n%k; int prviNum = n/k + 1;
+    int drugi = k - n%k; int drugiNum = n/k;
+    for(int i = 0; i &lt; prvi; i++) help(tmp, it, prviNum, i, ret);
+    for(int i = 0; i &lt; drugi; i++) help(tmp,it,drugiNum,i+prvi,ret);
+    return ret;
+}
+
+int main (){
+    try{
+        std::cout &lt;&lt; "Unesite broj djece: "; 
+        int n; std::cin &gt;&gt; n;
+        std::cin.ignore(100,'\n');
+        std::cout &lt;&lt; "Unesite imena djece: \n";
+        std::vector&lt;std::string&gt; v(n);
+        for(int i = 0; i &lt; n; i++) std::getline(std::cin, v[i]);
+        std::cout &lt;&lt; "Unesite broj timova: ";
+        int k; std::cin &gt;&gt; k;
+        auto ret(Razvrstavanje(v, k));
+        for(int i = 0; i &lt; k; i++){
+            std::cout &lt;&lt; "Tim " &lt;&lt; i + 1 &lt;&lt; ":";
+            for(auto it = ret[i].begin();;){
+                std::cout &lt;&lt; " " &lt;&lt; *it++;
+                if(it == ret[i].end()) break;
+                std::cout &lt;&lt; ",";
+            }
+            std::cout &lt;&lt; std::endl;
+        }
+    }catch(std::logic_error err){
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt;  err.what();
+    }
+	return 0;
+}</pre>
+</body>
+</html>

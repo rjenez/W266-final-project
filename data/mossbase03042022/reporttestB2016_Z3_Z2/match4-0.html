@@ -1,0 +1,214 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student5939.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student5939.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match4-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;cctype&gt;
+
+int duzina (int pocetak, std::string tekst) {
+    int rezultat(0);
+    for (int i=pocetak; i&lt;tekst.length(); i++) {
+        if(isalnum(tekst[i])) {
+            rezultat++;
+        }
+        else break;
+    }
+    return rezultat;
+}
+
+std::string podstring (int pocetak, int kraj, std::string tekst) {
+    std::string rezultat = "";
+    for (int i=pocetak; i&lt;tekst.length(); i++){
+        if(isalnum(tekst[i])) {
+            rezultat=rezultat+tekst[i];
+        }
+        else break;
+    }
+    return rezultat;
+}
+
+bool uListi(std::vector&lt;std::string&gt; lista, std::string element) {
+    
+    for (int i = 0; i &lt; lista.size(); i++) {
+        if (element == lista[i])
+            return true;
+    }
+    return false;
+}
+
+
+std::vector&lt;std::string&gt; IzdvojiRijeci(std::string tekst) {
+    std::vector &lt;std::string&gt; rijeci;
+    
+    int start {0};
+    bool status = false;
+
+    
+    for (int i=0; i &lt; tekst.length(); i++) {
+        if (!isalnum(tekst[i]) &amp;&amp; !status) {
+            std::string rijec = tekst.substr(start, i-start);
+            rijeci.push_back(rijec);
+        }
+        
+        if (isalnum(tekst[i])) {
+            status = false;
+            if (i==tekst.length() - 1) {
+                std::string rijec = tekst.substr(start, (i + 1) - start);
+                rijeci.push_back(rijec);
+            }
+            continue;
+        }
+        
+        start = i + 1;
+        status = true;
+        
+        
+    }
+    return rijeci;
+}
+
+std::vector&lt;std::string&gt; UkloniDuplikate(std::vector&lt;std::string&gt; rijeci) {
+    
+    std::vector&lt;std::string&gt; rezultat;
+    for (int i = 0; i &lt; rijeci.size(); i++) {
+        if (!uListi(rezultat, rijeci[i]))
+            rezultat.push_back(rijeci[i]);
+    }
+    
+    return rezultat;
+}
+
+std::set &lt;int&gt; DajIndeks(std::string tekst, std::string pojam) {
+    
+    std::set &lt;int&gt; pozicije;
+    int p = tekst.find(pojam, 0);
+    
+    while (p != std::string::npos) {
+        if (pojam.length()==1) {
+            if(p&gt;0 &amp;&amp; !isalnum(tekst[p+1]) &amp;&amp; !isalnum(tekst[p-1])) {
+                pozicije.insert(p);
+            }
+        }
+        if(pojam.length()&gt;1) {
+            int d=duzina(p,tekst);
+            std::string potencijalnarijec=podstring(p,d,tekst);
+            if(potencijalnarijec==pojam){
+            pozicije.insert(p);
+            }
+        }
+        p = tekst.find(pojam, p+1);
+    }
+    return pozicije;
+}
+
+
+std::set &lt;int&gt; PretraziIndeksPojmova(std::string rijec, std::map &lt;std::string, std::set&lt;int&gt;&gt; pojmovi) {
+    
+    for (auto it = pojmovi.begin(); it != pojmovi.end(); it++) {
+        if (rijec == it -&gt; first) {
+            return it -&gt; second;
+        }
+    }
+    
+    throw std::logic_error("Pojam nije nadjen");
+}
+
+std::map &lt;std::string, std::set &lt;int&gt;&gt; KreirajIndeksPojmova(std::string tekst) {
+    std::transform (tekst.begin(), tekst.end(), tekst.begin(), tolower);
+    std::vector &lt;std::string&gt; rijeci = IzdvojiRijeci(tekst);
+    
+    std::vector&lt;std::string&gt; r = UkloniDuplikate(rijeci);
+    
+    std::map &lt;std::string, std::set &lt;int&gt;&gt; rezultat;
+    
+    for (int i = 0; i &lt; r.size(); i++) {
+        std::set&lt;int&gt; indeksi = DajIndeks(tekst, r[i]);
+        rezultat[r[i]] = indeksi;
+    }
+    
+    return rezultat;
+}
+
+void IspisiIndeksPojmova(std::map &lt;std::string, std::set &lt;int&gt;&gt; rijeci) {
+    
+    //std::cout &lt;&lt; std::endl;
+    
+    for (const auto&amp; par : rijeci) {
+        std::cout &lt;&lt; par.first &lt;&lt; ": ";
+        for (auto iter = par.second.begin(); iter != par.second.end(); iter++) {
+            if (*iter == *par.second.rbegin())
+                std::cout &lt;&lt; *iter;
+            else std::cout &lt;&lt; *iter &lt;&lt; ",";
+                    
+        }
+        std::cout &lt;&lt; "\n";
+    }
+    
+}
+
+bool Pronadji(std::string pojam, std::map &lt;std::string, std::set &lt;int&gt;&gt; pojmovi) {
+    for (auto it = pojmovi.begin(); it != pojmovi.end(); it++) {
+        if (pojam == it -&gt; first)
+            return true;
+    }
+    return false;
+}
+
+
+void IspisiIndeks(std::set &lt;int&gt; indeksi) {
+    
+    for (auto iter = indeksi.begin(); iter != indeksi.end(); iter++) {
+        if (*iter == *indeksi.rbegin()) 
+            std::cout &lt;&lt; *iter &lt;&lt; std::endl;
+        else std::cout &lt;&lt; *iter &lt;&lt; ",";
+    }
+}
+
+
+int main() {
+    std::string tekst;
+    std::string unos;
+    std::set &lt;int&gt; indeksi;
+    
+    std::cout &lt;&lt; "Unesite tekst: ";
+    std::getline (std::cin, tekst);
+    std::transform(tekst.begin(), tekst.end(), tekst.begin(), tolower);
+    
+    
+    std::map &lt;std::string, std::set &lt;int&gt;&gt; rijeci = KreirajIndeksPojmova(tekst);
+    IspisiIndeksPojmova(rijeci);
+    
+    
+    while (true) {
+        std::cout &lt;&lt; "Unesite rijec: ";
+        std::getline (std::cin, unos);
+        std::transform(unos.begin(), unos.end(), unos.begin(), tolower);
+        
+        if (unos == ".") break;
+        if (!Pronadji(unos, rijeci))
+            std::cout &lt;&lt; "Unesena rijec nije nadjena!" &lt;&lt; std::endl;
+        else {
+            indeksi = PretraziIndeksPojmova(unos, rijeci);
+            for (auto a: indeksi) 
+                std::cout &lt;&lt; a &lt;&lt; " ";
+        }
+        std::cout &lt;&lt; std::endl;
+</font>    }
+    return 0;
+}
+</pre>
+</body>
+</html>

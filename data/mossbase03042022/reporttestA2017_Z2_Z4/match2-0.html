@@ -1,0 +1,250 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z2/Z4/student2574.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z2/Z4/student2574.c<p></p><pre>
+#include &lt;stdio.h&gt;
+
+<a name="1"></a><font color="#00FF00"><a href="match2-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_18.gif"/></a>
+
+typedef int _bool;
+#define true 1
+#define false 0
+
+#define MAX 100
+
+int main(void)
+{
+	int matrix_A[MAX][MAX], matrix_B[MAX][MAX], matrix_C[MAX][MAX];
+	int histogram_A[MAX * 2], histogram_B[MAX * 2], histogram_C[MAX * 2];
+	int m, n; 
+	int i, j, e; 
+	int counter_A, counter_B, counter_C;
+	int index_A, index_B, index_C;
+	counter_A = counter_B = counter_C = index_A = index_B = index_C = 0;
+	_bool add = true;
+	_bool zero_set = false;
+	_bool found_match = false;
+	
+	do
+	{
+		printf("Unesite brojeve M i N: "); scanf("%d %d", &amp;n, &amp;m);
+	} while ((n &lt; 0 || n &gt; MAX) || (m &lt; 0 || m &gt; MAX));
+	
+	printf("Unesite clanove matrice A: ");
+	for (i = 0; i &lt; n; i++)
+		for (j = 0; j &lt; m; j++)
+</font>			scanf("%d", &amp;matrix_A[i][j]);
+			
+	printf("Unesite clanove matrice B: ");
+	for (i = 0; i &lt; n; i++)
+		for (j = 0; j &lt; m; j++)
+			scanf("%d", &amp;matrix_B[i][j]);
+			
+	printf("Unesite clanove matrice C: ");
+	for (i = 0; i &lt; n; i++)
+<a name="0"></a><font color="#FF0000"><a href="match2-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_73.gif"/></a>
+
+		for (j = 0; j &lt; m; j++)
+			scanf("%d", &amp;matrix_C[i][j]);
+	
+	/* Initializes all histograms (sets all their elements to zero). */
+	for (i = 0; i &lt; MAX * 2; i++)
+	{
+		histogram_A[i] = 0;
+		histogram_B[i] = 0;
+		histogram_C[i] = 0;
+	}
+	
+	/* Checks whether Matrix A contains a zero. */
+	for (i = 0; i &lt; n; i++)
+	{
+		for (j = 0; j &lt; m; j++)
+			if (matrix_A[i][j] == 0)
+			{
+				index_A = 2;
+				counter_A = 1;
+				zero_set = true;
+				break;
+			}
+			
+		if (zero_set)
+			break;
+	}
+	
+	/* Gets the histogram data for the matrix A. */	
+	for (i = 0; i &lt; n; i++)
+	{
+		for (j = 0; j &lt; m; j++)
+		{
+			for (e = 0; e &lt; MAX * 2; e += 2)
+				if (matrix_A[i][j] == histogram_A[e])
+				{
+					histogram_A[e + 1]++;
+					add = false;
+					break;
+				}
+				
+			if (add)
+			{
+				histogram_A[index_A] = matrix_A[i][j];
+				histogram_A[index_A + 1]++;
+				index_A += 2;
+				counter_A++;
+			}
+			
+			add = true;
+		}
+	}
+	
+	add = true;
+	zero_set = false;
+	/* Checks whether Matrix B contains a zero. */
+	for (i = 0; i &lt; n; i++)
+	{
+		for (j = 0; j &lt; m; j++)
+			if (matrix_B[i][j] == 0)
+			{
+				index_B = 2;
+				counter_B = 1;
+				zero_set = true;
+				break;
+			}
+			
+		if (zero_set)
+			break;
+	}
+	
+	/* Gets the histogram data for the matrix B. */	
+	for (i = 0; i &lt; n; i++)
+	{
+		for (j = 0; j &lt; m; j++)
+		{
+			for (e = 0; e &lt; MAX * 2; e += 2)
+				if (matrix_B[i][j] == histogram_B[e])
+				{
+					histogram_B[e + 1]++;
+					add = false;
+					break;
+				}
+				
+			if (add)
+			{
+				histogram_B[index_B] = matrix_B[i][j];
+				histogram_B[index_B + 1]++;
+				index_B += 2;
+				counter_B++;
+			}
+			
+			add = true;
+		}
+	}
+	
+	add = true;
+	zero_set = false;
+	/* Checks whether Matrix C contains a zero. */
+	for (i = 0; i &lt; n; i++)
+	{
+		for (j = 0; j &lt; m; j++)
+			if (matrix_C[i][j] == 0)
+			{
+				index_C = 2;
+				counter_C = 1;
+				zero_set = true;
+				break;
+			}
+			
+		if (zero_set)
+			break;
+	}
+	
+	/* Gets the histogram data for the matrix C. */	
+	for (i = 0; i &lt; n; i++)
+	{
+		for (j = 0; j &lt; m; j++)
+		{
+			for (e = 0; e &lt; MAX * 2; e += 2)
+				if (matrix_C[i][j] == histogram_C[e])
+				{
+					histogram_C[e + 1]++;
+					add = false;
+					break;
+				}
+				
+			if (add)
+			{
+				histogram_C[index_C] = matrix_C[i][j];
+				histogram_C[index_C + 1]++;
+				index_C += 2;
+				counter_C++;
+			}
+			
+			add = true;
+		}
+	}
+	
+	if (counter_A != counter_B || counter_A != counter_C)
+	{
+		printf("NE\n");
+		return 0;
+	}
+	else
+	{		
+		for (i = 0; i &lt; counter_A * 2; i += 2)
+		{
+			for (j = 0; j &lt; counter_B * 2; j += 2)
+			{
+				if (histogram_A[i] == histogram_B[j])
+				{
+					found_match = true;
+					
+					if (histogram_A[i + 1] != histogram_B[j + 1])
+					{
+						printf("NE\n");
+						return 0;
+					}
+				}
+			}
+			
+			if (!found_match)
+			{
+				printf("NE\n");
+				return 0;
+			}
+			
+			found_match = false;
+		}
+		
+		for (i = 0; i &lt; counter_A * 2; i += 2)
+		{
+			for (j = 0; j &lt; counter_C * 2; j += 2)
+			{
+				if (histogram_A[i] == histogram_C[j])
+				{
+					found_match = true;
+					
+					if (histogram_A[i + 1] != histogram_C[j + 1])
+					{
+						printf("NE\n");
+						return 0;
+					}
+				}
+			}
+			
+			if (!found_match)
+			{
+				printf("NE\n");
+				return 0;
+			}
+			
+			found_match = false;
+		}
+	}
+	
+	printf("DA\n");
+	return 0;
+</font>}</pre>
+</body>
+</html>

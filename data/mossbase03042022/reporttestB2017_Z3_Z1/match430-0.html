@@ -1,0 +1,177 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student2371.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student2371.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;stdexcept&gt;
+#include&lt;functional&gt;
+#include&lt;cmath&gt;
+#include&lt;algorithm&gt;
+
+using namespace std;
+typedef pair&lt;double,double&gt; par;
+
+template&lt;typename t&gt;
+void namjesti(t &amp;it1, double  x,const vector&lt;pair&lt;double,double&gt;&gt; &amp;k){
+<a name="1"></a><font color="#00FF00"><a href="match430-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+    it1=k.begin();
+    it1=lower_bound(k.begin(), k.end(), x,[](std::pair&lt;double, double&gt; const &amp; x, double d){ return x.first &lt; d; });
+</font>    if(it1-&gt;first!=x)it1--;
+}
+
+template&lt;typename t&gt;
+void iteratori(t &amp;it1, t &amp;it2,double  x,const vector&lt;pair&lt;double,double&gt;&gt; &amp;k){
+     pair&lt;double,double&gt;p(x,0);
+        namjesti(it1,x,k);
+        it2=k.begin();
+<a name="4"></a><font color="#FF00FF"><a href="match430-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+        it2=upper_bound(k.begin(), k.end(),p,[](pair&lt;double,double&gt; lhs, pair&lt;double,double&gt; rhs)  { return lhs.first &lt; rhs.first; });
+    
+}
+
+bool provjera(vector&lt;pair&lt;double,double&gt;&gt; k){
+</font><a name="5"></a><font color="#FF0000"><a href="match430-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+    for(int i=0;i&lt;k.size()-1;i++) 
+        if(k.at(i).first==k.at(i+1).first) return false;
+</font><a name="0"></a><font color="#FF0000"><a href="match430-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+    return true;
+}
+
+function&lt;double(double)&gt; LinearnaInterpolacija(vector&lt;pair&lt;double,double&gt;&gt;k) {
+    sort(k.begin(),k.end(),[](pair&lt;double,double&gt; a, pair&lt;double,double&gt; b){ return a.first&lt;b.first;});
+</font>    
+    if(!provjera(k)) throw domain_error("Neispravni cvorovi");
+    function&lt;double(double)&gt;f;
+    
+  
+    f=[k](double x) {
+        if(x&lt;k.at(0).first) throw domain_error("Argument izvan opsega");
+        if(x&gt;k.at(k.size()-1).first) throw domain_error("Argument izvan opsega");
+        double y=0;
+        if(x==k.at(k.size()-1).first) return k.at(k.size()-1).second;
+        auto it1=k.begin(), it2=k.begin();
+       iteratori(it1,it2,x,k);
+        y=it2-&gt;second + (x-it2-&gt;first)*((it1-&gt;second-it2-&gt;second)/(it1-&gt;first-it2-&gt;first));
+        return y;
+
+        };
+    
+    return f;
+}
+
+bool provjera(double mi, double ma, double delta){
+    if(delta&lt;=0 || mi&gt;ma) return false;
+    return true;
+}
+
+std::vector&lt;pair&lt;double,double&gt;&gt; vekt(){
+    int n;
+<a name="3"></a><font color="#00FFFF"><a href="match430-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+    cout&lt;&lt;"Unesite broj cvorova: ";
+                    cin&gt;&gt;n;
+                    cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+                    vector&lt;pair&lt;double,double&gt;&gt; k(n);
+                    for(int i=0; i&lt;k.size();i++){
+</font>                        pair&lt;double,double&gt; pom;
+                        cin&gt;&gt;pom.first;
+                        cin&gt;&gt;pom.second;
+                        k.at(i)=pom;
+                         
+                    }
+            return k;
+}
+
+function&lt;double(double)&gt;LinearnaInterpolacija(double f(double), double mi, double ma, double delta){
+    if(!provjera(mi,ma,delta)) throw domain_error("Nekorektni parametri");
+    vector&lt;par&gt; k;
+     while(1){
+          if(!(mi&gt;ma)) {
+            pair&lt;double,double&gt; pom;
+            pom.first=mi;
+            pom.second=f(mi);
+            k.push_back(pom);
+            mi+=delta; continue;
+          }
+          else break;
+     }
+     return LinearnaInterpolacija(k);
+
+}
+
+double fun(double x){
+    return x*x+sin(x);
+}
+
+void opcija(int n){
+    try{
+         cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+                    double i,j,k;
+                    cin&gt;&gt;i&gt;&gt;j&gt;&gt;k;
+                    auto f=LinearnaInterpolacija(fun,i,j,k);
+                    for(;;) {
+                         cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+                         double arg;
+                         cin&gt;&gt;arg;
+                         if(cin){
+                         try{
+                            cout&lt;&lt;"f("&lt;&lt;arg&lt;&lt;") = "&lt;&lt;arg*arg+sin(arg)&lt;&lt;" fapprox("&lt;&lt;arg&lt;&lt;") = "&lt;&lt;f(arg)&lt;&lt;endl; 
+                         }catch(domain_error r) { cout&lt;&lt;r.what()&lt;&lt;endl; }
+                         }
+                         else {std::cin.ignore(10000, '\n');break;}
+                    }
+        
+    }
+    catch(domain_error iz) { throw domain_error(iz.what());}
+}
+
+
+int main ()
+{ 
+ 
+     try{
+          int n;
+               cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+               cin&gt;&gt;n;
+               if(n==1)
+               {
+                    vector&lt;pair&lt;double,double&gt;&gt; k=vekt();
+                    auto f=LinearnaInterpolacija(k);
+                    
+                    for(;;) {
+<a name="2"></a><font color="#0000FF"><a href="match430-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+                    cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+                    
+                    double arg;
+                    cin&gt;&gt;arg;
+                    if(cin){
+                        try{
+                            cout&lt;&lt;"f("&lt;&lt;arg&lt;&lt;") = "&lt;&lt;f(arg)&lt;&lt;endl; 
+                        } catch(domain_error r) { cout&lt;&lt;r.what()&lt;&lt;endl; }
+</font>                    }
+                    else { std::cin.ignore(10000, '\n');break;}
+                  }
+          
+               }
+               else
+               {
+                   opcija(10);
+               }
+     }
+     catch(domain_error iz) { cout&lt;&lt;iz.what();}
+    
+	return 0;
+}
+</pre>
+</body>
+</html>

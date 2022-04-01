@@ -1,0 +1,174 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student3756.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student3756.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+
+Matrica KreirajMatricu(int br_redova, int br_kolona){
+	return Matrica(br_redova, std::vector&lt;double&gt;(br_kolona));
+} 
+
+Matrica HorizontalnoOgledalo (Matrica m){
+	if(m.size() == 0) return m; 
+	Matrica ho(KreirajMatricu(m.size(), m[0].size()) );
+	for (int i=0; i &lt; ho.size(); i++){
+	int l(0);
+		for(int j = ho[i].size()-1; j&gt;=0; j--){
+			ho[i][l] = m[i][j];
+			l++;
+		}
+	}
+return ho; 	
+} //ispravna!
+
+Matrica VertikalnoOgledalo (Matrica m){
+	if(m.size() == 0) return m; 
+	Matrica vo(KreirajMatricu(m.size(), m[0].size())); 
+	int l(0);
+	for (int i = vo.size()-1; i &gt;= 0; i--){
+		for(int j=0; j&lt; vo[i].size(); j++){
+			vo[l][j] = m[i][j];
+		}
+		l++;
+	}
+return vo; 	
+} // ispravna! 
+
+
+Matrica KombinovanoOgledalo (Matrica m){
+	if(m.size() == 0) return m; 
+	Matrica ko(KreirajMatricu(m.size(), m[0].size()) );
+	int k(0);
+	for (int i=ko.size()-1; i &gt;= 0; i--){ int l(0);
+		for(int j=ko[i].size()-1; j&gt;=0; j--){
+			ko[k][l] = m[i][j];
+			l++;
+		}
+		k++;
+	}
+	
+return ko; 	
+} //ispravna!
+
+
+
+Matrica OgledaloMatrica (Matrica m){
+	if(m.size() == 0) return m; 
+	bool isti(true);
+	for(int i=0; i &lt; m.size(); i++){
+		if(i &lt; m.size()-1){
+			if(m[0].size() != m[i+1].size()){
+				isti = false; 
+				break;
+			}
+		}
+	}
+	if(!isti) throw std::domain_error("Matrica nije korektna");
+	Matrica om(KreirajMatricu(3*m.size(), 3*m[0].size())); 
+	
+	Matrica ho(HorizontalnoOgledalo(m));
+	Matrica vo(VertikalnoOgledalo(m));
+	Matrica ko(KombinovanoOgledalo(m));
+	for(int i=0; i &lt; m.size(); i++){
+<a name="1"></a><font color="#00FF00"><a href="match916-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+		for(int j=0; j &lt; m[i].size(); j++)
+			om[i][j] = ko[i][j];
+	}
+	for(int i=0; i &lt; m.size(); i++){
+		for(int j=0; j &lt; m[i].size(); j++)
+			om[i][j+m[i].size()] = vo[i][j];
+</font>	}
+	
+<a name="2"></a><font color="#0000FF"><a href="match916-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+	for(int i=0; i &lt; m.size(); i++){
+		for(int j=0; j &lt; m[i].size(); j++)
+			om[i][j+2*m[i].size()] = ko[i][j];
+</font>	}
+	
+<a name="0"></a><font color="#FF0000"><a href="match916-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_12.gif"/></a>
+
+	for(int i=0; i &lt; m.size(); i++){
+		for(int j=0; j &lt; m[i].size(); j++)
+			om[i+m.size()][j] = ho[i][j];
+	}
+	for(int i=0; i &lt; m.size(); i++){
+		for(int j=0; j &lt; m[i].size(); j++)
+			om[i+m.size()][j+m[i].size()] = m[i][j];
+	}
+	for(int i=0; i &lt; m.size(); i++){
+		for(int j=0; j &lt; m[i].size(); j++)
+			om[i+m.size()][j+2*m[i].size()] = ho[i][j];
+</font>	}
+	for(int i=0; i &lt; m.size(); i++){
+		for(int j=0; j &lt; m[i].size(); j++)
+			om[i+2*m.size()][j] = ko[i][j];
+	}
+	for(int i=0; i &lt; m.size(); i++){
+		for(int j=0; j &lt; m[i].size(); j++)
+			om[i+2*m.size()][j+m[i].size()] = vo[i][j];
+	}
+	for(int i=0; i &lt; m.size(); i++){
+		for(int j=0; j &lt; m[i].size(); j++)
+			om[i+2*m.size()][j+2*m[i].size()] = ko[i][j];
+	}
+	
+	
+	return om; 
+} //ispravna!
+	
+
+
+int main ()
+{	try{
+	int m, n;
+	std::cout &lt;&lt; "Unesite dimenzije matrice (m n): ";
+	std::cin &gt;&gt; m &gt;&gt; n; 
+	if(m &lt; 0 || n &lt; 0) {std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!" &lt;&lt; std::endl; return 0;}
+
+	Matrica mat(KreirajMatricu(m, n));
+	
+	std::cout &lt;&lt; "Unesite elemente matrice: " &lt;&lt; std::endl; 
+	
+	for(int i=0; i &lt; m; i++){
+		for(int j=0; j &lt; n; j++){
+			std::cin &gt;&gt; mat[i][j];
+		}
+	}// unos elemenata matrice
+	
+	std::cout &lt;&lt; std::endl; 
+	
+	auto mo(OgledaloMatrica(mat));
+	std::cout &lt;&lt; "Rezultantna matrica: " &lt;&lt; std::endl;
+	
+	for(int i=0; i&lt;mo.size(); i++){
+		for(int j=0; j&lt;mo[0].size(); j++) std::cout &lt;&lt; std::setw(4) &lt;&lt; mo[i][j];
+		std::cout &lt;&lt; std::endl; 
+	} 
+
+}
+catch (std::domain_error izuzetak){
+	std::cout &lt;&lt; izuzetak.what();
+}
+	return 0;
+}</pre>
+</body>
+</html>

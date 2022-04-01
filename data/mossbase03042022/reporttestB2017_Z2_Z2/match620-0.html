@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student4882.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student4882.cpp<p></p><pre>
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+#include &lt;deque&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include &lt;limits&gt;
+
+enum class SmjerKretanja {
+	NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo
+};
+
+template &lt;typename Name&gt;
+auto PjescaniSat (Name kont, SmjerKretanja smjer) -&gt; Name {
+	Name p=kont;
+	Name t=p;
+	int n=kont.size();
+	for (int i=0; i&lt;n; i++) {
+<a name="2"></a><font color="#0000FF"><a href="match620-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+		for (int j=0; j&lt;n; j++) {
+			if (p.at(i).at(j).size()!=n) throw std::domain_error("3D matrica nema oblik kocke");
+</font>			if (j==n-1) break;
+		}
+		if (p.at(i).size()!=n) throw std::domain_error("3D matrica nema oblik kocke");
+		if (i==n-1) break;
+	}
+	if (n%2==0) {throw std::length_error("3D kontejner ne zadovoljava uvjet neparnosti");}
+	// trostrukom petljom kreiramo pjescane satove
+	for (int i=0; i&lt;n; i++) {
+		for (int j=0; j&lt;n; j++) {
+			for (int k=0; k&lt;n; k++) {
+				if (smjer==SmjerKretanja::GoreDolje) t.at(i).at(j).at(k)=p.at(i).at(j).at(k);
+				if (smjer==SmjerKretanja::DoljeGore) t.at(i).at(j).at(k)=p.at(i).at(n-1-j).at(k);
+				if (smjer==SmjerKretanja::NaprijedNazad) t.at(i).at(j).at(k)=p.at(j).at(i).at(k);
+				if (smjer==SmjerKretanja::NazadNaprijed) t.at(i).at(j).at(k)=p.at(n-1-j).at(i).at(k);
+				if (smjer==SmjerKretanja::DesnoLijevo) t.at(i).at(j).at(k)=p.at(i).at(k).at(n-1-j);
+				if (smjer==SmjerKretanja::LijevoDesno) t.at(i).at(j).at(k)=p.at(i).at(k).at(j);
+				if (k==n-1) break;
+			}
+			if (j==n-1) break;
+		}
+		if (i==n-1) break;
+	}
+	// stvaramo nove varijable kako bismo kreirali novu 3D matricu zadanog tipa
+	Name q (n);
+	typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type Kolona;
+	typename std::remove_reference&lt;decltype(kont.at(0).at(0))&gt;::type Red;
+	for (int i=0; i&lt;n; i++) {
+		q.push_back(Kolona);
+		int b=0;
+		for (int j=0; j&lt;n/2; j++) {
+			q.at(i).push_back(Red);
+			for (int k=0; k&lt;n-b; k++) {
+				q.at(i).at(j).push_back(0);
+				if (k==(n-b-1)) break;
+			}
+			b=b+2;
+			if (j==(n-1)) break;
+		}
+		for (int j=n/2; j&lt;n; j++) {
+			q.at(i).push_back(Red);
+			for (int k=0; k&lt;n-b; k++) {
+				q.at(i).at(j).push_back(0);
+				if (k==(n-b-1)) break;
+			}
+			b=b-2;
+			if (j==(n-1)) break;
+		}
+		if (i==(n-1)) break;
+	}
+	// u novokreiranu 3D matricu ubacujemo zeljene elemente
+	int kk(0);
+	for (int i=0; i&lt;n; i++) {
+		for (int j=0; j&lt;n; j++) {
+			kk=0;
+			for (int k=0; k&lt;n; k++) {
+				if ((j&gt;k and j&lt;(n-k-1)) or (j&lt;k and j&gt;(n-k-1))) continue;
+				else q.at(i).at(j).at(kk)=t.at(i).at(j).at(k);
+				kk++;
+				if (k==n-1) break;
+			}
+			if (j==n-1) break;
+		}
+		if (i==n-1) break;
+	}
+	return q;
+}
+
+int main ()
+{
+	try {
+		std::vector&lt;std::vector&lt;std::vector&lt;int&gt;&gt;&gt; v, q;
+		int n;
+		std::cout &lt;&lt; "Unesite dimenziju (x/y/z): ";
+		while (1) {
+			std::cin &gt;&gt; n;
+			if (n&gt;=0) break;
+			else std::cout &lt;&lt; "Dimenzija nije ispravna, unesite opet: ";
+		}
+		std::cout &lt;&lt; "Unesite elemente kontejnera: ";
+		int k;
+		for (int i=0; i&lt;n; i++) {
+			v.resize(i+1);
+			for (int j=0; j&lt;n; j++) {
+				v.at(i).resize(j+1);
+				for (int l=0; l&lt;n; l++) {
+					std::cin &gt;&gt; k;
+					v.at(i).at(j).push_back(k);
+				}
+			}
+		}
+		int p;
+		std::cin.ignore(10000, '\n');
+		std::cout &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+		while (1) {
+			std::cin &gt;&gt; p;
+			if (p&gt;=0 and p&lt;=5) break;
+			else std::cout &lt;&lt; "Smjer nije ispravan, unesite opet: ";
+		}
+		std::cout &lt;&lt; "\n";
+<a name="1"></a><font color="#00FF00"><a href="match620-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+		SmjerKretanja s=static_cast&lt;SmjerKretanja&gt; (p);
+		q=PjescaniSat(v, s);
+		std::cout &lt;&lt; "Pjescani sat unesene matrice je:" &lt;&lt; std::endl;
+		for (int i=0; i&lt;n; i++) {
+</font>			for (int j=0; j&lt;int(n/2); j++) {
+				for (int l=0; l&lt;q.at(i).at(j).size(); l++) {
+					int f=q.at(i).at(j).size();
+					if (l==0 and l!=(f-1)) std::cout &lt;&lt; std::right &lt;&lt; std::setw(4+4*j) &lt;&lt; q.at(i).at(j).at(l);
+					else if (l==(f-1)) std::cout &lt;&lt; std::right &lt;&lt; std::setw(4) &lt;&lt; q.at(i).at(j).at(l);
+					else std::cout &lt;&lt; std::right &lt;&lt; std::setw(4) &lt;&lt; q.at(i).at(j).at(l);
+				}
+				std::cout &lt;&lt; std::endl;
+			}
+			for (int j=int(n/2); j&lt;n; j++) {
+				for (int l=0; l&lt;q.at(i).at(j).size(); l++) {
+					int f=q.at(i).at(j).size();
+					if (j==int(n/2)) std::cout &lt;&lt; std::right &lt;&lt; std::setw(4+4*(n-j-1)+(n-j-1)-int(n/2)) &lt;&lt; q.at(i).at(j).at(l);
+					else if (l==0 and l!=(f-1)) std::cout &lt;&lt; std::right &lt;&lt; std::setw(4+4*(n-j-1)) &lt;&lt; q.at(i).at(j).at(l);
+					else if (l==(f-1)) std::cout &lt;&lt; std::right &lt;&lt; std::setw(4) &lt;&lt; q.at(i).at(j).at(l);
+<a name="0"></a><font color="#FF0000"><a href="match620-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+					else std::cout &lt;&lt; std::right &lt;&lt; std::setw(4) &lt;&lt; q.at(i).at(j).at(l);
+ 				}
+ 				std::cout &lt;&lt; std::endl;
+			}
+			std::cout &lt;&lt; std::endl;
+		}
+	}
+	catch (std::domain_error izuzetak1) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak1.what() &lt;&lt; std::endl;
+	}
+	catch (std::length_error izuzetak2) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak2.what() &lt;&lt; std::endl;
+	}
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student3535.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student3535.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+
+int OdrediDuzinu(const std::string &amp;s){
+    int duzina(0);
+    for(int i=0;i&lt;s.size();i++){
+        if((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')||(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z')||(s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')) duzina++;
+    }
+    return duzina;
+}
+
+std::vector&lt;int&gt; OdrediKapacitet(int broj_djece, int broj_timova){
+    std::vector&lt;int&gt; v;
+    int def(broj_djece/broj_timova);
+    int mod(broj_djece%broj_timova);
+    int i;
+    for(i=0;i&lt;broj_timova;i++){
+        v.push_back(def);
+    }
+    i=0;
+    while(mod&gt;0){
+        v[i]=v[i]+1;
+        mod--;
+        i++;
+    }
+    return v;
+}
+
+std::list&lt;std::string&gt;::iterator NoviClan(std::list&lt;std::string&gt; &amp;l, std::list&lt;std::string&gt;::iterator lista, int broj_iteracija){
+    auto iterator=lista;
+
+    
+    for(int i=0;i&lt;broj_iteracija-1;i++){
+        iterator++;
+        if(iterator==l.end()) iterator=l.begin();
+    }
+    
+    return iterator;
+}
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; v, int n){
+    if(n&lt;1 || v.size()&lt;n) throw std::logic_error("Razvrstavanje nemoguce");
+    std::list&lt;std::string&gt; kids;
+    for(int i=0;i&lt;v.size();i++){
+        kids.push_back(v[i]);
+    }
+//    std::vector&lt;std::set&lt;std::string&gt;&gt; rez(n,std::set&lt;std::string&gt;{});
+    std::vector&lt;std::set&lt;std::string&gt;&gt; rez;
+    std::vector&lt;int&gt; kapaciteti;
+    kapaciteti=OdrediKapacitet(v.size(),n);
+    std::list&lt;std::string&gt;::iterator iterator(kids.begin());
+    
+    for(int i=0;i&lt;n;i++){
+        int broj_clanova=kapaciteti[i];
+        std::set&lt;std::string&gt; skup;
+        for(int j=0;j&lt;broj_clanova;j++){
+            skup.insert(*iterator);
+            int move=OdrediDuzinu(*iterator);
+            iterator=kids.erase(iterator);
+            if(iterator==kids.end()) iterator=kids.begin();
+            iterator=NoviClan(kids, iterator, move);
+        }
+        rez.push_back(skup);
+    }
+    return rez;
+}
+
+int main(){
+<a name="1"></a><font color="#00FF00"><a href="match731-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    int n;
+    std::cin&gt;&gt;n;
+    std::cout&lt;&lt;"Unesite imena djece: "&lt;&lt;std::endl;
+    std::vector&lt;std::string&gt; v;
+    std::cin.ignore(1000,'\n');
+</font><a name="0"></a><font color="#FF0000"><a href="match731-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+    for(int i=0;i&lt;n;i++){
+        std::string ime;
+        std::getline(std::cin, ime);
+        v.push_back(ime);
+    }
+    std::cout&lt;&lt;"Unesite broj timova: ";
+    int broj_timova;
+    std::cin&gt;&gt;broj_timova;
+</font><a name="2"></a><font color="#0000FF"><a href="match731-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+    std::vector&lt;std::set&lt;std::string&gt;&gt; rez;
+    try{
+    rez=Razvrstavanje(v, broj_timova);
+    for(int i=0;i&lt;rez.size();i++){
+        std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+</font>        auto end(rez[i].end());
+        end--;
+        for(auto it=rez[i].begin();it!=rez[i].end();it++){
+            std::cout&lt;&lt;*it;
+            if(it!=end) std::cout&lt;&lt;", ";
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+    }
+    catch(std::logic_error msg){
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;msg.what();
+    }
+    return 0;
+}
+
+int main2 ()
+{
+    int bd(10),bt(3);
+    std::vector&lt;int&gt; vex;
+    vex=OdrediKapacitet(bd,bt);
+    for(auto x:vex){
+        std::cout&lt;&lt;x&lt;&lt;" ";
+    }
+    
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student1336.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student1336.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match31-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+void UnistiMatricu(char **mat, int br_redova){
+	if(!mat) return;
+	for(int i=0; i&lt;br_redova; i++) delete [] mat[i];
+	delete[] mat;
+}
+
+int PotencijalniKrivci (char **&amp;p, std::vector&lt;std::string&gt; s){
+	
+	try{
+		p=new char* [int(s.size())];
+		    for(int i(0); i&lt;int(s.size()); i++) p[i]=nullptr;
+		try{
+			
+			for(int i(0); i&lt;int(s.size()); i++) {
+				p[i]=new char [int(s.at(i).size())+1];
+			}
+			for(int i(0); i&lt;int(s.size()); i++) std::strcpy(p[i], s[i].c_str());
+			
+		}
+		catch(...){
+			for(int i(0); i&lt;int(s.size()); i++) delete[] p[i];
+			delete[] p;
+			p=nullptr;
+			throw std::bad_alloc();
+		}
+		
+	}
+	catch(...){
+		
+			delete[] p;
+			p=nullptr;
+		
+		throw std::bad_alloc();
+	}
+	
+	return int(s.size());
+}
+
+int OdbaciOptuzbu (char**&amp;p, int vel, std::string ime){
+	
+	bool nemapojave(true);
+	for(int i(0); i&lt;vel; i++){
+		
+		while(p[i]==nullptr)	{
+			i++;
+			if(i&gt;=vel) break;
+		}
+		
+		if(i&gt;=vel) break;
+		std::string pomocni;
+		
+		if( std::string(p[i])==ime) {
+			nemapojave=false;
+			delete[] p[i];
+			p[i]=nullptr;
+			break;
+		}
+	}
+	std::string s("Osoba sa imenom "+ime+" nije bila optuzena");
+	if(nemapojave) throw std::domain_error (s);
+	
+	int brojac(0);
+	for(int i(0); i&lt;vel; i++){
+		if(p[i]==nullptr) brojac++;
+	}
+	if(brojac&lt;=10) return vel;
+	
+	char **a(new char*[vel-brojac]);
+	try{
+		
+		for(int  i(0); i&lt;vel-brojac; i++) a[i]=nullptr;
+		try{
+			for(int i(0), k(0); i&lt;vel-brojac; i++, k++){
+				while(p[k]==nullptr) k++;
+				a[i]=p[i];
+			}
+		}
+		catch(...){
+			for(int i(0); i&lt;vel-brojac; i++ ) delete [] a[i];
+			delete[] a;
+			return vel;
+		}
+		for(int i(0); i&lt;vel; i++){
+			p[i]=nullptr;
+		}
+		UnistiMatricu(p,vel);
+		p=a;
+		return vel-brojac;
+	}
+	
+	catch(...){
+		delete[] a;
+		return vel;
+	}
+	return vel;
+}
+
+int DodajOptuzbu (char **&amp;p, int vel, std::string ime){
+	char *niz(nullptr);
+	try{
+		niz=new char[int(ime.size())+1];
+		std::strcpy(niz,ime.c_str());
+	}
+	catch(...){
+		delete[] niz;
+		throw std::bad_alloc();
+	}
+	
+	for(int i(0); i&lt;vel; i++){
+		if(p[i]==nullptr){
+			p[i]=niz;
+			return vel;
+		}
+	}
+	char **a(nullptr);
+	try{
+		a=new char* [vel+1];
+		try{
+			for(int i(0); i&lt;vel+1; i++) a[i]=nullptr;
+			for(int i(0); i&lt;vel+1; i++){
+				if(i&lt;vel) {
+					a[i]=p[i];
+				}
+				else {
+					a[i]=niz;
+					
+				}
+			}
+		
+			p=a;
+		}
+		catch(...){
+			
+			delete[] a;
+			a=nullptr;
+			delete[] niz;
+			niz=nullptr;
+			throw std::bad_alloc();
+		
+		}
+	}
+	catch(...){
+		delete[] a; delete [] niz;
+		throw std::bad_alloc();
+	}
+	
+	
+	
+	return vel+1;
+	
+}
+
+void IzlistajOptuzbu(char **p, int vel){
+	for(int i(0); i&lt;vel; i++){
+		while(p[i]==nullptr) {
+			i++; if(i&gt;=vel) break;
+		}
+		if(i&gt;=vel) break;
+		
+		std::cout&lt;&lt;p[i]&lt;&lt;std::endl;
+	}
+}
+
+int main ()
+{
+	
+	std::cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? ";
+	int vel ;
+	std::cin&gt;&gt;vel;
+	std::cin.ignore(1000,'\n');
+	
+	std::cout&lt;&lt;std::endl&lt;&lt;"Unesite potencijalne krivce: ";
+	std::vector&lt;std::string&gt; s;
+	for(int i(0); i&lt;vel; i++){
+		std::string pomocni;
+		std::getline(std::cin,pomocni);
+		s.push_back(pomocni);
+	}
+	
+	char **mat(nullptr);
+	
+	try{
+		std::cout&lt;&lt;std::endl;
+		
+			
+		vel=PotencijalniKrivci(mat,s);
+		
+		
+		for(;;){
+			std::cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: ";
+			int opcija;
+			std::cin&gt;&gt;opcija;
+			std::cin.ignore(1000,'\n');
+			if(opcija==0) break;
+			if(opcija==1){
+				std::cout&lt;&lt;std::endl&lt;&lt;"Unesite ime novog optuzenog: ";
+				std::string ime;
+				std::getline(std::cin, ime);
+				vel=DodajOptuzbu(mat,vel,ime);
+				std::cout&lt;&lt;std::endl;
+				
+			}
+			if(opcija==2){
+				std::cout&lt;&lt;std::endl&lt;&lt;"Unesite ime koje zelite izbaciti: ";
+				std::string ime;
+				std::getline(std::cin, ime);
+				vel=OdbaciOptuzbu(mat, vel, ime);
+				std::cout&lt;&lt;std::endl;
+				
+			}
+			if(opcija==3){
+				std::cout&lt;&lt;std::endl;
+				IzlistajOptuzbu(mat,vel);
+			}
+			
+		}
+		UnistiMatricu(mat,vel);
+	}
+	catch(std::domain_error izuzetak){
+		std::cout&lt;&lt;izuzetak.what();
+		UnistiMatricu(mat,vel);
+	}
+	catch(...){
+		std::cout&lt;&lt;"Problemi sa memorijom";
+		UnistiMatricu(mat,vel);
+</font>	}
+	
+	
+	
+	return 0;
+}</pre>
+</body>
+</html>

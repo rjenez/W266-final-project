@@ -1,0 +1,159 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student2364.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student2364.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+void JednaPoJedna(std::string &amp;recenica, std::string rijec){
+	
+	int indeks_slova(0);
+	
+	for(int i(0); i &lt; recenica.length(); i++){
+		indeks_slova= 0;
+		
+		if(recenica[i] == rijec[0]){
+			int indeks(i);
+			while(recenica[i] == rijec[indeks_slova] &amp;&amp; i &lt; recenica.length() &amp;&amp; indeks_slova &lt; rijec.length()){
+				i++;
+				indeks_slova++;
+			}
+			if(indeks_slova == rijec.length()){
+				
+				int temp(indeks_slova);
+				
+				for(int k(indeks); k &lt; indeks +indeks_slova; k++){
+					recenica[k] = rijec[temp - 1];
+					temp--;
+				}
+				i--;
+			}
+		}
+	}
+}
+
+void Pigli(std::string &amp;recenica, std::string rijec){
+	int indeks_slova(0);
+	int k(0);
+	
+<a name="1"></a><font color="#00FF00"><a href="match611-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+	for(int i(0); i &lt; rijec.size() ; i++){
+		if( !((rijec[i] &gt;= 'A' &amp;&amp; rijec[i] &lt;= 'Z') || (rijec[i] &gt;= 'a' &amp;&amp; rijec[i] &lt;= 'z'))) throw std::domain_error("Nekorektan izbor rijeci");
+	}
+	
+	for(int i(0); i &lt; recenica.length()+1; i++){
+</font>		indeks_slova = 0;
+		
+		if(recenica[i] == rijec[0] &amp;&amp; ( i == 0 || i == recenica.length() || recenica[i - 1] == ' ' )){
+			int indeks(i);
+			while(recenica[i] == rijec[indeks_slova]){
+				i++;
+				indeks_slova++;
+			}
+			if(indeks_slova == rijec.length()){
+				
+				char Zapamti_me(recenica[indeks]);
+				
+				for(k = indeks; k &lt; indeks + indeks_slova - 1; k++){
+					recenica[k] = recenica[k+1];
+				}
+				recenica[k] = Zapamti_me;
+				
+				recenica = recenica.substr(0, indeks + rijec.size()) + "ay" + recenica.substr(indeks + rijec.size(), recenica.length());
+			}
+		}
+	}
+}
+
+std::string ObrniFraze(std::string recenica, std::vector&lt;std::string&gt; frazice){
+	
+	for(int i(0); i &lt; frazice.size(); i++){
+		JednaPoJedna(recenica, frazice.at(i));
+	}
+	
+	std::string Nova_recenica(recenica);
+	
+	return Nova_recenica;
+	
+}
+
+std::string IzmijeniUPigLatin(std::string recenica, std::vector&lt;std::string&gt; frazice){
+	
+	std::vector&lt;std::string&gt; prazan;
+	
+	if(frazice != prazan){
+		for(int i(0); i &lt; frazice.size(); i++)
+		Pigli(recenica, frazice.at(i));
+	}
+	
+	else if(frazice.size()  == prazan.size()){
+		
+		if(recenica.size() == 0)throw std::domain_error("Nekorektan izbor rijeci");
+		std::string rijec;
+		std::string prazan2;
+		std::vector&lt;std::string&gt; nove_fraze;
+		
+		for(int i(0); i &lt; recenica.length(); i++){
+			rijec = prazan2;
+			if((recenica[i] &gt;= 'A' &amp;&amp; recenica[i] &lt;='Z') || (recenica[i] &gt;= 'a' &amp;&amp; recenica[i] &lt;= 'z')){
+				while( i &lt; recenica.length() &amp;&amp; ((recenica[i] &gt;= 'A' &amp;&amp; recenica[i] &lt;= 'Z') || (recenica[i] &gt;= 'a' &amp;&amp; recenica[i] &lt;='z') )){
+					rijec.push_back(recenica[i]);
+					i++;
+				}
+				nove_fraze.push_back(rijec);
+			}
+		}
+		
+		for(int i(0); i &lt; nove_fraze.size(); i++){
+			Pigli(recenica, nove_fraze.at(i));
+		}
+	}
+	
+	std::string Nova_recenica(recenica);
+	return Nova_recenica;
+}
+<a name="2"></a><font color="#0000FF"><a href="match611-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+int main(){
+	
+	std::string recenica;
+	std::cout &lt;&lt; "Unesite recenicu: ";
+	std::getline(std::cin, recenica);
+
+	std::cout &lt;&lt;"Unesite fraze: ";
+	
+	std::string prazan;
+</font>	std::vector&lt;std::string&gt; fraze;
+	std::string fraza;
+	
+	for(;;){
+		std::getline(std::cin, fraza);
+		if(fraza == prazan)break;
+		fraze.push_back(fraza);
+	}
+	
+	std::vector&lt;std::string&gt; prazan2;
+	
+	try{
+<a name="0"></a><font color="#FF0000"><a href="match611-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+		std::string Nova(IzmijeniUPigLatin(recenica, fraze));
+		std::cout &lt;&lt; "Recenica nakon PigLatin transformacije: " &lt;&lt; Nova &lt;&lt; std::endl;
+	}
+	catch(std::domain_error izuzetak){
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt;  izuzetak.what() &lt;&lt; std::endl;
+	}
+		std::string Nova2(ObrniFraze(recenica, fraze));
+</font>		std::cout &lt;&lt; "Recenica nakon obrtanja fraza: " &lt;&lt; Nova2 &lt;&lt; std::endl;
+	
+	return 0;
+	
+}</pre>
+</body>
+</html>

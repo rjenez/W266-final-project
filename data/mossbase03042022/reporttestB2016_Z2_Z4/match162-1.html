@@ -1,0 +1,201 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8118.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8864.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;vector&gt;
+#include&lt;stdexcept&gt;
+#include&lt;cstring&gt;
+bool poredi(char *s1,std::string s2){
+	int i(0);
+	while(*s1!=0 &amp;&amp; i&lt;s2.length()){
+		if(*s1!=s2[i]) return false;
+		i++;s1++;
+	}
+	if(*s1!=0) return false;
+	if(i&lt;s2.length()) return false;
+	return true;
+}
+int PotencijalniKrivci(char** &amp;znak,std::vector&lt;std::string&gt;stringovi){
+	char**niz(nullptr);
+	try{
+		niz=new char*[stringovi.size()]{};
+	}
+	catch(...){
+		delete[] niz;
+		throw std::bad_alloc();
+	}
+	int brojac(0);
+	try{
+		int a,b;
+		for(a=0;a&lt;stringovi.size();a++){
+			niz[a]=new char[stringovi[a].length()+1]{};
+<a name="6"></a><font color="#00FF00"><a href="match162-0.html#6" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+			for(b=0;b&lt;stringovi[a].length();b++){
+				niz[a][b]=stringovi[a][b];
+			}
+			niz[a][b]=0;
+			brojac++;
+</font>		}
+	}
+	catch(...){
+		for(int i=0;i&lt;stringovi.size();i++) delete[] niz[i];
+		delete[] niz;
+		throw std::bad_alloc();
+	}
+	znak=niz;
+	return brojac;
+}
+int OdbaciOptuzbu(char**&amp;znak,int velicina,std::string ime){
+	bool x(false);
+	for(int i=0;i&lt;velicina;i++){
+		if(poredi(znak[i],ime)){
+			delete[] znak[i];
+			znak[i]=nullptr;
+			x=true;
+		}
+	}
+	if(x==false) throw std::domain_error("Osoba sa imenom "+ime+" nije bila optuzena");
+	int brojac(0);
+	for(int i=0;i&lt;velicina;i++){
+		if(znak[i]==nullptr) brojac++;
+	}
+	char**novi(nullptr);
+	try{
+		if(brojac&gt;10){
+			novi=new char*[velicina-brojac]{};
+<a name="1"></a><font color="#00FF00"><a href="match162-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+			int k(0);
+			for(int i=0;i&lt;velicina;i++){
+				if(znak[i]!=nullptr){
+					novi[k]=znak[i];
+					k++;
+				}
+			}
+			for(int i=0;i&lt;velicina;i++)delete[] znak[i];
+			delete[] znak;
+			znak=novi;
+</font>			velicina=velicina-brojac;
+		}
+	}
+	catch(...){
+<a name="2"></a><font color="#0000FF"><a href="match162-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+		delete[] novi;
+	}
+	return velicina;
+}
+int DodajOptuzbu(char**&amp;znak,int velicina,std::string ime){
+	char*rijec(nullptr);
+	try{
+		rijec=new char[ime.length()+1]{};
+	}
+	catch(...){
+		delete[]rijec;
+		throw std::bad_alloc();
+</font>	}
+	for(int i=0;i&lt;ime.length();i++){
+			rijec[i]=ime[i];
+	}
+	bool ima(false);
+	for(int j=0;j&lt;velicina;j++){
+		if(znak[j]==nullptr){
+			ima=true;
+			znak[j]=new char[ime.length()+1]{};
+			std::strcpy(znak[j],rijec);
+			break;
+		}
+	}
+<a name="5"></a><font color="#FF0000"><a href="match162-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+	if(ima==false){
+		char**niz(nullptr);
+		try{
+			niz=new char*[velicina+1]{};
+		}
+		catch(...){
+			delete[]niz;
+			throw std::bad_alloc();
+		}
+		int i;
+</font><a name="0"></a><font color="#FF0000"><a href="match162-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+		for(i=0;i&lt;velicina;i++){
+			int brojac(0);
+			char*a=znak[i];
+			while(*a++!=0) brojac++;
+			niz[i]=new char[brojac+1]{};
+			std::strcpy(niz[i],znak[i]);
+		}
+		niz[i]=rijec;
+</font><a name="4"></a><font color="#FF00FF"><a href="match162-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_5.gif"/></a>
+
+		for(i=0;i&lt;velicina;i++)delete[] znak[i];
+		delete[] znak;
+		znak=niz;
+		velicina++;
+	}
+	return velicina;
+}
+void IzlistajOptuzbu(char**znak,int velicina){
+	for(int i=0;i&lt;velicina;i++){
+		if (znak[i]!=nullptr){
+</font>			 std::cout&lt;&lt;znak[i];
+			 std::cout&lt;&lt;std::endl;
+		}
+	}
+}
+int main (){
+	std::cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? \n";
+	int n;
+	std::cin&gt;&gt;n;
+	std::vector&lt;std::string&gt; krivci(n);
+<a name="3"></a><font color="#00FFFF"><a href="match162-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_5.gif"/></a>
+
+	std::string temp;
+	std::cout&lt;&lt;"Unesite potencijalne krivce: \n";
+	for(int i=0;i&lt;n;i++){
+		std::cin&gt;&gt;krivci[i];
+	}
+	char**spisak(nullptr);
+	int velicina(PotencijalniKrivci(spisak,krivci));
+	int meni;
+	do{
+		std::cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: \n";
+</font>		std::cin&gt;&gt;meni;
+		switch(meni){
+			case 1:{ std::cout&lt;&lt;"Unesite ime novog optuzenog: \n";
+			std::string optuzeni;
+			std::cin&gt;&gt;optuzeni;
+			velicina=DodajOptuzbu(spisak,velicina,optuzeni);
+			break; }
+			case 2:{ std::cout&lt;&lt;"Unesite ime koje zelite izbaciti: \n";
+			std::string izbaci;
+			std::cin&gt;&gt;izbaci;
+			velicina=OdbaciOptuzbu(spisak,velicina,izbaci);
+			break; }
+<a name="7"></a><font color="#0000FF"><a href="match162-0.html#7" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+			case 3: IzlistajOptuzbu(spisak,velicina);
+		}
+	}
+	while(meni!=0);
+	for(int i=0;i&lt;velicina;i++) delete[]spisak [i];
+	delete[] spisak;
+</font>	return 0;
+}</pre>
+</body>
+</html>

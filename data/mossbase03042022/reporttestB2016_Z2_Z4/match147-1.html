@@ -1,0 +1,161 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student1146.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student6634.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match147-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::string;
+using std::vector;
+typedef char *cstr;
+
+int PotencijalniKrivci(cstr* &amp;niz, vector&lt;string&gt; vs) {
+	niz = nullptr;
+	int vel = vs.size();
+	try {
+		niz = new cstr[vel];
+		std::fill_n(niz, vel, nullptr);
+		
+		for (int i = 0; i &lt; vel; i++) {
+			niz[i] = new char[vs[i].length() + 1];
+			std::strcpy(niz[i], vs[i].c_str());
+		}
+	} catch (std::bad_alloc&amp; e) {
+		if (niz)
+			for (int i = 0; i &lt; vs.size(); i++)
+				delete[] niz[i];
+		delete[] niz;
+		throw;
+	}
+	
+	return vel;
+}
+
+int OdbaciOptuzbu(cstr* &amp;niz, int vel, string s) {
+	bool ima = false;
+	for (int i = 0; i &lt; vel; i++) {
+		cstr x = niz[i];
+		if (!(x &amp;&amp; x == s)) continue;
+		delete[] x;
+		niz[i] = nullptr;
+		ima = true;
+	}
+	if (!ima)
+		throw std::domain_error("Osoba sa imenom " + s + " nije bila optuzena");
+	int br = 0;
+	for (int i = 0; i &lt; vel; i++) 
+		if (!niz[i]) br++;
+	if (br &lt;= 10) return vel;
+	
+	try {
+		cstr* novi = new cstr[vel - br];
+		int j = 0;
+		for (int i = 0; i &lt; vel; i++) 
+			if (niz[i])
+				novi[j++] = niz[i];
+		niz = novi;
+	} catch (std::bad_alloc&amp; e) {
+		//njam
+	}
+	return vel - br;
+}
+
+int DodajOptuzbu(cstr* &amp;niz, int vel, string s) {
+	cstr novi = nullptr;
+	try {
+		novi = new char[s.length() + 1];
+		std::strcpy(novi, s.c_str());
+		int i;
+		for (i = 0; i &lt; vel; i++)
+			if (!niz[i]) break;
+		if (i == vel) {
+			cstr *prosireni = new cstr[vel+1];
+			std::copy(niz, niz+vel, prosireni);
+			prosireni[vel] = novi;
+			delete[] niz;
+			niz = prosireni;
+			return vel + 1;
+		} else {
+			niz[i] = novi;
+			return vel;
+		}
+	} catch (std::bad_alloc&amp; e) {
+		delete[] novi;
+		throw;
+	}
+
+}
+
+
+void IzlistajOptuzbu(cstr niz[], int vel) {
+	for (int i = 0; i &lt; vel; i++)
+		if (niz[i]) std::cout &lt;&lt; niz[i] &lt;&lt; '\n';
+}
+
+int main() {
+	using std::cin;
+	using std::cout;
+	using std::getline;
+	cout &lt;&lt; "Koliko potencijalnih krivaca zelite unijeti? \n";
+	int n;
+	cstr* niz = nullptr;
+	cin &gt;&gt; n;
+	try {
+		vector&lt;string&gt; vs(n);
+		cout &lt;&lt; "Unesite potencijalne krivce: \n";
+		cin &gt;&gt; std::ws;
+		for (string&amp; s : vs) getline(cin, s);
+		n = PotencijalniKrivci(niz, vs);
+		while (1) {
+			cout &lt;&lt; "Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje "
+					"nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: \n";
+			int unos;
+			cin &gt;&gt; unos;
+			if (unos == 0) break;
+			if (unos == 1) {
+				cout &lt;&lt; "Unesite ime novog optuzenog: \n";
+				string s;
+				cin &gt;&gt; std::ws;
+				getline(cin, s);
+				n = DodajOptuzbu(niz, n, s);
+			}
+			if (unos == 2) {
+				cout &lt;&lt; "Unesite ime koje zelite izbaciti: \n";
+				string s;
+				cin &gt;&gt; std::ws;
+				getline(cin, s);
+				n = OdbaciOptuzbu(niz, n, s);
+			}
+			if (unos == 3) IzlistajOptuzbu(niz, n);
+		}
+	} catch (...) {
+		cout &lt;&lt; "Izuzetak!";
+		//ne brisem nista ionako idemo kuci
+	}
+	
+	if (niz)
+		for (int i = 0; i &lt; n; i++)
+			delete[] niz[i];
+	
+	delete[] niz;
+</font>	
+	return 0;
+}</pre>
+</body>
+</html>

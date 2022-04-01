@@ -1,0 +1,157 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student1336.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student1336.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match57-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 1
+//Autotestovi by Enil Pajic (epajic1@etf.unsa.ba)
+#include &lt;iostream&gt;
+#include &lt;functional&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;cmath&gt;
+
+bool JesuLiJednaki(double x, double y, double Eps=1e-10){
+    return std::fabs(x-y)&lt;=Eps*(std::fabs(x)+std::fabs(y));
+}
+
+double Pomocna (double x, std::vector&lt;std::pair&lt;double,double&gt;&gt; v,int p){
+    double dio(1);
+    for(int i(0); i&lt;int(v.size()); i++){
+        if(i==p) continue;
+        dio*=(x-v.at(i).first);
+    }
+    return dio;
+}
+
+std::function&lt;double(double)&gt; BaricentricnaInterpolacija ( std::vector&lt;std::pair&lt;double,double&gt;&gt; v, int d ){
+    if(d&lt;0) throw std::domain_error ("Nedozvoljen red");
+    if(int(v.size())&lt;=d) throw std::domain_error ("Nedozvoljen red");
+    for(int i(0); i&lt;int(v.size()); i++){
+        for(int j(i+1); j&lt;int(v.size()); j++){
+            if(JesuLiJednaki(v.at(i).first,v.at(j).first)) throw std::domain_error ("Neispravni cvorovi");
+        }
+    }
+    
+    std::vector&lt;double&gt; w;
+    int n(int(v.size()));
+    
+    for(int i(1); i&lt;=int(v.size()); i++){
+        int poc, kraj;
+        if(i&lt;n-d) kraj=i;
+        else kraj=n-d;
+        if(i-d&gt;1) poc=i-d;
+        else poc=1;
+        double suma(0);
+        for(int k(poc); k&lt;=kraj; k++){
+            double proizvod(1);
+            
+            for(int j(k); j&lt;=k+d; j++){
+                if(i==j) continue;
+                proizvod*=1./(v.at(i-1).first-v.at(j-1).first);
+            }
+            
+            suma+=proizvod*pow(-1,k-1);
+        }
+        w.push_back(suma);
+    }
+    return [v,w](double x) { double sumag(0), sumad(0);
+                        double suma;
+                        for(int i(0); i&lt;int(v.size()); i++){
+                            sumag+=Pomocna(x,v,i)*v.at(i).second*w.at(i);
+                            sumad+=Pomocna(x,v,i)*w.at(i);
+                        } 
+                        suma=sumag/sumad;
+                        return suma; };
+}
+
+std::function&lt;double(double)&gt; BaricentricnaInterpolacija (std::function&lt;double(double)&gt; fun, double pocetak, double kraj, double x, int d){
+    if(pocetak&gt;kraj || x&lt;=0) throw std::domain_error ("Nekorektni parametri");
+    
+    std::vector&lt;std::pair&lt;double,double&gt;&gt; cvorovi;
+    double p(pocetak), k(kraj);
+    
+    for(p; p&lt;=k || JesuLiJednaki(p,k); p+=x ) cvorovi.push_back(std::make_pair(p,fun(p)));
+    
+    return BaricentricnaInterpolacija(cvorovi,d);
+}
+
+void Cvorovi(){
+    std::cout&lt;&lt;"Unesite broj cvorova: ";
+            int br_cvorova;
+            std::cin&gt;&gt;br_cvorova;
+            std::vector&lt;std::pair&lt;double,double&gt;&gt; parovi;
+            std::cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+            for(int i(0); i&lt;br_cvorova; i++){
+                int prvi, drugi;
+                std::cin&gt;&gt;prvi&gt;&gt;drugi;
+                parovi.push_back(std::make_pair(prvi,drugi));
+            }
+            std::cout&lt;&lt;"Unesite red interpolacije: ";
+            int d;
+            std::cin&gt;&gt;d;
+        try{
+            for(;;){
+                double argument;
+                auto f(BaricentricnaInterpolacija(parovi,d));
+                std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+                std::cin&gt;&gt;argument;
+                if(!std::cin) break;
+                std::cout&lt;&lt;"f("&lt;&lt;argument&lt;&lt;") = "&lt;&lt;f(argument)&lt;&lt;std::endl;
+            }
+        }
+        catch(...){
+            throw;
+        }
+}
+
+void Aproksimacija(){
+    std::cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+    double pocetak, kraj;
+    double korak;
+    std::cin&gt;&gt;pocetak&gt;&gt;kraj;
+    std::cin&gt;&gt;korak;
+    std::cout&lt;&lt;"Unesite red interpolacije: ";
+    int d;
+    std::cin&gt;&gt;d;
+    try{
+    for(;;){
+        auto f([](double x){return x*x+std::sin(x);});
+        auto fapr(BaricentricnaInterpolacija(f, pocetak, kraj, korak, d));
+        double argument;
+        std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+        std::cin&gt;&gt;argument;
+        if(!std::cin ) break;
+        std::cout&lt;&lt;"f("&lt;&lt;argument&lt;&lt;") = "&lt;&lt;f(argument)&lt;&lt;" fapprox("&lt;&lt;argument&lt;&lt;") = "&lt;&lt;fapr(argument)&lt;&lt;std::endl;
+    }}
+    catch(...){
+        throw;
+    }
+}
+
+int main ()
+{
+    std::cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    int opcija;
+    std::cin&gt;&gt;opcija;
+    
+    try{
+        if(opcija==1){
+            Cvorovi();
+        }
+        else if(opcija==2){
+            Aproksimacija();
+        }
+    }
+    catch(std::domain_error izuzetak){
+        std::cout&lt;&lt;izuzetak.what();
+</font>    }
+    
+	return 0;
+}</pre>
+</body>
+</html>

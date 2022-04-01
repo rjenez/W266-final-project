@@ -1,0 +1,225 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z3/student6992.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z3/student6992.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 3
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Berina Cocalic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: bcocalic1@etf.unsa.ba
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;deque&gt;
+#include &lt;cmath&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match139-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+int SumaDjelilaca(long long int);
+
+template &lt;typename tip1, typename tip2, typename tipFje, typename tip3&gt;
+
+auto UvrnutiPresjek(tip1 it1, tip1 it2, tip2 it3, tip2 it4, tipFje (*foo)(tip3))
+	-&gt; vector&lt;vector&lt;typename remove_reference&lt;decltype(*it1 + *it3)&gt;::type&gt;&gt;
+{
+	typedef typename remove_reference&lt;decltype(*it1 + *it3)&gt;::type ludTip;
+	vector&lt;vector&lt;ludTip&gt;&gt; rez;
+	while(it1!=it2){
+		tip2 temp=it3;
+		while(temp!=it4){
+			if(foo==nullptr &amp;&amp; *it1==*temp) rez.push_back(vector&lt;ludTip&gt; {*it1, 0, 0});
+			else if(foo!=nullptr &amp;&amp; foo(*it1)==foo(*temp)){
+				rez.push_back(vector&lt;ludTip&gt; {*it1, *temp, foo(*temp)});
+			}
+			temp++;
+		}
+		it1++;
+	}
+	sort(rez.begin(), rez.end(), [](vector&lt;ludTip&gt; v1, vector&lt;ludTip&gt; v2){
+		return v1.at(2)==v2.at(2) ? ( v1.at(0)==v2.at(0) ? v1.at(1)&lt;v2.at(1) : v1.at(0)&lt;v2.at(0)) : v1.at(2)&lt;v2.at(2);	
+	});
+	return rez;
+}
+
+template &lt;typename tip1, typename tip2&gt;
+
+auto UvrnutiPresjek(tip1 it1, tip1 it2, tip2 it3, tip2 it4)
+	-&gt; vector&lt;vector&lt;typename remove_reference&lt;decltype(*it1 + *it3)&gt;::type&gt;&gt;
+{
+	typedef typename remove_reference&lt;decltype(*it1 + *it3)&gt;::type ludTip;
+	ludTip (*pok_na_fun)(ludTip)=nullptr;
+	return UvrnutiPresjek(it1, it2, it3, it4, pok_na_fun);
+}
+
+template &lt;typename tip1, typename tip2, typename tipFje, typename tip3&gt;
+
+auto UvrnutaRazlika(tip1 it1, tip1 it2, tip2 it3, tip2 it4, tipFje (*foo)(tip3))
+	-&gt; vector&lt;vector&lt;typename remove_reference&lt;decltype(*it1 + *it3)&gt;::type&gt;&gt;
+{
+	typedef typename remove_reference&lt;decltype(*it1 + *it3)&gt;::type ludTip;
+	vector&lt;vector&lt;ludTip&gt;&gt; rez;
+	tip1 it=it1;
+	while(it1!=it2){
+		tip2 temp=it3;
+		tipFje rezFoo = foo != nullptr ? foo(*it1) : 0;
+		bool postoji(false);
+		while(temp!=it4){
+			if(foo!=nullptr &amp;&amp; rezFoo==foo(*temp)){
+				postoji = true;
+				break;
+			}
+			else if(foo==nullptr &amp;&amp; *it1==*temp){
+				postoji=true;
+				break;
+			}
+			temp++;
+		}
+		if(!postoji) rez.push_back(vector&lt;ludTip&gt; {*it1, rezFoo});
+		it1++;
+	}
+	it1=it;
+	while(it3!=it4){
+		tip1 temp=it1;
+		tipFje rezFoo = foo != nullptr ? foo(*it3) : 0;
+		bool postoji(false);
+		while(temp!=it2){
+			if(foo!=nullptr &amp;&amp; rezFoo==foo(*temp)){
+				postoji=true;
+				break;
+			}
+			else if(foo==nullptr &amp;&amp; *it3==*temp){
+				postoji=true;
+				break;
+			}
+			temp++;
+		}
+		if(!postoji) rez.push_back(vector&lt;ludTip&gt; {*it3, rezFoo});
+		it3++;
+	}
+	sort(rez.begin(), rez.end(), [](vector&lt;ludTip&gt; v1, vector&lt;ludTip&gt; v2){
+    	return v1.at(0)==v2.at(0) ? v1.at(1)&gt;v2.at(1) : v1.at(0)&gt;v2.at(0);
+    });
+    return rez;
+}
+
+template &lt;typename tip1, typename tip2&gt;
+
+auto UvrnutaRazlika(tip1 it1, tip1 it2, tip2 it3, tip2 it4)
+	-&gt; vector&lt;vector&lt;typename remove_reference&lt;decltype(*it1 + *it3)&gt;::type&gt;&gt;
+{
+	typedef typename remove_reference&lt;decltype(*it1 + *it3)&gt;::type ludTip;
+	ludTip (*pok_na_fun)(ludTip)=nullptr;
+	return UvrnutaRazlika(it1, it2, it3, it4, pok_na_fun);
+}
+
+int SumaDjelilaca(long long int n){
+	int suma=0;
+	n=fabs(n);
+	for(int i(1); i&lt;=n; i++)
+		if(n%i==0) suma +=i;
+	return suma;
+}
+
+bool SavrsenBroj(long long int n){
+	int suma(0);
+	for(int x(1); x&lt;=n/2; x++) if(n%x==0) suma+=x;
+	return suma==n;
+}
+
+int BrojProstihFaktora(long long int n){
+	int rez(0);
+	n=fabs(n);
+	int x(2);
+	while(x&lt;=n)
+		n%x==0 ? rez++, n/=x : x++;
+	return rez;
+}
+
+int BrojSavrsenihDjelilaca(long long int n){
+	int rez(0);
+	n=fabs(n);
+	int x(2);
+	while(x&lt;=n)
+		if(n%x==0 &amp;&amp; SavrsenBroj(x)){ rez++; 
+		n/=x;
+		}
+		else
+		x++;
+	return rez;
+}
+
+int SumaCifara(long long int n){
+	int suma=0;
+    n=fabs(n);
+    while(n!=0){
+    	suma+=n%10;
+    	n/=10;
+    }
+    return suma;
+}
+
+int main()
+{
+    int x, y;
+    cout&lt;&lt; "Unesite broj elemenata prvog kontejnera: ";
+    cin&gt;&gt; x;
+    deque&lt;int&gt; d1;
+    cout &lt;&lt; "Unesite elemente prvog kontejnera: ";
+    for(int i(0); i &lt; x;){
+    	int n;
+    	cin &gt;&gt; n;
+    	if(d1.end()==find(d1.begin(), d1.end(), n)){
+    		d1.push_back(n);
+    		i++;
+    	}
+    }
+
+    //cin.clear(); cin.ignore(1000, '\n');
+
+    cout&lt;&lt; "Unesite broj elemenata drugog kontejnera: ";
+    cin&gt;&gt; y;
+    deque&lt;int&gt; d2;
+    cout &lt;&lt; "Unesite elemente drugog kontejnera: ";
+    for(int i(0); i &lt; y;){
+    	int n;
+    	cin &gt;&gt; n;
+    	if(d2.end()==find(d2.begin(), d2.end(), n)){
+    		d2.push_back(n);
+    		i++;
+    	}
+    }
+
+    //cin.clear(); cin.ignore(1000, '\n');
+
+    auto mat=UvrnutiPresjek(d1.begin(), d1.end(), d2.begin(), d2.end(), SumaCifara);
+
+    cout&lt;&lt; "Uvrnuti presjek kontejnera: " &lt;&lt; endl;
+    for(auto x : mat){
+        for(auto z : x)
+            cout.width(6), cout &lt;&lt; z &lt;&lt; " ";
+        cout &lt;&lt; endl;
+    }
+
+    mat=UvrnutaRazlika(d1.begin(), d1.end(), d2.begin(), d2.end(), BrojProstihFaktora);
+
+    cout&lt;&lt; "Uvrnuta razlika kontejnera:" &lt;&lt; endl;
+    for(auto x : mat){
+        for(auto z : x)
+            cout.width(6), cout &lt;&lt; z &lt;&lt; " ";
+        cout &lt;&lt; endl;
+    }
+	cout&lt;&lt; "Dovidjenja!" &lt;&lt; endl;
+</font>	
+    return 0;
+}</pre>
+</body>
+</html>

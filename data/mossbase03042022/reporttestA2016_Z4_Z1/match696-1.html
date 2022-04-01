@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z1/student8480.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z1/student6631.c<p></p><pre>
+#include &lt;stdio.h&gt;
+
+int rijeciString(char* s){                                                      /* funkcija koja vraca broj rijeci u 
+																					posmatranom stringu */
+	int karakter=1, brojRijeci=0;
+	
+<a name="0"></a><font color="#FF0000"><a href="match696-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+	while(*s != '\0'){
+		
+		if(!((*s&gt;='A' &amp;&amp; *s &lt;='Z') || (*s&gt;= 'a' &amp;&amp; *s &lt;='z'))) karakter=1;
+</font>		else if(karakter){
+			
+			karakter=0;
+			brojRijeci++;
+		}
+		
+		s++;
+	}
+	return brojRijeci;
+}
+
+char* pocetakRijeci(char*s, int n){                                              /* funkcija koja vraca pokazivac na pocetak
+																					rijeci */
+	int brojac=0;
+	int bul=1;
+	
+<a name="1"></a><font color="#00FF00"><a href="match696-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+	while(*s != '\0'){
+		if(!((*s&gt;='A' &amp;&amp; *s &lt;='Z') || (*s&gt;= 'a' &amp;&amp; *s &lt;='z'))) bul=1;
+</font>		else if(bul){
+			bul=0;
+			brojac++;
+			if(brojac== n) return s;
+		}
+		s++;
+	}
+	return s;
+}
+
+char* krajRijeci(char* s){                                                       /* funkcija koja vraca pokazivac na kraj rijeci*/
+	
+	while((*s&gt;= 'A' &amp;&amp; *s &lt;= 'Z') || (*s &gt;= 'a' &amp;&amp; *s &lt;='z')) s++;
+	return --s;
+}
+
+int slovo(char* s){																/* prolazimo kroz cijeli string i kada nadjemo
+																					karakter koji ima ascii vrijednost malog ili*/
+	int i=0;																	/*	velikog slova, povecamo i(brojac) za 1*/
+	while((*s&gt;='A' &amp;&amp; *s&lt;= 'Z') || (*s&gt;='a' &amp;&amp; *s &lt;= 'z')){
+		i++;
+		s++;
+	}
+	return i;
+}
+
+int compare(char *prva, char* druga){											/* funkcija primi dvije rijeci i poredi ih,
+                                                                                   vraca vrijednosti logicke istine/neistine*/	
+	char* krajPrve= krajRijeci(prva);
+	int bul=0;
+	if(slovo(prva)==slovo(druga)){                                               /* preduslov da su jednake je da imaju isti
+	                                                                             broj karaktera, tj slova */
+		while(prva &lt;= krajPrve){
+			
+			if(*prva == *druga ||*prva + 32 == *druga ||*prva == *druga +32){   /* case-sensitive */
+				bul=1;
+				prva++;
+				druga++;
+			}
+			else return 0;     
+		}
+	}
+	return bul;
+}
+
+char* najcescaLociraj(char* s){                                                 /* funkcija koja trazi rijec koja se ponavlja */ 
+	int brojac=0, max = 0, i, j;												/*	najvise puta */
+	char* pok=s;
+	char *prva, *druga;
+	int br= rijeciString(s);                                                    /* petlja ide do broj rijeci u stringu */
+	
+	for(i=1; i&lt;=br; i++){														
+		prva= pocetakRijeci(s,i);
+		brojac=0;
+		for(j=1; j&lt;= br; j++){
+			druga=pocetakRijeci(s,j);
+			if(compare(prva,druga)==1) brojac++;
+		}
+		if (brojac&gt;max){                                                        /* dio koda koji cuva najvecu vrijednost */
+			pok=prva;
+			max=brojac;
+		}
+	}
+	
+	return pok;
+}
+
+char* krajStringa(char* s){                                                     /* funkcija koja pokazivac prebacuje do kraja stringa */
+	while(*s != '\0') s++;
+	return s;
+}
+
+char* izbaci_najcescu(char* s){													/* trazena funkcija */
+	
+	char* najcesca = najcescaLociraj(s);                                       
+	char* rijeci;
+	int j, br, duzinaRijeci;
+	char* krajstringa, *p, *pokazivac;
+	
+	krajstringa= krajStringa(s);
+	br= rijeciString(s);
+	
+	for(j=1; j&lt; br;j++){                                                         /* petlja ide od 1 do br, gdje je br - broj rijeci*/
+		rijeci= pocetakRijeci(s,j);                                              /* u stringu */
+		if(rijeci==najcesca){                                                         
+			pokazivac = rijeci;
+		}
+		else if (compare(najcesca, rijeci))
+		{
+			duzinaRijeci=slovo(rijeci);
+			p=rijeci;
+			while( p&lt;= krajstringa-duzinaRijeci){                               /* izbacivanje rijeci */
+				*p=*(p+duzinaRijeci);
+				p++;
+			}
+			j--;
+		}
+	}
+	
+	p=najcesca;
+	duzinaRijeci=slovo(najcesca);
+	
+	while( p&lt;= krajstringa-duzinaRijeci){                                         /* izbacivanje */
+				*p=*(p+duzinaRijeci);
+				p++;
+			} 
+			
+		return s;
+}
+
+int main() {
+	return 0;
+}</pre>
+</body>
+</html>

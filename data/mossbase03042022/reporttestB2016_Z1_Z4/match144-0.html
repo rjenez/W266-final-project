@@ -1,0 +1,154 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4888.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4888.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match144-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::string;
+
+
+string PigLatin (string rijec){
+	if (rijec.length()==0) return "ay";
+	if (rijec.length()==1) return (rijec+string{"ay"});
+	string rezultat=rijec.substr(1,rijec.length()-1)+rijec[0]+string{"ay"};
+	return rezultat;
+}
+bool daLiSadrzi (string recenica, string fraza, bool cijelaRijec, int &amp;pocetak){
+	bool flag= false;
+	if (fraza == " ") return false;
+	int j=0;
+	pocetak = 0;
+	for (int i=0;i&lt;recenica.length();i++){
+		if (j&lt; fraza.length()){
+			if (recenica[i]==fraza[j] || flag){
+				if (cijelaRijec &amp;&amp; j== 0 &amp;&amp; i&gt;0 &amp;&amp; recenica[i-1] != ' '){
+					j=0;
+					pocetak=i+1;
+				}
+				else{
+					flag = recenica[i] == fraza[j];
+					if (!flag){
+						j=0;
+						pocetak=i+1;
+					}
+					else j++;
+					}
+				}
+			else{
+				//flag=false;
+				j=0;
+				pocetak=i+1;
+			}
+		}
+	}
+	if (j&lt;fraza.length()) return false;
+	return flag;
+}
+string okrenislova (string fraza){
+	if (fraza.length()==1) return fraza;
+	string rezultat;
+	for (int i=fraza.length()-1;i&gt;=0;i--){
+		rezultat+=fraza[i];
+	}
+	return rezultat;
+}
+std::vector&lt;string&gt; OcistiRijeci(std::vector&lt;string&gt; rijeci,bool tretrirajObrnuteRijeci){
+	std::vector&lt;string&gt; cisteRijeci;
+	for (auto rijec:rijeci){
+		bool rijecPostoji =false;
+		for (auto cistaRijec:cisteRijeci){
+			if (cistaRijec ==rijec || (tretrirajObrnuteRijeci &amp;&amp; cistaRijec== okrenislova(rijec))){
+				rijecPostoji=true;
+				break;
+			}
+		}
+	if (rijecPostoji==false) cisteRijeci.push_back (rijec);
+	}
+	return cisteRijeci;
+}
+string IzmijeniUPigLatin (string recenica, std::vector&lt;string&gt; fraze){
+	fraze=OcistiRijeci(fraze,true);
+	for(auto rijec:fraze)
+	{
+		int pocetak=0;
+		if (rijec.size()==0) continue;
+		bool flag=true;
+		for (auto slovo:rijec){
+			if ((slovo &gt;= 'A' &amp;&amp; slovo &lt;= 'Z') || (slovo &gt;= 'a' &amp;&amp; slovo &lt;='z')) continue;
+			else {
+				flag=false;
+				break;
+			}
+			}
+		if (flag)
+		{
+			while (daLiSadrzi(recenica, rijec,true, pocetak)){
+				recenica =recenica+string {"  "};
+				string novaRijec =PigLatin(rijec);
+				recenica=recenica.substr(0,pocetak)+novaRijec+recenica.substr(pocetak + rijec.length(), recenica.length()-(pocetak + novaRijec.length()));
+			}
+		}	
+		else throw std::domain_error ("Nekorektan izbor rijeci");
+	}
+	return recenica;
+}
+string ObrniFraze (string recenica, std::vector&lt;string&gt; fraze){
+	fraze=OcistiRijeci(fraze,true);
+	std::string OkrSlo;
+	int pocetak =-1;
+	for (auto fraza:fraze){
+		while (daLiSadrzi(recenica,fraza,false,pocetak)){
+		//	OkrSlo=okrenislova(fraza);
+			//recenica = recenica.substr(0,pocetak+fraza.length())+OkrSlo+recenica.substr(pocetak+fraza.length()+1,recenica.length()+OkrSlo.length());
+			recenica = recenica.substr(0, pocetak) + okrenislova(fraza) + recenica.substr(pocetak + fraza.length(), recenica.length() - ( pocetak + fraza.length()));
+		}
+	}
+	return recenica;
+}
+int main (){
+	//int pocetak = -1;
+	cout &lt;&lt; "Unesite recenicu: ";
+	string recenica;
+	getline (cin, recenica);
+	cout &lt;&lt; "Unesite fraze: ";
+	std::vector &lt;string&gt; fraze;
+	string rijec;
+	getline (cin,rijec);
+	while (rijec != ""){
+		fraze.push_back(rijec);
+		getline(cin, rijec);
+	}
+	try{
+		string rezultat = IzmijeniUPigLatin(recenica,fraze);
+		cout &lt;&lt; "Recenica nakon PigLatin transformacije: " &lt;&lt; rezultat;
+	}
+	catch (std::domain_error izuzetak){
+		cout&lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+	}
+	string rezultat=ObrniFraze(recenica,fraze);
+	cout&lt;&lt; "\nRecenica nakon obrtanja fraza: " &lt;&lt; rezultat;
+	return 0;
+</font>}</pre>
+</body>
+</html>

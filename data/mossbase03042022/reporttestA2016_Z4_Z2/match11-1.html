@@ -1,0 +1,136 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z2/student2267.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z2/student5403.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match11-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+void unesi(char niz[], int velicina)
+{
+	int i;
+	char znak=getchar();
+	if(znak=='\n')
+		znak=getchar();
+	i=0;
+	while (i&lt;velicina-1 &amp;&amp; znak!='\n') {
+		niz[i]=znak;
+		i++;
+		znak=getchar();
+	}
+	niz[i]='\0';
+}
+
+char* kodiraj (char *niz,char *niz1)
+{
+	int i,j,vel,velnova=0,k;
+	char pom[256];
+	char tmp;
+	char *s;
+	int brojac[256]= {0};
+	int pon[256]= {0};
+	int index[256];
+
+	vel=strlen(niz);
+	for(i=0; i&lt;vel; i++)
+		brojac[niz[i]-' ']++;
+
+	/*Cuvanje vrijednosti pocetnog niza u pomocni zbog transformacija nad nizom*/
+	for(i=0; i&lt;vel; i++)
+		pom[i]=niz[i];
+
+	/*Sortiranje niza prema broju ponavljanja karaktera*/
+	for(i=0; i&lt;vel; i++) {
+		for(j=i+1; j&lt;vel; j++) {
+			if(brojac[niz[j]-' ']&gt;brojac[niz[i]-' ']) {
+				tmp=niz[j];
+				niz[j]=niz[i];
+				niz[i]=tmp;
+			}
+
+			else if(brojac[niz[i]-' ']==brojac[niz[j]-' ']) {
+				if(niz[i]&gt;niz[j]) {
+					tmp=niz[i];
+					niz[i]=niz[j];
+					niz[j]=tmp;
+				}
+			}
+		}
+	}
+
+	k=0;
+	i=0;
+	/*Upisivanje vrijednosti u novi niz,odnosno tablicu*/
+	while(k&lt;vel) {
+		if(pon[niz[k]-' ']==0) {
+			niz1[i]=niz[k];
+			index[niz[k]-' ']=i;
+			pon[niz[k]-' ']++;
+			i++;
+			k++;
+			velnova++;
+		}
+
+		else
+			k++;
+	}
+
+	k=velnova;
+
+	/*Ako se neki karakteri iz ASCII tablice ne nalaze u stringu,u tablicu sifrovanja ih upisujemo prema ASCII vrijednosti*/
+	for(i=0; i&lt;95; i++) {
+		if(brojac[i]==0) {
+			niz1[k]=i+' ';
+			k++;
+		}
+	}
+
+	niz1[k]='\0';
+
+	for(i=0; i&lt;vel; i++) {
+		pom[i]=126-index[pom[i]-' '];
+	}
+
+	/*Kopiranje iz pomocnog niza*/
+	for(i=0; i&lt;vel; i++) {
+		niz[i]=pom[i];
+	}
+	s=niz;
+	return s;
+}
+
+
+char* dekodiraj(char *niz,char *niz1)
+{
+
+	char *p;
+	int vel,i;
+	char pom[256];
+	vel=strlen(niz);
+	for(i=0; i&lt;vel; i++)
+		pom[i]=niz1[126-niz[i]];
+	for(i=0; i&lt;vel; i++)
+		niz[i]=pom[i];
+	p=niz;
+
+	return p;
+
+}
+
+int main()
+{
+	char niz[100];
+	char niz1[100];
+	printf("Unesi string");
+	unesi(niz,100);
+	kodiraj(niz,niz1);
+	dekodiraj(niz,niz1);
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

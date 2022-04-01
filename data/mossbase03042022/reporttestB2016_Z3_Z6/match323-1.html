@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student3071.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student1465.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match323-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_8.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 6
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;memory&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+
+struct Dijete {
+    string ime;
+    shared_ptr&lt;Dijete&gt;sljedeci;
+};
+//funckija koja računa dužinu stringa
+int duzina_imena(string ime) {
+    int brojac{0};
+    for(int i{0}; i &lt; ime.length()-1; i++) {
+</font><a name="2"></a><font color="#0000FF"><a href="match323-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_6.gif"/></a>
+
+        if((ime[i] &gt;= 'a' &amp;&amp; ime[i] &lt;= 'z') || (ime[i] &gt;= 'A' &amp;&amp; ime[i] &lt;= 'Z') || (ime[i] &gt;= '0' &amp;&amp; ime[i] &lt;= '9'))
+            brojac++;
+    }
+    return brojac;
+}
+
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje (vector&lt;string&gt; imena_djece, int k) {
+</font>    int n = imena_djece.size();
+    if(k &lt; 1 || k &gt; n) throw logic_error("Razvrstavanje nemoguce");
+    vector&lt;set&lt;string&gt;&gt; timovi(k);
+    vector&lt;int&gt; broj_mjesta(k);
+    for(int i{0}; i &lt; n%k; i++) {
+        broj_mjesta[i] = n / k + 1;
+    }
+    for(int i{n%k}; i &lt; k; i++) {
+        broj_mjesta[i] = n / k;
+    }
+    shared_ptr&lt;Dijete&gt;pocetak = nullptr; shared_ptr&lt;Dijete&gt;cvor_prije = nullptr;
+    for(int i{0}; i &lt; imena_djece.size(); i++) {
+        shared_ptr&lt;Dijete&gt; novi = make_shared&lt;Dijete&gt;();
+        novi-&gt;ime = imena_djece[i];
+        novi-&gt;sljedeci = nullptr;
+        if(!pocetak) pocetak = novi;
+        else cvor_prije-&gt;sljedeci = novi;
+        cvor_prije = novi;
+    }
+    cvor_prije-&gt;sljedeci = pocetak;
+
+    int trenutni_tim = 0;
+    shared_ptr&lt;Dijete&gt;iterator = pocetak;
+    for(;;) {
+        if(broj_mjesta[trenutni_tim] == 0) trenutni_tim++;
+        timovi[trenutni_tim].insert(iterator-&gt;ime);
+        int pomjeranje = duzina_imena(iterator-&gt;ime);
+        if(iterator == iterator-&gt;sljedeci) {
+            iterator-&gt;sljedeci = nullptr;
+            break;
+        }
+        
+        cvor_prije -&gt; sljedeci = iterator-&gt;sljedeci;
+        iterator = cvor_prije-&gt;sljedeci;
+        broj_mjesta[trenutni_tim]--;
+        while(pomjeranje &gt; 0) {
+            iterator = iterator-&gt;sljedeci;
+            cvor_prije = cvor_prije-&gt;sljedeci;
+            pomjeranje--;
+        }
+    }
+<a name="3"></a><font color="#00FFFF"><a href="match323-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_5.gif"/></a>
+
+    return timovi;
+}
+int main ()
+{
+    try {
+    cout &lt;&lt; "Unesite broj djece: ";
+    int broj_djece;
+    cin &gt;&gt; broj_djece;
+    cin.ignore(100, '\n');
+    cout &lt;&lt; "Unesite imena djece:" &lt;&lt; endl;
+</font><a name="0"></a><font color="#FF0000"><a href="match323-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_9.gif"/></a>
+
+    vector&lt;string&gt; imena_djece(broj_djece);
+    for(int i{0}; i &lt; broj_djece; i++) {
+        getline(cin, imena_djece[i]);
+    }
+    cout &lt;&lt; "Unesite broj timova: ";
+    int broj_timova;
+    cin &gt;&gt; broj_timova;
+    auto timovi = Razvrstavanje(imena_djece, broj_timova);
+    for(int i{0}; i &lt; timovi.size(); i++) {
+</font>        cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+        auto it_kraja = timovi[i].end();
+        it_kraja--;
+        for(auto it = timovi[i].begin(); it != it_kraja; it++) {
+            cout &lt;&lt; *it &lt;&lt; ", ";
+        }
+        cout &lt;&lt; *it_kraja &lt;&lt; endl;
+    }
+    }
+    catch(logic_error izuzetak) {
+        cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+    }
+	return 0;
+}</pre>
+</body>
+</html>

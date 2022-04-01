@@ -1,0 +1,203 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z1/student4766.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z1/student1938.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;algorithm&gt;
+#include &lt;memory&gt;
+#include &lt;functional&gt;
+<a name="0"></a><font color="#FF0000"><a href="match171-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_88.gif"/></a>
+
+typedef std::pair&lt;double,double&gt; Tacka;
+class Trougao{
+    std::vector&lt;Tacka&gt; v= std::vector&lt;Tacka&gt;(3);
+    public: 
+        Trougao(const Tacka &amp;t1, const Tacka &amp;t2, const Tacka &amp;t3){
+            Postavi(t1,t2,t3);
+        }
+        void Postavi(const Tacka &amp;t1, const Tacka &amp;t2, const Tacka &amp;t3){
+            if(!Orijentacija(t1,t2,t3)) throw std::domain_error("Nekorektne pozicije tjemena");
+            v[0] = t1; v[1] = t2; v[2] = t3;
+        }
+        void Postavi(int indeks, const Tacka &amp;t){
+            if(indeks &lt; 1 || indeks &gt; 3) throw std::range_error("Nekorektan indeks");
+            std::vector&lt;Tacka&gt; w(v); w[indeks-1] = t; if(!Orijentacija(w[0],w[1],w[2])) throw std::domain_error("Nekorektne pozicije tjemena");
+            v[indeks-1] = t;
+            }
+        static int Orijentacija(const Tacka &amp;t1, const Tacka &amp;t2, const Tacka &amp;t3){
+            double x(ubiloSe(t1,t2,t3));
+            if(e(x,0)) return 0; if(x&lt;0) return -1; return 1;
+        }
+        Tacka DajTjeme(int indeks) const{ return v[indeks-1]; }
+        double DajStranicu(int indeks) const{
+        if(indeks == 1) return dist(v[1],v[2]); if(indeks == 2) return dist(v[0],v[2]);
+        return dist(v[0],v[1]);
+        }
+        double DajUgao(int indeks) const{
+            double a(dist(v[1],v[2])),b(dist(v[0],v[2])),c(dist(v[0],v[1]));
+            if(indeks == 1) return calcAng(c,b,a);
+            if(indeks == 2) return calcAng(c,a,b); return calcAng(a,b,c);
+        }
+        Tacka DajCentar()const{ 
+            return std::make_pair((v[0].first+v[1].first+v[2].first)/3,(v[0].second+v[1].second+v[2].second)/3);
+        }
+        double DajObim() const{ return DajStranicu(1)+DajStranicu(2)+DajStranicu(3);}
+        double DajPovrsinu()const{ return std::abs(ubiloSe(v[0],v[1],v[2])/2);}
+        bool DaLiJePozitivnoOrijentiran()const{return Orijentacija(v[0],v[1],v[2])==1;}
+        bool DaLiJeUnutra(Tacka t){
+            int x(Orijentacija(v[0],v[1],v[2])), y(Orijentacija(v[0],v[1],t)),z(Orijentacija(v[1],v[2],t)),w(Orijentacija(v[2],v[0],t));
+            return x == y &amp;&amp; y == z &amp;&amp; z== w;
+        }
+        void Ispisi()const{
+            std::cout&lt;&lt;"("; char c = ',';
+            for(int i = 0; i &lt; 3; i++){
+                if(i == 2) c=')';
+                std::cout&lt;&lt;"("&lt;&lt;v[i].first&lt;&lt;","&lt;&lt;v[i].second&lt;&lt;")"&lt;&lt;c;
+            }
+        }
+        void Transliraj(double delta_x,double delta_y){
+            for(auto &amp;t:v) {t.first+=delta_x; t.second+=delta_y;}
+        }
+        void Centriraj(const Tacka &amp;t){
+            auto c(DajCentar()); Transliraj(c.first-t.first,c.second-t.second);
+        }
+        void Rotiraj(const Tacka &amp;t,double ugao){
+            for(auto &amp;r:v){
+                auto tmp(r.first);
+                r.first = t.first+(r.first-t.first)*std::cos(ugao)-(r.second-t.second)*std::sin(ugao);
+                r.second = t.second + (tmp- t.first)*std::sin(ugao) + (r.second-t.second)*std::cos(ugao);
+            }
+        }
+        void Skaliraj(const Tacka &amp;t, double faktor){
+            if(e(faktor,0)) throw std::domain_error("Nekorektan faktor skaliranja");
+            bool rot(false); if(faktor &lt; 0) rot = true;
+            for(auto &amp;r:v){
+                r.first = t.first + faktor*(r.first - t.first);
+                r.second = t.second + faktor*(r.second -t.second);
+            }
+            if(rot) Rotiraj(t,2*std::atan(1));
+        }
+        void Rotiraj(double ugao){ Rotiraj(DajCentar(),ugao); }
+        void Skaliraj(double ugao){ Skaliraj(DajCentar(),ugao); }
+        friend bool DaLiSuIdenticni(const Trougao &amp;t1, const Trougao &amp;t2);
+        friend bool DaLiSuPodudarni(const Trougao &amp;t1, const Trougao &amp;t2);
+        friend bool DaLiSuSlicni(const Trougao &amp;t1, const Trougao &amp;t2);
+    private: 
+        static double ubiloSe(Tacka t1,Tacka t2,Tacka t3){return t1.first*(t2.second-t3.second)-t2.first*(t1.second-t3.second)+t3.first*(t1.second-t2.second);}
+        static bool e(double a, double b){ return std::abs(a-b) &lt; 0.0000000001; }
+        static double dist(Tacka t1, Tacka t2){ 
+            return std::sqrt((t1.first-t2.first)*(t1.first-t2.first) + (t1.second-t2.second)*(t1.second-t2.second));
+        }
+        static double calcAng(double a, double b, double c){
+            return std::acos((-c*c + a*a + b*b)/(2*a*b));
+        }
+        static bool vecIma(std::vector&lt;Tacka&gt; &amp;v, Tacka x){ for(auto t: v) if(e(t.first,x.first) &amp;&amp; e(t.second,x.second)) return true; return false; }
+        static void dajTacke(std::vector&lt;Tacka&gt; &amp;v,std::vector&lt;double&gt; &amp;d, const Trougao &amp;t){
+            for(int i = 0; i &lt; 3; i++)
+                for(int j = 0; j &lt; 3; j++)
+                    if(e(t.DajStranicu(j+1), d[i]) &amp;&amp; !vecIma(v,t.v[j]))
+                        v.push_back(t.v[j]);
+        }
+        static bool DaLiSuPodudarnii(const Trougao &amp;t1, const Trougao &amp;t2,bool test);
+};
+bool DaLiSuIdenticni(const Trougao &amp;t1, const Trougao &amp;t2){
+    for(auto a:t1.v){
+        bool ima(false);
+        for(auto b:t2.v)
+            if(a == b) ima = true;
+        if(!ima) return false;
+    }
+    return true;
+}
+bool DaLiSuPodudarni(const Trougao &amp;t1, const Trougao &amp;t2){
+    return Trougao::DaLiSuPodudarnii(t1,t2,true);
+}
+bool Trougao::DaLiSuPodudarnii(const Trougao &amp;t1, const Trougao &amp;t2, bool test){
+    std::vector&lt;double&gt; v1,v2;
+    for(int i = 0; i &lt; 3; i++) {
+        v1.push_back(t1.DajStranicu(i+1));
+        v2.push_back(t2.DajStranicu(i+1));
+    }
+    std::sort(v1.begin(),v1.end()); std::sort(v2.begin(), v2.end());
+    if(test) for(int i = 0; i &lt; 3; i++) if(!Trougao::e(v1[i],v2[i])) return false; 
+    std::vector&lt;Tacka&gt; p1,p2;
+    Trougao::dajTacke(p1,v1,t1); Trougao::dajTacke(p2,v2,t2);
+    if(!test){
+        Trougao tro1(p1[0],p1[1],p1[2]), tro2(p2[0],p2[1],p2[2]);
+        for(int i = 0; i &lt; 3; i++) if(!Trougao::e(tro1.DajUgao(i+1),tro2.DajUgao(i+1))) return false;
+    }
+    return (Trougao::Orijentacija(p1[0],p1[1],p1[2]) == Trougao::Orijentacija(p2[0],p2[1],p2[2]));
+}
+bool DaLiSuSlicni(const Trougao &amp;t1, const Trougao &amp;t2){
+    return Trougao::DaLiSuPodudarnii(t1,t2,false);
+}
+bool ispisiParove(std::vector&lt;std::shared_ptr&lt;Trougao&gt;&gt; &amp;v, std::function&lt;bool(Trougao,Trougao)&gt; f, int n, bool test = false){
+    for(int i = 0; i &lt; n; i++)
+        for(int j = i + 1; j &lt; n; j++)
+            if(f(*v[i],*v[j])){
+                if(test) return true; v[i]-&gt;Ispisi(); std::cout &lt;&lt; " i "; v[j]-&gt;Ispisi(); std::cout &lt;&lt; std::endl;
+            }
+    //if(!test)std::cout &lt;&lt; std::endl;
+    return false;
+}
+int main(){
+    std::cout &lt;&lt; "Koliko zelite kreirati trouglova: ";
+    int n; std::cin &gt;&gt; n;
+    std::vector&lt;std::shared_ptr&lt;Trougao&gt;&gt; v(n);
+    for(int i = 0; i &lt; n; i++){
+        std::cout &lt;&lt; "Unesite podatke za " &lt;&lt; i+1 &lt;&lt; ". trougao (x1 y1 x2 y2 x3 y3): ";
+        std::vector&lt;Tacka&gt; t(3); 
+        for(int j = 0; j &lt; 3; j++) std::cin &gt;&gt; t[j].first &gt;&gt; t[j].second;
+        try{
+            v[i] = std::make_shared&lt;Trougao&gt;(t[0],t[1],t[2]);
+        }catch(std::domain_error err){
+            std::cout &lt;&lt; err.what() &lt;&lt; ", ponovite unos!\n";
+            i--;
+        }
+    }
+    std::cout &lt;&lt; "Unesite vektor translacije (dx dy): "; 
+    double dx,dy; std::cin &gt;&gt; dx &gt;&gt; dy;
+    std::cout &lt;&lt; "Unesite ugao rotacije: "; 
+    double rot; std::cin &gt;&gt; rot;
+    std::cout &lt;&lt; "Unesite faktor skaliranja: ";
+    double k; std::cin&gt;&gt;k;
+    std::cout &lt;&lt; "Trouglovi nakon obavljenih transformacija: \n";
+    std::transform(v.begin(),v.end(),v.begin(),[dx,dy,k,rot](std::shared_ptr&lt;Trougao&gt; p){
+        p-&gt;Transliraj(dx,dy);p-&gt;Rotiraj(rot);
+        p-&gt;Skaliraj(p-&gt;DajTjeme(1),k); return p;
+    });
+    std::sort(v.begin(),v.end(),[](std::shared_ptr&lt;Trougao&gt; p,std::shared_ptr&lt;Trougao&gt; q){
+</font><a name="1"></a><font color="#00FF00"><a href="match171-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_9.gif"/></a>
+
+    return p-&gt;DajPovrsinu() &lt; q-&gt;DajPovrsinu();    
+    });
+    std::for_each(v.begin(),v.end(), [](std::shared_ptr&lt;Trougao&gt; p){
+       p-&gt;Ispisi(); std::cout &lt;&lt; std::endl;
+    });
+    std::cout &lt;&lt; "Trougao sa najmanjim obimom: ";
+    (*std::min_element(v.begin(), v.end(), [](std::shared_ptr&lt;Trougao&gt; p, std::shared_ptr&lt;Trougao&gt; q){
+        return p-&gt;DajObim() &lt; q-&gt;DajObim();
+    })) -&gt;Ispisi(); std::cout &lt;&lt; std::endl;
+    if(ispisiParove(v,DaLiSuIdenticni,n,true)){
+        std::cout &lt;&lt; "Parovi identicnih trouglova: \n";
+        ispisiParove(v,DaLiSuIdenticni,n);
+    }else std::cout &lt;&lt; "Nema identicnih trouglova!\n";
+    if(ispisiParove(v,DaLiSuPodudarni,n,true)){
+        std::cout &lt;&lt; "Parovi podudarnih trouglova: \n";
+        ispisiParove(v,DaLiSuPodudarni,n);
+    }else std::cout &lt;&lt; "Nema podudarnih trouglova!\n";
+    if(ispisiParove(v,DaLiSuSlicni,n,true)){
+        std::cout &lt;&lt; "Parovi slicnih trouglova: \n";
+        ispisiParove(v,DaLiSuSlicni,n);
+    }else std::cout &lt;&lt; "Nema slicnih trouglova!\n";
+</font>    return 0;
+}</pre>
+</body>
+</html>

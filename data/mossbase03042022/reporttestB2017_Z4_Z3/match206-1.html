@@ -1,0 +1,393 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z3/student3350.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z3/student4290.cpp<p></p><pre>
+<a name="3"></a><font color="#00FFFF"><a href="match206-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+/B2017/2018: Zadaća 4, Zadatak 3
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+#include &lt;tuple&gt;
+#include &lt;iomanip&gt;
+#include &lt;initializer_list&gt;
+#include &lt;algorithm&gt;
+bool Provjeri_datum(int d,int m,int g)
+{
+    int broj_dana[]= {31,28,31,30,31,30,31,31,30,31,30,31};
+    if(g%4==0 &amp;&amp; g%100!=0 || g%400==0)
+</font>        broj_dana[1]++;
+<a name="0"></a><font color="#FF0000"><a href="match206-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_43.gif"/></a>
+
+    if(g&lt;1||m&lt;1||m&gt;12||d&lt;1||d&gt;broj_dana[m-1]) return false;
+    return true;
+}
+int BrojDana(int m,int g)
+{
+    int broj_dana[]= {31,28,31,30,31,30,31,31,30,31,30,31};
+    if(g%4==0 &amp;&amp; g%100!=0 || g%400==0)
+        broj_dana[1]++;
+    return broj_dana[m-1];
+}
+bool Provjeri_sat(int h, int m)
+{
+    if(h&lt;0||h&gt;23||m&lt;0||m&gt;59) return false;
+    return true;
+}
+class Datum
+{
+public:
+    int dan,mjesec,godina;
+    Datum(int dan, int mjesec, int godina) {
+        if(Provjeri_datum(dan,mjesec,godina)) Datum::dan=dan, Datum::mjesec=mjesec, Datum::godina=godina;
+        else throw std::domain_error("Neispravan datum");
+    }
+    void Postavi(int dan,int mjesec, int godina) {
+        if(Provjeri_datum(dan,mjesec,godina))  Datum::dan=dan, Datum::mjesec=mjesec, Datum::godina=godina;
+        else throw std::domain_error("Neispravan datum");
+    }
+    std::tuple&lt;int,int,int&gt; Ocitaj() const {
+        std::tuple&lt;int,int,int&gt;d_m_g;
+        d_m_g=std::make_tuple(dan,mjesec,godina);
+        return d_m_g;
+    }
+    void Ispisi() const {
+        std::cout &lt;&lt; dan&lt;&lt;"/"&lt;&lt;mjesec&lt;&lt;"/"&lt;&lt;godina ;
+    }
+    friend class Pregled;
+};
+class Vrijeme
+{
+public:
+    int sati,minute;
+    Vrijeme(int sati, int minute) {
+        if(Provjeri_sat(sati,minute)) Vrijeme::sati=sati, Vrijeme::minute=minute;
+        else throw std::domain_error("Neispravno vrijeme");
+    }
+    void Postavi(int sati,int minute) {
+        if(Provjeri_sat(sati,minute)) Vrijeme::sati=sati, Vrijeme::minute=minute;
+        else throw std::domain_error("Neispravno vrijeme");
+    }
+    std::pair&lt;int,int&gt; Ocitaj() const {
+        std::pair&lt;int,int&gt;h_m;
+        h_m.first=sati;
+        h_m.second=minute;
+        return h_m;
+    }
+    void Ispisi() const {
+        std::string h_0,m_0;
+        if(sati&lt;10) h_0="0";
+        if(minute&lt;10) m_0="0";
+        std::cout &lt;&lt;h_0&lt;&lt;sati&lt;&lt;":"&lt;&lt;m_0&lt;&lt;minute;
+    }
+    friend class Pregled;
+};
+class Pregled
+{
+public:
+    std::string ime_pacijenta;
+    Datum datum_pregleda {1,1,1};
+    Vrijeme vrijeme_pregleda {0,0};
+    Pregled(const std::string &amp;ime_pacijenta, const Datum &amp;datum_pregleda, const Vrijeme &amp;vrijeme_pregleda) {
+        this-&gt;ime_pacijenta=ime_pacijenta;
+        this-&gt;datum_pregleda.Postavi(datum_pregleda.dan,datum_pregleda.mjesec,datum_pregleda.godina);
+        this-&gt;vrijeme_pregleda.Postavi(vrijeme_pregleda.sati,vrijeme_pregleda.minute);
+    }
+    Pregled(const std::string &amp;ime_pacijenta, int dan_pregleda, int mjesec_pregleda,int godina_pregleda,
+            int sati_pregleda,int minute_pregleda) {
+        this-&gt;ime_pacijenta=ime_pacijenta;
+        datum_pregleda.Postavi(dan_pregleda,mjesec_pregleda,godina_pregleda);
+        vrijeme_pregleda.Postavi(sati_pregleda,minute_pregleda);
+    }
+    void PromijeniPacijenta(const std::string &amp;ime_pacijenta) {
+        this-&gt;ime_pacijenta=ime_pacijenta;
+    }
+    void PromijeniDatum (const Datum &amp;novi_datum) {
+        datum_pregleda.Postavi(novi_datum.dan,novi_datum.mjesec,novi_datum.godina);
+    }
+    void PromijeniVrijeme (const Vrijeme &amp;novo_vrijeme) {
+        vrijeme_pregleda.Postavi(novo_vrijeme.sati,novo_vrijeme.minute);
+    }
+    void PomjeriDanUnaprijed();
+    void PomjeriDanUnazad();
+    std::string DajImePacijenta() const {
+        return ime_pacijenta;
+    }
+    Datum DajDatumPregleda() const {
+        return this-&gt;datum_pregleda;
+    }
+    Vrijeme DajVrijemePregleda() const {
+        return this-&gt;vrijeme_pregleda;
+    }
+    static bool DolaziPrije(const Pregled &amp;p1, const Pregled &amp;p2);
+    void Ispisi() const {
+        std::cout &lt;&lt; std::left&lt;&lt;std::setw(30)&lt;&lt;ime_pacijenta ;
+        (this-&gt;datum_pregleda).Ispisi() ;
+        std::cout&lt;&lt; " ";
+        (this-&gt;vrijeme_pregleda).Ispisi() ;
+        std::cout&lt;&lt; std::endl;
+    }
+};
+
+void Pregled::PomjeriDanUnaprijed()
+{
+    datum_pregleda.dan++;
+    if(datum_pregleda.dan&gt;BrojDana(datum_pregleda.mjesec,datum_pregleda.godina)) datum_pregleda.dan=1, datum_pregleda.mjesec++;
+    if(datum_pregleda.mjesec&gt;12) datum_pregleda.mjesec=1,datum_pregleda.godina++;
+}
+void Pregled::PomjeriDanUnazad()
+{
+    datum_pregleda.dan--;
+    if(datum_pregleda.dan&lt;1) {
+        int b(BrojDana(datum_pregleda.mjesec-1,datum_pregleda.godina));
+        if(datum_pregleda.mjesec==1) b=31;
+        datum_pregleda.dan=b;
+        datum_pregleda.mjesec--;
+    }
+    if(datum_pregleda.mjesec&lt;1) datum_pregleda.mjesec=12, datum_pregleda.godina--;
+}
+bool DolaziPrije(const Pregled *p1, const Pregled *p2)
+{
+    if(p1-&gt;datum_pregleda.godina&lt;p2-&gt;datum_pregleda.godina) return true;
+    if(p1-&gt;datum_pregleda.godina==p2-&gt;datum_pregleda.godina) {
+        if(p1-&gt;datum_pregleda.mjesec&lt;p2-&gt;datum_pregleda.mjesec) return true;
+        if(p1-&gt;datum_pregleda.mjesec==p2-&gt;datum_pregleda.mjesec) {
+            if(p1-&gt;datum_pregleda.dan&lt;p2-&gt;datum_pregleda.dan) return true;
+            if(p1-&gt;datum_pregleda.dan&gt;p2-&gt;datum_pregleda.dan) return false;
+        }
+    }
+    return false;
+}
+class Pregledi
+{
+public:
+    int kapacitet;
+    int broj_evidentiranih;
+    Pregled **pregledi;
+    explicit Pregledi(int max_broj_pregleda) : kapacitet(max_broj_pregleda), broj_evidentiranih(0) {
+        pregledi=new Pregled*[max_broj_pregleda] {};
+    }
+    Pregledi(std::initializer_list&lt;Pregled&gt; spisak_pregleda) : kapacitet(spisak_pregleda.size()), broj_evidentiranih(0) {
+        pregledi=new Pregled *[spisak_pregleda.size()] {};
+        int i(0);
+        for(auto x : spisak_pregleda) {
+            pregledi[i]=new Pregled(x);
+            i++;
+        }
+    }
+    ~Pregledi() {
+        for(int i(0); i&lt;broj_evidentiranih; i++) delete pregledi[i];
+        delete[] pregledi;
+    }
+    Pregledi (const Pregledi &amp;pregledi);
+    Pregledi (Pregledi &amp;&amp;pregledi);
+    Pregledi &amp;operator = (const Pregledi &amp;pregledi);
+    Pregledi &amp;operator = (Pregledi &amp;&amp;pregledi);
+</font>    void RegistrirajPregled(const std::string &amp;ime_pacijenta,const Datum &amp;datum_pregleda, const Vrijeme &amp;vrijeme_pregleda);
+<a name="1"></a><font color="#00FF00"><a href="match206-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_41.gif"/></a>
+
+    void RegistrirajPregled(const std::string &amp;ime_pacijenta, int dan_pregleda, int mjesec_pregleda,int godina_pregleda, int sati_pregleda,int minute_pregleda);
+    void RegistrirajPregled(Pregled *pregled);
+    int DajBrojPregleda() {
+        return broj_evidentiranih;
+    }
+    int DajBrojPregledaNaDatum(const Datum &amp;datum) const;
+    Pregled &amp;DajNajranijiPregled();
+    Pregled DajNajranijiPregled() const;
+    void IsprazniKolekciju();
+    void ObrisiNajranijiPregled();
+    void ObrisiPregledPacijenata(const std::string &amp;ime_pacijenta);
+    void IspisiPregledeNaDatum(const Datum &amp;datum) const;
+    void IspisiSvePreglede() const {
+        std::sort(pregledi,pregledi+broj_evidentiranih,DolaziPrije);
+        for(int i(0); i&lt;broj_evidentiranih; i++)  pregledi[i]-&gt;Ispisi();
+    }
+    friend class Pregledi;
+};
+void Pregledi::RegistrirajPregled(const std::string &amp;ime_pacijenta,const Datum &amp;datum_pregleda, const Vrijeme &amp;vrijeme_pregleda)
+{
+    if(broj_evidentiranih&gt;=kapacitet) throw std::range_error("Dostignut maksimalan broj pregleda koji se mogu registrirati");
+    Pregled *p(new Pregled(ime_pacijenta,datum_pregleda,vrijeme_pregleda));
+    pregledi[broj_evidentiranih++]=p;
+}
+void Pregledi::RegistrirajPregled(const std::string &amp;ime_pacijenta, int dan_pregleda, int mjesec_pregleda,int godina_pregleda,int sati_pregleda,int minute_pregleda)
+{
+    if(broj_evidentiranih&gt;=kapacitet) throw std::range_error("Dostignut maksimalan broj pregleda koji se mogu registrirati");
+    Pregled *p(new Pregled(ime_pacijenta,dan_pregleda,mjesec_pregleda,godina_pregleda,sati_pregleda,minute_pregleda));
+    pregledi[broj_evidentiranih++]=p;
+}
+void Pregledi::RegistrirajPregled(Pregled *pregled)
+{
+    if(broj_evidentiranih&gt;=kapacitet) throw std::range_error("Dostignut maksimalan broj pregleda koji se mogu registrirati");
+    pregledi[broj_evidentiranih++]=pregled;
+}
+int Pregledi::DajBrojPregledaNaDatum(const Datum &amp;datum) const
+{
+    int brojac(0);
+    int dan(datum.dan),mjesec(datum.mjesec),godina(datum.godina);
+    Datum dat(dan,mjesec,godina);
+    brojac=std::count_if(pregledi,pregledi+broj_evidentiranih,[dat] (Pregled *p) {
+        Datum d(p-&gt;DajDatumPregleda());
+        if (d.dan==dat.dan&amp;&amp;d.mjesec==dat.mjesec&amp;&amp;d.godina==dat.godina) return true;
+        return false;
+    } );
+    return brojac;
+}
+Pregled &amp;Pregledi::DajNajranijiPregled()
+{
+    return *pregledi[0];
+}
+Pregled Pregledi::DajNajranijiPregled() const
+{
+    return *pregledi[0];
+}
+
+void Pregledi::IsprazniKolekciju()
+{
+    broj_evidentiranih=0;
+}
+void Pregledi::ObrisiNajranijiPregled()
+{
+    if(broj_evidentiranih==0) throw std::range_error("Prazna kolelkcija");
+    delete pregledi[0];
+    int j(0);
+    for(int i(1); i&lt;broj_evidentiranih; i++) {
+        pregledi[j]=pregledi[i];
+        j++;
+    }
+    broj_evidentiranih--;
+}
+void Pregledi::ObrisiPregledPacijenata(const std::string &amp;ime_pacijenta)
+{
+    if(broj_evidentiranih==0) throw std::range_error("Prazna kolelkcija");
+    int brojac(0),j(0);
+    for(int i(0); i&lt;broj_evidentiranih; i++) {
+        if(pregledi[i]-&gt;ime_pacijenta==ime_pacijenta) {
+            brojac++;
+            delete pregledi[i];
+    }
+    else pregledi[j]=pregledi[i], j++;
+    }
+        broj_evidentiranih-=brojac;
+    
+}
+Pregledi::Pregledi(const Pregledi &amp;pre) : broj_evidentiranih(pre.broj_evidentiranih), kapacitet(pre.kapacitet)
+{
+    Pregledi::pregledi=new Pregled *[broj_evidentiranih];
+    std::copy(pre.pregledi,pre.pregledi+pre.broj_evidentiranih,pregledi);
+}
+Pregledi::Pregledi(Pregledi &amp;&amp;pre) : broj_evidentiranih(pre.broj_evidentiranih), kapacitet(pre.kapacitet)
+{
+    pregledi=(pre.pregledi);
+    pre.pregledi=nullptr;
+}
+Pregledi &amp;Pregledi::operator = (const Pregledi &amp;pre)
+{
+    Pregled **pregledi_novi=new Pregled *[pre.broj_evidentiranih];
+    std::copy(pre.pregledi,pre.pregledi+pre.broj_evidentiranih,pregledi_novi);
+    broj_evidentiranih=pre.broj_evidentiranih;
+    pregledi=pregledi_novi;
+    return *this;
+}
+Pregledi &amp;Pregledi::operator =(Pregledi &amp;&amp;pre)
+{
+    std::swap(broj_evidentiranih,pre.broj_evidentiranih);
+    std::swap(pregledi,pre.pregledi);
+    return *this;
+}
+
+void Pregledi::IspisiPregledeNaDatum(const Datum &amp;datum) const
+{
+    int dan(datum.dan),mjesec(datum.mjesec),godina(datum.godina),brojac(0);
+    Datum dat(1,1,1);
+    std::cout &lt;&lt; "Pregledi na datum "&lt;&lt;dan&lt;&lt;" "&lt;&lt;mjesec&lt;&lt;" "&lt;&lt;godina&lt;&lt;" su:" &lt;&lt; std::endl;
+    for(int i(0); i&lt;broj_evidentiranih; i++) {
+        dat=pregledi[i]-&gt;DajDatumPregleda();
+        if(dat.dan==dan&amp;&amp;dat.mjesec==mjesec&amp;&amp;dat.godina==godina) {
+            brojac++;
+            pregledi[i]-&gt;Ispisi();
+        }
+    }
+}
+int main ()
+{
+
+    std::cout &lt;&lt; "Unesite maksimalan broj pregleda: ";
+    int max_broj_pregleda,brojac(0);
+    std::cin &gt;&gt; max_broj_pregleda;
+    Pregledi p(max_broj_pregleda);
+    for(;;) {
+        brojac++;
+        std::string ime_pacijenta,kraj("kraj");
+        if(brojac==max_broj_pregleda+1) break;
+        std::cout &lt;&lt; "Unesite ime novog pacijenta ili 'kraj' za zavrsetak unosa: ";
+        std::cin.ignore(1000,'\n');
+        std::getline(std::cin,ime_pacijenta);
+        if(ime_pacijenta==kraj) break;
+        std::cout &lt;&lt; "Unesite dan mjesec i godinu pregleda: ";
+        int dan,mjesec,godina;
+        std::cin &gt;&gt; dan&gt;&gt;mjesec&gt;&gt;godina;
+        Datum datum(dan,mjesec,godina);
+        std::cout &lt;&lt; "Unesite sate i minute pregleda: ";
+        int sati,minute;
+        std::cin &gt;&gt; sati&gt;&gt;minute;
+        Vrijeme vrijeme(sati,minute);
+        p.RegistrirajPregled(ime_pacijenta,dan,mjesec,godina,sati,minute);
+    }
+    std::cout &lt;&lt; "Trenutno su registrovani sljedeci pregledi" &lt;&lt; std::endl;
+
+    p.IspisiSvePreglede();
+    int izbor(0);
+    do {
+        std::cout &lt;&lt; "\nOdaberite jednu od sljedecih opcija" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "1 - Broj pregleda na datum\n2 - Najraniji pregled\n3 - Obrisi pregled pacijenta\n4 - Obrisi najraniji pregled"&lt;&lt;std::endl;
+        std::cout &lt;&lt; "5 - Ispisi sve pregleda na datum\n6 - Ispisi sve preglede\n7 - Kraj programa" &lt;&lt; std::endl;
+        std::cin &gt;&gt; izbor;
+        if(izbor==1) {
+            std::cout &lt;&lt; "Unesite dan mjesec i godinu : ";
+            int d,m,g;
+            std::cin &gt;&gt; d&gt;&gt;m&gt;&gt;g;
+</font>            Datum dat(d,m,g);
+<a name="2"></a><font color="#0000FF"><a href="match206-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_8.gif"/></a>
+
+            std::cout &lt;&lt;"Broj pregleda na datum "&lt;&lt;d&lt;&lt;" "&lt;&lt;m&lt;&lt;" "&lt;&lt;g&lt;&lt;" je: "&lt;&lt;p.DajBrojPregledaNaDatum(dat)&lt;&lt; std::endl;
+
+        }
+        if(izbor==2) {
+            std::cout &lt;&lt; "Najraniji pregled je:" &lt;&lt; std::endl;
+            auto pregled=p.DajNajranijiPregled();
+            pregled.Ispisi();
+        }
+        if(izbor==3) {
+            std::cout &lt;&lt; "Unesite ime pacijenta: ";
+            std::string s;
+            int brojac(0);
+            std::cin.ignore(1000,'\n');
+            std::getline(std::cin,s);
+            for(int i(0); i&lt;p.broj_evidentiranih; i++) {
+                if(p.pregledi[i]-&gt;ime_pacijenta==s) brojac++;
+            }
+            p.ObrisiPregledPacijenata(s);
+            std::cout &lt;&lt; "Uspjesno obrisano "&lt;&lt;brojac&lt;&lt;" pregleda" &lt;&lt; std::endl;
+        }
+        if(izbor==4) {
+            p.ObrisiNajranijiPregled();
+            std::cout &lt;&lt; "Najraniji pregled uspjesno obrisan"&lt;&lt;std::endl;
+        }
+        if(izbor==5) {
+            std::cout &lt;&lt; "Unesite dan mjesec i godinu : ";
+            int d,m,g;
+            std::cin &gt;&gt; d&gt;&gt;m&gt;&gt;g;
+            Datum dat(d,m,g);
+            p.IspisiPregledeNaDatum(dat);
+        }
+        if(izbor==6) p.IspisiSvePreglede();
+    } while (izbor!=7);
+</font>    return 0;
+}
+</pre>
+</body>
+</html>

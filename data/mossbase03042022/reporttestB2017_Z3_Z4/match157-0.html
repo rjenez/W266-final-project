@@ -1,0 +1,221 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student3867.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student3867.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;utility&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;queue&gt;
+#include &lt;vector&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match157-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+enum class Boje { Pik, Tref, Herc, Karo };
+
+std::vector &lt; std::string &gt; StrBoje = { "Pik", "Tref", "Herc", "Karo" };
+
+std::list &lt; std::string &gt; karte = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+
+typedef std::list &lt; std::pair &lt; Boje, std::string &gt; &gt; Spil;
+
+namespace ab
+{
+    template &lt; typename T, typename CONT &gt;
+    int getIndex ( T s, CONT kont, CONT end )
+    {
+    /*** vraca poziciju elementa u iterirajucem kontejneru ***/
+        int i { 0 };
+        do
+        {
+            if ( *kont == s )
+                break;
+            i++;
+        }while ( ++kont != end );
+        
+        return i;
+    }
+    
+    template &lt; typename IT &gt;
+    bool besmisleno ( IT it )
+    {   
+    /*** vraca 'true' ako se vrijednosti iz parametra 'it' ne nalaze u predefinisanim vrijednostima koje oznacavaju karte ***/
+        if ( std::find ( karte.begin (), karte.end (), it -&gt; second ) == karte.end () ) // provjera za broj
+            return true;
+            
+        for ( int i = 0; i &lt; 4; i++ ) // provjera za znak
+            if ( it -&gt; first == static_cast &lt; Boje &gt; ( i ) )
+                return false;
+                
+        return true;
+    }
+    
+    void CardValidation ( const Spil &amp;spil )
+    {
+    /*** testiranje na izuzetke definisane za tip 'Spil' ***/
+        if ( spil.size () &gt; 52 or besmisleno ( spil.begin () ) ) // provjerava takodjer prvi element, jer ne provjerava zajedno sa ostalim el. u petlji ispod 
+            throw std::logic_error ( "Neispravna lista!" );
+
+        typename Spil::const_iterator aftbeg { spil.begin () }, prelast { spil.end () };
+        aftbeg++; prelast--;
+        // provjera da li su elementi sortirani po postavci zadatka i da li odgovaraju predefinisanim vrijednostima za karte
+        for ( typename Spil::const_iterator it = spil.begin (); it != prelast; it++ )
+            if ( static_cast &lt; int &gt; ( it -&gt; first ) &gt; static_cast &lt; int &gt; ( aftbeg -&gt; first ) and 
+                getIndex ( it -&gt; second, karte.begin (), karte.end () ) &gt; getIndex ( aftbeg -&gt; second, karte.begin (), karte.end () ) and 
+                besmisleno ( aftbeg ) )
+                    throw std::logic_error ( "Neispravna lista!" );
+    }
+    
+    void StackValidation ( std::queue &lt; std::pair &lt; std::string, std::string &gt; &gt; stek, int n )
+    {
+    /*** testiranje na izuzetke definisane za neki tip reda ***/
+        if ( n &lt; 0 or n &gt; 52 )
+            throw std::domain_error ( "Broj n je besmislen!" );
+        if ( n &gt; stek.size () )
+            throw std::range_error ( "Nedovoljno karata u redu!" );
+        // provjera da li se vrijednosti reda nalaze u predefinisanim vrijednostima za karte
+        while ( !stek.empty () )
+        {
+            std::pair &lt; std::string, std::string &gt; card = stek.front ();
+            stek.pop ();
+            if ( std::find ( karte.begin (), karte.end (), card.second ) == karte.end () or
+                std::find ( StrBoje.begin (), StrBoje.end (), card.first ) == StrBoje.end () )
+                    throw std::logic_error ( "Neispravne karte!" );
+        }
+    }
+}
+
+void IspisiSpil ( const Spil &amp;spil )
+{
+/*** ispis kontejnera 'Spil' u formatu zadanom u postavci zadatka ***/
+    std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; spil.size () &lt;&lt; " karata, i to:" &lt;&lt; std::endl;
+    typename Spil::const_iterator it = spil.begin ();
+    for ( int i = 0; i &lt; StrBoje.size (); i++ )
+    {
+        std::cout &lt;&lt; StrBoje.at ( i ) &lt;&lt; ":";
+        while ( it != spil.end () and it -&gt; first == static_cast &lt; Boje &gt; ( i ) )
+        {
+            std::cout &lt;&lt; " " &lt;&lt; it -&gt; second;
+            it++;
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+Spil KreirajSpil ( void )
+{
+    Spil spil;
+    for ( int i = 0; i &lt; 4; i++ ) // petlja za znakove
+        for ( const std::string &amp;broj : karte ) // petlja za brojeve
+            spil.emplace_back ( static_cast &lt; Boje &gt; ( i ), broj );
+    
+    return spil;
+}
+
+void IzbaciKarte ( Spil &amp;spil, std::multimap &lt; Boje, std::string &gt; &amp;izb )
+{
+    ab::CardValidation ( spil );
+    typename Spil::iterator itspil;
+    for ( typename std::multimap &lt; Boje, std::string &gt;::iterator card = izb.begin (); card != izb.end(); card++ )
+    {
+        itspil = std::find_if ( spil.begin (), spil.end (), 
+            [ card ] ( const std::pair &lt; Boje, std::string &gt; &amp;el ) -&gt; bool 
+                { return el.first == card -&gt; first and el.second == card -&gt; second; } );
+        // brisanje vrijednosti iteratora iz spila i mape, ako je uslov iznad zadovoljen         
+        if ( itspil != spil.end () )
+        {
+            spil.erase ( itspil );
+            card = izb.erase ( card );
+        }
+    }
+}
+
+std::queue &lt; std::pair &lt; std::string, std::string &gt; &gt; IzbaciKarteRazbrajanjem ( Spil &amp;spil, const short &amp;r, const int &amp;b )
+{
+    if ( r &lt; 1 or r &gt; 52 or b &lt; 1 )
+        throw std::logic_error ( "Neispravni elementi za izbacivanje!" );
+    ab::CardValidation ( spil );
+    
+    std::queue &lt; std::pair &lt; std::string, std::string &gt; &gt; stek;
+    int i { 0 }, count { 1 };
+    while ( spil.size () != 0 and i != b )
+    {
+        for ( typename Spil::iterator it = spil.begin (); it != spil.end (); it++ )
+        {
+            if ( ++count == r ) // cirkulacija kroz listu
+            {
+                ++it;
+                stek.emplace ( StrBoje.at ( static_cast &lt; int &gt; ( it -&gt; first ) ), it -&gt; second ); // dodavanje u red
+                it = spil.erase ( it ); // brisanje iz spila
+                it--;
+                count = 1;
+                i++;
+            }
+            if ( i == b )
+                break;
+        }
+    }
+    return stek;
+}
+
+void VratiPrvihNKarata ( Spil &amp;spil, std::queue &lt; std::pair &lt; std::string, std::string &gt; &gt; &amp;stek , int n )
+{
+    ab::StackValidation ( stek, n );
+    ab::CardValidation ( spil );
+    
+    std::pair &lt; std::string, std::string &gt; par;
+    int i { 0 };
+    while ( i++ != n )
+    {
+        par = stek.front ();
+        stek.pop ();
+        // dodavanje karte iz reda ( sa brisanjem ) na kraj spila
+        spil.emplace_back ( static_cast &lt; Boje &gt; ( ab::getIndex ( par.first, StrBoje.begin (), StrBoje.end () ) ), par.second );
+    }
+    // sortiranje spila zbog novododanih karata
+    spil.sort ( [] ( const std::pair &lt; Boje, std::string &gt; &amp;one, const std::pair &lt; Boje, std::string &gt; &amp;two )
+        { 
+            if ( static_cast &lt; int &gt; ( one.first ) &lt; static_cast &lt; int &gt; ( two.first ) ) // sortiranje po znaku
+                return true;
+            else if ( static_cast &lt; int &gt; ( one.first ) == static_cast &lt; int &gt; ( two.first ) )
+                // sortiranje po broju
+                if ( ab::getIndex ( one.second, karte.begin (), karte.end () ) &lt; ab::getIndex ( two.second, karte.begin (), karte.end () ) )
+                    return true;
+            return false;
+        } );
+}
+
+int main ( void ) 
+{
+    short raz;
+    std::cout &lt;&lt; "Unesite korak razbrajanja: ";
+    std::cin &gt;&gt; raz;
+    
+    int izb;
+    std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    std::cin &gt;&gt; izb;
+    
+    try
+    {
+        Spil spil { KreirajSpil () };
+        std::queue &lt; std::pair &lt; std::string, std::string &gt; &gt; obrisane { IzbaciKarteRazbrajanjem ( spil, raz, izb ) };
+        
+        IspisiSpil ( spil );
+        
+        std::cout &lt;&lt; "Unesite broj karata koje zelite vratiti u spil: ";
+        std::cin &gt;&gt; izb;
+        VratiPrvihNKarata ( spil, obrisane, izb );
+        
+        IspisiSpil ( spil ); 
+    }
+    catch ( const std::exception &amp;exc ) { std::cout &lt;&lt; "Izuzetak: " &lt;&lt; exc.what (); }
+</font>    return 0;
+}</pre>
+</body>
+</html>

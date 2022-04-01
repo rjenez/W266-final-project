@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student2896.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student2896.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2.
+
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;map&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+
+bool slovo(char a)
+{
+    if(a &gt;= 48 &amp;&amp; a &lt;= 57) return true;
+    if(a &gt;= 65 &amp;&amp; a &lt;= 90) return true;
+    if(a &gt;= 97 &amp;&amp; a &lt;= 122) return true;
+    return false;
+}
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string tekst)
+{
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa;
+    std::string rijec;
+    int duzina = 0;
+    int pocetak = 0;
+    for(int i=0; i&lt;tekst.length(); i++)
+    {
+        if(slovo(tekst.at(i)))
+        {
+            duzina++;
+            if(tekst.at(i) &gt;= 65 &amp;&amp; tekst.at(i) &lt;= 90)
+            {
+                rijec += tekst.at(i) + 32;
+            }
+            else rijec += tekst.at(i);
+        }
+        else
+        {
+            if(duzina &gt; 0)
+            {
+                auto it = mapa.find(rijec);
+                if(it == mapa.end())
+                {
+                    std::set&lt;int&gt; sett{pocetak};
+                    mapa.insert(std::make_pair(rijec, sett));
+                    
+                }
+                else
+                {
+                    it-&gt;second.insert(pocetak);
+                }
+                rijec.resize(0);
+            }
+            pocetak = i+1;
+            duzina = 0;
+        }
+        if(i == tekst.length() - 1)
+        {
+            if(duzina &gt; 0)
+            {
+                auto it = mapa.find(rijec);
+                if(it == mapa.end())
+                {
+                    std::set&lt;int&gt; sett{pocetak};
+                    mapa.insert(std::make_pair(rijec, sett));
+                }
+                else it -&gt; second.insert(pocetak);
+            }
+            break;
+        }
+    }
+    return mapa;
+}
+
+<a name="0"></a><font color="#FF0000"><a href="match579-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_14.gif"/></a>
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string rijec, std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa)
+{
+    auto it = mapa.find(rijec);
+    if(it == mapa.end()) throw std::logic_error("Pojam nije nadjen");
+    return it-&gt;second;
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa)
+{
+    for(auto x : mapa)
+    {
+        std::cout &lt;&lt; x.first &lt;&lt; ": ";
+</font>        int v = x.second.size();
+        int br = 1;
+        for(auto y : x.second)
+        {
+            if(br == v) std::cout &lt;&lt; y;
+            else std::cout &lt;&lt; y &lt;&lt; ",";
+            br++;
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+
+int main ()
+{
+    try
+    {
+        std::cout &lt;&lt; "Unesite tekst: ";
+        std::string tekst;
+        std::getline(std::cin, tekst);
+        auto mapa = KreirajIndeksPojmova(tekst);
+        IspisiIndeksPojmova(mapa);
+        for(;;)
+        {
+<a name="1"></a><font color="#00FF00"><a href="match579-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_8.gif"/></a>
+
+            std::cout &lt;&lt; "Unesite rijec: ";
+            std::string rijec;
+            std::getline(std::cin, rijec);
+            if(rijec == ".") break;
+            try
+            {
+                auto sett = PretraziIndeksPojmova(rijec, mapa);
+                for(auto x : sett)
+                {
+                    std::cout &lt;&lt; x &lt;&lt; " ";
+                }
+                std::cout &lt;&lt; std::endl;
+</font>            }
+            catch(std::logic_error e)
+            {
+                std::cout &lt;&lt; "Unesena rijec nije nadjena!\n";
+            }
+        }
+    }
+    catch(...)
+    {
+        return 0;
+    }
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student5140.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student5140.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match133-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 6
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;list&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; imena_djece, int broj_timova){
+    //if(broj_timova&lt;1 || broj_timova&gt;imena_djece.size())
+        //throw std::logic_error("Razvrstavanje nemoguce");
+    //napravi broj timova i razvsrtaj broj djece
+    int broj_djece_1_vise;
+    broj_djece_1_vise=imena_djece.size()%broj_timova;
+    int broj_po_timovima;
+    broj_po_timovima=imena_djece.size()/broj_timova;
+    
+    //formira listu djece
+    std::list&lt;std::string&gt; lista_djece;
+    for(int i=0; i&lt;imena_djece.size(); i++)
+        lista_djece.push_back(imena_djece[i]);
+    //dodano
+    auto na_kraj(lista_djece.begin());
+    for(int i=0; i&lt;lista_djece.size(); i++)
+        na_kraj++;
+    na_kraj--;
+    std::vector&lt;std::set&lt;std::string&gt;&gt; vrati;
+    
+    //sortiranje djece
+    auto iter=lista_djece.begin();
+    int ubacen_u_skup(0);
+    int za_1_veci(0);
+    std::set&lt;std::string&gt; skup;
+    bool jeste_zadnji(false);
+    while(lista_djece.size()!=0 &amp;&amp; jeste_zadnji==false){
+        std::string pomoc;
+        //osiguraj ponavljanje pri izbacivanju
+        if(iter==lista_djece.end() &amp;&amp; lista_djece.size()==1){
+            iter=lista_djece.begin(); //???
+            pomoc=*iter;
+            jeste_zadnji=true;
+        } else {
+            if(iter==na_kraj)
+                na_kraj--;
+            if(iter==lista_djece.end())
+                iter=lista_djece.begin();
+            pomoc=*iter;
+            iter=lista_djece.erase(iter);
+        }
+        
+        //ubaci u skupove
+        if(za_1_veci&lt;broj_djece_1_vise &amp;&amp; ubacen_u_skup&lt;broj_po_timovima+1){
+            skup.insert(pomoc);
+            ubacen_u_skup++;
+        } else if(za_1_veci&lt;broj_djece_1_vise &amp;&amp; ubacen_u_skup==broj_po_timovima+1){
+            za_1_veci++;
+            vrati.push_back(skup);
+            //ocisti ubaceni skup
+            for(auto x: skup) skup.erase(x);
+            ubacen_u_skup=0;
+            skup.insert(pomoc);
+            ubacen_u_skup++;
+        } else if(za_1_veci==broj_djece_1_vise &amp;&amp; ubacen_u_skup&lt;broj_po_timovima){
+            skup.insert(pomoc);
+            ubacen_u_skup++;
+        } else if(za_1_veci==broj_djece_1_vise &amp;&amp; ubacen_u_skup==broj_po_timovima){
+            vrati.push_back(skup);
+            //ocisti ubaceni skup
+            for(auto x: skup) skup.erase(x);
+            ubacen_u_skup=0;
+            skup.insert(pomoc);
+            ubacen_u_skup++;
+        } else if(lista_djece.size()==1){
+            skup.insert(pomoc);
+            vrati.push_back(skup);
+        }
+        
+        //pomak za broj slova
+        int pomak;
+        pomak=pomoc.length();
+        for(int i=0; i&lt;pomak-1; i++){
+            if(iter==na_kraj)
+                iter=lista_djece.begin();
+            else
+                iter++;
+        }
+    }
+    vrati.push_back(skup);
+    return vrati;
+}
+
+int main ()
+{
+    int broj_djece;
+    std::cout &lt;&lt; "Unesite broj djece: ";
+    std::cin &gt;&gt; broj_djece;
+    std::cout &lt;&lt; "Unesite imena djece: " &lt;&lt; std::endl;
+    std::vector&lt;std::string&gt; imena_djece;
+    for(int i=0; i&lt;broj_djece; i++){
+        std::string ime;
+        std::cin &gt;&gt; ime;
+        imena_djece.push_back(ime);
+    }
+    int broj_timova;
+    std::cout &lt;&lt; "Unesite broj timova: ";
+    std::cin &gt;&gt; broj_timova;
+    try{
+        auto vraceni=Razvrstavanje(imena_djece,broj_timova);
+        for(int i=0; i&lt;broj_timova; i++){
+            std::cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+            int j(0);
+            for(auto x: vraceni[i]) {
+                j++;
+                if(j!=vraceni[i].size()) std::cout &lt;&lt; x &lt;&lt; ", ";
+                else std::cout &lt;&lt; x;
+            }
+            std::cout &lt;&lt; std::endl;
+        }
+    } catch(std::logic_error tekst){
+        std::cout &lt;&lt; tekst.what();
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student8886.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student8886.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match2-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::vector;
+using std::string;
+using std::getline;
+using std::domain_error;
+
+string Umetni(string recenica, int pozicija, string rijec, int rijecpozicija, int duzina)
+{
+	for (int i=rijecpozicija; i&lt;duzina; i++)
+		recenica.insert(recenica.begin() + pozicija, rijec[i]);
+	return recenica;
+}
+
+string Obrisi(string recenica, int pozicija, int duzina)
+{  
+	int brojac(0);
+	int i=pozicija;
+	while (1)
+	{
+		recenica.erase(recenica.begin() + i);
+		brojac++;
+		if (brojac==duzina) break;
+	} 
+	return recenica;
+}
+
+bool DaLiSePojavljuje(string fraza, string recenica)
+{
+	for (int i=0; i&lt;recenica.length(); i++)
+	{
+		int j(0);
+		if (recenica[i]==fraza[j])
+		{
+			bool ima(true);
+			int brojac(0);
+			while (j&lt;fraza.length() and i&lt;recenica.length())
+			{
+				if (recenica[i]!=fraza[j]) 
+				{	
+					ima=false;
+					break;
+				}
+				j++;
+				i++;
+				brojac++;
+			}
+			i--;
+			if (ima and i&lt;recenica.length() and !((recenica[i+1]&gt;='A' and recenica[i+1]&lt;='Z') or (recenica[i+1]&gt;='a' and recenica[i+1]&lt;='z')) 
+			and j==fraza.length() and (i-brojac==-1 or !((recenica[i-brojac]&gt;='A' and recenica[i-brojac]&lt;='Z') or (recenica[i-brojac]&gt;='a' and recenica[i-brojac]&lt;='z')))) return true;
+			else if (ima and i==recenica.length()-1  and j==fraza.length() and 
+			!((recenica[i-brojac]&gt;='A' and recenica[i+1]&lt;='Z') or (recenica[i-brojac]&gt;='a' and recenica[i-brojac]&lt;='z'))) return true;
+		}
+	}
+	return false;
+}
+
+int PozicijaodKojePocinjeIzdvajanje(string recenica, string fraza)
+{
+	for (int i=0; i&lt;recenica.length(); i++)
+	{
+		int j(0);
+		int pozicija;
+		if (recenica[i]==fraza[j])
+		{
+			pozicija=i;
+			bool ima(true);
+			int brojac(0);
+			while (j&lt;fraza.length() and i&lt;recenica.length())
+			{
+				if (recenica[i]!=fraza[j])
+				{
+					ima=false;
+					break;
+				}
+				i++;
+				j++;
+				brojac++;
+			}
+			i--;
+			if (ima and i&lt;recenica.length() and !((recenica[i+1]&gt;='A' and recenica[i+1]&lt;='Z') or (recenica[i+1]&gt;='a' and recenica[i+1]&lt;='z')) 
+			and j==fraza.length() and (i-brojac==-1 or !((recenica[i-brojac]&gt;='A' and recenica[i-brojac]&lt;='Z') or (recenica[i-brojac]&gt;='a' and recenica[i-brojac]&lt;='z')))) return pozicija;
+			else if (ima and i==recenica.length()-1  and j==fraza.length() and 
+			!((recenica[i-brojac]&gt;='A' and recenica[i+1]&lt;='Z') or (recenica[i-brojac]&gt;='a' and recenica[i-brojac]&lt;='z'))) return pozicija;
+		}
+	}
+	return -1;
+}
+
+string Sufiks(char znak, string s)
+{
+	s.resize(3);
+	s[0]=znak;
+	s[1]='a';
+	s[2]='y';
+	return s;
+}
+
+string ObrnutaFraza(string s)
+{
+	string pomocni=s;
+	int j(0);
+	for (int i=s.length()-1; i&gt;=0; i--)
+	{
+		pomocni[j]=s[i];
+		j++;
+	}
+	return pomocni;
+}
+
+bool BaciIzuzetak(string s)
+{
+	for (int i=0; i&lt;s.length(); i++)
+		if (!((s[i]&gt;=65 and s[i]&lt;=90) or (s[i]&gt;=97 and s[i]&lt;=122))) return true;
+	return false;
+}
+
+string IzmijeniUPigLatin(string recenica, vector&lt;string&gt; fraze)
+{
+	int pozicija;
+	string dodaj{"ay"};
+	if (fraze.size()==0)
+	{
+		bool rijec(false);
+		int brslova;
+		for (int i=0; i&lt;recenica.length(); i++)
+		{
+			if ((i==0 or !((recenica[i-1]&gt;='A' and recenica[i-1]&lt;='Z') or (recenica[i-1]&gt;='a' and recenica[i-1]&lt;='z'))) and 
+			((recenica[i]&gt;='A' and recenica[i]&lt;='Z') or (recenica[i]&gt;='a' and recenica[i]&lt;='z')) and i&lt;recenica.length()) rijec=true;
+			if (rijec) 
+			{
+				pozicija=i;
+				brslova=0;
+				while (i&lt;recenica.length() and ((recenica[i]&gt;='A' and recenica[i]&lt;='Z') or (recenica[i]&gt;='a' and recenica[i]&lt;='z'))) 
+				{
+					i++; 
+					brslova++;
+				}
+				if (i==recenica.length() or !((recenica[i]&gt;='A' and recenica[i]&lt;='Z') or (recenica[i]&gt;='a' and recenica[i]&lt;='z'))) 
+				{
+					i--;
+					string fraza=recenica.substr(pozicija, brslova);
+					recenica=Obrisi(recenica, pozicija, fraza.length());
+					char znak=fraza[0];
+					fraza=Obrisi(fraza, 0, 1);
+					dodaj=Sufiks(znak, dodaj);
+					fraza+=dodaj;
+					recenica=Umetni(recenica, pozicija, ObrnutaFraza(fraza), 0, fraza.length());
+				}
+			}
+			rijec=false;
+		}
+	}
+	else 
+	{
+		for (int i=0; i&lt;fraze.size(); i++)
+		{
+			if (BaciIzuzetak(fraze[i])) throw domain_error("Nekorektan izbor rijeci");
+			if (DaLiSePojavljuje(fraze[i], recenica))
+			{
+				string fraza=fraze[i];
+				if (PozicijaodKojePocinjeIzdvajanje(recenica, fraza)!=-1) pozicija=PozicijaodKojePocinjeIzdvajanje(recenica, fraza);
+				recenica=Obrisi(recenica, pozicija, fraza.length());
+				char znak=fraza[0];
+				fraza=Obrisi(fraza, 0, 1);
+				dodaj=Sufiks(znak, dodaj);
+				fraza+=dodaj;
+				recenica=Umetni(recenica, pozicija, ObrnutaFraza(fraza), 0, fraza.length());
+				i--; 
+			}
+		}
+	} 
+	return recenica;
+}
+
+string ObrniFraze(string recenica, vector&lt;string&gt; fraze)
+{
+	for (int i=0; i&lt;fraze.size(); i++)
+	{
+		string fraza=fraze[i];
+		int pozicija;
+		for (int j=0; j&lt;recenica.length(); j++)
+		{
+			int k=0;
+			if (recenica[j]==fraza[k])
+			{
+				bool ima(true);
+				pozicija=j;
+				int p=j;
+				while (k&lt;fraza.length() and j&lt;recenica.length())
+				{
+					if (recenica[j]!=fraza[k])
+					{
+						ima=false;
+						break;
+					}
+					k++;
+					j++;
+				}
+				j=p;
+				if (ima and k==fraza.length())
+				{
+					fraza=ObrnutaFraza(fraza);
+					recenica=Obrisi(recenica, pozicija, fraza.length());
+					recenica=Umetni(recenica, pozicija, ObrnutaFraza(fraza), 0, fraza.length());
+					fraza=ObrnutaFraza(fraza);
+				}
+			}
+		}
+	}
+	return recenica;
+}
+
+int main()
+{
+	string recenica;
+	cout &lt;&lt; "Unesite recenicu: ";
+	getline(cin, recenica);
+	vector&lt;string&gt; fraze;
+	string s;
+	cout &lt;&lt; "Unesite fraze: ";
+	while(1)
+	{
+		getline(cin, s);
+		if (s.length()!=0) fraze.push_back(s);
+		else if (s.length()==0) break;
+	}
+	try
+	{
+		string piglatin=IzmijeniUPigLatin(recenica, fraze);
+		cout &lt;&lt; "Recenica nakon PigLatin transformacije: " &lt;&lt; piglatin &lt;&lt; endl;
+	}
+	catch (domain_error izuzetak)
+	{
+		cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; endl;
+	}
+	string obrnifraze=ObrniFraze(recenica, fraze);
+	cout &lt;&lt; "Recenica nakon obrtanja fraza: " &lt;&lt; obrnifraze;
+</font>	return 0;
+} </pre>
+</body>
+</html>

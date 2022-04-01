@@ -1,0 +1,100 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z3/Z2/student5172.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z3/Z2/student7677.c<p></p><pre>
+#include &lt;stdio.h&gt;
+
+
+<a name="0"></a><font color="#FF0000"><a href="match103-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_98.gif"/></a>
+
+float zaokruzi_broj(float br)
+{
+	/* +- 0.0000005 je zbog toga reprezentacije broja u memorij */
+	int n, neg = 1;
+	if(br &gt; 0)
+		n = br * 100 + 0.000000005;
+	else{
+		br *= -1;
+		neg = -1;
+		n = br * 100 - 0.000000005;
+	}
+		
+	if(n % 10 &gt;= 5)
+		n += 10;
+		
+	return (n / 10) / 10. * neg;
+}
+
+void zaokruzi1(float* niz, int velicina)
+{
+	int i = 0;
+	for(; i &lt; velicina; ++i)
+		niz[i] = zaokruzi_broj(niz[i]);
+}
+
+int suma_cifara(float br)
+{
+	if(br &lt; 0)
+		br*=-1;
+	int n = br * 10;
+	int suma = 0;
+	for(; n != 0; n /= 10)
+		suma += n % 10;
+	return suma;
+}
+
+
+void zamijeni(float* niz, int velicina, int index, int mjesto)
+{
+	/* pamtim broj prije izbacivanja */
+	float br = niz[index];
+	
+	/* izbacivanje */
+	int i = index;
+	int j = index + 1;
+	for(; j &lt; velicina; ++j, ++i)
+		niz[i] = niz[j];
+	--velicina;
+	
+	/* pravljenje prostora za ubacivanje broja */
+	i = velicina;
+	j = velicina - 1;
+	for(; j &gt;= mjesto; --j, --i)
+		niz[i] = niz[j];
+		
+	/* ubacujem broj */	
+	niz[mjesto] = br;
+}
+
+void preslozi(float* niz, int velicina, int k)
+{
+	zaokruzi1(niz, velicina);
+	int i = 0;
+	/* dolazimo do broja cija suma je manja od k */
+	for(; i &lt; velicina &amp;&amp; suma_cifara(niz[i]) &gt;= k; ++i)
+		; /* bez tijela */
+		
+	/* ako je i doslo do kraja nemamo sta mijenjati */
+	if (i == velicina)
+		return;
+	int prvi_manji = i;
+	for(i = i + 1; i &lt; velicina; ++i)
+		if(suma_cifara(niz[i]) &gt;= k)
+		{
+			/* "sortiramo" */
+			zamijeni(niz, velicina, i, prvi_manji);
+			++prvi_manji;
+		}
+	
+}
+
+int main() {
+	printf("Zadaća 3, Zadatak 2");
+</font>	return 0;
+}
+</pre>
+</body>
+</html>

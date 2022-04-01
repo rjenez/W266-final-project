@@ -1,0 +1,246 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student5381.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student5665.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 3
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;new&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+
+<a name="2"></a><font color="#0000FF"><a href="match778-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+template &lt;typename cjelobrojni&gt;
+bool JeLiPeriod (const std::vector&lt;cjelobrojni&gt; &amp;v, int p) {
+	if (p&lt;1 || p&gt;=v.size()) return false;
+</font>	
+	int n(v.size()-p);
+	
+	for (int i=0; i&lt;n; i++)
+		if (v[i]!=v[i+p]) {
+			return false;
+			break;
+		}
+	
+	return true;
+}
+
+template &lt;typename cjelobrojni&gt;
+int OsnovniPeriod (const std::vector&lt;cjelobrojni&gt; &amp;v) {
+	
+	for (int i=1; i&lt;v.size(); i++)
+		if (JeLiPeriod(v, i)==true)
+			return i;
+	
+	return 0;
+}
+
+
+template &lt;typename cjelobrojni&gt;
+int **AlocirajFragmentirano (const std::vector&lt;cjelobrojni&gt; &amp;v, int &amp;koliko_puta) {
+	
+	int osnovni_period(OsnovniPeriod(v));
+	int velicina(v.size());
+	
+	if (v.size()==0) throw "Prazan vektor!";
+	
+	for (int i=0; i&lt;v.size(); i++)
+		if (v[i]&lt;=0) throw std::domain_error ("Neispravan vektor!");
+	
+	// odredjivanje velicine najveceg reda
+	int max=v[0];
+	for (int i=0; i&lt;v.size(); i++) 
+		if (v[i]&gt;max)
+			max=v[i];
+	
+	if (osnovni_period!=0) {
+		while (velicina%osnovni_period!=0) velicina++;
+		koliko_puta=velicina/osnovni_period;
+	}
+	else {
+		osnovni_period=v.size();
+		velicina*=2;
+		koliko_puta=2;
+	}
+	
+	
+	int n(koliko_puta*osnovni_period);
+	
+	try {
+		int **pok(new int*[n] {});
+		
+		try {
+			int j=0;
+			for (int i=0; i&lt;n; i++) {
+				pok[i]=new int [v[j]];
+				// popunjavanje
+				int help_max=max;
+				for (int k=v[j]-1; k&gt;=0; k--, help_max--)
+					pok[i][k]=help_max;
+				
+				if (j==osnovni_period-1) j=0;
+				else j++;
+			}
+			
+			return pok;
+		}
+		catch (std::bad_alloc) {
+<a name="3"></a><font color="#00FFFF"><a href="match778-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+			for (int i=0; i&lt;n; i++) delete[] pok[i];
+			delete[] pok;
+			throw std::bad_alloc();
+		}	
+	}
+	catch (std::bad_alloc) {
+</font>		throw std::bad_alloc();
+	}
+}
+
+
+template &lt;typename cjelobrojni&gt;
+int** AlocirajKontinualno (const std::vector&lt;cjelobrojni&gt; &amp;v, int &amp;koliko_puta) {
+	
+	int osnovni_period(OsnovniPeriod(v));
+	int velicina(v.size());
+	
+	if (v.size()==0) throw "Prazan vektor!";
+	
+	for (int i=0; i&lt;v.size(); i++)
+		if (v[i]&lt;=0) throw std::domain_error ("Neispravan vektor!");
+	
+	if (osnovni_period!=0) {
+		while (velicina%osnovni_period!=0) velicina++;
+		koliko_puta=velicina/osnovni_period;
+	}
+	else {
+		osnovni_period=v.size();
+		velicina*=2;
+		koliko_puta=2;
+	}
+	
+	
+	int n(koliko_puta*osnovni_period);
+	
+	int zbir_perioda(0);
+	for (int i=0; i&lt;osnovni_period; i++)
+		zbir_perioda+=v[i];
+	int broj_elemenata(zbir_perioda*koliko_puta);
+	
+	try {
+		int **pok(new int*[n] {});
+		
+		try {
+			int j=1;
+			pok[0]=new int [broj_elemenata];
+			int element=1;
+			for (int k=v[0]-1; k&gt;=0; k--, element++)
+					pok[0][k]=element;
+			int pozicija(v[0]);
+			for (int i=1; i&lt;n; i++) {
+				pok[i]=pok[0]+pozicija;
+				// popunjavanje
+				element=1;
+				for (int k=v[j]-1; k&gt;=0; k--, element++)
+					pok[i][k]=element;
+				
+				pozicija+=v[j];
+				if (j==osnovni_period-1) j=0;
+				else j++;
+			}
+			
+			return pok;
+		}
+		catch (std::bad_alloc) {
+			delete[] pok[0];
+			delete[] pok;
+			throw std::bad_alloc();
+		}	
+	}
+	catch (std::bad_alloc) {
+		throw std::bad_alloc();
+	}
+}
+
+
+
+int main ()
+{
+	int broj, broj_perioda;
+	bool opcija;
+	
+std::cout &lt;&lt; "Unesite broj elemenata vektora: ";
+<a name="1"></a><font color="#00FF00"><a href="match778-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+	std::cin &gt;&gt; broj;
+	std::vector&lt;int&gt; v(broj);	
+	std::cout &lt;&lt; "Unesite elemente vektora: ";
+	for (int i=0; i&lt;broj; i++)
+		std::cin &gt;&gt; v[i];
+</font>	std::cout &lt;&lt; "Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+	std::cin &gt;&gt; opcija;
+
+	try {
+		int** p;
+		if (opcija==1) p=AlocirajFragmentirano(v, broj_perioda);
+		else p=AlocirajKontinualno(v, broj_perioda);
+		std::cout &lt;&lt; "Dinamicki alocirana matrica:" &lt;&lt; std::endl;
+		
+		int osnovni_period(OsnovniPeriod(v));
+		int n(broj_perioda*osnovni_period);
+		if (osnovni_period==0) {
+			osnovni_period=v.size();
+			n=v.size()*2;
+		}
+		int j=0;
+		for (int i=0; i&lt;n; i++) {
+			for (int k=0; k&lt;v[j]; k++)
+				std::cout &lt;&lt; std::setw(3) &lt;&lt; std::left &lt;&lt; p[i][k];
+			std::cout &lt;&lt; std::endl;
+			if (j==osnovni_period-1) j=0;
+			else j++;
+		}
+		if (opcija==1) {
+			for (int i=0; i&lt;n; i++) delete[] p[i];
+			delete[] p;
+			return 0;
+		}
+		else {
+			delete[] p[0];
+			delete[] p;
+			return 0;
+		}
+	}
+<a name="0"></a><font color="#FF0000"><a href="match778-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+	catch (const char poruka[]) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; poruka &lt;&lt; std::endl;
+	}
+	catch (std::domain_error e) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; std::endl;
+</font>	}
+	catch (std::bad_alloc) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; "Problemi sa memorijom" &lt;&lt; std::endl;
+	}
+
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student2586.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student6790.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 3
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+template&lt;typename Tip1&gt;
+bool TestPerioda (std::vector&lt;Tip1&gt; v,int pot_period) {
+	
+	for(int i(0);i&lt;v.size()-pot_period;i++) {
+		if (v.at(i)!=v.at(i+pot_period)) 
+			return false;
+	}
+	
+	return true;
+}
+
+template&lt;typename Tip2&gt;
+int OsnovniPeriod (std::vector&lt;Tip2&gt; v) {
+	//int osnovni_period(0);
+	for(int i(1);i&lt;v.size();i++) {
+		if(TestPerioda(v,i)==true) {
+			return i;
+		}
+			
+	}
+	return 0;
+}
+
+template&lt;typename Tip3&gt;
+bool DaLiJePeriodicna(std::vector&lt;Tip3&gt; v) {
+	if(OsnovniPeriod(v)) return true;
+	return false;
+}
+
+template&lt;typename Tip4&gt;
+int ModifikacijaVektora(std::vector&lt;Tip4&gt; &amp;v) {
+	int koliko_puta;
+	if(DaLiJePeriodicna(v)) {
+		int osnovni_period=OsnovniPeriod(v);
+		int dodaj(0);
+		
+		//Koliko treba dodati elemenata:
+		if(v.size()%osnovni_period!=0) {
+			dodaj=osnovni_period-(v.size()%osnovni_period);
+
+			for(int i(0);i&lt;v.size();i++) {
+				if(dodaj==0) break;
+				if(v.at(i)==v.at(v.size()-1)){
+					v.push_back(v.at(i+1));
+					dodaj--;
+				}
+			}
+		}
+		koliko_puta=v.size()/osnovni_period;
+	}
+	
+	else {
+		int dodaj(v.size());
+		for(int i(0);i&lt;v.size();i++) {
+			if(dodaj==0) break;
+			v.push_back(v.at(i));
+			dodaj--;
+		}
+		koliko_puta=2;
+	}
+	return koliko_puta;
+}
+
+template&lt;typename Tip&gt;
+<a name="1"></a><font color="#00FF00"><a href="match604-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+Tip **AlocirajFragmentalno (std::vector&lt;Tip&gt; const &amp;v, int &amp;koliko_puta){
+	
+	if(v.size()==0) throw "Prazan vektor!";
+	
+	for(int i(0);i&lt;v.size();i++) {
+		if(v.at(i)&lt;=0) 
+			throw std::domain_error("Neispravan vektor!");
+</font>	}
+	
+	Tip **mat=nullptr;
+	try {
+		mat=new Tip*[v.size()];
+		for(int i(0);i&lt;v.size();i++) 
+			mat[i]=nullptr;
+		try {
+			for(int i(0);i&lt;v.size();i++) {
+				for(int j(0);j&lt;v.size();j++) {
+					if(i==j) {
+						mat[j]=new Tip[v[i]];
+					}
+				}
+			}
+
+			for(int i(0);i&lt;v.size();i++) {
+				int duzina(v.at(i));
+				Tip MaxElement(OsnovniPeriod(v));
+				for(int j(duzina-1);j&gt;=0;j--) {
+					mat[i][j]=MaxElement;
+					MaxElement--;
+				}
+			}
+
+		}
+		catch(...) {
+			for(int i(0);i&lt;v.size();i++) 
+				delete[] mat[i];
+			delete[] mat;
+			throw;
+		}
+	}
+	catch(...) {
+		throw;
+	}
+	
+	return mat;
+}
+
+template &lt;typename TipV&gt;
+<a name="2"></a><font color="#0000FF"><a href="match604-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+TipV **AlocirajKontinualno (std::vector&lt;TipV&gt; const &amp;v, int &amp;koliko_puta) {
+	if(v.size()==0) throw "Prazan vektor!";
+	
+	for(int i(0);i&lt;v.size();i++) {
+		if(v.at(i)&lt;=0) 
+			throw std::domain_error("Neispravan vektor!");
+</font>	}
+	TipV **mat=nullptr;
+	
+	try {
+		mat=new TipV *[v.size()];
+		try {
+			int ukupno_elemenata(0);
+			for(int i(0);i&lt;v.size();i++)
+				ukupno_elemenata+=v.at(i);
+
+			mat[0]= new TipV [ukupno_elemenata]; 
+			int predhodna_duzina(v.at(0));
+			int element_vektora(1);
+			
+			for(int i(1);i&lt;v.size();i++) {
+				mat[i]=mat[i-1]+predhodna_duzina;
+				predhodna_duzina+=v.at(element_vektora);
+				element_vektora++;
+			}
+			
+			for(int i(0);i&lt;v.size();i++) {
+				int duzina(v.at(i));
+				int Minimalni_element(1);
+				for(int j(duzina-1);j&gt;=0;j--) {
+					mat[i][j]=Minimalni_element;
+					Minimalni_element++;
+				}
+			}
+			
+		}
+		catch(...) {
+			delete[] mat;
+			throw;
+		}
+	}
+	catch (...){
+		throw;
+	}
+	
+	return mat;
+}
+
+
+
+
+int main () {
+	
+<a name="0"></a><font color="#FF0000"><a href="match604-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+	std::cout&lt;&lt;"Unesite broj elemenata vektora: ";
+	int br_elemenata;
+	std::cin&gt;&gt;br_elemenata;
+	
+	std::cout&lt;&lt;"Unesite elemente vektora: ";
+	std::vector&lt;int&gt; v;
+	for(int i(0);i&lt;br_elemenata;i++) {
+		int broj;
+		std::cin&gt;&gt;broj;
+		v.push_back(broj);
+	}
+	
+	std::cout&lt;&lt;"Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+	int alokacija;
+	std::cin&gt;&gt;alokacija;
+	
+	int **mat(nullptr);
+</font>	
+	try{
+	
+		int koliko_puta=ModifikacijaVektora(v);
+		
+		if(alokacija==1) {
+			mat=AlocirajFragmentalno(v,koliko_puta);
+			std::cout&lt;&lt;"Dinamicki alocirana matrica: "&lt;&lt;std::endl;
+			for(int i(0);i&lt;v.size();i++) {
+				int duzina(v.at(i));
+				for(int j(0);j&lt;duzina;j++) {
+					std::cout&lt;&lt;std::left&lt;&lt;std::setw(3)&lt;&lt;mat[i][j];
+				}
+				std::cout&lt;&lt;std::endl;
+			}
+			
+			for(int i(0);i&lt;v.size();i++) 
+				delete[] mat[i];
+			delete[] mat;
+		}
+		if(alokacija==0) {
+			mat=AlocirajKontinualno(v,koliko_puta);
+			
+			int ukupno_elemenata(0);
+			for(int i(0);i&lt;v.size();i++)
+				ukupno_elemenata+=v.at(i);
+			
+			std::cout&lt;&lt;"Dinamicki alocirana matrica:"&lt;&lt;std::endl;
+			for(int i(0);i&lt;ukupno_elemenata;i++) {
+				int duzina(v.at(i));
+				for(int j(0);j&lt;duzina;j++) {
+					std::cout&lt;&lt;std::left&lt;&lt;std::setw(3)&lt;&lt;mat[i][j];
+				}
+				std::cout&lt;&lt;std::endl;
+			}
+			
+			delete[] mat[0];
+			delete[] mat;
+		}
+		
+	}
+	
+	
+	catch(const char izuzetak[]) {
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak;
+	}
+	
+	catch(std::domain_error izuzetak) {
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+	}
+	catch(...) {
+		std::cout&lt;&lt;"Nedovoljno memorije!";
+	} 
+	
+	
+	return 0;
+}</pre>
+</body>
+</html>

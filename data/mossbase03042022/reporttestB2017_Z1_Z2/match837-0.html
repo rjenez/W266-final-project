@@ -1,0 +1,176 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student6874.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student6874.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 2
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+const double eps (0.00001);
+
+double ZbirRubnihElemenata (std::vector&lt;std::vector&lt;double&gt;&gt; m, int i, int j, int vel)
+{
+	double zbir(0.0);
+	for (int k (j) ; k &lt; j + vel ; k++) {
+		zbir += m.at(i).at(k);
+	}
+	for (int k(i + 1) ; k &lt; i + vel ; k++) {
+		zbir += m.at(k).at(j) + m.at(k).at(j + vel - 1);
+	}
+	for (int k(j + 1) ; k &lt; j + vel - 1 ; k++) {
+		zbir += m.at(i + vel - 1).at(k);
+	}
+	return zbir;
+}
+
+std::vector&lt;std::vector&lt;double&gt;&gt; NajvecaPlaninaMatrice (std::vector&lt;std::vector&lt;double&gt;&gt; m)
+{
+	if (m.size() == 1) {
+		double max(m.at(0).at(0));
+		for (int i = 0 ; i &lt; 1 ; i++) {
+<a name="0"></a><font color="#FF0000"><a href="match837-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+			for (int j = 0 ; j &lt; m.at(0).size() ; j++) {
+				if (m.at(i).at(j) &gt; max)
+					max = m.at(i).at(j);
+			}
+		}
+		std::vector&lt;std::vector&lt;double&gt;&gt; matrica(1, std::vector&lt;double&gt;(1, max));
+</font>
+		return matrica;
+	}
+
+	else {
+
+		std::vector&lt;std::vector&lt;double&gt;&gt; planina;
+		// provjera da li je poslana matrica 0x0, 0xn, nx0
+		if (m.size() == 0 || m.at(0).size() == 0)
+			return planina;
+
+		//provjera da li je matrica grbava
+		for (int i = 1 ; i &lt; m.size() ; i++)
+			if (m.at(i).size() != m.at(i - 1).size())
+				throw std::domain_error ("Matrica nije korektna");
+
+
+		int pozicijaI(1), pozicijaJ(1), maxVel(1), minI(m.size() - 1), minJ(m.at(0).size() - 1);
+		double najveciVrh = m.at(1).at(1);
+		//prolazak kroz primljenu matricu i potraga za planinom
+<a name="1"></a><font color="#00FF00"><a href="match837-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+		for (int i = 1 ; i &lt; m.size() - 1 ; i++) {
+			for (int j = 1 ; j &lt; m.at(i).size() - 1 ; j++) {
+</font>				int k(i - 1), l(j - 1), vel(3);
+				double prethodni(m.at(i).at(j));
+				double trenutni;
+				while (k &gt;= 0 &amp;&amp; l &gt;= 0 &amp;&amp; k + vel &lt;= m.size() &amp;&amp; l + vel &lt;= m.at(i).size()) {
+					trenutni = ZbirRubnihElemenata(m, k, l, vel);
+					if (trenutni &gt;= prethodni)
+						break;
+
+					k--;
+					l--;
+					vel += 2;
+					prethodni = trenutni;
+				}
+				if (fabs(trenutni - prethodni) &lt; eps) {
+					k++;
+					l++;
+					vel -= 2;
+
+					if (vel &gt; maxVel) {
+						maxVel = vel;
+						pozicijaI = k;
+						pozicijaJ = l;
+					} else if (vel == maxVel &amp;&amp; m.at(i).at(j) &gt; najveciVrh) {
+						najveciVrh = m.at(i).at(j);
+						pozicijaI = k;
+						pozicijaJ = l;
+					} else if (vel == maxVel &amp;&amp; fabs(m.at(i).at(j) - najveciVrh) &lt; eps) {
+						if (i &lt; minI) {
+							minI = i;
+							pozicijaI = i;
+							pozicijaJ = j;
+						} else if (i == minI &amp;&amp; j &lt; minJ) {
+							minJ = j;
+							pozicijaI = i;
+							pozicijaJ = j;
+						}
+					}
+
+				}
+			}
+		}
+		// prepisivanje planine u novi vektor vektora
+		for (int i(pozicijaI) ; i &lt; pozicijaI + maxVel ; i++) {
+			std::vector&lt;double&gt; red;
+<a name="3"></a><font color="#00FFFF"><a href="match837-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+			for (int j(pozicijaJ) ; j &lt; pozicijaJ + maxVel ; j++) {
+				red.push_back(m.at(i).at(j));
+			}
+			planina.push_back(red);
+		}
+
+		return planina;
+	}
+}
+
+int main ()
+</font>{
+	std::cout &lt;&lt; "Unesite dimenzije matrice (m i n): ";
+	int m, n;
+	std::cin &gt;&gt; m &gt;&gt; n;
+	if (m &lt; 0 || n &lt; 0)
+		std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!";
+	else {
+		std::cout &lt;&lt; "Unesite elemente matrice: ";
+
+		std::vector&lt;std::vector&lt;double&gt;&gt; matrica (m, std::vector&lt;double&gt;(n));
+
+		for (int i = 0 ; i &lt; matrica.size() ; i++) {
+			for (int j = 0 ; j &lt; matrica.at(i).size() ; j++) {
+				std::cin &gt;&gt; matrica.at(i).at(j);
+
+			}
+		}
+
+
+		std::vector&lt;std::vector&lt;double&gt;&gt; b (NajvecaPlaninaMatrice(matrica));
+		try {
+			std::cout &lt;&lt; std::endl &lt;&lt; "Najveca planina unesene matrice je: " &lt;&lt; std::endl;
+			for (int i = 0 ; i &lt; b.size() ; i++) {
+				for (int j = 0 ; j &lt; b.at(i).size() ; j++) {
+<a name="2"></a><font color="#0000FF"><a href="match837-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+					std::cout &lt;&lt; std::setw(6) &lt;&lt; b.at(i).at(j);
+				}
+				std::cout &lt;&lt; std::endl;
+			}
+		} catch (std::domain_error izuzetak) {
+			std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+</font>		}
+	}
+
+
+	return 0;
+}</pre>
+</body>
+</html>

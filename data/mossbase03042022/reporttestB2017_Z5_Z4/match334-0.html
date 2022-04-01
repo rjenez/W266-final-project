@@ -1,0 +1,230 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z4/student7834.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z4/student7834.cpp<p></p><pre>
+/B2017/2018: Zadaća 5, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;initializer_list&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+ 
+const double PI=(4.*std::atan(1.));
+ 
+class FourierovRed
+{
+    int N;
+    double T;
+    double **A;
+    double **B;
+public:
+    FourierovRed(double t, std::initializer_list&lt;double&gt; a, std::initializer_list&lt;double&gt; b)
+    {
+        T=t;
+       
+        if(a.size()==0 &amp;&amp;  b.size()!=0)
+        {
+            N=b.size()+1;
+            A=new double*[N];
+            B=new double*[N];
+            *A=new double(0);
+            *B=new double(0);
+            auto it=b.begin();
+            for(int i=1;i&lt;N;i++)
+            {
+                *(A+i)=new double(0);
+                *(B+i)=new double(*it);
+                it++;
+            }
+        }
+        else if(b.size()==0 &amp;&amp; a.size()!=0)
+        {
+            N=a.size();
+            A=new double*[N];
+            B=new double*[N];
+            auto it=a.begin();
+            for(int i=0;i&lt;N;i++)
+            {
+                *(A+i)=new double(*it);
+                *(B+i)=new double(0);
+                it++;
+            }
+        }
+        else if(a.size()==0 &amp;&amp; b.size()==0) N=0;
+        else
+        {
+            N=a.size();
+            if(b.size()+1&gt;a.size()) N=b.size()+1;
+            A=new double*[N];
+            B=new double*[N];
+            auto it1=a.begin();
+            auto it2=b.begin();
+            for(int i=0;i&lt;N;i++)
+            {
+                if(it1!=a.end()) { *(A+i)=new double(*it1); it1++; }
+                else *(A+i)=new double(0);
+                if(it2!=b.end() &amp;&amp; i!=0) { *(B+i)=new double(*it2); it2++; }
+                else *(B+i)=new double(0);
+            }
+        }
+       
+    }
+<a name="2"></a><font color="#0000FF"><a href="match334-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+    FourierovRed(int n, double t, std::function&lt;double(int)&gt; f1, std::function&lt;double(int)&gt; f2)
+    {
+        if(n&lt;=0) throw std::domain_error("Stepen mora biti pozitivan");
+</font>        T=t;
+        N=n;
+        N++;
+        A=new double*[N];
+        B=new double*[N];
+        for(int i=0;i&lt;N;i++)
+        {
+            *(A+i)=new double(f1(i));
+            *(B+i)=new double(f2(i));
+        }
+    }
+<a name="0"></a><font color="#FF0000"><a href="match334-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+    FourierovRed(int n, double p, double q, std::function&lt;double(double)&gt; f, int M)
+    {
+        if(n&lt;=0) throw std::domain_error("Stepen mora biti pozitivan");
+        if(M&lt;=0) throw std::domain_error("Broj podintervala mora biti pozitivan");
+</font>        if(p&gt;q) throw std::range_error("Neispravan interval");
+        T=q-p;
+        N=n;
+        N++;
+        A=new double*[N];
+        B=new double*[N];
+        for(int k=0;k&lt;N;k++)
+        {
+            double rez1=(f(p)+f(q))/double(M);
+            double rez2=rez1;
+           
+            rez1*=std::cos((2*k*PI*p)/T);
+            rez2*=std::sin((2*k*PI*p)/T);
+           
+            double suma1(0),suma2(0);
+            for(int i=1;i&lt;M;i++)
+            {
+                suma1+=f(p+((i*T)/double(M)))*std::cos(2*k*PI*((p/T)+(double(i)/M)));
+                suma2+=f(p+((i*T)/double(M)))*std::sin(2*k*PI*((p/T)+(double(i)/M)));
+            }
+            suma1*=(2./M);
+            suma2*=(2./M);
+            rez1+=suma1;
+            rez2+=suma2;
+            *(A+k)=new double(rez1);
+            *(B+k)=new double(rez2);
+        }
+    }
+    ~FourierovRed()
+    {
+        for(int i=0;i&lt;N;i++) delete *(A+i),delete *(B+i);
+        delete[] A;
+        delete[] B;
+    }
+    double operator ()(double x) const
+    {
+        double rez(0);
+        for(int k=1;k&lt;N;k++)
+        {
+            rez+=*A[k]*std::cos((2*k*PI*x)/(T))+*B[k]*std::sin((2*k*PI*x)/(T));
+        }
+        rez+=(*A[0])/2.;
+        return rez;
+    }
+    std::pair&lt;double, double&gt; operator [](int k) const
+    {
+        if(k&lt;0 || k&gt;=N) throw std::range_error("Neispravan indeks");
+        if(k==0)
+        {
+            *B[0]=0;
+            return {*A[k],*B[k]};
+        }
+        return {*A[k],*B[k]};
+    }
+    std::pair&lt;double &amp;, double &amp;&gt; operator [](int k)
+    {
+        if(k&lt;0 || k&gt;=N) throw std::range_error("Neispravan indeks");
+        if(k==0)
+        {
+            *B[0]=0;
+            return {*A[k],*B[k]};
+        }
+        return {*A[k],*B[k]};
+    }
+   
+    FourierovRed(const FourierovRed &amp;red)
+    {
+        A=new double*[red.N];
+        B=new double*[red.N];
+        T=red.T;
+        N=red.N;
+        for(int i=0;i&lt;N;i++)
+        {
+            *(A+i)=new double((**(red.A+i)));
+<a name="1"></a><font color="#00FF00"><a href="match334-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+            *(B+i)=new double((**(red.B+i)));
+        }
+    }
+    FourierovRed(FourierovRed &amp;&amp;red)
+    {
+        T=red.T;
+        N=red.N;
+        A=red.A;
+        B=red.B;
+        red.A=nullptr;
+        red.B=nullptr;
+</font>        red.N=0;
+    }
+    FourierovRed &amp;operator =(const FourierovRed &amp;red)
+    {
+        if(this!=&amp;red)
+        {
+            this-&gt;~FourierovRed();
+            A=new double*[red.N];
+            B=new double*[red.N];
+            T=red.T;
+            N=red.N;
+            for(int i=0;i&lt;N;i++)
+            {
+                *(A+i)=new double((**(red.A+i)));
+                *(B+i)=new double((**(red.B+i)));
+            }
+        }
+        return *this;
+    }
+    FourierovRed &amp;operator =(FourierovRed &amp;&amp;red)
+    {
+        if(this!=&amp;red)
+        {
+<a name="3"></a><font color="#00FFFF"><a href="match334-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+            this-&gt;~FourierovRed();
+            T=red.T;
+            N=red.N;
+            A=red.A;
+            B=red.B;
+            red.A=nullptr;
+            red.B=nullptr;
+</font>            red.N=0;
+        }
+        return *this;
+    }
+};
+ 
+ 
+ 
+int main ()
+{
+ 
+    return 0;
+}</pre>
+</body>
+</html>

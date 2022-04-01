@@ -1,0 +1,214 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student1793.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student1793.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match167-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+#include &lt;queue&gt;
+
+using namespace std;
+
+enum class Boje {Pik, Tref, Herc, Karo};
+
+std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; KreirajSpil(){
+    std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; noviSpil;
+    
+    Boje bojeKarata[4]= {Boje::Pik, Boje::Tref, Boje::Herc, Boje::Karo};
+    
+    for (auto i : bojeKarata) {
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "2"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "3"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "4"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "5"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "6"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "7"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "8"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "9"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "10"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "J"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "Q"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "K"));
+        noviSpil.push_back(std::pair&lt;Boje, std::string&gt;(i, "A"));
+    }
+    
+    return noviSpil;
+    
+}
+
+bool validirajSpil(std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; &amp;spil){
+    std::string elementi[]={"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    
+    //Validacija za smece
+    for (auto i : spil) { //Pregledaj citav spil
+        bool tacanSimbol(false); //Pretpostavi da ima smece
+        for (auto j : elementi) { // Pogledaj moguce kombinacije
+            if (i.second == j){ // Ako je simbol ok
+                tacanSimbol = true; // tacanSImbol je true
+                break; // Izlazi
+            }
+        }
+        if (!tacanSimbol) // Ako nije nijedan od legalnih simbola
+            return false;
+    }
+    
+    auto standardniSpil(KreirajSpil());
+    int temp (-1);
+    for (auto i : spil) {
+        int novaVrijednost(0);
+        for (auto j : standardniSpil) {
+            
+            if (i == j &amp;&amp; novaVrijednost &lt; temp) // Nasli i ne valja
+                return false;
+            
+            else if (i == j &amp;&amp; novaVrijednost &gt; temp){ //NAsli smo je i ok je
+                temp = novaVrijednost;
+                break;
+            }
+                
+            novaVrijednost++;
+        }
+    }
+    
+    return true;
+}
+
+void IzbaciKarte (std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; &amp;spil, std::multimap&lt;Boje, std::string&gt; &amp;zaIzbaciti){
+    if (spil.size() &gt; 52 &amp;&amp; validirajSpil(spil))
+        throw std::logic_error("Neispravna lista!");
+    
+    for (auto kartaZaIzbaciti : zaIzbaciti){
+        bool nasliKartu(false);
+        
+        for (auto karta : spil) {
+            if (karta.first == kartaZaIzbaciti.first &amp;&amp; karta.second == kartaZaIzbaciti.second){
+                nasliKartu = true;
+                break;
+            }
+        }
+        
+        if (nasliKartu)
+            spil.remove(kartaZaIzbaciti);
+        kartaZaIzbaciti.second = "P";
+    }
+    
+    for (auto i = zaIzbaciti.begin(); i != zaIzbaciti.end(); i++) {
+        if (i-&gt;second == "P")
+            zaIzbaciti.erase(i);
+    }
+        
+}
+std::queue&lt;std::pair&lt;std::string, std::string&gt;&gt; IzbaciKarteRazbrajanjem(std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; &amp;spil, const short int &amp;mala, const int &amp;velika)
+{
+    if(mala &lt; 1 or mala &gt; 52 or velika &lt; 1)
+        throw std::logic_error("Neispravni elementi za izbacivanje!");
+    if(!validirajSpil(spil))
+        throw std::logic_error("Neispravna lista!");
+    std::queue&lt;std::pair&lt;std::string, std::string&gt;&gt; Red;
+    int korak = mala;
+    auto it = spil.begin();
+    for(int j = 0; j &lt; velika; j++)
+    {
+        if(spil.empty())
+            break;
+        while(korak &gt; 52)
+        {
+            korak -= 52;
+        }
+        while(korak &gt; spil.size())
+        {
+            korak -= spil.size();
+        }
+        for(int i = 0; i &lt; korak - 1; i++)
+        {
+            
+            if(it == spil.end())
+                it = spil.begin();
+            it++;
+        }
+        if(it == spil.end())
+            it == spil.begin();
+        string boja;
+        if(it -&gt; first == Boje::Pik)
+            boja = "Pik";
+        else if(it -&gt; first == Boje::Tref)
+            boja = "Tref";
+        else if(it -&gt; first == Boje::Herc)
+            boja = "Herc";
+        else if(it -&gt; first == Boje::Karo)
+            boja = "Karo";
+        if(boja.length() == 0)
+            cout &lt;&lt; "Nesto ne valja";
+        pair&lt;string, string&gt; TajPar = pair&lt;string, string&gt;(boja, it -&gt; second);
+        //pair&lt;Boje, string&gt; ZaVratiti = *it;
+        Red.push(TajPar);
+        it = spil.erase(it);
+        //spil.push_back(ZaVratiti);
+    }
+    return Red;
+}
+void VratiPrvihNKarata(list&lt;pair&lt;Boje, string&gt;&gt; &amp;spil, queue&lt;pair&lt;string, string&gt;&gt; &amp;Red, int n)
+{
+    if(n &gt; Red.size())
+        throw range_error("Nedovoljno karata u redu!");
+    if(n &lt; 1 or n &gt; 52)
+        throw domain_error("Broj n je besmislen!");
+    /*for(auto par : Red)
+    {
+        if(par.first != "Pik" and par.first != "Tref" and par.first != "Herc" and par.first != "Karo")
+            throw logic_error("Neispravne karte!");
+        if(par.second != "1" and par.second != "2" and par.second != "3" and par.second != "4" and par.second != "5" and par.second != "6" and par.second != "7" and par.second != "8" and par.second != "9" and par.second != "10" and par.second != "J" and par.second != "Q" and par.second != "K")
+            throw logic_error("Neispravne karte!");
+    }*/
+    if(!validirajSpil(spil))
+        throw logic_error("Neispravna lista!");
+}
+void IspisSpila(std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; &amp;spil)
+{
+    cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; spil.size() &lt;&lt; " karata, i to:";
+    cout &lt;&lt; "\nPik: ";
+    for(auto par : spil)
+        if(par.first == Boje::Pik)
+            cout &lt;&lt; par.second &lt;&lt; " ";
+    cout &lt;&lt; "\nTref: ";
+    for(auto par : spil)
+        if(par.first == Boje::Tref)
+            cout &lt;&lt; par.second &lt;&lt; " ";
+    cout &lt;&lt; "\nHerc: ";
+    for(auto par : spil)
+        if(par.first == Boje::Herc)
+            cout &lt;&lt; par.second &lt;&lt; " ";
+    cout &lt;&lt; "\nKaro: ";
+    for(auto par : spil)
+        if(par.first == Boje::Karo)
+            cout &lt;&lt; par.second &lt;&lt; " ";
+    cout &lt;&lt; "\n";
+    
+}
+int main ()
+{
+    std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; karte = KreirajSpil();
+    int korak, brKarata;
+    cout &lt;&lt; "Unesite korak razbrajanja: ";
+    cin &gt;&gt; korak;
+    cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    cin &gt;&gt; brKarata;
+    auto red = IzbaciKarteRazbrajanjem(karte, korak, brKarata);
+    IspisSpila(karte);
+    int zaVratiti;
+    cout &lt;&lt; "Unesite broj karata koje zelite vratiti u spil: ";
+    cin &gt;&gt; zaVratiti;
+</font>    
+	return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student9473.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student9473.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 3
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.
+*/
+#include &lt;iostream&gt;
+#include &lt;deque&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match36-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_80.gif"/></a>
+
+enum Smjer {Rastuci, Opadajuci};
+
+bool StepenBrojaDva (int n) {
+	if (n==1) return true;
+	int i(0), m;
+	for (;;) {
+		m=pow(2,i);
+		if (n==m) return true;
+		else if (m&gt;n) return false;
+		i++;
+	}
+}
+
+std::vector&lt;int&gt; ObrniNiz(std::vector&lt;int&gt; v)
+{
+	for (int i=0; i&lt;v.size()/2; i++) {
+		int pomocna(v.at(i));
+		v.at(i)=v.at(v.size()-1-i);
+		v.at(v.size()-1-i)=pomocna;
+	}
+	return v;
+}
+
+std::deque&lt;std::vector&lt;int&gt;&gt; MaksimalniPodnizoviStepenaDvojke (std::vector&lt;int&gt; v, Smjer n)
+{
+	std::deque&lt;std::vector&lt;int&gt;&gt; d;
+	if (n==Rastuci) {
+		for (int i=0; i&lt;v.size()-1; i++) {
+			std::vector&lt;int&gt; v1;
+			int j;
+			if (StepenBrojaDva(v.at(i))==true &amp;&amp; StepenBrojaDva(v.at(i+1))==true &amp;&amp; (v.at(i+1)&gt;=v.at(i))) {
+				v1.push_back(v.at(i));
+				for (j=i+1; j&lt;v.size(); j++) {
+					if ((j==v.size()) &amp;&amp; StepenBrojaDva(v.at(j-1))==true &amp;&amp; StepenBrojaDva(v.at(j))==true &amp;&amp; v.at(j)&gt;=v.at(j-1)) v1.push_back(v.at(j));
+					else if (StepenBrojaDva(v.at(j))==true &amp;&amp; v.at(j)&gt;=v.at(j-1)) v1.push_back(v.at(j));
+					else {
+						j--;
+						break;
+					}
+				}
+				i=j;
+				d.push_back(v1);
+			}
+		}
+		return d;
+	}
+	else if (n==Opadajuci) {
+		for (int i=0; i&lt;v.size()-1; i++) {
+			std::vector&lt;int&gt; v1;
+			int j;
+			if (StepenBrojaDva(v.at(i))==true &amp;&amp; StepenBrojaDva(v.at(i+1))==true &amp;&amp; (v.at(i+1)&lt;=v.at(i))) {
+				v1.push_back(v.at(i));
+				for (j=i+1; j&lt;v.size(); j++) {
+					if (StepenBrojaDva(v.at(j))==true &amp;&amp; StepenBrojaDva(v.at(j-1))==true &amp;&amp; v.at(j)&lt;=v.at(j-1)) v1.push_back(v.at(j));
+					else {
+						j--;
+						break;
+					}
+				}
+				i=j;
+				d.push_back(v1);
+			}
+		}
+		return d;
+	}
+	std::deque&lt;std::vector&lt;int&gt;&gt; nulti(0);
+	return nulti;
+}
+
+
+
+int main ()
+{
+	std::cout&lt;&lt;"Unesite broj elemenata vektora: ";
+	int n;
+	std::cin&gt;&gt;n;
+	std::cout&lt;&lt;"Unesite elemente vektora: ";
+	std::vector&lt;int&gt; v(n);
+	for (int i=0; i&lt;v.size(); i++) {
+		std::cin&gt;&gt;v.at(i);
+	}
+	std::cout&lt;&lt;"Unesite: 1 - za rastuce podnizove, 2 - za opadajuce podnizove: ";
+	int odluka;
+	std::cin&gt;&gt;odluka;
+	while (odluka!=1 &amp;&amp; odluka!=2) {
+		std::cout&lt;&lt;"Neispravan unos!";
+		std::cout&lt;&lt;std::endl&lt;&lt;"Unesite: 1 - za rastuce podnizove, 2 - za opadajuce podnizove: ";
+		std::cin&gt;&gt;odluka;
+	}
+	std::deque&lt;std::vector&lt;int&gt;&gt; d(n);
+	if (odluka==1) {
+		d=(MaksimalniPodnizoviStepenaDvojke(v,Rastuci));
+		std::cout&lt;&lt;"Maksimalni rastuci podnizovi: "&lt;&lt;std::endl;
+		for (int i=0; i&lt;d.size(); i++) {
+</font><a name="1"></a><font color="#00FF00"><a href="match36-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_9.gif"/></a>
+
+			for (int j=0; j&lt;d.at(i).size(); j++) {
+				std::cout&lt;&lt;d.at(i).at(j)&lt;&lt;" ";
+				if (j==d.at(i).size()-1) std::cout&lt;&lt;std::endl;
+			}
+		}
+	} else if (odluka==2) {
+		d=(MaksimalniPodnizoviStepenaDvojke(v,Opadajuci));
+		std::cout&lt;&lt;"Maksimalni opadajuci podnizovi: "&lt;&lt;std::endl;
+		for (int i=0; i&lt;d.size(); i++) {
+</font><a name="2"></a><font color="#0000FF"><a href="match36-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+			for (int j=0; j&lt;d.at(i).size(); j++) {
+				std::cout&lt;&lt;d.at(i).at(j)&lt;&lt;" ";
+				if (j==d.at(i).size()-1) std::cout&lt;&lt;std::endl;
+			}
+		}
+	}
+
+
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student3594.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student8638.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match74-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_37.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 4)
+//Autotestovi by Ivona Ivkovic (mail: iivkovic2@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+
+template &lt;typename NekiTip&gt;
+class GMatrica{
+  int broj_redova;
+  int broj_kolona;
+  NekiTip mat[4][4];
+  static bool Uporedi(const GMatrica&lt;NekiTip&gt; &amp;mat1, const GMatrica&lt;NekiTip&gt; &amp;mat2);
+  public:
+  
+  GMatrica();
+  GMatrica(int br_r, int br_k, NekiTip pocetna = NekiTip {} );
+  template &lt;typename Tip1&gt; 
+  GMatrica(const GMatrica&lt;Tip1&gt; &amp;mat2){
+  broj_redova = mat2.broj_redova;
+  broj_kolona = mat2.broj_kolona;
+  for(int i=0; i&lt;mat2.broj_redova; i++){
+    for(int j=0; j&lt;mat2.broj_kolona; j++){
+      mat[i][j] = mat2.mat[i][j];    
+    }
+  }
+  
+}
+  //template &lt;typename Tip1&gt; GMatrica(Tip1 niz);
+  GMatrica(std::vector&lt;std::vector&lt;NekiTip&gt;&gt; vek);
+  GMatrica(std::initializer_list&lt;std::initializer_list&lt;NekiTip&gt;&gt; lista);
+  int DajBrojRedova() const {return broj_redova;}
+  int DajBrojKolona() const {return broj_kolona;}
+  template &lt;typename T1, typename T2&gt; 
+  friend auto operator +(GMatrica&lt;T1&gt; mat1, GMatrica&lt;T2&gt; mat2)-&gt; GMatrica&lt;decltype(mat1.mat[0][0] + mat2.mat[0][0])&gt;;
+  template &lt;typename T1, typename T2&gt; 
+  friend auto operator -(GMatrica&lt;T1&gt; mat1, GMatrica&lt;T2&gt; mat2) -&gt; GMatrica&lt;decltype(mat1.mat[0][0] - mat2.mat[0][0])&gt;;
+  template &lt;typename T1, typename T2&gt; 
+  friend auto operator *(GMatrica&lt;T1&gt; mat1, GMatrica&lt;T2&gt; mat2) -&gt; GMatrica&lt;decltype(mat1.mat[0][0] * mat2.mat[0][0])&gt;;
+  template &lt;typename T2&gt;
+  friend GMatrica&lt;NekiTip&gt; operator*(GMatrica&lt;NekiTip&gt; mat1, T2 x){
+  for(int i=0; i&lt;mat1.broj_redova; i++){
+    for(int j=0; j&lt;mat1.broj_kolona; j++){
+      mat1.mat[i][j] *= x;
+    }
+  }
+  return mat1;
+  }
+  template &lt;typename Tip1&gt; 
+  friend GMatrica&lt;NekiTip&gt; operator*(Tip1 x, GMatrica&lt;NekiTip&gt; mat1){
+   return mat1*x;
+ }
+  template&lt;typename T1&gt;
+  GMatrica&lt;NekiTip&gt; &amp;operator +=(T1 x){
+  for(int i=0; i&lt;broj_redova; i++){
+    for(int j=0; j&lt;broj_kolona; j++){
+      this -&gt; mat[i][j] += x;
+    }
+  }
+  return *this;
+  }
+  template&lt;typename T1&gt;
+  GMatrica&lt;NekiTip&gt; &amp;operator -=(T1 x){
+  for(int i=0; i&lt;broj_redova; i++){
+    for(int j=0; j&lt;broj_kolona; j++){
+      this -&gt; mat[i][j] -= x;
+    }
+  }
+  return *this;
+  }
+  template&lt;typename T1&gt;
+  GMatrica&lt;NekiTip&gt; &amp;operator *=(T1 x){
+  for(int i=0; i&lt;broj_redova; i++){
+    for(int j=0; j&lt;broj_kolona; j++){
+      this -&gt; mat[i][j] *= x;
+    }
+  }
+  return *this;
+  }
+  template&lt;typename T1&gt;
+  GMatrica&lt;NekiTip&gt; &amp;operator +=(GMatrica&lt;T1&gt; mat){
+    *this = *this + mat;
+    return *this;
+  }
+   template&lt;typename T1&gt;
+  GMatrica&lt;NekiTip&gt; &amp;operator -=(GMatrica&lt;T1&gt; mat){
+    *this = *this - mat;
+    return *this;
+  }
+   template&lt;typename T1&gt;
+  GMatrica&lt;NekiTip&gt; &amp;operator *=(GMatrica&lt;T1&gt; mat){
+    *this = *this * mat;
+    return *this;
+  }
+  friend bool operator==(const GMatrica&lt;NekiTip&gt; &amp;mat1, const GMatrica&lt;NekiTip&gt; &amp;mat2){if(Uporedi(mat1, mat2)) return true; else return false; }
+  friend bool operator!=(const GMatrica&lt;NekiTip&gt; &amp;mat1, const GMatrica&lt;NekiTip&gt; &amp;mat2){if(Uporedi(mat1, mat2)) return false; else return true; }
+  NekiTip* operator[](int x);
+  NekiTip operator()(int x, int y);
+  template &lt;typename T&gt;
+  friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, const GMatrica&lt;T&gt; &amp;mat);
+</font>  template &lt;typename T&gt;
+<a name="1"></a><font color="#00FF00"><a href="match74-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_29.gif"/></a>
+
+  friend std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, GMatrica&lt;T&gt; &amp;x);
+};
+
+template &lt;typename NekiTip&gt;
+bool GMatrica&lt;NekiTip&gt;::Uporedi(const GMatrica&lt;NekiTip&gt; &amp;mat1, const GMatrica&lt;NekiTip&gt; &amp;mat2){
+  if(mat1.broj_redova != mat2.broj_redova || mat1.broj_kolona != mat2.broj_kolona) return false;
+  bool isti(true);
+  for(int i=0; i&lt;mat1.broj_redova; i++){
+    for(int j=0; j&lt;mat1.broj_kolona; j++){
+      if(mat1.mat[i][j] != mat2.mat[i][j]){
+        isti = false;
+        break;
+      }
+    }
+}
+return isti;
+}
+
+template &lt;typename NekiTip&gt;
+NekiTip* GMatrica&lt;NekiTip&gt;::operator[](int x){
+  NekiTip* pok = mat[x];
+  return pok;
+}
+
+template &lt;typename NekiTip&gt;
+NekiTip GMatrica&lt;NekiTip&gt;::operator()(int x, int y){
+  if(x &lt; 0 || y &lt; 0 || x &gt; broj_redova || y &gt; broj_kolona)throw std::range_error("Nedozvoljen indeks");
+  return mat[x-1][y-1];
+}
+
+template &lt;typename T&gt;
+std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, const GMatrica&lt;T&gt; &amp;mat){
+  
+  int sirina = std::cout.width();
+  if(sirina &lt;= 6) sirina = 6;
+  
+  for(int i=0; i&lt;mat.broj_redova; i++){
+    for(int j=0; j&lt;mat.broj_kolona; j++){
+      tok &lt;&lt;std::setw(sirina) &lt;&lt; mat.mat[i][j];
+    }
+    tok&lt;&lt; std::endl;
+  }
+  return tok;
+}
+
+template &lt;typename T&gt;
+std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, GMatrica&lt;T&gt; &amp;x){
+  //		[1,2;3,4]
+  tok &gt;&gt; std::ws;
+  char znak('b');
+  T element;
+  int i(0), j(0);
+  while(true){
+    
+    tok &gt;&gt; znak;
+    tok &gt;&gt; element;
+    x.mat[i][j] = element;
+    j++;
+    
+    if(tok.peek() == ';'){
+      j=0;
+      i++; 
+    }
+    if( tok.peek() == ']' || znak == ']'){
+      break;
+    }
+  }
+  x.broj_kolona = j;
+  x.broj_redova = i+1;
+  return tok;
+}
+
+template &lt;typename NekiTip&gt;
+GMatrica&lt;NekiTip&gt;::GMatrica() {
+  broj_kolona = 0;
+  broj_redova = 0;
+}
+
+template &lt;typename NekiTip&gt;
+GMatrica&lt;NekiTip&gt;::GMatrica(int br_r, int br_k, NekiTip pocetna ) {
+  broj_kolona = br_r;
+  broj_redova = br_k;
+  
+  for(int i(0); i &lt; br_r; i++){
+    for(int j(0); j &lt; br_k; j++){
+        mat[i][j] = pocetna;    
+    }
+  }
+  
+}
+
+template &lt;typename NekiTip&gt;
+GMatrica&lt;NekiTip&gt;::GMatrica(std::vector&lt;std::vector&lt;NekiTip&gt;&gt; vek){
+  
+ 
+  int temp = vek[0].size();
+  
+  if(vek.size() &lt; 0 || vek.size() &gt; 4) throw std::logic_error("Ilegalan format matrice");
+  for(int i=0; i&lt; vek.size(); i++)
+      if(vek[i].size() != temp) throw std::logic_error("Ilegalan format matrice");
+      
+  broj_redova = vek.size();
+  broj_kolona = vek[0].size();
+  
+  for(int i=0; i&lt;broj_redova; i++){
+    for(int j=0; j&lt;broj_kolona; j++){
+        mat[i][j] = vek[i][j];
+</font>    }
+  }
+  
+}
+
+template &lt;typename NekiTip&gt;
+<a name="2"></a><font color="#0000FF"><a href="match74-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_11.gif"/></a>
+
+GMatrica&lt;NekiTip&gt;::GMatrica(std::initializer_list&lt;std::initializer_list&lt;NekiTip&gt;&gt; lista){
+  if(lista.size() &lt; 0 || lista.size() &gt; 4) throw std::logic_error("Ilegalan format matrice");
+  
+  auto it1 = lista.begin();
+  broj_redova = lista.size();
+  broj_kolona = it1-&gt;size();
+  
+  int i(0), j(0);
+  for(auto it1 = lista.begin(); it1 != lista.end(); it1++){
+    for(auto it2 = it1 -&gt; begin(); it2 != it1 -&gt; end(); it2++){
+      mat[i][j] = *it2;
+      j++;
+    }
+    j=0; i++;
+  }
+  
+}
+
+
+template &lt;typename T1, typename T2&gt;
+auto operator +(GMatrica&lt;T1&gt; mat1, GMatrica&lt;T2&gt; mat2) -&gt; GMatrica&lt;decltype(mat1.mat[0][0] + mat2.mat[0][0])&gt;{
+  if(mat1.broj_redova != mat2.broj_redova || mat1.broj_kolona != mat2.broj_kolona) throw std::domain_error("Nedozvoljena operacija");
+  
+  auto mat3 = GMatrica&lt;decltype(mat1.mat[0][0] + mat2.mat[0][0])&gt;(mat1.broj_redova, mat1.broj_kolona);
+  
+  for(int i=0; i&lt;mat1.broj_redova; i++){
+    for(int j=0; j&lt;mat1.broj_kolona; j++){
+</font><a name="4"></a><font color="#FF00FF"><a href="match74-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_6.gif"/></a>
+
+      mat3.mat[i][j] = mat1.mat[i][j] + mat2.mat[i][j];
+    }
+  }
+  return mat3;
+} 
+
+template &lt;typename T1, typename T2&gt;
+auto operator -(GMatrica&lt;T1&gt; mat1, GMatrica&lt;T2&gt; mat2) -&gt; GMatrica&lt;decltype(mat1.mat[0][0] - mat2.mat[0][0])&gt;{
+  if(mat1.broj_redova != mat2.broj_redova || mat1.broj_kolona != mat2.broj_kolona) throw std::domain_error("Nedozvoljena operacija");
+  
+  auto mat3 = GMatrica&lt;decltype(mat1.mat[0][0] - mat2.mat[0][0])&gt;(mat1.broj_redova, mat1.broj_kolona);
+  
+  for(int i=0; i&lt;mat1.broj_redova; i++){
+    for(int j=0; j&lt;mat1.broj_kolona; j++){
+</font><a name="3"></a><font color="#00FFFF"><a href="match74-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_6.gif"/></a>
+
+      mat3.mat[i][j] = mat1.mat[i][j] - mat2.mat[i][j];
+    }
+  }
+  return mat3;
+}
+
+template &lt;typename T1, typename T2&gt; 
+auto operator *(GMatrica&lt;T1&gt; mat1, GMatrica&lt;T2&gt; mat2) -&gt; GMatrica&lt;decltype(mat1.mat[0][0] * mat2.mat[0][0])&gt;{
+  if(mat1.broj_kolona != mat2.broj_redova) throw std::domain_error("Nedozvoljena operacija");
+  
+  auto mat3 = GMatrica&lt;decltype(mat1.mat[0][0] * mat2.mat[0][0])&gt;(mat1.broj_redova, mat2.broj_kolona, 0);
+  
+  for(int i=0; i&lt;mat1.broj_kolona; i++){
+    for(int j=0; j&lt;mat2.broj_redova; j++){
+      for(int k=0; k&lt;mat2.broj_kolona; k++){
+</font><a name="5"></a><font color="#FF0000"><a href="match74-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+        mat3.mat[i][j] += mat1.mat[i][k] * mat2.mat[k][j]; 
+      }
+    }
+  }
+  return mat3;
+}
+
+
+int main (){
+</font>
+	return 0;
+}</pre>
+</body>
+</html>

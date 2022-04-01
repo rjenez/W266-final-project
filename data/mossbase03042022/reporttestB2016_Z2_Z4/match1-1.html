@@ -1,0 +1,262 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student3807.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student3732.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match1-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+static size_t alocirano(0);
+static int brojac_new(0);
+static int brojac_deleteniz(0);
+static size_t alokacije[20];
+static size_t RAM = 22;
+
+void *operator new[] (size_t vel)
+{
+    if (RAM &lt; alocirano+vel) throw std::bad_alloc();
+    alokacije[brojac_new]=vel;
+    brojac_new++;
+    alocirano+=vel;   
+    return std::malloc (vel);
+}
+
+void operator delete [] ( void* ptr) {
+  brojac_deleteniz++;
+  free(ptr);
+}
+
+int PotencijalniKrivci(char **&amp;mat, const std::vector&lt;std::string&gt; &amp;v) {
+  int n(v.size());
+  mat = new char*[n];
+  for(int i = 0; i &lt; n; i++) mat[i] = nullptr;
+  try {
+    for(int i = 0; i &lt; n; i++) {
+      mat[i] = new char[v[i].length() + 1];
+      std::strcpy(mat[i], v[i].c_str());
+    }
+  }
+  catch(...) {
+    for(int i = 0; i &lt; n; i++) delete[] mat[i];
+    delete[] mat;
+    throw;
+  }
+  return n;
+}
+
+int OdbaciOptuzbu(char **&amp;mat, int n, const std::string &amp;ime) {
+  int gdje_je(-1), brojac(0), j(0);
+  for(int i = 0; i &lt; n; i++)
+    if(mat[i] != nullptr)
+      if(std::strcmp(mat[i], ime.c_str()) == 0) {
+        gdje_je = i; break;
+      }
+  if(gdje_je == -1)
+    throw std::domain_error("Osoba sa imenom " + ime + " nije bila optuzena");
+  delete[] mat[gdje_je];
+  mat[gdje_je] = nullptr;
+  for(int i = 0; i &lt; n; i++)
+    if(mat[i] != nullptr) brojac++;
+  if(n - brojac &lt;= 10) return n;
+  char **novi;
+  try {
+    novi = new char*[brojac];
+  }
+  catch(...) {
+    return n;
+  }
+  for(int i = 0; i &lt; n; i++)
+    if(mat[i] != nullptr) novi[j++] = mat[i];
+  delete[] mat;
+  mat = novi;
+  return brojac;
+}
+
+int DodajOptuzbu(char **&amp;mat, int n, const std::string &amp;ime) {
+  char *prostor(new char[ime.length() + 1]);
+  std::strcpy(prostor, ime.c_str());
+  int gdje_je(-1);
+  for(int i = 0; i &lt; n; i++)
+    if(mat[i] == nullptr) {
+      gdje_je = i; break;
+    }
+  if(gdje_je != -1) {
+    mat[gdje_je] = prostor;
+    return n;
+  }
+  char **novi;
+  try {
+    novi = new char*[n + 1];
+  }
+  catch(...) {
+    delete[] prostor;
+    throw;
+  }
+  for(int i = 0; i &lt; n; i++) novi[i] = mat[i];
+  novi[n] = prostor;
+  delete[] mat;
+  mat = novi;
+  return n + 1;
+}
+ 
+void IzlistajOptuzbu(char **mat, int n) {
+  for(int i = 0; i &lt; n; i++)
+    if(mat[i] != nullptr) std::cout &lt;&lt; mat[i] &lt;&lt; std::endl;
+}
+
+
+
+	
+void dealociraj(char **mat, int n){
+  for(int i = 0; i &lt; n; i++) delete[] mat[i];
+    delete[] mat;
+}
+
+
+int main(){
+  //AT11 - vise od 10 brisanja, ali alokacija ne uspije
+    char** nizPotencijalnih;
+    if(sizeof(char*) == 8) RAM = 200;
+    else RAM = 150;
+    std::vector&lt;std::string&gt; imena = {"Selena", "Murga", "Abid", "Avdija", "Pisonja", "Zuga", "Alma", "Brut", "Gile", "Seki", "Svabo", "Sam", "Gosp.Brams", "Gigo"};
+    int n = PotencijalniKrivci(nizPotencijalnih, imena);
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Murga");
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Abid");
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Avdija");
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Pisonja");
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Zuga");
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Alma");
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Brut");
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Gile");
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Seki");
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Svabo");
+    
+
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Sam");
+    n = OdbaciOptuzbu(nizPotencijalnih, n, "Selena");
+    std::cout &lt;&lt; "Treba ostati isti broj elemenata: " &lt;&lt; n &lt;&lt; std::endl;
+    
+    
+   
+    std::cout &lt;&lt; "New pozvan " &lt;&lt; brojac_new &lt;&lt; " puta,  delete [] pozvan " &lt;&lt; brojac_deleteniz &lt;&lt; " puta, a alocirano ukupno " &lt;&lt; alocirano &lt;&lt; " bajta i to redom: ";
+    for (int i=0; i&lt;brojac_new;i++) std::cout &lt;&lt; alokacije[i] &lt;&lt; " ";
+    dealociraj(nizPotencijalnih, n);
+}
+
+
+
+//zasto ovo ne radi? 
+int __main(){
+//AT10 - da li je brisanje ispravno u OdbaciOptuzbu nakon 10 obrisanih
+  char **nizPotencijalnih;
+    std::vector&lt;std::string&gt; imena = {"Fudo", "Pero", "Meho", "Fata", "Bajro", "Luca", "Jovo", "Amina", "Elma", "Selma", "Admira", "Zora", "Ivanka"};
+    int n = PotencijalniKrivci( nizPotencijalnih, imena);
+    int m;
+    m = OdbaciOptuzbu(nizPotencijalnih, n, "Fudo");
+    if(m != n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+    
+    m = OdbaciOptuzbu(nizPotencijalnih, m, "Pero");
+    if(m != n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+    
+    m = OdbaciOptuzbu(nizPotencijalnih, m, "Meho");
+    if(m != n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+    
+    m = OdbaciOptuzbu(nizPotencijalnih, m, "Fata");
+    if(m != n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+    
+    m = OdbaciOptuzbu(nizPotencijalnih, m, "Bajro");
+    if(m != n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+    
+    m = OdbaciOptuzbu(nizPotencijalnih, m, "Luca");
+    if(m != n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+    
+    m = OdbaciOptuzbu(nizPotencijalnih, m, "Jovo");
+    if(m != n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+    
+    m = OdbaciOptuzbu(nizPotencijalnih, m, "Amina");
+    if(m != n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+    
+    m = OdbaciOptuzbu(nizPotencijalnih, m, "Elma");
+    if(m != n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+    
+    m = OdbaciOptuzbu(nizPotencijalnih, m, "Selma");
+    if(m != n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+    
+    m = OdbaciOptuzbu(nizPotencijalnih, m, "Admira");
+    if(m == n) std::cout &lt;&lt; "NOK" &lt;&lt; std::endl;
+ 
+    std::cout &lt;&lt; "Kraj" &lt;&lt; std::endl;
+  
+    std::cout &lt;&lt; "New pozvan " &lt;&lt; brojac_new &lt;&lt; " puta,  delete [] pozvan " &lt;&lt; brojac_deleteniz &lt;&lt; " puta, a alocirano ukupno " &lt;&lt; alocirano &lt;&lt; " bajta i to redom: ";
+    for (int i=0; i&lt;brojac_new;i++) std::cout &lt;&lt; alokacije[i] &lt;&lt; " ";
+    dealociraj(nizPotencijalnih, n);
+
+}
+
+
+int _main() {
+  std::cout &lt;&lt; "Koliko potencijalnih krivaca zelite unijeti? " &lt;&lt; std::endl;
+  int n;
+  std::cin &gt;&gt; n;
+  std::cout &lt;&lt; "Unesite potencijalne krivce: "&lt;&lt;std::endl;
+  std::vector&lt;std::string&gt; imena;
+  for(int i = 0; i &lt; n; i++) 
+  {
+    std::string s;
+    std::cin &gt;&gt; s;
+    imena.push_back(s);
+  }
+  char **pot;
+  int m = PotencijalniKrivci(pot, imena);
+  std::cout &lt;&lt; "Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog";
+  std::cout &lt;&lt; " 3 za izlistavanje optuzenih, 0 za kraj: " &lt;&lt; std::endl;
+  int opcija;
+  std::cin &gt;&gt; opcija;
+  while (opcija != 0)
+  {
+    switch(opcija)
+    {
+      case 1:
+      {
+        std::cout &lt;&lt; "Unesite ime novog optuzenog: " &lt;&lt; std::endl;
+        std::string novi;
+        std::cin &gt;&gt; novi;
+        m = DodajOptuzbu(pot, m, novi);
+        break;
+      }
+      case 2:
+      {
+        std::cout &lt;&lt; "Unesite ime koje zelite izbaciti: " &lt;&lt; std::endl;
+        std::string izbaci;
+        std::cin &gt;&gt; izbaci;
+        m = OdbaciOptuzbu(pot, m, izbaci);
+        break;
+      }
+      case 3:
+      {
+        IzlistajOptuzbu(pot, m);
+        break;
+      }
+      default:
+        std::cout &lt;&lt; "Ne postoji ta opcija!" &lt;&lt; std::endl;
+    }
+  std::cout &lt;&lt; "Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: " &lt;&lt; std::endl;
+  std::cin &gt;&gt; opcija;
+</font>  
+  }
+}
+  
+
+      
+  
+ 
+</pre>
+</body>
+</html>

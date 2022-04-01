@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student3108.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student3108.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;functional&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+
+bool DaLiJeSortiran (const std::vector&lt;std::pair&lt;double, double&gt;&gt; &amp;v) {
+    for (int i = 0; i &lt; v.size()-1; i++) {
+        for (int j = 1; j &lt; v.size(); j++) {
+            if (v[i].first &gt; v[j].first) return false;
+        }
+    }
+    return true;
+}
+
+void Sortiraj (std::vector&lt;std::pair&lt;double, double&gt;&gt; &amp;v) {
+    for (int i = 0; i &lt; v.size(); i++) {
+        int min = i;
+        for (int j = i+1; j &lt; v.size(); j++) {
+            if (v[i].first &gt; v[min].first) min = j;
+        }
+        double temp = v[min].first;
+        v[min].first = v[i].first;
+        v[i].first = temp;
+    }
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija (std::vector&lt;std::pair&lt;double, double&gt;&gt; v) {
+    if (!DaLiJeSortiran (v)) Sortiraj (v);
+    for (int i = 0; i &lt; v.size(); i++) {
+        for (int j = i+1; j &lt; v.size(); j++) {
+            if (v[i].first == v[j].first) {
+                throw std::domain_error ("Neispravni cvorovi");
+            }
+        }
+    }
+    return [v] (double x) {
+<a name="0"></a><font color="#FF0000"><a href="match661-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+        if (x &lt; v[0].first || x &gt; v[v.size()-1].first) throw std::range_error ("Argument izvan opsega");
+        if (x == v[v.size()-1].first) return v[v.size()-1].second;
+        std::pair&lt;double, double&gt; par {x, 0};
+</font>        auto it = std::upper_bound (v.begin(), v.end(), par);
+        if (it != v.end()) return it-&gt;second + (((it-1)-&gt;second - it-&gt;second)*(x - it-&gt;first))/((it-1)-&gt;first - it-&gt;first);
+    };
+ }
+ 
+std::function&lt;double(double)&gt; LinearnaInterpolacija (std::function&lt;double(double)&gt; f, double xmin, double xmax, double deltax) {
+<a name="2"></a><font color="#0000FF"><a href="match661-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+     if (xmin &gt; xmax || deltax &lt;= 0) throw std::domain_error ("Nekorektni parametri");
+     std::vector&lt;std::pair&lt;double, double&gt;&gt; v;
+     for (double x = xmin; x &lt;= xmax; x += deltax) {
+</font>        v.push_back (std::make_pair(x, f(x)));
+     }
+     auto novafunkcija = LinearnaInterpolacija(v);
+<a name="1"></a><font color="#00FF00"><a href="match661-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+     return novafunkcija;
+ }
+ 
+double f (double x) {
+    return x*x + std::sin(x);
+}
+
+int main ()
+{
+    std::cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    int opcija;
+    std::cin &gt;&gt; opcija;
+    if (opcija == 1) {
+        std::cout &lt;&lt; "Unesite broj cvorova: ";
+</font>        int n;
+        std::cin &gt;&gt; n;
+        std::vector&lt;std::pair&lt;double, double&gt;&gt; v(n);
+        std::cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+        for (int i = 0; i &lt; n; i++) {
+            std::cin &gt;&gt; v[i].first &gt;&gt; v[i].second;
+        }
+        do {
+<a name="3"></a><font color="#00FFFF"><a href="match661-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+            std::function&lt;double(double)&gt; rezultat;
+            try {
+                rezultat = LinearnaInterpolacija(v);
+            } catch (std::range_error e) {
+                std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+</font>                return 0;
+            } catch (std::domain_error e) {
+                std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                return 0;
+            }
+            std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            double x;
+            std::cin &gt;&gt; x;
+            if (!std::cin.fail()) {
+               try {
+                    std::cout &lt;&lt; "f(" &lt;&lt; x &lt;&lt; ") = " &lt;&lt; rezultat(x) &lt;&lt; std::endl;
+                } catch (std::range_error e) {
+                     std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                 } catch (std::domain_error e) {
+                  std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+              }
+            }
+        } while (!std::cin.fail()); 
+    } else if (opcija == 2) {
+        std::cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+        double poc, kraj, korak;
+        std::cin &gt;&gt; poc &gt;&gt; kraj &gt;&gt; korak;
+        do {
+            std::function&lt;double(double)&gt; rezultat;
+            try {
+                rezultat = LinearnaInterpolacija (f, poc, kraj, korak);
+            } catch (std::range_error e) {
+                std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                return 0;
+            } catch (std::domain_error e) {
+                std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                return 0;
+            }
+            std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            double x;
+            std::cin &gt;&gt; x;
+            if (!std::cin.fail()) {
+                try {
+                    std::cout &lt;&lt; "f(" &lt;&lt; x &lt;&lt; ") = " &lt;&lt; f(x) &lt;&lt; " fapprox(" &lt;&lt; x &lt;&lt; ") = " &lt;&lt; rezultat (x) &lt;&lt; std::endl;
+                } catch (std::range_error e) {
+                    std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                } 
+                catch (std::domain_error e) {
+                    std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+                }
+            }
+        } while (!std::cin.fail());
+    }
+	return 0;
+}
+</pre>
+</body>
+</html>

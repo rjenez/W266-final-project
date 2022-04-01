@@ -1,0 +1,102 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student2210.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student2210.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match227-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_98.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+using namespace std;
+map&lt;string,set&lt;int&gt;&gt;KreirajIndeksPojmova(string s){
+    map&lt;string,set&lt;int&gt;&gt;m;
+    set&lt;int&gt;skup;
+    string rijec;
+    int pocetni_index=0;
+    for(int i=0;i&lt;s.size();i++){
+        if(s[i]!=' '){
+        
+            while(s[i]!=' ' &amp;&amp; i&lt;s.size()) i++;
+                pocetni_index=i;
+            rijec=s.substr(pocetni_index,i-pocetni_index);
+            cout&lt;&lt;rijec;
+            skup.insert(pocetni_index);
+           int temp=i;
+           while(temp&lt;s.size()){
+               if(s[temp]==' ') temp++;
+               int k=0;
+               if(s[temp]==rijec[k]){
+                   int a=temp;
+                   while(s[temp]==rijec[k]){
+                       temp++;
+                       k++;
+                   }
+                   if(s[temp]==' ' || temp==s.size()) skup.insert(a);
+               }
+               temp++;
+           }
+           auto it=m.find(rijec);
+           if(it!=m.end())
+           m[rijec]=skup;
+        }
+    }
+    return m;
+}
+
+void IspisiIndeksPojmova(map&lt;string,set&lt;int&gt;&gt; IndeksPojmova)
+{
+    for(auto it(IndeksPojmova.begin()); it != IndeksPojmova.end(); it++)
+    {
+        cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+        int br(it-&gt;second.size());
+        for(auto x: it-&gt;second)
+        {
+            if(br != 1)
+                cout &lt;&lt; x &lt;&lt;",";
+            else
+                cout &lt;&lt; x;
+            br--;
+        }
+        cout &lt;&lt; endl;
+    }
+}
+
+set&lt;int&gt; PretraziIndeksPojmova(string s,map&lt;string, set&lt;int&gt;&gt; IndeksPojmova)
+{
+    auto it(IndeksPojmova.find(s));
+    if(it == IndeksPojmova.end()) throw logic_error("Pojam nije nadjen!");
+    else    return it-&gt;second;
+}
+
+int main ()
+{
+    string s, rijec;
+    cout &lt;&lt;"Unesite tekst: ";
+    getline(cin, s);
+    
+    auto mapa = (KreirajIndeksPojmova(s));
+    
+    IspisiIndeksPojmova(mapa);
+    
+    for(;;) {
+        set&lt;int&gt; skup_indeksa;
+        cout &lt;&lt; "\nUnesite rijec: ";
+        getline(cin, rijec);
+        if(rijec == ".") break;
+        try {
+       skup_indeksa = (PretraziIndeksPojmova(rijec, mapa));
+        } catch(logic_error izuzetak) {
+        cout&lt;&lt; izuzetak.what();
+    }
+        for(auto x: skup_indeksa) cout &lt;&lt; x &lt;&lt; " ";
+</font>    }
+   
+	return 0;
+}</pre>
+</body>
+</html>

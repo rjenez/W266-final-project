@@ -1,0 +1,654 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student3424.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student1269.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match0-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+PRVII
+
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+
+using namespace std;
+
+class Sat{
+	int sati, minute, sekunde;
+	
+public: 
+	Sat (int sati1, int minute1, int sekunde1)
+	{
+		while(sekunde1&gt;=60) 
+		{
+			sekunde1-=60;
+			minute1++;
+		}
+		while(sekunde1&lt;0)
+		{
+			sekunde1+=60;
+			minute1--;
+		}
+		while(minute1&gt;=60)
+		{
+			minute1-=60;
+			sati1++;
+		}
+		while(minute1&lt;0)
+		{
+			minute1+=60;
+			sati1--;
+		}
+		
+		while(sati1&gt;=24)
+			sati1-=24;
+		while(sati1&lt;0)
+			sati1+=24;
+			
+		sati=sati1;
+		minute=minute1;
+		sekunde=sekunde1;
+	}
+	
+	Sat() {
+		sati=0;
+		minute=0;
+		sekunde=0;
+	}
+	
+	void PostaviNormalizirano(int sati, int minute, int sekunde) {
+		while(sekunde&gt;=60) 
+		{
+			sekunde-=60;
+			minute++;
+		}
+		while(sekunde&lt;0)
+		{
+			sekunde+=60;
+			minute--;
+		}
+		while(minute&gt;=60)
+		{
+			minute-=60;
+			sati++;
+		}
+		while(minute&lt;0)
+		{
+			minute+=60;
+			sati--;
+		}
+		
+		while(sati&gt;=24)
+			sati-=24;
+		while(sati&lt;0)
+			sati+=24;
+			
+		Sat::sati=sati;
+		Sat::minute=minute;
+		Sat::sekunde=sekunde;
+	} 
+	
+	friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, const Sat &amp;sat)
+	{
+		if(sat.sati&lt;10 &amp;&amp; sat.minute&lt;10  &amp;&amp; sat.sekunde&lt;10) return tok&lt;&lt;"0"&lt;&lt;sat.sati&lt;&lt;":0"&lt;&lt;sat.minute&lt;&lt;":0"&lt;&lt;sat.sekunde;
+		if(sat.sati&gt;=10 &amp;&amp; sat.minute&lt;10  &amp;&amp; sat.sekunde&gt;10) return tok&lt;&lt;sat.sati&lt;&lt;":0"&lt;&lt;sat.minute&lt;&lt;":"&lt;&lt;sat.sekunde;
+		else if(sat.sati&lt;10 &amp;&amp; sat.minute&gt;10  &amp;&amp; sat.sekunde&gt;10) return tok&lt;&lt;"0"&lt;&lt;sat.sati&lt;&lt;":"&lt;&lt;sat.minute&lt;&lt;":"&lt;&lt;sat.sekunde;
+		else if(sat.sati&lt;10 &amp;&amp; sat.minute&lt;10  &amp;&amp; sat.sekunde&gt;10) return tok&lt;&lt;"0"&lt;&lt;sat.sati&lt;&lt;":0"&lt;&lt;sat.minute&lt;&lt;":"&lt;&lt;sat.sekunde;
+		else if(sat.sati&lt;10 &amp;&amp; sat.minute&gt;10  &amp;&amp; sat.sekunde&lt;10) return tok&lt;&lt;"0"&lt;&lt;sat.sati&lt;&lt;":"&lt;&lt;sat.minute&lt;&lt;":0"&lt;&lt;sat.sekunde;
+		else if(sat.sati&gt;10 &amp;&amp; sat.minute&lt;10  &amp;&amp; sat.sekunde&lt;10) return tok&lt;&lt;sat.sati&lt;&lt;":0"&lt;&lt;sat.minute&lt;&lt;":0"&lt;&lt;sat.sekunde;
+		else if(sat.sati&gt;10 &amp;&amp; sat.minute&lt;10  &amp;&amp; sat.sekunde&gt;10) return tok&lt;&lt;sat.sati&lt;&lt;":0"&lt;&lt;sat.minute&lt;&lt;":"&lt;&lt;sat.sekunde;
+		else if(sat.sati&gt;10 &amp;&amp; sat.minute&gt;10  &amp;&amp; sat.sekunde&lt;10) return tok&lt;&lt;sat.sati&lt;&lt;":"&lt;&lt;sat.minute&lt;&lt;":0"&lt;&lt;sat.sekunde;
+		else  return tok&lt;&lt;sat.sati&lt;&lt;":"&lt;&lt;sat.minute&lt;&lt;":"&lt;&lt;sat.sekunde;
+	}
+	
+	
+	static bool DaLiJeIspravno(int sati, int minute, int sekunde);
+	void Postavi(int sati, int minute, int sekunde);
+
+	int DajSate() const { return sati; }
+	int DajMinute() const { return minute; }
+	int DajSekunde() const { return sekunde; }
+
+	//postfiksni
+	friend Sat operator ++(Sat &amp;sat, int) { 
+		Sat novi(sat);
+		sat.sekunde++;
+		sat.PostaviNormalizirano(sat.sati, sat.minute, sat.sekunde);
+		return novi;
+	}
+	//prefiksni
+	friend Sat &amp;operator ++(Sat &amp;sat) { 
+		sat.sekunde++;
+		sat.PostaviNormalizirano(sat.sati, sat.minute, sat.sekunde);
+		return sat;
+	}
+	//postfiksni
+	friend Sat operator --(Sat &amp;sat, int) { 
+		Sat novi(sat);
+		sat.sekunde--;
+		sat.PostaviNormalizirano(sat.sati, sat.minute, sat.sekunde);
+		return novi;
+	}
+	//prefiksni
+	friend Sat &amp;operator --(Sat &amp;sat) { 
+		sat.sekunde--;
+		sat.PostaviNormalizirano(sat.sati, sat.minute, sat.sekunde);
+		return sat;
+	}
+	
+	friend Sat operator +=(Sat &amp;sat, int pomak) {
+		sat.sekunde+=pomak; 
+		sat.PostaviNormalizirano(sat.sati, sat.minute, sat.sekunde);
+		return sat;
+	}
+	
+
+	
+	friend Sat operator -=(Sat &amp;sat, int pomak) {
+		sat.sekunde-=pomak;
+		sat.PostaviNormalizirano(sat.sati, sat.minute, sat.sekunde);
+		return sat;
+	}
+	
+
+	
+	
+	friend int operator -(const Sat &amp;sat1, const Sat &amp;sat2) {
+	return (sat1.sati*3600+sat1.minute*60+sat1.sekunde)-(sat2.sati*3600+sat2.minute*60+sat2.sekunde);
+	}
+	
+	
+	friend Sat operator +(Sat &amp;sat1, int n) {
+		Sat novi;
+		novi.sekunde=sat1.sekunde+n;
+		novi.minute=sat1.minute;
+		novi.sati=sat1.sati;
+		novi.PostaviNormalizirano(novi.sati, novi.minute, novi.sekunde);
+		return novi;
+	}
+	
+	friend Sat operator -(Sat &amp;sat1, int n) {
+		Sat novi;
+		novi.sekunde=sat1.sekunde-n;
+		novi.minute=sat1.minute;
+		novi.sati=sat1.sati;
+		novi.PostaviNormalizirano(novi.sati, novi.minute, novi.sekunde);
+		return novi;
+	}
+	
+};
+
+bool Sat::DaLiJeIspravno(int sati, int minute, int sekunde)
+{
+	bool tacno(1);
+	if(sati&lt;0 || sati&gt;=24 || minute&lt;0 || minute&gt;=60 || sekunde&gt;=60 || sekunde&lt;0)
+		tacno=0;
+	return tacno;
+}
+
+void Sat::Postavi(int sati, int minute, int sekunde)
+{
+	Sat::sati=sati;
+	Sat::minute=minute;
+	Sat::sekunde=sekunde;
+	
+	if(DaLiJeIspravno(sati, minute, sekunde)==false)
+		throw std::domain_error("Neispravno vrijeme");
+}
+
+
+int main ()
+{
+	return 0;
+}
+
+
+
+
+DRUGIII
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+
+using std:: set;
+using std:: cout;
+using std:: cin;
+using std:: endl;
+using std:: string;
+
+template &lt;typename nekitip&gt;
+set&lt;nekitip&gt; operator +(set&lt;nekitip&gt;&amp;set1, set&lt;nekitip&gt;&amp;set2)
+{
+	set&lt;nekitip&gt;novi;
+	novi=set1;
+	novi.insert(set2.begin(), set2.end());
+	return novi;
+}
+
+template &lt;typename nekitip&gt;
+std::ostream operator &lt;&lt;(std::ostream &amp;tok, set&lt;nekitip&gt; &amp;nekiset)
+{
+	
+	return tok&lt;&lt;
+}
+
+
+template &lt;typename nekitip&gt;
+set&lt;nekitip&gt; operator *(set&lt;nekitip&gt; &amp;set1, set&lt;nekitip&gt; &amp;set2)
+{
+	set&lt;nekitip&gt;novi;
+	for(nekitip x : set1)
+	{
+		for(nekitip y : set2)
+		{
+			if(x==y)
+			{
+				novi.insert(x);
+			}
+		}
+	}
+	return novi;
+}
+
+template &lt;typename nekitip&gt;
+std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok ,const set&lt;nekitip&gt; &amp;set)
+{
+	tok&lt;&lt;
+	return tok;
+}
+
+int main()
+{
+	cout&lt;&lt;"Koliko elemenata ima prvi skup: ";
+	int br_el1;
+	cin&gt;&gt;br_el1;
+	cout&lt;&lt;"Unesite elemente prvog skupa: ";
+	set&lt;string&gt; set1;
+	string clan1;
+	for(int i=0; i&lt;br_el1; i++)
+	{
+		std:: getline(cin, clan1);
+		set1.insert(clan1);
+		
+	}
+	
+	cout&lt;&lt;"Koliko elemenata ima drugi skup: ";
+	int br_el2;
+	cin&gt;&gt;br_el2;
+	cout&lt;&lt;"Unesite elemente drugog skupa: ";
+	set&lt;string&gt; set2;
+	string clan2;
+	for(int i=0; i&lt;br_el2; i++)
+	{
+		std:: getline(cin, clan2);
+		set1.insert(clan2);
+	}
+	
+	
+	return 0;
+}
+
+
+
+SESTIIII
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+#include &lt;new&gt;
+
+using std:: cin;
+using std:: cout;
+
+
+template &lt;typename TipEl&gt;
+class Matrica
+{
+	int br_redova, br_kolona;
+	TipEl **elementi;
+	char ime_matrice;
+	static TipEl **AlocirajMemoriju(int br_redova, int br_kolona);
+	static void DealocirajMemoriju(TipEl **elementi, int br_redova);
+	void KopirajElemente(TipEl **elementi);
+	
+public:
+	Matrica(int br_redova, int br_kolona, char ime = 0);
+	Matrica(const Matrica &amp;m);
+	Matrica(Matrica &amp;&amp;m);
+	
+	~Matrica() {
+		DealocirajMemoriju(elementi, br_redova);
+	}
+	
+	Matrica &amp;operator =(const Matrica &amp;m);
+	Matrica &amp;operator =(Matrica &amp;&amp;m);
+
+	//UNOS 
+	friend std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, Matrica &amp;m )
+	{
+		for(int i = 0; i &lt; m.br_redova; i++)
+			for(int j = 0; j &lt; m.br_kolona; j++) {
+				cout&lt;&lt;m.ime_matrice;
+				cout&lt;&lt;"("&lt;&lt;i+1&lt;&lt;","&lt;&lt;j+1&lt;&lt;") = ";
+				tok&gt;&gt;m.elementi[i][j];
+			}
+			return tok;
+	}
+
+	//ispis
+	friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, Matrica &amp;m )
+	{
+		int sirina=tok.width();
+		for(int i = 0; i &lt; m.br_redova; i++)
+		{
+			for(int j = 0; j &lt; m.br_kolona; j++)
+			{
+				tok&lt;&lt;std::setw(sirina)&lt;&lt;m.elementi[i][j];
+				
+			}
+			tok&lt;&lt;std::endl;
+		}	
+			return tok;
+	}
+	
+
+    friend Matrica operator +(const Matrica &amp;m1, const Matrica &amp;m2)
+	{
+		if(m1.br_redova != m2.br_redova || m1.br_kolona != m2.br_kolona)
+			throw std::domain_error("Matrice nemaju jednake dimenzije!");
+		Matrica&lt;TipEl&gt; m3(m1.br_redova, m1.br_kolona);
+		for(int i = 0; i &lt; m1.br_redova; i++)
+			for(int j = 0; j &lt; m1.br_kolona; j++)
+				m3.elementi[i][j] = m1.elementi[i][j] + m2.elementi[i][j];
+		return m3;
+	}
+	
+	
+	
+	friend Matrica operator -(const Matrica&amp;m1, const Matrica&lt;TipEl&gt; &amp;m2)
+	{
+		if(m1.br_redova != m2.br_redova || m1.br_kolona != m2.br_kolona)
+			throw std::domain_error("Matrice nemaju jednake dimenzije!");
+		Matrica&lt;TipEl&gt; m3(m1.br_redova, m1.br_kolona);
+		for(int i = 0; i &lt; m1.br_redova; i++)
+			for(int j = 0; j &lt; m1.br_kolona; j++)
+				m3.elementi[i][j] = m1.elementi[i][j] - m2.elementi[i][j];
+		return m3;
+	}
+	
+	friend Matrica operator +=(Matrica &amp;m1, const Matrica &amp;m2)
+	{
+		if(m1.br_redova != m2.br_redova || m1.br_kolona != m2.br_kolona)
+			throw std::domain_error("Matrice nemaju jednake dimenzije!");
+		for(int i = 0; i &lt; m1.br_redova; i++)
+			for(int j = 0; j &lt; m1.br_kolona; j++)
+				m1.elementi[i][j] += m2.elementi[i][j];
+		return m1;
+	}
+	
+	friend Matrica operator -=(Matrica &amp;m1, const Matrica &amp;m2)
+	{
+		if(m1.br_redova != m2.br_redova || m1.br_kolona != m2.br_kolona)
+			throw std::domain_error("Matrice nemaju jednake dimenzije!");
+		for(int i = 0; i &lt; m1.br_redova; i++)
+			for(int j = 0; j &lt; m1.br_kolona; j++)
+				m1.elementi[i][j] -= m2.elementi[i][j];
+		return m1;
+	}
+	
+	friend Matrica operator *=(Matrica &amp;m1, const Matrica &amp;m2)
+	{
+		if(m1.br_kolona != m2.br_redova)
+			throw std::domain_error("Matrice nisu saglasne za mnozenje");
+		Matrica m3(m1.br_redova, m2.br_kolona);
+		for(int i=0; i&lt;m1.br_redova; i++)
+	    {
+	        for(int j=0; j&lt;m1.br_kolona;j++)
+	        {
+	            TipEl tmp = TipEl();
+	            for(int k=0;k&lt;m1.br_kolona;k++)
+	                tmp += m1.elementi[i][k] * m2.elementi[k][j];
+	            m3.elementi[i][j] = tmp;
+	        }
+	    }
+	    m1 = m3;
+		return m1;
+	
+	}
+	friend Matrica operator *= (const Matrica &amp;m1, double n)
+	{
+		for(int i = 0; i &lt; m1.br_redova; i++)
+			for(int j = 0; j &lt; m1.br_kolona; j++)
+				m1.elementi[i][j] *= n;
+		return m1;
+	}
+	
+	inline friend Matrica operator *= ( double n, const Matrica &amp;m1)
+	{
+		return m1*=n;
+	}
+	friend Matrica operator * (const Matrica &amp;m1, double n)
+	{
+		for(int i = 0; i &lt; m1.br_redova; i++)
+			for(int j = 0; j &lt; m1.br_kolona; j++)
+				m1.elementi[i][j] = m1.elementi[i][j] *n;
+		return m1;
+	}
+	inline friend Matrica operator * ( double n, const Matrica &amp;m1)
+	{
+		return m1*n;
+	}
+	friend Matrica operator *(const Matrica &amp;m1, const Matrica &amp;m2)
+	{
+		if(m1.br_kolona!=m2.br_redova)
+		throw std::domain_error("Matrice nisu saglasne za mnozenje");
+		Matrica m3(m1.br_redova, m2.br_kolona);
+		for(int i=0; i&lt;m3.br_redova; i++)
+	    {
+	        for(int j=0; j&lt;m3.br_kolona;j++)
+	        {
+	            TipEl tmp = TipEl();
+	            for(int k=0;k&lt;m1.br_kolona;k++)
+	                tmp += m1.elementi[i][k] * m2.elementi[k][j];
+	            m3.elementi[i][j] = tmp;
+	        }
+	    }
+		return m3;
+	}
+	
+	TipEl &amp;operator () (int prvi, int drugi)
+	{
+		try{
+			TestIndeksa(prvi-1);
+			TestIndeksa(drugi-1);
+		}
+		catch(std::range_error izuzetak)
+		{	throw izuzetak;}
+		return elementi[prvi-1][drugi-1];
+	}
+	
+	TipEl operator () (int prvi, int drugi) const
+	{
+		try{
+			TestIndeksa(prvi-1);
+			TestIndeksa(drugi-1);
+		}
+		catch(std::range_error izuzetak)
+			{throw izuzetak;}
+		return elementi[prvi-1][drugi-1];
+	}
+	 
+	TipEl *operator [] (int indeks)
+	{
+		try{
+			TestIndeksa(indeks);
+		}
+		catch(std::range_error izuzetak)
+			{throw izuzetak;}
+		return elementi[indeks];
+	}
+	
+	TipEl *operator [] (int indeks) const
+	{
+		try{
+			TestIndeksa(indeks);
+		}
+		catch(std::range_error izuzetak)
+			{throw izuzetak;}
+		return elementi[indeks];
+	}
+	
+	operator std::string() {
+		std::string ret = "{";
+		for(int i=0;i&lt;br_redova;i++) {
+			ret +="{";
+			for(int j=0;j&lt;br_kolona;j++) {
+				if(j!=br_kolona-1)
+					ret= ret + std::to_string(static_cast&lt;int&gt; (elementi[i][j])) +",";
+				else ret = ret + std::to_string(static_cast&lt;int&gt; (elementi[i][j]));
+			}
+			if(i!=br_redova-1)
+				ret +="},";
+			else ret +="}";
+		}
+		ret +="}";
+		return ret;//
+	}
+	
+	operator std::string() const {
+		std::string ret = "{";
+		for(int i=0;i&lt;br_redova;i++) {
+			ret +="{";
+			for(int j=0;j&lt;br_kolona;j++) {
+				if(j!=br_kolona-1)
+					ret= ret + std::to_string(static_cast&lt;int&gt; (elementi[i][j])) +",";
+				else ret = ret + std::to_string(static_cast&lt;int&gt; (elementi[i][j]));
+			}
+			if(i!=br_redova-1)
+				ret +="},";
+			else ret +="}";
+		}
+		ret +="}";
+		return ret;
+	}
+	
+	void TestIndeksa (int indeks) const
+	{
+		if(indeks&lt;0 || indeks&gt;br_redova) throw std:: range_error("Neispravan indeks");
+	}
+	
+};
+
+
+template &lt;typename TipEl&gt;
+TipEl ** Matrica&lt;TipEl&gt;::AlocirajMemoriju(int br_redova, int br_kolona)
+{
+	TipEl **elementi(new TipEl*[br_redova] {});
+	try {
+		for(int i = 0; i &lt; br_redova; i++) elementi[i] = new TipEl[br_kolona];
+	} catch(...) {
+		DealocirajMemoriju(elementi, br_redova);
+		throw;
+	}
+	return elementi;
+}
+
+template &lt;typename TipEl&gt;
+void Matrica&lt;TipEl&gt;::DealocirajMemoriju(TipEl **elementi, int br_redova)
+{
+	for(int i = 0; i &lt; br_redova; i++) delete[] elementi[i];
+	delete[] elementi;
+}
+
+
+template &lt;typename TipEl&gt;
+Matrica&lt;TipEl&gt;::Matrica(int br_redova, int br_kolona, char ime) :
+	br_redova(br_redova), br_kolona(br_kolona), ime_matrice(ime),
+	elementi(AlocirajMemoriju(br_redova, br_kolona)) {}
+	
+	
+template &lt;typename TipEl&gt;
+void Matrica&lt;TipEl&gt;::KopirajElemente(TipEl **elementi)
+{
+	for(int i = 0; i &lt; br_redova; i++)
+		for(int j = 0; j &lt; br_kolona; j++)
+			Matrica::elementi[i][j] = elementi[i][j];
+}
+
+template &lt;typename TipEl&gt;
+Matrica&lt;TipEl&gt;::Matrica(const Matrica&lt;TipEl&gt; &amp;m) : br_redova(m.br_redova),
+	br_kolona(m.br_kolona), ime_matrice(m.ime_matrice),
+	elementi(AlocirajMemoriju(m.br_redova, m.br_kolona))
+{
+	KopirajElemente(m.elementi);
+}
+
+
+template &lt;typename TipEl&gt;
+Matrica&lt;TipEl&gt;::Matrica(Matrica&lt;TipEl&gt; &amp;&amp;m) : br_redova(m.br_redova),
+	br_kolona(m.br_kolona), elementi(m.elementi), ime_matrice(m.ime_matrice)
+{
+	m.br_redova = 0;
+	m.elementi = nullptr;
+}
+
+template &lt;typename TipEl&gt;
+Matrica&lt;TipEl&gt; &amp;Matrica&lt;TipEl&gt;::operator =(const Matrica&lt;TipEl&gt; &amp;m)
+{
+	if(br_redova &lt; m.br_redova || br_kolona &lt; m.br_kolona) {
+		TipEl **novi_prostor(AlocirajMemoriju(m.br_redova, m.br_kolona));
+		DealocirajMemoriju(elementi, br_redova);
+		elementi = novi_prostor;
+	} else if(br_redova &gt; m.br_redova)
+		for(int i = m.br_redova; i &lt; br_redova; i++) delete elementi[i];
+	br_redova = m.br_redova;
+	br_kolona = m.br_kolona;
+	ime_matrice = m.ime_matrice;
+	KopirajElemente(m.elementi);
+	return *this;
+}
+
+
+template &lt;typename TipEl&gt;
+Matrica&lt;TipEl&gt; &amp;Matrica&lt;TipEl&gt;::operator =(Matrica&lt;TipEl&gt; &amp;&amp;m)
+{
+	std::swap(br_redova, m.br_redova);
+	std::swap(br_kolona, m.br_kolona);
+	std::swap(ime_matrice, m.ime_matrice);
+	std::swap(elementi, m.elementi);
+	return *this;
+}
+
+
+int main()
+{
+//AT 5 testiranje izraza koji kombinuje više operatora, unosa i ispisa
+  int m,n;
+  std::cout &lt;&lt; "Unesi broj redova i kolona za matrice:\n";
+  std::cin &gt;&gt; m &gt;&gt; n;
+  try {
+    Matrica&lt;double&gt; a(m, n, 'A'), b(m, n, 'B');
+    std::cout &lt;&lt; "Unesi matricu A:\n";
+    std::cin &gt;&gt; a;
+    std::cout &lt;&lt; "Unesi matricu B:\n";
+    std::cin &gt;&gt; b;
+    a = (a + b) * (3 * a - b);
+std::cout &lt;&lt; std::setw(4) &lt;&lt; a;
+  }
+catch(std::bad_alloc) {
+    std::cout &lt;&lt; "Nema dovoljno memorije!\n";
+  }
+    catch(std::domain_error e) {
+    std::cout &lt;&lt; e.what();
+  }
+    catch(std::range_error e) {
+    std::cout &lt;&lt; e.what();
+</font>  }
+	return 0;
+}
+
+
+</pre>
+</body>
+</html>

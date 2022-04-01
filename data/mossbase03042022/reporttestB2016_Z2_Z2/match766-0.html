@@ -1,0 +1,220 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student6824.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student6824.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+typedef std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt;mat;
+typedef std::deque&lt;std::deque&lt;int&gt;&gt; mat1;
+enum class SmjerKretanja{
+    NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo
+};
+template &lt;typename NekiTip1, typename NekiTip2&gt;
+NekiTip1 IzdvojiDijagonale3D(NekiTip2 kont, SmjerKretanja smjer){
+    NekiTip1 a;
+    int red{0}, kolona{0}, ploha{0}, x{0}, y{0};
+    ploha=kont.size();
+    red=kont[0].size();
+    kolona=kont[0][0].size();
+    for(int i=0; i&lt;ploha; i++){
+        if(kont[i].size()!=kont[0].size()) throw std::domain_error("Plohe nemaju isti broj redova");
+    }
+    for(int i=0; i&lt;ploha; i++){
+        for(int j=0; j&lt;red; j++){
+          if(kont[i][j].size()!=kont[0][0].size()) throw std::domain_error("Redovi nemaju isti broj elemenata");
+        }
+    }
+ if(smjer==SmjerKretanja::NaprijedNazad){
+        a.resize(ploha);
+        for(int i=0; i&lt;ploha; i++) a[i].resize(red);
+        for(int i=0; i&lt;ploha; i++){
+            for(int j=0; j&lt;red; j++){
+                for(int k=0;  k&lt;kolona; k++){
+                    if(j==k){ a[x][y]=kont[i][j][k]; y++;}
+                }
+            }
+            x++;
+            y=0;
+        }
+    }
+    if(smjer==SmjerKretanja::NazadNaprijed){
+        a.resize(ploha);
+        for(int i=0; i&lt;ploha; i++) a[i].resize(red);
+        for(int i=ploha-1; i&gt;=0; i--){
+            for(int j=0; j&lt;red; j++){
+                for(int k=kolona-1; k&gt;=0; k--){
+                    if(k==kolona-j-1){ a[x][y]=kont[i][j][k]; y++;}
+                }
+            }
+            x++;
+            y=0;
+        }
+    }
+      if(smjer==SmjerKretanja::GoreDolje){
+        int poz{0};
+        a.resize(red);
+        for(int i=0; i&lt;red; i++) a[i].resize(ploha);
+                for(int k=0; k&lt;kolona; k++){
+                   if(k&lt;ploha) {a[x][y]=kont[1][0][k]; y++;}
+                   else if(poz==0) {x++; y=0; a[x][y]=kont[1][0][k]; y++; poz=1;}
+                    else a[x][y]=kont[1][0][k];
+                }
+                x++;
+                y=0;
+                for(int k=0; k&lt;ploha; k++){
+                  a[x][y]=kont[0][0][k]; 
+                  y++;
+                }
+    }
+      if(smjer==SmjerKretanja::DoljeGore){ 
+        a.resize(red);
+        for(int i=0; i&lt;red; i++) a[i].resize(ploha);
+        for(int i=red-1; i&gt;=0; i--){
+          a[x][y]=kont[1][i][kolona-1];
+          y++;
+          a[x][y]=kont[0][i][kolona-2];
+          x++;
+          y=0;
+        }
+    }
+      if(smjer==SmjerKretanja::LijevoDesno){
+        a.resize(kolona);
+        for(int i=0; i&lt;kolona; i++) a[i].resize(ploha);
+        for(int i=0; i&lt;kolona; i++){
+            a[x][y]=kont[1][0][i];
+            y++;
+            a[x][y]=kont[0][1][i];
+            x++;
+            y=0;
+        }
+    }
+   if(smjer==SmjerKretanja::DesnoLijevo){
+        a.resize(kolona);
+        for(int i=0; i&lt;kolona; i++) a[i].resize(ploha);
+        for(int i=kolona-1; i&gt;=0; i--){
+            a[x][y]=kont[0][0][i];
+            y++;
+            a[x][y]=kont[1][1][i];
+            x++;
+            y=0;
+        }
+    }
+   return a;
+}
+int main (){
+   try{
+    int x{0}, y{0}, z{0}, smjer;
+    mat a;
+    std::cout &lt;&lt;"Unesite dimenzije (x y z): ";
+    std::cin &gt;&gt;x&gt;&gt;y&gt;&gt;z;
+    if(x&lt;=0 ||  y&lt;=0  || z&lt;=0){std::cout &lt;&lt;"Neispravne dimenzije kontejnera!"&lt;&lt;std::endl; return 0;}
+    a.resize(x);
+    for(int i=0; i&lt;x; i++){
+        for(int j=0; j&lt;y; j++){
+            a[i].resize(y);
+        }
+    }
+    for(int i=0; i&lt;x; i++){
+<a name="0"></a><font color="#FF0000"><a href="match766-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+        for(int j=0; j&lt;y; j++){
+            for(int k=0; k&lt;z; k++){
+                a[i][j].resize(z);
+            }
+        }
+    }
+    std::cout &lt;&lt;"Unesite elemente kontejnera: "&lt;&lt;std::endl;
+    for(int i=0; i&lt;x; i++){
+        for(int j=0; j&lt;y; j++){
+            for(int k=0; k&lt;z; k++){
+               std::cin &gt;&gt;a[i][j][k]; 
+            }
+        }
+    }
+    std::cout &lt;&lt;"Unesite smjer kretanja [0 - 5]: ";
+    std::cin &gt;&gt;smjer;
+    if(smjer&gt;5 || smjer&lt;0){std::cout &lt;&lt;"Smjer kretanja nije ispravan!"&lt;&lt;std::endl; return 0;}
+</font>    mat1 b;
+    if(smjer==0 || smjer==1){
+     b.resize(x);
+     for(int i=0; i&lt;x; i++) b[i].resize(y);
+    }
+    if(smjer==2 || smjer==3){
+        b.resize(y);
+        for(int i=0; i&lt;y; i++) b[i].resize(x);
+    }
+    if(smjer==4 || smjer==5){
+        b.resize(z);
+        for(int i=0; i&lt;z; i++) b[i].resize(x);
+    }
+    b=IzdvojiDijagonale3D&lt;mat1&gt;(a, (SmjerKretanja)smjer);
+    if(smjer==(int)SmjerKretanja::NaprijedNazad){
+        std::cout &lt;&lt;"NaprijedNazad: "&lt;&lt;std::endl;
+        for(int i=0; i&lt;x; i++){
+            for(int j=0; j&lt;y; j++){
+                std::cout &lt;&lt;std::setw(4)&lt;&lt;std::right&lt;&lt;b[i][j];
+            }
+            std::cout &lt;&lt;std::endl;
+        }
+    }
+    if(smjer==(int)SmjerKretanja::NazadNaprijed){
+        std::cout &lt;&lt;"NazadNaprijed: "&lt;&lt;std::endl;
+        for(int i=0; i&lt;x; i++){
+            for(int j=0; j&lt;y; j++){
+                std::cout &lt;&lt;std::setw(4)&lt;&lt;std::right&lt;&lt;b[i][j];
+            }
+            std::cout &lt;&lt;std::endl;
+        }
+    }
+    if(smjer==(int)SmjerKretanja::GoreDolje){
+        std::cout &lt;&lt;"GoreDolje: "&lt;&lt;std::endl;
+        for(int i=0; i&lt;y; i++){
+            for(int j=0; j&lt;x; j++){
+                std::cout &lt;&lt;std::setw(4)&lt;&lt;std::right&lt;&lt;b[i][j];
+            }
+            std::cout &lt;&lt;std::endl;
+        }
+    }
+    if(smjer==(int)SmjerKretanja::DoljeGore){
+        std::cout &lt;&lt;"DoljeGore: "&lt;&lt;std::endl;
+        for(int i=0; i&lt;y; i++){
+            for(int j=0; j&lt;x; j++){
+                std::cout &lt;&lt;std::setw(4)&lt;&lt;std::right&lt;&lt;b[i][j];
+            }
+            std::cout &lt;&lt;std::endl;
+        }
+    }
+    if(smjer==(int)SmjerKretanja::LijevoDesno){
+        std::cout &lt;&lt;"LijevoDesno: "&lt;&lt;std::endl;
+        for(int i=0; i&lt;z; i++){
+            for(int j=0; j&lt;x; j++){
+                std::cout&lt;&lt;std::setw(4)&lt;&lt;std::right&lt;&lt;b[i][j];
+            }
+            std::cout &lt;&lt;std::endl;
+        }
+    }
+    if(smjer==(int)SmjerKretanja::DesnoLijevo){
+        std::cout &lt;&lt;"DesnoLijevo: "&lt;&lt;std::endl;
+        for(int i=0; i&lt;z; i++){
+            for(int j=0; j&lt;x; j++){
+<a name="1"></a><font color="#00FF00"><a href="match766-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+                std::cout &lt;&lt;std::setw(4)&lt;&lt;std::right&lt;&lt;b[i][j];
+            }
+            std::cout &lt;&lt;std::endl;
+        }
+    }
+   }
+   catch(std::domain_error izuzetak){
+       std::cout &lt;&lt;izuzetak.what();
+</font>   }
+	return 0;
+}</pre>
+</body>
+</html>

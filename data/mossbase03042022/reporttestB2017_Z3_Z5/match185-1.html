@@ -1,0 +1,282 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student2371.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student6369.cpp<p></p><pre>
+<a name="5"></a><font color="#FF0000"><a href="match185-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;queue&gt;
+#include &lt;map&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;vector&gt;
+#include &lt;stack&gt;
+using namespace std;
+
+enum class Boje {Pik, Tref, Herc, Karo};
+</font>
+struct Karta {
+     Boje boja;
+     string vr;
+};
+
+struct Cvor{
+    Karta karta;
+<a name="3"></a><font color="#00FFFF"><a href="match185-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+    Cvor *sljedeci;
+};
+
+Cvor *KreirajSpil()
+{
+     vector&lt;string&gt; v={"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+     Cvor *rez=nullptr, *pom=nullptr;
+</font>     Karta k; k.boja=Boje::Pik; k.vr=v[0];
+     rez=new Cvor;
+     rez-&gt;karta=k;
+     pom=rez;
+     for(int i=1; i&lt;v.size(); i++)
+     {
+          Karta k1; k1.boja=Boje::Pik; k1.vr=v[i];
+          Cvor *n= new Cvor; n-&gt;karta=k1;
+          pom-&gt;sljedeci=n;
+          pom=pom-&gt;sljedeci;
+     }
+     for(int i=0; i&lt;v.size(); i++)
+     {
+          Karta k1; k1.boja=Boje::Tref; k1.vr=v[i];
+          Cvor *n= new Cvor; n-&gt;karta=k1;
+          pom-&gt;sljedeci=n;
+          pom=pom-&gt;sljedeci;
+     }
+     for(int i=0; i&lt;v.size(); i++)
+     {
+          Karta k1; k1.boja=Boje::Herc; k1.vr=v[i];
+          Cvor *n= new Cvor; n-&gt;karta=k1;
+          pom-&gt;sljedeci=n;
+          pom=pom-&gt;sljedeci;
+     }
+     for(int i=0; i&lt;v.size(); i++)
+     {
+          Karta k1; k1.boja=Boje::Karo; k1.vr=v[i];
+          Cvor *n= new Cvor; n-&gt;karta=k1;
+          pom-&gt;sljedeci=n;
+          pom=pom-&gt;sljedeci;
+          if(i==v.size()-1) pom-&gt;sljedeci=rez;
+     }
+     pom=nullptr;
+     return rez;
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match185-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+void UnistiSpil(Cvor* spil)
+{
+     Cvor *cv=spil;
+     Cvor *pom1=spil-&gt;sljedeci;
+     while(pom1-&gt;sljedeci!=spil){
+          delete cv; cv=pom1; pom1=pom1-&gt;sljedeci;
+     }
+     delete cv; delete pom1;
+}
+
+void IzbaciKarte(Cvor* &amp;spil, multimap&lt;Boje,string&gt;&amp;m)
+</font>{
+     Cvor *pom=spil, *cv=spil;
+     for(auto it=m.begin(); it!=m.end(); it++)
+     {
+          pom=spil;
+          cv=spil;
+          while(cv-&gt;sljedeci!=spil)
+          {
+               if(it-&gt;first==cv-&gt;karta.boja &amp;&amp; it-&gt;second==cv-&gt;karta.vr) 
+               { 
+                    it=m.erase(it);
+                    Cvor*pom1=spil;
+                    while(pom1-&gt;sljedeci!=cv) pom1=pom1-&gt;sljedeci;
+                    pom1-&gt;sljedeci=cv-&gt;sljedeci;
+                    delete cv; cv=nullptr;
+                    pom1=nullptr;
+                    break;
+               }
+               cv=cv-&gt;sljedeci;
+          }
+     }
+}
+
+stack&lt;pair&lt;Boje, string&gt;&gt; IzbaciKarteRazbrajanjem(Cvor* &amp;spil, const short int r, const int n)
+{
+     //if(r&lt;1 || r&gt;52 || n&lt;1) throw logic_error("Neispravni elementi za izbacivanje!");
+     //if(!testliste(spil)) throw logic_error("Neispravna lista!");
+     if(r&lt;1 || r&gt;52 || n&lt;1) throw logic_error("Neispravni elementi za izbacivanje!");
+     int br=1, n1=n;
+     stack&lt;pair&lt;Boje,string&gt;&gt; rez;
+     Cvor *it=spil, *cv=spil;
+     while(1)
+     {
+          if(br==r)
+          {
+               pair&lt;Boje,string&gt; pom=make_pair(it-&gt;karta.boja, it-&gt;karta.vr);
+               rez.push(pom); br=1; 
+               cv=spil; while(cv-&gt;sljedeci!=it) cv=cv-&gt;sljedeci;
+               cv-&gt;sljedeci=it-&gt;sljedeci;
+               it-&gt;sljedeci=nullptr;
+               delete it;
+               it=cv-&gt;sljedeci;
+               n1--;
+          }
+          else 
+          {
+              it=it-&gt;sljedeci; 
+              br++; 
+          }
+          if(n1==0) break;
+     }
+     return rez;
+}
+
+
+bool iza(string s, int ind)
+{
+<a name="6"></a><font color="#00FF00"><a href="match185-0.html#6" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+     vector&lt;string&gt; v={"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+</font>     int ind1;
+     for(int i=0; i&lt;v.size(); i++) if(v[i]==s) ind1=i;
+     return ind1&lt;ind;
+}
+
+int broj(Cvor* spil)
+{
+     int br=1;
+     Cvor *pom=spil, *pom1=spil;
+     pom=pom-&gt;sljedeci;
+     while(pom!=pom1) 
+     {
+          br++;
+          pom=pom-&gt;sljedeci;
+     }
+     return br;
+}
+
+
+void VratiPosljednjihNKarata(Cvor* &amp;spil,stack&lt;pair&lt;Boje,string&gt;&gt; &amp;s,int n)
+{
+    if(n&lt;0) throw domain_error("Broj n je besmislen!");
+    if(n&gt;s.size()) throw range_error("Nedovoljno karata u steku!");
+    Cvor* pom=spil;
+    vector&lt;string&gt; v={"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+    int br=0;
+    while(br!=n)
+    {
+          Cvor *it=spil;
+        while(it-&gt;sljedeci!=spil)     
+        {
+            if(it-&gt;karta.boja==s.top().first)
+            {
+                 int ind1;
+                 for(int i=0; i&lt;v.size(); i++) 
+                    if(v[i]==s.top().second) ind1=i;
+               
+                while(iza(it-&gt;karta.vr,ind1)){
+                     if(it-&gt;karta.boja!=s.top().first) break;
+                    it=it-&gt;sljedeci;
+                }
+               
+<a name="1"></a><font color="#00FF00"><a href="match185-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+                pom=spil;
+                while(pom-&gt;sljedeci!=it)pom=pom-&gt;sljedeci;
+                Cvor *k=new Cvor;
+                k-&gt;karta.boja=s.top().first;
+                k-&gt;karta.vr=s.top().second;
+                s.pop();
+</font>                pom-&gt;sljedeci=k;
+                k-&gt;sljedeci=it;
+                it=k;
+                break;
+
+            }
+          it=it-&gt;sljedeci;
+        }
+        br++;
+    }
+}
+
+
+void ispisispil(Cvor *spil)
+{
+     int br=1;
+     Cvor *pom=spil, *pom1=spil;
+     cout&lt;&lt;pom-&gt;karta.vr&lt;&lt;" ";
+     pom=pom-&gt;sljedeci;
+     while(pom!=pom1) 
+     {
+          br++;
+          cout&lt;&lt;pom-&gt;karta.vr&lt;&lt;" ";
+          pom=pom-&gt;sljedeci;
+     }
+     cout&lt;&lt;endl&lt;&lt;br;
+}
+
+
+void IspisiSpil(Cvor* spil)
+{
+     int brcl=broj(spil);
+    int br=0;cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;brcl&lt;&lt;" karata, i to:"&lt;&lt;endl;
+    Cvor* cv=spil;
+     vector&lt;string&gt; boje { "Pik", "Tref", "Herc","Karo"  };
+    cout&lt;&lt;boje[(int)cv-&gt;karta.boja]&lt;&lt;": ";
+    cout&lt;&lt;cv-&gt;karta.vr&lt;&lt;" ";
+    cv=cv-&gt;sljedeci;
+<a name="4"></a><font color="#FF00FF"><a href="match185-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+    for(int i=1;cv!=spil;i++,cv=cv-&gt;sljedeci)
+    {
+        if(br!=(int)cv-&gt;karta.boja)
+        {
+            cout&lt;&lt;endl;
+            cout&lt;&lt;boje[(int)cv-&gt;karta.boja]&lt;&lt;": ";
+</font>            br++;
+        }
+        cout&lt;&lt;cv-&gt;karta.vr&lt;&lt;" ";
+    }
+    cout&lt;&lt;endl;
+}
+
+
+int main ()
+{
+   
+    Cvor* spil=KreirajSpil();
+    try{
+    
+    int n,br;
+    cout&lt;&lt;"Unesite korak razbrajanja: ";
+    cin&gt;&gt;n;
+    cout&lt;&lt;"Unesite broj karata koje zelite izbaciti: ";
+    cin&gt;&gt;br;
+<a name="0"></a><font color="#FF0000"><a href="match185-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+     stack&lt;pair&lt;Boje,string&gt;&gt; s;
+    s=IzbaciKarteRazbrajanjem(spil,n,br);
+    IspisiSpil(spil);
+    cout&lt;&lt;"Unesite broj karata koje zelite vratiti u spil: ";
+    cin&gt;&gt;n;
+    VratiPosljednjihNKarata(spil,s,n);
+    IspisiSpil(spil);
+     } catch(domain_error iz) { cout&lt;&lt;"Izuzetak: "&lt;&lt;iz.what();}
+     catch(range_error iz) { cout&lt;&lt;"Izuzetak: "&lt;&lt;iz.what();}
+     catch(logic_error iz) {cout&lt;&lt;"Izuzetak: "&lt;&lt;iz.what();}
+     UnistiSpil(spil);
+    
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

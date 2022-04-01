@@ -1,0 +1,214 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student4011.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student4011.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+
+#include &lt;iostream&gt;
+#include &lt;new&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match82-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+int PotencijalniKrivci(char** &amp;p1,const vector&lt;string&gt;&amp;s1)
+{
+	int broj=s1.size();  
+	p1=nullptr;
+	p1=new char*[broj]; 
+	try{
+		for(int i=0;i&lt;broj;i++) p1[i]=nullptr;
+		for(int i=0;i&lt;broj;i++) p1[i]=new char[(int)s1[i].length()+1];
+		for(int i=0;i&lt;broj;i++){
+		for(int j=0;j&lt;s1[i].size();j++) {
+		p1[i][j]=s1[i][j];
+	}
+	p1[i][s1[i].length()]='\0';
+		}
+	}
+
+catch(bad_alloc){
+	for(int i=0;i&lt;broj;i++) delete [] p1[i];delete [] p1;
+	throw;
+}
+return broj;
+}
+
+bool isti(char* s1,string s)
+{
+ if(s1==nullptr || s.length()==0 ) return false;
+	int i(0);
+	while(i&lt;s.length() &amp;&amp; *s1!='\0'){
+		if(*s1!=s[i]) return false;
+		s1++;
+		i++;
+	}
+	if(*s1=='\0' &amp;&amp; i==(int)s.length()) return true; else return false;
+}
+
+int PrebrojiNule(char**p,int velicina)
+{
+	int brojac(0);
+	for(int i=0;i&lt;velicina;i++){
+		if(p[i]==nullptr) brojac++;
+	}
+	return brojac;
+}
+
+int SiZe(char*p){
+	if(p==nullptr) return 0;
+	int brojac(0);
+	while(*p!='\0'){
+		brojac++;
+		p++;
+	}
+	return brojac+1;
+}
+
+int OdbaciOptuzbu(char** &amp;p1,int velicina,string s)
+{
+	int broj=0;
+	bool postoji=false;
+	for(int i=0;i&lt;velicina;i++){
+		if(isti(p1[i],s)){
+			postoji=true;
+			delete [] p1[i];
+			p1[i]=nullptr;
+			broj=PrebrojiNule(p1,velicina);
+			if(broj&gt;10){
+				try{
+					char** novi=new char*[velicina-broj]; //velicina minus broj =potrebno po na niz znakova
+					int br=0; // jer nece biti na istoj i-toj poziciji
+					for(int k=0;k&lt;(velicina-broj);k++) novi[k]=nullptr; //osiguranje
+					for(int k(0);k&lt;velicina;k++){
+						int vel=SiZe(p1[k]);
+						if(p1[k]!=nullptr){
+							novi[br]=p1[k];
+							br++;
+						}
+					}
+					delete [] p1; // brisemo prostor koji smo imali za one pokazivace
+					p1=novi;
+					return velicina-broj;
+				}
+				catch(bad_alloc){
+					
+				}
+				
+			}
+			break; // jer ne mogu biti dva ista imena
+		}
+	}
+	try{
+		if(!postoji) throw domain_error("");
+	}
+	catch(domain_error e){
+		cout&lt;&lt;"Osoba sa imenom "&lt;&lt;s&lt;&lt;" nije bila optuzena";
+		throw;
+	}
+	return velicina;
+}
+
+int DodajOptuzbu(char** &amp;p1,int velicina,string s)
+{
+	char*novi=nullptr;
+	int duzina=(int)s.length();
+	novi=new char[duzina+1];
+	for(int i=0;i&lt;duzina;i++) novi[i]=s[i];
+	novi[duzina]='\0';
+	
+	for(int j=0;j&lt;velicina;j++){
+		if(p1[j]==nullptr){
+			p1[j]=novi; return velicina;
+		}
+	}
+	// ako je dosao dovde definitivno nema slobodnih mjesta pa alociramo novu u try
+	try{
+		char**pok=new char*[velicina+1];
+		for(int j=0;j&lt;velicina;j++) pok[j]=p1[j];
+		pok[velicina]=novi;
+		delete[] p1;
+		p1=pok;
+		return velicina+1;
+	}
+	catch(bad_alloc){
+		delete[] novi;
+		throw;
+	}
+}
+
+void Ispisi(char* ime)   // ispis za IzlistajOptuzbu
+{
+	while(*ime!='\0') cout&lt;&lt;*ime++;
+}
+
+void IzlistajOptuzbu(char**p1,int velicina) // ovo sa uradio 
+{
+	for(int i=0;i&lt;velicina;i++){
+		if(p1[i]!=nullptr){
+		Ispisi(p1[i]);
+		cout&lt;&lt;endl;
+		}
+	}
+}
+
+int main()
+{
+	cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? "&lt;&lt;endl;
+	int n;
+	cin&gt;&gt;n;
+	try{
+		vector&lt;string&gt;imena(n);
+		cout&lt;&lt;"Unesite potencijalne krivce: "&lt;&lt;endl;
+		cin.ignore(10000,'\n');
+		for(int i=0;i&lt;n;i++){
+			getline(cin,imena[i]);
+		}
+		char**p=nullptr;
+		auto VEL=PotencijalniKrivci(p,imena);
+		int x=-1;
+		while(x!=0){
+			cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: "&lt;&lt;endl;
+			cin&gt;&gt;x;
+			if(x==1){
+				cout&lt;&lt;"Unesite ime novog optuzenog: "&lt;&lt;endl;
+				string s;
+				cin.ignore(10000,'\n');
+				getline(cin,s);
+				VEL=DodajOptuzbu(p,VEL,s);
+			}
+			else if(x==2){
+				cout&lt;&lt;"Unesite ime koje zelite izbaciti: "&lt;&lt;endl;
+				string s;
+				cin.ignore(10000,'\n');
+				getline(cin,s);
+				VEL=OdbaciOptuzbu(p,VEL,s);
+			}
+			else if(x==3){
+				IzlistajOptuzbu(p,VEL);
+			}
+			
+		}
+		for(int i=0;i&lt;VEL;i++) delete[] p[i];delete[]p;
+	}
+	catch(domain_error e){}
+</font>	catch(bad_alloc){}
+	return 0;
+}
+
+
+</pre>
+</body>
+</html>

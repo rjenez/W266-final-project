@@ -1,0 +1,322 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z1/student2675.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z1/student8705.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;map&gt;
+using std::string;
+void Izuzetak() { throw std::domain_error("Neispravni parametri"); }
+
+class Student
+{
+    int indeks;
+    string ime, telefon, godina, adresa;
+    void ProvjeriGodinu(const string&amp;); 
+    void Normaliziraj(string&amp;); 
+    void ProvjeriTel(const string&amp;); 
+public:
+    Student(int i, const string &amp;g, string im, string adr, const string &amp;tel); 
+    int DajIndeks() const { return indeks; }
+    string DajGodinuStudija() const { return godina; }
+    string DajImePrezime() const { return ime; }
+    string DajAdresu() const { return adresa; }
+    string DajTelefon() const { return telefon; }
+    void Ispisi() const; 
+};
+void Student::ProvjeriGodinu(const string &amp;s)
+{
+    static const char *dozv[]{ "1", "2", "3", "1/B", "2/B", "3/B", "1/M", "2/M", "1/D", "2/D", "3/D" };
+    if (std::find(dozv, dozv + 11, s) == dozv + 11) Izuzetak();
+}
+void Student::Normaliziraj(string &amp;s)
+{
+    std::string t;
+    int i(0);
+    for (; i &lt; s.size() &amp;&amp; s[i] == ' '; ++i);
+    for (; i &lt; s.size(); ++i)
+    {
+        t += s[i];
+        if (s[i] == ' ')
+            for (; i+1 &lt; s.size() &amp;&amp; s[i+1] == ' '; ++i);
+    }
+    if (t[t.size()-1] == ' ')
+    {
+        i = t.size();
+        while (i &gt; 0 &amp;&amp; t[--i] == ' ');
+        t.resize(i+1);
+    }
+    s = std::move(t);
+}
+void Student::ProvjeriTel(const string &amp;s)
+{
+    int i(0);
+    for (; i &lt; s.size() &amp;&amp; s[i] != '/'; ++i)
+        if (!isdigit(s[i])) goto izuzetak;
+    if (s[i] != '/' || ++i == s.size()) goto izuzetak;
+    for (; i &lt; s.size() &amp;&amp; s[i] != '-'; ++i)
+        if (!isdigit(s[i])) Izuzetak();
+    if (s[i] != '-' || ++i == s.size()) goto izuzetak;
+    for (; i &lt; s.size(); ++i)
+        if (!isdigit(s[i])) goto izuzetak;
+    return;
+    izuzetak: Izuzetak();
+}
+
+Student::Student(int i, const string &amp;g, string im, string adr, const string &amp;tel)
+{
+    if (i &lt; 10000 || i &gt; 99999) Izuzetak();
+    ProvjeriGodinu(g); ProvjeriTel(tel); Normaliziraj(ime = std::move(im)); Normaliziraj(adresa = std::move(adr));
+    indeks = i; godina = g + (g.size() == 1 ? "/B" : ""); telefon = tel;
+}
+void Student::Ispisi() const
+{
+    std::cout &lt;&lt; "Broj indeksa: " &lt;&lt; indeks &lt;&lt; "\nGodina studija: " &lt;&lt; godina
+    &lt;&lt; "\nIme i prezime: " &lt;&lt; ime &lt;&lt; "\nAdresa: " &lt;&lt; adresa &lt;&lt; "\nTelefon: " &lt;&lt; telefon;
+}
+
+class Laptop
+{
+    int ev_broj;
+    string naziv, karakteristike;
+    Student *kod_koga_je{};
+public:
+    Laptop(int br, const string &amp;n, const string &amp;k); 
+    int DajEvidencijskiBroj() const { return ev_broj; };
+    string DajNaziv() const { return naziv; }
+    string DajKarakteristike() const { return karakteristike; }
+    void Zaduzi(Student &amp;s) { if (kod_koga_je) throw std::domain_error("Laptop vec zaduzen"); kod_koga_je = &amp;s; }
+    void Razduzi() { kod_koga_je = {}; }
+    bool DaLiJeZaduzen() const { return kod_koga_je; };
+    Student &amp;DajKodKogaJe() const { if (!kod_koga_je) throw std::domain_error("Laptop nije zaduzen"); return *kod_koga_je; }
+    Student *DajPokKodKogaJe() const { return kod_koga_je; }
+    void Ispisi() const;
+};
+
+Laptop::Laptop(int br, const string &amp;n, const string &amp;k) { if (br &lt; 0) Izuzetak(); ev_broj = br; naziv = n; karakteristike = k; }
+
+void Laptop::Ispisi() const
+{
+    std::cout &lt;&lt; "Evidencijski broj: " &lt;&lt; ev_broj &lt;&lt; "\nNaziv: " &lt;&lt; naziv &lt;&lt; "\nKarakteristike: " &lt;&lt; karakteristike;
+}
+
+class Administracija
+{
+    std::map&lt;int, Laptop*&gt; laptopi;
+    std::map&lt;int, Student*&gt; studenti;
+    void Unisti();
+public:
+    Administracija() = default; 
+    Administracija(const Administracija&amp;);
+    Administracija(Administracija &amp;&amp;a) { std::swap(laptopi, a.laptopi); std::swap(studenti, a.studenti); } 
+    ~Administracija() { Unisti(); } 
+    Administracija &amp;operator =(Administracija a) { std::swap(laptopi, a.laptopi); std::swap(studenti, a.studenti); return *this; } 
+    void RegistrirajNovogStudenta(int i, const string &amp;g, const string &amp;im, const string &amp;adr, const string &amp;tel); 
+<a name="1"></a><font color="#00FF00"><a href="match824-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+    void RegistrirajNoviLaptop(int br, const string &amp;n, const string &amp;k); 
+    Student &amp;NadjiStudenta(int ind); 
+    Student NadjiStudenta(int ind) const; 
+    Laptop &amp;NadjiLaptop(int br); 
+    Laptop NadjiLaptop(int br) const; 
+    void IzlistajStudente() const;
+    void IzlistajLaptope() const;
+    void ZaduziLaptop(int ind, int br);
+</font>    int NadjiSlobodniLaptop() const;
+    void RazduziLaptop(int br);
+    void PrikaziZaduzenja() const;
+};
+void Administracija::Unisti()
+{
+    for (auto &amp;x : laptopi) delete x.second;
+    for (auto &amp;x : studenti) delete x.second;
+}
+
+Administracija::Administracija(const Administracija &amp;a)
+{
+    if (&amp;a == this) return;
+    try
+    {
+        for (auto &amp;x : a.laptopi)
+            laptopi[x.first] = new Laptop(*x.second);
+        for (auto &amp;x : a.studenti)
+            studenti[x.first] = new Student(*x.second);
+    }
+    catch (...) { Unisti(); }
+}
+<a name="0"></a><font color="#FF0000"><a href="match824-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_9.gif"/></a>
+
+void Administracija::RegistrirajNovogStudenta(int i, const string &amp;g, const string &amp;im, const string &amp;adr, const string &amp;tel)
+{
+    if (studenti.find(i) != studenti.end()) throw std::domain_error("Student s tim indeksom vec postoji");
+    studenti[i] = new Student(i, g, im, adr, tel);
+}
+void Administracija::RegistrirajNoviLaptop(int br, const string &amp;n, const string &amp;k)
+{
+    if (laptopi.find(br) != laptopi.end()) throw std::domain_error("Laptop s tim evidencijskim brojem vec postoji");
+    laptopi[br] = new Laptop(br, n, k);
+}
+Student &amp;Administracija::NadjiStudenta(int ind)
+{
+    auto it(studenti.find(ind));
+    if (it == studenti.end()) throw std::domain_error("Student nije nadjen");
+    return *it-&gt;second;
+}
+Student Administracija::NadjiStudenta(int ind) const
+{
+    auto it(studenti.find(ind));
+    if (it == studenti.end()) throw std::domain_error("Student nije nadjen");
+    return *it-&gt;second;
+}
+Laptop &amp;Administracija::NadjiLaptop(int br)
+{
+    auto it(laptopi.find(br));
+    if (it == laptopi.end()) throw std::domain_error("Laptop nije nadjen");
+    return *it-&gt;second;
+}
+Laptop Administracija::NadjiLaptop(int br) const
+{
+    auto it(laptopi.find(br));
+    if (it == laptopi.end()) throw std::domain_error("Laptop nije nadjen");
+    return *it-&gt;second;
+}
+void Administracija::IzlistajStudente() const
+{
+    for (auto i(studenti.begin()); i != studenti.end(); ++i)
+</font>    {
+        if (i != studenti.begin()) std::cout &lt;&lt; "\n\n";
+        i-&gt;second-&gt;Ispisi();
+    }
+}
+void Administracija::IzlistajLaptope() const
+{
+    for (auto i(laptopi.begin()); i != laptopi.end(); ++i) 
+    {
+        if (i != laptopi.begin()) std::cout &lt;&lt; "\n\n";
+        i-&gt;second-&gt;Ispisi();
+        if (!i-&gt;second-&gt;DaLiJeZaduzen()) continue;
+        Student &amp;s(i-&gt;second-&gt;DajKodKogaJe());
+        std::cout &lt;&lt; "\nZaduzio(la): " &lt;&lt; s.DajImePrezime() &lt;&lt; " (" &lt;&lt; s.DajIndeks() &lt;&lt; ')';
+    }
+}
+void Administracija::ZaduziLaptop(int ind, int br)
+{
+    Student &amp;st(NadjiStudenta(ind));
+    Laptop &amp;lap(NadjiLaptop(br));
+    if (lap.DaLiJeZaduzen()) throw std::domain_error("Laptop vec zaduzen");
+    if (std::find_if(laptopi.begin(), laptopi.end(), [&amp;](const std::pair&lt;int, Laptop*&gt; &amp;p) {
+        return p.second-&gt;DajPokKodKogaJe() == &amp;st;
+    }) != laptopi.end()) throw std::domain_error("Student je vec zaduzio laptop");
+    lap.Zaduzi(st);
+}
+int Administracija::NadjiSlobodniLaptop() const
+{
+    auto it(std::find_if(laptopi.begin(), laptopi.end(), [](const std::pair&lt;int, Laptop*&gt; &amp;p) {
+        return !p.second-&gt;DaLiJeZaduzen();
+    }));
+    if (it == laptopi.end()) throw std::domain_error("Nema slobodnih laptopa");
+    return it-&gt;first;
+}
+void Administracija::RazduziLaptop(int br)
+{
+    Laptop &amp;lap(NadjiLaptop(br));
+    if (!lap.DaLiJeZaduzen()) throw std::domain_error("Laptop nije zaduzen");
+    lap.Razduzi();
+}
+void Administracija::PrikaziZaduzenja() const
+{
+    if (std::find_if(laptopi.begin(), laptopi.end(), [](const std::pair&lt;int, Laptop*&gt; &amp;p) {
+        return p.second-&gt;DaLiJeZaduzen();
+    }) == laptopi.end()) { std::cout &lt;&lt; "Nema zaduzenja"; return; }
+    bool f(false);
+    for (auto &amp;l : laptopi)
+    {
+        if (!l.second-&gt;DaLiJeZaduzen()) continue;
+        if (f) std::cout &lt;&lt; '\n';
+        else f = true;
+        Student &amp;s(l.second-&gt;DajKodKogaJe());
+        std::cout &lt;&lt; "Student " &lt;&lt; s.DajImePrezime() &lt;&lt; " (" &lt;&lt; s.DajIndeks() &lt;&lt; ") zaduzio/la laptop broj " &lt;&lt; l.second-&gt;DajEvidencijskiBroj();
+    }
+}
+int main()
+{
+    Administracija admin;
+    for (;;) try
+    {
+        std::cout &lt;&lt; "\nOdaberite opciju:\n"
+        "1 - Registracija studenta\n"
+        "2 - Registracija laptopa\n"
+        "3 - Ispis studenta po broju indeksa\n"
+        "4 - Ispis laptopa pod evidencijskim brojem\n"
+        "5 - Ispis svih studenata\n"
+        "6 - Ispis svih laptopa\n"
+        "7 - Zaduzenje laptopa\n"
+        "8 - Razduzenje laptopa\n"
+        "9 - Ispis prvog slobodnog laptopa\n"
+        "10 - Ispis svih zaduzenja\n"
+        "0 - Kraj programa\n";
+        int n, m;
+        string s, t, u, v;
+        std::cin &gt;&gt; n;
+        switch (n)
+        {
+            case 0: return 0;
+            case 1:
+                std::cout &lt;&lt; "Broj indeksa: "; std::cin &gt;&gt; n; Student(n, "1", "", "", "1/1-1");
+                std::cin.ignore(10000, '\n');
+                std::cout &lt;&lt; "Godina: "; std::getline(std::cin, s); Student(12345, s, "", "", "1/1-1");
+                std::cout &lt;&lt; "Ime: "; std::getline(std::cin, t); Student(12345, "1", t, "", "1/1-1");
+                std::cout &lt;&lt; "Adresa: "; std::getline(std::cin, u); Student(12345, "1", "", u, "1/1-1");
+                std::cout &lt;&lt; "Telefon: "; std::getline(std::cin, v);
+                admin.RegistrirajNovogStudenta(n, s, t, u, v);
+                std::cout &lt;&lt; "Student uspjesno registriran.\n";
+                break;
+            case 2:
+                std::cout &lt;&lt; "Evidencijski broj: "; std::cin &gt;&gt; n; Laptop(n, "", "");
+                std::cin.ignore(10000, '\n');
+                std::cout &lt;&lt; "Naziv: "; std::getline(std::cin, s);
+                std::cout &lt;&lt; "Karakteristike: "; std::getline(std::cin, t);
+                admin.RegistrirajNoviLaptop(n, s, t);
+                std::cout &lt;&lt; "Laptop uspjesno registriran.\n";
+                break;
+            case 3:
+                std::cout &lt;&lt; "Broj indeksa:\n"; std::cin &gt;&gt; n;
+                admin.NadjiStudenta(n).Ispisi(); std::cout &lt;&lt; '\n';
+                break;
+            case 4:
+                std::cout &lt;&lt; "Evidencijski broj:\n"; std::cin &gt;&gt; n;
+                admin.NadjiLaptop(n).Ispisi(); std::cout &lt;&lt; '\n';
+                break;
+            case 5:
+                admin.IzlistajStudente(); std::cout &lt;&lt; '\n';
+                break;
+            case 6:
+                admin.IzlistajLaptope(); std::cout &lt;&lt; '\n';
+                break;
+            case 7:
+                std::cout &lt;&lt; "Broj indeksa studenta: "; std::cin &gt;&gt; n;
+                std::cout &lt;&lt; "Evidencijski broj laptopa: "; std::cin &gt;&gt; m;
+                admin.ZaduziLaptop(n, m);
+                std::cout &lt;&lt; "Laptop uspjesno zaduzen.\n";
+                break;
+            case 8:
+                std::cout &lt;&lt; "Evidencijski broj laptopa: "; std::cin &gt;&gt; m;
+                admin.RazduziLaptop(m);
+                std::cout &lt;&lt; "Laptop uspjesno razduzen.\n";
+                break;
+            case 9:
+                std::cout &lt;&lt; "Prvi slobodan laptop ima evidencijski broj " &lt;&lt; admin.NadjiSlobodniLaptop() &lt;&lt; ".\n";
+                break;
+            default:
+                std::cout &lt;&lt; '\n'; admin.PrikaziZaduzenja(); std::cout &lt;&lt; '\n';
+        }
+    } catch (const std::exception &amp;e) { std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; '\n'; }
+	return 0;
+}</pre>
+</body>
+</html>

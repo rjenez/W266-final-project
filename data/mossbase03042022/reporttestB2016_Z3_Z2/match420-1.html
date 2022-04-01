@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student8957.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student6631.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;set&gt;
+#include &lt;vector&gt;
+
+<a name="2"></a><font color="#0000FF"><a href="match420-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+std::vector&lt;std::string&gt; KreirajVektor(std::string s){
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; rez;
+    std::vector&lt;std::string&gt; spisak;
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+</font>    int pocetna, krajnja;
+    for(int i=0; i&lt;s.size();i++){
+        if(s[i]==' ')continue;
+        else if((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')){
+            pocetna=i;
+            int pomocna=i;
+            while((s[pomocna]&gt;='a' &amp;&amp; s[pomocna]&lt;='z') || (s[pomocna]&gt;='0' &amp;&amp; s[pomocna]&lt;='9')){
+                pomocna++;
+            }
+            krajnja=pomocna;
+            i=krajnja;
+            std::string rijec(s.substr(pocetna, krajnja-pocetna));
+            spisak.push_back(rijec);
+        }
+    }
+    std::sort(spisak.begin(), spisak.end());
+    int broj = std::unique(spisak.begin(), spisak.end()) - spisak.begin();
+    spisak.resize(broj);
+    return spisak;
+}
+
+std::set&lt;int&gt; KreirajSkup(std::string s, std::string element){
+    std::set&lt;int&gt; skup;
+	int i = s.find(element);
+	while(i != std::string::npos)
+	{
+		skup.insert(i);
+		i =s.find(element, i + element.size());
+	}
+    return skup;
+}
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string s){
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; rez;
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    std::vector&lt;std::string&gt; v(KreirajVektor(s));
+  
+    for(auto i=v.begin();i!=v.end();i++){
+        std::string pomocna=*i;
+        std::set&lt;int&gt; skup(KreirajSkup(s,pomocna));
+<a name="1"></a><font color="#00FF00"><a href="match420-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+        rez.insert(std::make_pair(pomocna, skup));
+    }
+    
+    return rez;
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string rijec, std::map&lt;std::string, std::set&lt;int&gt;&gt;m){
+</font>    std::set&lt;int&gt; skup;
+<a name="0"></a><font color="#FF0000"><a href="match420-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+    auto it=m.find(rijec);
+    if(it==m.end())throw std::logic_error("Pojam nije nadjen");
+    else skup=it-&gt;second;
+    return skup;
+}
+
+
+void IspisiIndeksPojmova(std::map&lt;std::string,std::set&lt;int&gt;&gt; m){
+</font>    for(auto it=m.begin(); it!=m.end();it++){
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        for(auto it2=it-&gt;second.begin();it2!=it-&gt;second.end();it2++){
+        std::cout&lt;&lt;*it2;
+        auto uslov(it-&gt;second.end());
+        uslov--;
+        if(it2!=uslov) std::cout&lt;&lt;",";
+    }
+    std::cout&lt;&lt;std::endl;
+    }
+}
+
+void IspisiSkup(std::set&lt;int&gt; skup){
+    for(auto x: skup){
+        std::cout&lt;&lt;x&lt;&lt;" ";
+    }
+}
+int main(){
+    
+    std::cout&lt;&lt;"Unesite tekst: ";
+    std::string tekst;
+<a name="3"></a><font color="#00FFFF"><a href="match420-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+    std::getline(std::cin, tekst);
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa(KreirajIndeksPojmova(tekst));
+    IspisiIndeksPojmova(mapa);
+    std::string unos, kraj(".");
+</font>    while(std::cout&lt;&lt;"Unesite rijec: ",std::getline(std::cin, unos),unos!=kraj){
+    try{
+    std::set&lt;int&gt; skup(PretraziIndeksPojmova(unos,mapa));
+    IspisiSkup(skup);
+    std::cout&lt;&lt;std::endl;
+    }
+    
+    catch(std::logic_error msg){
+        std::cout&lt;&lt;"Unesena rijec nije nadjena!"&lt;&lt;std::endl;
+    }
+    }
+    return 0;
+}
+
+int main2 ()
+{
+    std::string test="abc qwe stsda abc abc dhi qwe hrkw dhi";
+    std::string test2="abc";
+    std::map&lt;std::string,std::set&lt;int&gt;&gt; rez;
+    std::vector&lt;std::string&gt; rijeci(KreirajVektor(test));
+    std::string output(test);
+/*    std::sort(rijeci.begin(), rijeci.end());
+    int broj = std::unique(rijeci.begin(), rijeci.end()) - rijeci.begin();
+    rijeci.resize(broj);*/
+    for(auto x: rijeci){
+        std::cout&lt;&lt;x&lt;&lt;" ";
+    }
+    
+    std::set&lt;int&gt; mapa(KreirajSkup(test2, test));
+    for(auto x: mapa){
+        std::cout&lt;&lt;x&lt;&lt;" ";
+    }
+    
+    
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student2148.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student2148.cpp<p></p><pre>
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;set&gt;
+#include&lt;stdexcept&gt;
+#include&lt;string&gt;
+#include&lt;cstring&gt;
+<a name="0"></a><font color="#FF0000"><a href="match48-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+bool slovo(char a)
+{
+    return (toupper(a)&gt;='A'&amp;&amp;toupper(a)&lt;='Z' || a&gt;='0'&amp;&amp;a&lt;='9');
+}
+
+int slova(string s)
+{
+    int br=0;
+    for(int i=0; i&lt;s.size(); i++)
+        if(slovo(s[i])) br++;
+    return br;
+}
+
+struct Dijete
+{
+    string ime;
+    Dijete *slj;
+};
+
+Dijete *transformisi(vector&lt;string&gt; v)
+{
+    Dijete *p=nullptr;
+    Dijete *t=nullptr;
+    for(int i=0; i&lt;v.size(); i++)
+    {
+        Dijete *n= new Dijete;
+        n-&gt;ime=v[i];
+        if(i==0) { p=n; t=n;}
+        else { t-&gt;slj=n; t=n;}
+        if(i==v.size()-1) n-&gt;slj=p;
+    }
+    return p;
+}
+
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector&lt;string&gt; v, int n)
+{
+    if(n&lt;1||  n&gt;v.size()) throw logic_error("Razvrstavanje nemoguce");
+    vector&lt;set&lt;string&gt;&gt; rez;
+    Dijete* li=transformisi(v);
+    Dijete* pr=li;
+    Dijete* l=li;
+    int brt1=v.size()%n, brc1=0;
+    int brt2=0, brc2=0;
+    if(brt1==0)
+    {
+        //cout&lt;&lt;"ADSASD  ";
+        brt1=n; brc1=v.size()/n;
+        //cout&lt;&lt;brt1&lt;&lt;" "&lt;&lt;brc1&lt;&lt;endl;
+    }
+    else
+    {
+        brt1=v.size()%n; brc1=(v.size()/n)+1;
+        brt2=n-brt1; brc2=v.size()/n;
+    }
+    int brs=slova(l-&gt;ime);
+    bool nes=true;
+    while(pr-&gt;slj!=l) pr=pr-&gt;slj;
+    while(brt1!=0)
+    {
+        int a=brc1;
+        set&lt;string&gt; skup;
+        if(nes){ nes=false; skup.insert(l-&gt;ime); pr-&gt;slj=l-&gt;slj; l-&gt;slj=nullptr; delete l; l=pr-&gt;slj; a--; brs--;}
+        while(a&gt;0)
+        {
+            while(brs!=0) { l=l-&gt;slj; pr=pr-&gt;slj; brs--; }
+            //cout&lt;&lt;*it&lt;&lt;endl;
+            skup.insert(l-&gt;ime);
+            brs=slova(l-&gt;ime);
+            if(brt1==1 &amp;&amp; a==1 &amp;&amp; brt2==0) { l-&gt;slj=nullptr; delete l;}
+            else { pr-&gt;slj=l-&gt;slj; l-&gt;slj=nullptr; delete l; l=pr-&gt;slj;}
+            brs--;
+            a--;
+        }
+        rez.push_back(skup);
+        brt1--;
+    }
+    while(brt2!=0)
+    {
+        int a=brc2;
+        set&lt;string&gt; skup;
+        while(a&gt;0)
+        {
+            while(brs!=0) { l=l-&gt;slj; pr=pr-&gt;slj; brs--; }
+            skup.insert(l-&gt;ime);
+            brs=slova(l-&gt;ime);
+            if(brt2==1 &amp;&amp; a==1) { l-&gt;slj=nullptr; delete l;}
+            else { pr-&gt;slj=l-&gt;slj; l-&gt;slj=nullptr; delete l; l=pr-&gt;slj;}
+            brs--;
+            a--;
+        }
+        rez.push_back(skup);
+        brt2--;
+    }
+    return rez;
+}
+
+int main ()
+{
+    try
+    {
+        int n;
+        cout&lt;&lt;"Unesite broj djece: ";
+        cin&gt;&gt;n;
+        cout&lt;&lt;"Unesite imena djece: "&lt;&lt;endl;
+        vector&lt;string&gt; v; 
+        cin.clear();
+        cin.ignore(10000, '\n');
+        for(int i=0; i&lt;n; i++)
+        {
+            string s;
+             getline(cin,s);
+            v.push_back(s);
+        }
+        cout&lt;&lt;"Unesite broj timova: ";
+        int k; cin&gt;&gt;k;
+        //for(int i=0; i&lt;v.size(); i++) cout&lt;&lt;"cla "&lt;&lt;v[i]&lt;&lt;endl;
+        //cout&lt;&lt;endl&lt;&lt;k&lt;&lt;endl;
+        auto rez=Razvrstavanje(v,k);
+        for(int i=0; i&lt;rez.size(); i++)
+        {
+            cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+            int br=rez[i].size();
+            for(auto x:rez[i])
+            {
+                cout&lt;&lt;x;
+                if(br&gt;1) cout&lt;&lt;", ";
+                br--;
+            }
+            cout&lt;&lt;endl;
+        }
+        return 0;
+    }
+    catch(logic_error l) { cout&lt;&lt;"Izuzetak: "&lt;&lt;l.what(); }
+</font>}</pre>
+</body>
+</html>

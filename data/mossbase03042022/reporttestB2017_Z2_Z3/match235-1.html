@@ -1,0 +1,208 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student7709.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student2364.cpp<p></p><pre>
+/*
+   B16/17 (Tutorijal 13, Zadatak 3)
+	Autotestove pisala Ivona Ivkovic. Sva pitanja, sugestije, prijave gresaka
+	slati na mail iivkovic2@etf.unsa.ba
+
+	Vrsit ce se provjera na prepisivanje tutorijala (na kraju semestra)
+*/
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;new&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+
+
+
+#define TestirajIzuzetak(izuzetak, tijelo) \
+  try tijelo catch(izuzetak e) { std::cout &lt;&lt; e.what() &lt;&lt; std::endl; }
+
+
+class ApstraktniStudent
+{
+	std::string ime, prezime;
+	int brojindeksa;
+	int brojpolozenihispita;
+	double prosjek;
+<a name="1"></a><font color="#00FF00"><a href="match235-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+public:
+	ApstraktniStudent(std::string name, std::string surname, int indexnumber) : ime(name),prezime(surname),brojindeksa(indexnumber),prosjek(5),brojpolozenihispita(0) {}
+	std::string DajIme() const {
+		return ime;
+	}
+	std::string DajPrezime() const {
+		return prezime;
+	}
+	int DajBrojIndeksa() const {
+		return brojindeksa;
+	}
+	int DajBrojPolozenih() const {
+		return brojpolozenihispita;
+	}
+	double DajProsjek() const {
+		return prosjek;
+	}
+	void RegistrirajIspit(int ocjena);
+</font>	void PonistiOcjene() {
+<a name="0"></a><font color="#FF0000"><a href="match235-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_22.gif"/></a>
+
+		prosjek=5;
+		brojpolozenihispita=0;
+	}
+	virtual void IspisiPodatke() const = 0;
+	virtual ApstraktniStudent* DajKopiju() const = 0;
+	virtual ~ApstraktniStudent() {}
+};
+class StudentBachelor : public ApstraktniStudent
+{
+public:
+	StudentBachelor(std::string name, std::string surname, int indexnumber) : ApstraktniStudent(name,surname,indexnumber) {}
+	void IspisiPodatke() const override {
+		std::cout&lt;&lt;"Student bachelor studija "&lt;&lt;DajIme()&lt;&lt;" "&lt;&lt;DajPrezime()&lt;&lt;", sa brojem indeksa "&lt;&lt;DajBrojIndeksa()&lt;&lt;","&lt;&lt;std::endl&lt;&lt;"ima prosjek "&lt;&lt;DajProsjek()&lt;&lt;"."&lt;&lt;std::endl;
+	}
+	ApstraktniStudent* DajKopiju() const override {
+		return new StudentBachelor(*this);
+	}
+};
+class StudentMaster : public ApstraktniStudent
+{
+	int godinazavrsetka;
+public:
+	StudentMaster(std::string name, std::string surname, int indexnumber, int yearofgrad) : ApstraktniStudent(name,surname,indexnumber), godinazavrsetka(yearofgrad) {}
+	void IspisiPodatke() const override {
+		std::cout&lt;&lt;"Student master studija "&lt;&lt;DajIme()&lt;&lt;" "&lt;&lt;DajPrezime()&lt;&lt;", sa brojem indeksa "&lt;&lt;DajBrojIndeksa()&lt;&lt;","&lt;&lt;std::endl&lt;&lt;"zavrsio bachelor studij godine "&lt;&lt;godinazavrsetka&lt;&lt;",ima prosjek "&lt;&lt;DajProsjek()&lt;&lt;"."&lt;&lt;std::endl;
+	}
+	ApstraktniStudent* DajKopiju() const override {
+		return new StudentMaster(*this);
+	}
+};
+class Fakultet
+{
+	std::vector&lt;ApstraktniStudent*&gt; studenti;
+</font>	bool DaLiPostojiIndeks(int indexnumber) const;
+public:
+	Fakultet() {}
+	~Fakultet() {
+		for (auto student : studenti) delete student;
+		studenti.resize(0);
+	}
+<a name="2"></a><font color="#0000FF"><a href="match235-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_6.gif"/></a>
+
+	Fakultet(const Fakultet &amp;f);
+	Fakultet &amp;operator =(const Fakultet &amp;f);
+	Fakultet(Fakultet &amp;&amp;f);
+	Fakultet &amp;operator =(Fakultet &amp;&amp;f);
+	void UpisiStudenta(std::string name, std::string surname, int indexnumber);
+	void UpisiStudenta(std::string name, std::string surname, int indexnumber, int yearofgrad);
+	void ObrisiStudenta(int indexnumber);
+	ApstraktniStudent&amp; operator [](int indexnumber);
+</font>	ApstraktniStudent&amp; operator [](int indexnumber) const;
+	void IspisiSveStudente() const;
+};
+int main ()
+{
+	Fakultet f1;
+	f1.UpisiStudenta("Meho", "Mehic", 3412);
+	f1.UpisiStudenta("Ibro", "Ibric", 3124, 2015);
+	f1.ObrisiStudenta(3412);
+	f1.IspisiSveStudente();
+	TestirajIzuzetak(std::logic_error, { f1.ObrisiStudenta(6789); });
+	return 0;
+}
+bool Fakultet::DaLiPostojiIndeks(int indexnumber) const {
+		for (auto student : studenti) {
+			if (student-&gt;DajBrojIndeksa()==indexnumber) return true;
+		}
+		return false;
+}
+
+Fakultet::Fakultet(const Fakultet &amp;f)
+{
+	for (auto student : f.studenti)
+		studenti.push_back(student-&gt;DajKopiju());
+}
+Fakultet::Fakultet(Fakultet &amp;&amp;f)
+{
+	studenti=std::move(f.studenti);
+}
+Fakultet&amp; Fakultet::operator =(const Fakultet &amp;f)
+{
+	if (&amp;f!=this) {
+		for (auto student : studenti) delete student;
+		studenti.resize(0);
+		for (auto student : f.studenti)
+			studenti.push_back(student-&gt;DajKopiju());
+	}
+	return *this;
+}
+Fakultet&amp; Fakultet::operator =(Fakultet &amp;&amp;f)
+{
+	if (&amp;f!=this) {
+		for (auto student : studenti) delete student;
+		studenti=std::move(f.studenti);
+	}
+	return *this;
+}
+void Fakultet::UpisiStudenta(std::string name, std::string surname, int indexnumber)
+{
+	if (DaLiPostojiIndeks(indexnumber)) throw std::logic_error("Student sa zadanim brojem indeksa vec postoji");
+	auto p=new StudentBachelor(name,surname,indexnumber);
+	studenti.push_back(p);
+}
+void Fakultet::UpisiStudenta(std::string name, std::string surname, int indexnumber, int yearofgrad)
+{
+	if (DaLiPostojiIndeks(indexnumber)) throw std::logic_error("Student sa zadanim brojem indeksa vec postoji");
+	auto p=new StudentMaster(name,surname,indexnumber,yearofgrad);
+	studenti.push_back(p);
+}
+void Fakultet::ObrisiStudenta(int indexnumber)
+{
+	if (!DaLiPostojiIndeks(indexnumber)) throw std::logic_error("Student sa zadanim brojem indeksa ne postoji");
+	auto pok=std::find_if(studenti.begin(),studenti.end(),[indexnumber](ApstraktniStudent* pok) {
+		return pok-&gt;DajBrojIndeksa()==indexnumber;
+	});
+	delete *pok;
+	studenti.erase(pok);
+}
+ApstraktniStudent&amp; Fakultet::operator [](int indexnumber)
+{
+	if (!DaLiPostojiIndeks(indexnumber)) throw std::logic_error("Student sa zadanim brojem indeksa ne postoji");
+	return **std::find_if(studenti.begin(),studenti.end(),[indexnumber](ApstraktniStudent* pok) {
+		return pok-&gt;DajBrojIndeksa()==indexnumber;
+	});
+}
+ApstraktniStudent&amp; Fakultet::operator [](int indexnumber) const
+{
+	if (!DaLiPostojiIndeks(indexnumber)) throw std::logic_error("Student sa zadanim brojem indeksa ne postoji");
+	return **std::find_if(studenti.begin(),studenti.end(),[indexnumber](ApstraktniStudent* pok) {
+		return pok-&gt;DajBrojIndeksa()==indexnumber;
+	});
+}
+void Fakultet::IspisiSveStudente() const
+{
+	std::vector&lt;ApstraktniStudent*&gt; v(studenti);
+	std::sort(v.begin(),v.end(),[](ApstraktniStudent *p1, ApstraktniStudent *p2) {
+		double prosjek1(p1-&gt;DajProsjek()), prosjek2(p2-&gt;DajProsjek());
+		if(prosjek1 != prosjek2) return prosjek1 &gt; prosjek2;
+		else return p1-&gt;DajBrojIndeksa() &lt; p2-&gt;DajBrojIndeksa();
+	});
+	for(auto p : v) p-&gt;IspisiPodatke();
+}
+void ApstraktniStudent::RegistrirajIspit(int ocjena)
+{
+	if (ocjena&lt;5 || ocjena&gt;10) throw std::domain_error("Neispravna ocjena");
+	if (ocjena==5) return;
+	brojpolozenihispita++;
+	prosjek=(prosjek*(brojpolozenihispita-1)+ocjena)/brojpolozenihispita;
+}
+// 2-2</pre>
+</body>
+</html>

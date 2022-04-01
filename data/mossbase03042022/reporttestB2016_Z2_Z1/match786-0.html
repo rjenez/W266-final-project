@@ -1,0 +1,289 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z1/student5378.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z1/student5378.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 1
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+	
+*/
+
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+enum class Komande {
+    PomjeriJednoMjesto, PomjeriDalje, Blokiraj,Deblokiraj,PrikaziOkolinu,
+    ZavrsiIgru,KreirajIgru};
+<a name="13"></a><font color="#00FFFF"><a href="match786-1.html#13" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+    enum class Status{NijeKraj,KrajPoraz,KrajPobjeda};
+    enum class Smjerovi{GoreLijevo,Gore,GoreDesno,Desno,DoljeDesno,Dolje,DoljeLijevo,Lijevo};
+    enum class KodoviGresaka{PogresnaKomanda,NedostajeParametar,SuvisanParametar,NeispravanParametar};
+</font><a name="2"></a><font color="#0000FF"><a href="match786-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_7.gif"/></a>
+
+    enum class Polje{Prazno,Posjeceno,Mina,BlokiranoPrazno,BlokiranoPosjeceno,BlokiranoMina};
+    typedef vector&lt;vector&lt;Polje&gt;&gt;Tabla;
+    Tabla KreirajTablu (int n){
+        return Tabla(n,vector&lt;Polje&gt;(n));
+    }
+    Tabla KreirajIgru(int n,const vector&lt;vector&lt;int&gt;&gt;&amp;mine){
+        for(unsigned int i=0;i&lt;mine.size();i++){
+            if(mine[i].size()!=2) throw domain_error("Ilegalan format zadavanja mina");
+            else if(mine[i][0]&gt;n-1 ||mine[i][0]&lt;0||mine[i][1]&gt;n-1||mine[i][1]&lt;0) throw domain_error("Ilegalne pozicije mina");
+        }
+        auto t(KreirajTablu(n));
+</font><a name="16"></a><font color="#00FF00"><a href="match786-1.html#16" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+        for(int i=0;i&lt;n;i++)
+        for(int j=0;j&lt;n;j++)
+        t[i][j]=Polje(0);
+</font><a name="14"></a><font color="#FF00FF"><a href="match786-1.html#14" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+        for(unsigned int i=0;i&lt;mine.size();i++)
+        for(int j=0;j&lt;2;j++){
+            t[mine[i][0]][mine[i][1]]=Polje(2);
+</font>        }
+        return t;
+    }
+<a name="17"></a><font color="#0000FF"><a href="match786-1.html#17" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+    vector&lt;vector&lt;int&gt;&gt;PrikaziOkolinu(const Tabla &amp;polja,int x,int y){
+        if(x==0||y==0||(unsigned int)x==polja.size()-1||(unsigned int)y==polja.size()-1)throw domain_error("Polje (x,y) ne postoji");
+</font><a name="1"></a><font color="#00FF00"><a href="match786-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_9.gif"/></a>
+
+        vector&lt;vector&lt;int&gt;&gt;okolina;
+        int brojac(0);
+        int n{int(polja.size())};
+        for(int i=-1;i&lt;2;i++){
+            vector&lt;int&gt;m;
+            for(int j=-1;j&lt;2;j++){
+                brojac=0;
+                if(x+i&gt;=0 &amp;&amp; y+j&gt;=0 &amp;&amp; x+i&lt;n &amp;&amp; y+j&lt;n){
+                    for(int iPojedinacno=-1;iPojedinacno&lt;2;iPojedinacno++){
+                        for(int jPojedinacno=-1;jPojedinacno&lt;2;jPojedinacno++){
+                            if(iPojedinacno==0 &amp;&amp; jPojedinacno==0) continue;
+                             if( x+i+iPojedinacno&gt;=0 &amp;&amp; y+j+jPojedinacno&gt;=0 &amp;&amp; x+i+iPojedinacno&lt;n &amp;&amp; y+j+jPojedinacno&lt;n  &amp;&amp;
+                           polja[x+i+iPojedinacno][y+j+jPojedinacno]==Polje(2))
+</font>                           {
+                               brojac++;
+                           }
+                        }
+                    }
+                }
+                m.push_back(brojac);
+            }
+            okolina.push_back(m);
+            m.clear();
+            }
+<a name="15"></a><font color="#FF0000"><a href="match786-1.html#15" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+            for(int i=0;i&lt;3;i++){
+                for(int j=0;j&lt;3;j++)
+                cout&lt;&lt;okolina[i][j]&lt;&lt;" ";
+</font>                cout&lt;&lt;endl;
+            }
+            return okolina;
+        }
+        void BlokirajPolje(Tabla &amp;polja,int x,int y){
+<a name="9"></a><font color="#FF00FF"><a href="match786-1.html#9" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+            if(x&lt;0 || y&lt;0|| (unsigned int)x&gt;polja.size()-1||(unsigned int)y&gt;polja.size()-1)throw domain_error("Polje (x,y) ne postoji");
+            for(int i=0;i&lt;3;i++)
+            if(polja[x][y]==Polje(i)) polja[x][y]=Polje(i+3);
+    }
+    void DeblokirajPolje(Tabla &amp;polja,int x ,int y){
+        if(x&lt;0 || y&lt;0 || (unsigned int)x&gt;polja.size()-1||(unsigned int)y&gt;polja.size()-1)throw domain_error ("Polje (x,y) ne postoji");
+</font><a name="3"></a><font color="#00FFFF"><a href="match786-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_4.gif"/></a>
+
+        for(int i=0;i&lt;3;i++){
+            if(polja[x][y]==Polje(i+3)) polja[x][y]=Polje(i);
+        }
+    }
+
+    Status Idi(Tabla &amp;polja, int &amp;x,int &amp;y, Smjerovi smjer){
+        int dimTable{int(polja.size())};
+        polja[x][y]=Polje(1);
+</font>        Status statusIgre{Status(0)};
+        bool mrtviSmo{false},pobjediliSmo{true};
+        if(smjer==Smjerovi(0)){
+<a name="8"></a><font color="#00FFFF"><a href="match786-1.html#8" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+            if((x-y)&lt;0||(y-1)&lt;0 || (x-1)&gt;=dimTable||(y-1)&gt;=dimTable) throw out_of_range("Izlazak van igrace table");
+            if(polja[x-1][y-1]&gt;Polje(2))throw logic_error("Blokirano polje");
+            x-=1;
+            y-=1;
+            if(polja[x][y]==Polje(2)) mrtviSmo=true;
+</font>        }
+        if(smjer==Smjerovi(1)){
+<a name="12"></a><font color="#0000FF"><a href="match786-1.html#12" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+            if((x-1)&lt;0||(x-1)&gt;=dimTable) throw out_of_range("Izlazak van igrace table");
+            if(polja[x-1][y]&gt;Polje(2)) throw logic_error("Blokirano polje");
+            x-=1;
+            if(polja[x][y]==Polje(2)) mrtviSmo=true;
+</font>        }
+        if(smjer==Smjerovi(2)){
+<a name="5"></a><font color="#FF0000"><a href="match786-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+            if((x-1)&lt;0 || (y+1)&lt;0 ||(x-1)&gt;=dimTable||(y+1)&gt;=dimTable)throw out_of_range("Izlazak van igrace table");
+            if(polja[x-1][y+1]&gt;Polje(2))throw logic_error("Bloirano polje");
+            x-=1;
+            y+=1;
+            if(polja[x][y]==Polje(2)) mrtviSmo=true;
+</font>        }
+        if(smjer==Smjerovi(3)){
+<a name="10"></a><font color="#FF0000"><a href="match786-1.html#10" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+            if((y+1)&lt;0||(y+1)&gt;=dimTable) throw out_of_range("Izlazak van igrace table");
+            if(polja[x][y+1]&gt;Polje(2)) throw logic_error("Blokirano polje");
+            y+=1;
+            if(polja[x][y]==Polje(2))mrtviSmo=true;
+</font>        }
+        if(smjer==Smjerovi(4)){
+<a name="7"></a><font color="#0000FF"><a href="match786-1.html#7" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+            if((x+1)&lt;0||(y+1)&lt;0||(x+1)&gt;=dimTable||(y+1)&gt;=dimTable)throw out_of_range("Izlazak van igrace table");
+            if(polja[x+1][y+1]&gt;Polje(2)) throw logic_error("Blokiraj polje");
+            x+=1;
+            y+=1;
+            if(polja[x][y]==Polje(2)) mrtviSmo=true;
+</font>        }
+        if(smjer==Smjerovi(5)){
+<a name="11"></a><font color="#00FF00"><a href="match786-1.html#11" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+            if((x+1)&lt;0||(x+1)&gt;=dimTable) throw out_of_range ("Izlazak van igrace table");
+         if( polja[x+1][y]&gt;Polje(2) )  throw logic_error("Blokirano polje");
+        x+=1;
+        if( polja[x][y]==Polje(2) )    mrtviSmo = true;
+</font>
+        }
+        if(smjer==Smjerovi(6)){
+<a name="6"></a><font color="#00FF00"><a href="match786-1.html#6" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+            if((x+1)&lt;0 || (y-1)&lt;0 || (x+1)&gt;=dimTable||(y-1)&gt;=dimTable) throw out_of_range ("Izlazak van igrace table");
+            if(polja[x+1][y-1]&gt;Polje(2)) throw logic_error("Blokirano polje");
+            x+=1;
+            y-=1;
+            if(polja[x][y]==Polje(2)) mrtviSmo=true;
+</font>        }
+        if(smjer==Smjerovi(7)){
+<a name="4"></a><font color="#FF00FF"><a href="match786-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_4.gif"/></a>
+
+            if((y-1)&lt;0||(y-1)&gt;=dimTable) throw out_of_range("Izlazak van igrace table");
+            if(polja[x][y-1]&gt;Polje(2)) throw logic_error("Blokirano polje");
+            y-=1;
+            if(polja[x][y]==Polje(2)) mrtviSmo=true;
+        }
+        if(mrtviSmo){
+            for(int i=0;i&lt;dimTable;i++)
+            for(int j=0;j&lt;dimTable;j++)
+            polja[i][j]=Polje(0);
+</font>            statusIgre=Status(1);
+            return statusIgre;
+        }
+<a name="18"></a><font color="#00FFFF"><a href="match786-1.html#18" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+        for(int i=0;i&lt;dimTable;i++){
+            for(int j=0;j&lt;dimTable;j++){
+                if(polja[i][j]!=Polje(1)){
+</font>                    pobjediliSmo=false;
+                    return statusIgre;
+                }
+            }
+        }
+        if(pobjediliSmo){
+            statusIgre=Status(2);
+            return statusIgre;
+        }
+        return Status(0);
+    }
+    Status Idi(Tabla &amp;polja,int&amp;x,int&amp;y,int novi_x,int novi_y)
+    {
+        
+    }
+    bool UnosKomande(Komande &amp;komanda,Smjerovi &amp;smjer,int &amp;x,int &amp;y,KodoviGresaka &amp;greska){
+        
+    }
+    void IzvrsiKomandu(Komande komanda, Tabla &amp;polja, int &amp;x, int &amp;y,
+ Smjerovi p_smjer = Smjerovi::Gore, int p_x = 0, int p_y = 0);
+
+    int main(){
+        cout&lt;&lt;"Unesite komandu: ";
+        int n;
+<a name="0"></a><font color="#FF0000"><a href="match786-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_9.gif"/></a>
+
+        cout&lt;&lt;"Unsite broj polja: ";
+        cin&gt;&gt;n;
+        vector&lt;vector&lt;int&gt;&gt;mine;
+        int x,y;
+        char znak(')');
+        cout&lt;&lt;"Unsite pozicije mina: ";
+        while(znak==')'){
+            cin&gt;&gt;znak;
+            if(znak!='('){
+                if(znak=='.') break;
+                cin.clear();
+                cin.ignore(10000,'\n');
+                cout&lt;&lt;"Greska, unesite ponovo!"&lt;&lt;endl;
+                znak=')';
+                continue;
+            }
+            cin&gt;&gt;x;
+            cin&gt;&gt;znak;
+            if(znak!=','||x&gt;=n){
+                if(znak=='.')break;
+                cin.clear();
+                cin.ignore(10000,'\n');
+                cout&lt;&lt;"Greska, unesite ponovo!"&lt;&lt;endl;
+                znak=')';
+                continue;
+            }
+            cin&gt;&gt;y;
+            cin&gt;&gt;znak;
+            if(znak==')'&amp;&amp;y&lt;n){
+                vector&lt;int&gt;m;
+                m.push_back(x);
+                m.push_back(y);
+                mine.push_back(m);
+                continue;
+            }
+            else 
+            {
+                if(znak=='.') break;
+                cin.clear();
+                cin.ignore(10000,'\n');
+                cout&lt;&lt;"Greska, unesite ponovo!";
+</font>                znak=')';
+                continue;
+            }
+        }
+        Tabla tab;
+        try{
+            tab=KreirajIgru(n,mine);
+        }
+        catch(domain_error izuzetak){
+            cout&lt;&lt;izuzetak.what()&lt;&lt;endl;
+        }
+        vector&lt;vector&lt;int&gt;&gt;okolina;
+        cout&lt;&lt;"Unesite koordinate tacke za trazenje okoline: ";
+        cin&gt;&gt;x&gt;&gt;y;
+        try{
+            okolina=PrikaziOkolinu(tab,x,y);
+            BlokirajPolje(tab,x,y);
+        }
+        catch(domain_error e){
+            cout&lt;&lt;e.what()&lt;&lt;endl;
+        }
+        return 0;
+    }
+</pre>
+</body>
+</html>

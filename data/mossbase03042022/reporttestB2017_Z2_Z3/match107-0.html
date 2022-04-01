@@ -1,0 +1,203 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student6410.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student6410.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;new&gt;
+#include &lt;string&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match107-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cout;
+using std::cin;
+
+template &lt;typename NekiTip&gt;
+int Periodican(const std::vector&lt;NekiTip&gt; &amp;v) {
+    int period(v.size());
+    for(int i=1; i&lt;v.size(); i++) {
+        int period(i);
+        for(int j=0; j&lt;v.size(); j++) {
+            if(j+i&gt;=v.size()) break;
+            if(v.at(j)!=v.at(j+i)) {
+                period=v.size();
+                break;
+            }
+        }
+        if(period==i) return period;
+    }
+    return period;
+}
+
+template &lt;typename NekiTip&gt;
+int** AlocirajFragmentirano(const std::vector&lt;NekiTip&gt; &amp;v, int &amp;koliko_puta) {
+    if(v.size()==0) throw "Prazan vektor!";
+    for(int i=0; i&lt;v.size(); i++) {
+        if(v.at(i)&lt;=0) throw std::domain_error("Neispravan vektor!");
+    }
+    
+    int T;
+    int konacna_velicina(v.size());
+    
+    if((T=Periodican&lt;NekiTip&gt;(v))!=v.size()) {
+        int broj_cijelih_perioda(v.size()/T);
+        if(v.size()%T!=0) {
+            konacna_velicina=T*(broj_cijelih_perioda+1);
+        }  
+        koliko_puta=konacna_velicina/T;
+    } else {
+        konacna_velicina=2*v.size();
+        koliko_puta=2;
+    }
+    
+    int **a(nullptr);
+    try {
+         a=new int*[konacna_velicina];
+    } catch(...) {
+        delete[] a;
+        throw;
+    }
+    
+    for(int i=0; i&lt;konacna_velicina; i++) {
+        try {
+            if(i&gt;=v.size()) a[i]=new int[v.at(i-T)];
+            else a[i]=new int[v.at(i)];
+        } catch(...) {
+            for(int j=0; j&lt;i; j++) 
+                delete[] a[i];
+            delete[] a;
+            throw;
+        }
+    }
+
+    int brojac(0), max_kolona=*std::max_element(v.begin(), v.end());
+    
+    for(int i=0; i&lt;konacna_velicina; i++) {
+        if(i&gt;=v.size()) brojac=v.at(i-T);
+        else brojac=v.at(i);
+        for(int j=0; j&lt;brojac; j++) {
+            a[i][j]=max_kolona-(brojac-1-j);
+        }
+    }
+    return a;
+}
+
+template &lt;typename NekiTip&gt;
+int** AlocirajKontinualno(const std::vector&lt;NekiTip&gt; &amp;v, int &amp;koliko_puta) {
+    if(v.size()==0) throw "Prazan vektor!";
+    for(int i=0; i&lt;v.size(); i++) {
+        if(v.at(i)&lt;=0) throw std::domain_error("Neispravan vektor!");
+    }
+    
+    int T;
+    int konacna_velicina(v.size());
+    
+    if((T=Periodican&lt;NekiTip&gt;(v))!=v.size()) {
+        int broj_cijelih_perioda(v.size()/T);
+        if(v.size()%T!=0) {
+            konacna_velicina=T*(broj_cijelih_perioda+1);
+        }  
+        koliko_puta=konacna_velicina/T;
+    } else {
+        konacna_velicina=2*v.size();
+        koliko_puta=2;
+    }
+    
+    int** a(nullptr);
+    try {
+         a=new int*[konacna_velicina];
+    } catch(...) {
+        throw;
+    }
+    
+    int broj_elemenata(0);
+    for(int i=0; i&lt;konacna_velicina; i++) {
+        if(i&gt;=v.size()) broj_elemenata+=v.at(i-T);
+        else broj_elemenata+=v.at(i);
+    }
+    
+    try {
+        a[0]=new int[broj_elemenata];
+    } catch(...) {
+        delete[] a;
+        throw;
+    }
+    
+    for(int i=1; i&lt;konacna_velicina; i++) {
+        if((i-1)&gt;=v.size()) a[i]=a[i-1]+v.at(i-T-1);
+        else a[i]=a[i-1]+v.at(i-1);
+    }
+    
+    int brojac(0);
+    for(int i=0; i&lt;konacna_velicina; i++) {
+        if(i&gt;=v.size()) brojac=v.at(i-T);
+        else brojac=v.at(i);
+        for(int j=0; j&lt;brojac; j++) {
+            a[i][j]=brojac-j;
+        }
+    }
+    
+    return a;
+}
+int main ()
+{
+    int n, koliko_puta;
+    std::vector&lt;int&gt; v;
+    cout&lt;&lt;"Unesite broj elemenata vektora: ";
+    cin&gt;&gt;n;
+    try {
+        v.resize(n);
+    } catch(...) {
+        cout&lt;&lt;"Izuzetak: Nedovoljno memorije!";
+        return 0;
+    }
+    
+    cout&lt;&lt;"Unesite elemente vektora: ";
+    for(int i=0; i&lt;n; i++) {
+        cin&gt;&gt;v.at(i);
+    }
+    
+    int izbor;
+    cout&lt;&lt;"Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+    cin&gt;&gt;izbor;
+    int** a;
+    try {
+        if(izbor==1)  a=AlocirajFragmentirano(v, koliko_puta);
+        else if(izbor==0) a=AlocirajKontinualno(v, koliko_puta);
+        int period=Periodican(v), brojac(0);
+        cout&lt;&lt;"Dinamicki alocirana matrica:\n";
+        for(int i=0; i&lt;koliko_puta*period; i++) {
+            if(i&gt;=v.size()) brojac=v.at(i-period);
+            else brojac=v.at(i);
+            for(int j=0; j&lt;brojac; j++) {
+                cout&lt;&lt;std::left&lt;&lt;std::setw(3)&lt;&lt;a[i][j];
+            }
+            cout&lt;&lt;"\n";
+        }
+        if(izbor==1) {
+            for(int i=0; i&lt;koliko_puta*period; i++) 
+                delete[] a[i];
+            delete[] a;
+        } else if(izbor==0) {
+            delete[] a[0]; delete[] a;
+        }
+    } catch(const char *msg) {
+        std::string s(msg);
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;s;
+    } catch(std::bad_alloc) {
+        cout&lt;&lt;"Izuzetak: Nedovoljno memorije";
+    } catch(std::domain_error izuzetak) {
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+</font>    }
+    
+    
+	return 0;
+}</pre>
+</body>
+</html>

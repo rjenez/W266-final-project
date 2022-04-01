@@ -1,0 +1,143 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z3/student3424.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z3/student3424.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 3
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+<a name="0"></a><font color="#FF0000"><a href="match26-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+const double EPS(0.000000000000001);
+
+bool ImaLiGa(const std::vector&lt;std::vector&lt;double&gt;&gt; &amp;PodNiz, const std::vector&lt;double&gt; &amp;v)
+{
+	for(int i(0); i &lt; PodNiz.size(); i++)
+	{
+		if(PodNiz[i].size() &lt;= v.size())
+		  continue;
+		for(int j(0); j &lt; PodNiz[i].size(); j++)
+		{
+			bool Isti(true);
+			if(fabs(PodNiz[i][j] - v[0]) &lt;= EPS &amp;&amp; PodNiz[i].size() - j &gt;= v.size())
+			{
+				for(int k(0); k &lt; v.size(); k++)
+				{
+					if(fabs(PodNiz[i][j + k] - v[k]) &gt;= EPS)
+					  Isti = false;
+				}
+				if(Isti)
+				  return true;
+			}
+		}
+	}
+	return false;
+}
+
+std::vector&lt;std::vector&lt;double&gt;&gt; RastuciPodnizovi(std::vector&lt;double&gt; v)
+{
+	std::vector&lt;std::vector&lt;double&gt;&gt; PodNiz;
+	for(int i(0); i &lt; static_cast&lt;int&gt; (v.size() - 1); i++)
+	{
+		std::vector&lt;double&gt; pomocni;
+		for(int k(i + 1); k &lt; v.size(); k++)
+		{
+			if(k == i + 1 &amp;&amp; v[i] &lt;= v[k])
+			{
+				pomocni.push_back(v[i]);
+				pomocni.push_back(v[k]);
+			}
+			else if(v[k] &gt;= v[k - 1])
+			  pomocni.push_back(v[k]);
+			else
+			  break;
+		}
+		if(pomocni.size() &lt; 2)
+		  continue;
+		if(!ImaLiGa(PodNiz, pomocni))
+		{
+			PodNiz.resize(PodNiz.size() + 1);
+			PodNiz[PodNiz.size() - 1] = pomocni;
+		}
+	}
+	return PodNiz;
+}
+
+std::vector&lt;std::vector&lt;double&gt;&gt; OpadajuciPodnizovi(std::vector&lt;double&gt; v)
+{
+	std::vector&lt;std::vector&lt;double&gt;&gt; PodNiz;
+	for(int i(0); i &lt; static_cast&lt;int&gt; (v.size() - 1); i++)
+	{
+		std::vector&lt;double&gt; pomocni;
+		for(int k(i + 1); k &lt; v.size(); k++)
+		{
+			if(k == i + 1 &amp;&amp; v[i] &gt;= v[k])
+			{
+				pomocni.push_back(v[i]);
+				pomocni.push_back(v[k]);
+			}
+			else if(v[k] &lt;= v[k - 1])
+			  pomocni.push_back(v[k]);
+			else
+			  break;
+		}
+		if(pomocni.size() &lt; 2)
+		  continue;
+		if(!ImaLiGa(PodNiz, pomocni))
+		{
+			PodNiz.resize(PodNiz.size() + 1);
+			PodNiz[PodNiz.size() - 1] = pomocni;
+		}
+	}
+	return PodNiz;
+}
+
+int main ()
+{
+	int n;
+	std::cout &lt;&lt; "Unesite broj elemenata vektora: ";
+	std::cin &gt;&gt; n;
+	std::vector&lt;double&gt; v(n);
+	std::cout &lt;&lt; "Unesite elemente vektora: ";
+	for(double &amp;x : v)
+	  std::cin &gt;&gt; x;
+	
+	auto Rastuci(RastuciPodnizovi(v));
+	auto Opadajuci(OpadajuciPodnizovi(v));
+	
+	std::cout &lt;&lt; "Maksimalni rastuci podnizovi:" &lt;&lt; std::endl;
+	for(auto niz : Rastuci)
+	{
+		for(auto x : niz)
+		{
+			std::cout &lt;&lt; x &lt;&lt; " ";
+		}
+		std::cout &lt;&lt; std::endl;
+	}
+	
+	std::cout &lt;&lt; "Maksimalni opadajuci podnizovi:" &lt;&lt; std::endl;
+	for(auto niz : Opadajuci)
+	{
+		for(auto x : niz)
+		{
+			std::cout &lt;&lt; x &lt;&lt; " ";
+		}
+		std::cout &lt;&lt; std::endl;
+	}
+	
+	return 0;
+</font>}</pre>
+</body>
+</html>

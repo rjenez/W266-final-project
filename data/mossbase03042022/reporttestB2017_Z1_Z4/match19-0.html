@@ -1,0 +1,183 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student1581.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student1581.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match19-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+bool jeLiPodstring(std::string s1, std::string s2) {
+	//ispitujemo da li je string s2 podstring stringa s1
+	if (s2.length() &gt; s1.length()) return false;
+
+	for (int i=0; i&lt;s1.length(); i++) {
+		for (int j=0; j&lt;s1.length()-i; j++) {
+			std::string pom = s1.substr(i, j);
+			if (pom == s2 &amp;&amp; pom.length() &lt; s1.length()) return true;
+		}
+	}
+	
+	return false;
+}
+
+std::vector&lt;std::string&gt; pom2(std::string s) {
+	std::vector&lt;std::string&gt; rijeci;
+	int i{};
+	while (i != s.length()) {
+		while (i != s.length() &amp;&amp; s.at(i) == ' ') ++i;
+		int j = i;
+		while (j != s.length() &amp;&amp; s.at(j) != ' ') j++;
+		if (i != j) {
+			rijeci.push_back(s.substr(i, j-i));
+			i = j;
+		}
+	}
+	return rijeci;
+}
+
+bool imaLiRazmaka(std::string rijec) {
+	bool x = false;
+	for (int i=0; i&lt;rijec.length(); i++) {
+		if (rijec.at(i) == ' ') x = true;
+	}	
+	return x;
+}
+
+std::vector&lt;int&gt; nadjiFrazu(std::string rec, std::string rijec) {
+	std::vector&lt;int&gt; pom;
+
+	for (int i=0; i&lt;rec.length(); i++) {
+		std::string s = rec.substr(i, rijec.length());
+		if (!imaLiRazmaka(rijec)) {
+			std::vector&lt;std::string&gt; rijeci = pom2(rec);
+			std::string x;
+			int g=i;
+			if ((rec.at(g) &gt;= 'a' &amp;&amp; rec.at(g) &lt;= 'z') || (rec.at(g) &gt;= 'A' &amp;&amp; rec.at(g) &lt;= 'Z')) {
+				while (((rec.at(g) &gt;= 'a' &amp;&amp; rec.at(g) &lt;= 'z') || (rec.at(g) &gt;= 'A' &amp;&amp; rec.at(g) &lt;= 'Z'))
+				&amp;&amp; g &lt; rec.length()-1) {
+					x += rec.at(g);
+					g++;
+				}
+			}
+			if (s == rijec &amp;&amp; !jeLiPodstring(x, s)) {
+				for (int j=0; j&lt;rijeci.size(); j++) {
+					if (s == rijeci.at(j)) {
+						int br = i+rijec.length();
+						pom.push_back(br);
+						break;
+					}
+				}
+			}
+		}
+		else {
+			if (s == rijec) {
+				int br = i+rijec.length();
+				pom.push_back(br);
+			}
+		}
+	}
+	return pom;
+}
+
+
+std::string dajObrnutu(std::string s) {
+	std::string pom{};
+	for (int i=s.length()-1; i&gt;=0; i--) pom += s.at(i);
+	return pom;
+}
+
+std::string NapraviPalindrom(std::string recenica, std::vector&lt;std::string&gt; s) {
+	for (int i=0; i&lt;s.size(); i++) {
+			std::vector&lt;int&gt; indeksi = nadjiFrazu(recenica, s.at(i));  
+			 if (indeksi.size() != 0){
+			//indeks sadrzi indeks posljednjeg slova nase rijeci ili fraze
+				std::string obrnuta = dajObrnutu(s.at(i));  
+				int k{}, x{};
+				while (k &lt; indeksi.size()) {
+		
+					recenica.insert(indeksi.at(k)+x, obrnuta);
+					
+				    k++; x+=obrnuta.length();
+				}
+			}
+	}
+	return recenica;
+} 
+
+
+std::string NapraviPoluPalindrom(std::string recenica, std::vector&lt;std::string&gt; s) {
+	for (int i=0; i&lt;s.size(); i++) {
+		std::vector&lt;int&gt; v = nadjiFrazu(recenica, s.at(i));
+		if (v.size() != 0) {
+			for (int j=0; j&lt;v.size(); j++) {
+				int c{};
+				int prvi = v.at(j) - s.at(i).length();
+				if (s.at(i).length() % 2 == 0) {
+					int sr = (prvi+v.at(j))/2;
+			    	int brslova = sr-prvi;
+					std::string pom = recenica.substr(prvi, brslova);
+					std::string obrnuta = dajObrnutu(pom);
+				   
+					while(sr &lt;= recenica.length()-1 &amp;&amp; c&lt;=obrnuta.length()-1) {
+						recenica.at(sr) = obrnuta.at(c);
+						sr++; c++;
+					}
+				}
+				else {
+					int sr = ((prvi+v.at(j))/2) + 1;
+					int brslova = sr-prvi-1;
+					std::string pom = recenica.substr(prvi, brslova);
+					std::string obrnuta = dajObrnutu(pom);
+					while (sr &lt;= recenica.length()-1 &amp;&amp; c&lt;=obrnuta.length()-1) {
+						recenica.at(sr) = obrnuta.at(c);
+						sr++; c++;
+					}
+				}
+			}
+		}
+	}
+	return recenica;
+}
+
+int main ()
+{
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	std::string recenica;
+	std::getline(std::cin, recenica);
+	std::vector&lt;std::string&gt; fraze;
+	std::cout&lt;&lt;"Unesite fraze: ";
+	std::string fraza;
+    while (true) {
+		std::getline(std::cin, fraza);
+		if (fraza.empty()) break;
+		fraze.push_back(fraza);
+	}
+	
+	std::cout&lt;&lt;"Recenica nakon Palindrom transformacije: ";
+	std::string s1 = NapraviPalindrom(recenica, fraze);
+	std::cout&lt;&lt;s1&lt;&lt;std::endl;
+	
+	std::cout&lt;&lt;"Recenica nakon PoluPalindrom transformacije: ";
+	std::string s2 = NapraviPoluPalindrom(recenica, fraze);
+	std::cout&lt;&lt;s2&lt;&lt;std::endl;
+	return 0;
+</font>}</pre>
+</body>
+</html>

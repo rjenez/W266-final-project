@@ -1,0 +1,96 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student9325.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student2941.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match240-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_98.gif"/></a>
+
+bool Neslovo(char znak) {
+	if ((znak&gt;='a' &amp;&amp; znak&lt;='z') || (znak&gt;='A' &amp;&amp; znak&lt;='Z')) return false;
+	else return true;
+}
+
+int PronadjiFrazu(std::string recenica, std::string fraza, int poc) {
+	for (int i=poc; i&lt;recenica.length(); i++) {
+		int prvi(i);
+		int drugi(0);
+		while (prvi&lt;recenica.length() &amp;&amp; (recenica.at(prvi)==fraza.at(drugi))) {
+			prvi++;
+			drugi++;
+			if (drugi==fraza.length()) return i;
+		}
+	}
+	return -1;
+}
+
+std::string NapraviPalindrom(std::string recenica, std::vector&lt;std::string&gt; vektor) {
+	for (std::string fraza : vektor) {
+		int poc(0);
+		while (PronadjiFrazu(recenica, fraza, poc)&gt;=0) {
+			if ((PronadjiFrazu(recenica, fraza, poc)==0 || Neslovo(recenica.at(PronadjiFrazu(recenica, fraza, poc)-1))) &amp;&amp; 
+			(PronadjiFrazu(recenica, fraza, poc)+fraza.length()&gt;=recenica.length() || 
+			Neslovo(recenica.at(PronadjiFrazu(recenica, fraza, poc)+fraza.length())))) {
+				int pocetak=PronadjiFrazu(recenica, fraza, poc);
+				pocetak+=fraza.length();
+				for (int i=fraza.length()-1; i&gt;=0; i--) {
+					recenica.insert(recenica.begin()+pocetak, fraza.at(i));
+					pocetak++;
+					poc++;
+				}
+			}
+			poc+=fraza.length();
+		}
+	}
+	return recenica;
+}
+
+std::string NapraviPoluPalindrom(std::string recenica, std::vector&lt;std::string&gt; vektor) {
+	for (std::string fraza : vektor) {
+		int poc(0);
+		while (PronadjiFrazu(recenica, fraza, poc)&gt;=0) {
+			if ((PronadjiFrazu(recenica, fraza, poc)==0 || Neslovo(recenica.at(PronadjiFrazu(recenica, fraza, poc)-1))) &amp;&amp; 
+			(PronadjiFrazu(recenica, fraza, poc)+fraza.length()&gt;=recenica.length() || 
+			Neslovo(recenica.at(PronadjiFrazu(recenica, fraza, poc)+fraza.length())))) {
+				int pocetak=PronadjiFrazu(recenica, fraza, poc);
+				int duzina=fraza.length();
+				if (duzina%2==0) {
+					pocetak+=duzina/2;
+				}
+				else {
+					pocetak+=(duzina/2)+1;
+				}
+				for (int i=duzina/2-1; i&gt;=0; i--) {
+					recenica.at(pocetak)=fraza.at(i);
+					pocetak++;
+				}
+			}
+			poc+=fraza.length();
+		}
+	}
+	return recenica;
+}
+
+int main ()
+{
+	std::string recenica, fraza;
+	std::vector&lt;std::string&gt; vektor;
+	std::cout &lt;&lt; "Unesite recenicu: ";
+	std::getline(std::cin, recenica);
+	std::cout &lt;&lt; "Unesite fraze: ";
+	while (std::getline(std::cin, fraza) &amp;&amp; fraza!="") {
+		vektor.push_back(fraza);
+	}
+	
+	std::cout &lt;&lt; "Recenica nakon Palindrom transformacije: " &lt;&lt; NapraviPalindrom(recenica, vektor) &lt;&lt; std::endl;
+	std::cout &lt;&lt; "Recenica nakon PoluPalindrom transformacije: " &lt;&lt; NapraviPoluPalindrom(recenica, vektor);
+</font>	
+	return 0;
+}</pre>
+</body>
+</html>

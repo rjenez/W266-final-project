@@ -1,0 +1,227 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student1120.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student5659.cpp<p></p><pre>
+<a name="3"></a><font color="#00FFFF"><a href="match526-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stack&gt;
+#include &lt;stdexcept&gt;
+
+
+using namespace std;
+
+enum class Boje {Pik, Tref, Herc, Karo};
+</font>
+<a name="4"></a><font color="#FF00FF"><a href="match526-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+vector&lt;string&gt; v{"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+</font>
+typedef list &lt;pair &lt;Boje, string&gt;&gt; Lista;
+
+void Ispisi(const Lista &amp;l){
+    
+    for(auto p = l.begin(); p != l.end(); p++){
+        if((*p).first == Boje(0)) cout&lt;&lt;"Pik: ";
+        else if((*p).first == Boje(1)) cout&lt;&lt;"Tref: ";
+        else if((*p).first == Boje(2)) cout&lt;&lt;"Herc: ";
+        else if((*p).first == Boje(3)) cout&lt;&lt;"Karo: ";
+        auto k = p;
+        k++;
+        while((*p).first == (*k++).first){
+            cout&lt;&lt;(*p++).second&lt;&lt;" ";
+            if(k == l.end()) { cout&lt;&lt;(*p).second&lt;&lt;" "; break;}
+        }
+        if(k != l.end()) cout&lt;&lt;p-&gt;second&lt;&lt;" ";
+        
+        cout&lt;&lt;endl;
+        if(k == l.end()) break;
+        
+    }
+    
+}
+Lista KreirajSpil(){
+   
+    Lista l;
+    
+    for(int i = 0; i &lt; 4; i++)
+        for(int j = 0; j &lt; v.size(); j++){
+            
+            pair&lt;Boje, string&gt; p;
+            p=make_pair(Boje(i),v[j]);
+<a name="2"></a><font color="#0000FF"><a href="match526-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+            l.push_back(p);
+        }
+            
+    return l;
+            
+}
+int OdrediVrijednost(string s){
+    for(int i = 0; i &lt; v.size(); i++)
+        if(s == v[i]) return i;
+        
+    return -1;
+}
+bool ProvjeriListu(const Lista &amp;l){
+</font>    
+    if(l.size() &gt; 52) return false;
+    
+    auto p = l.begin();
+    
+    for(int i = 0; i &lt; l.size(); i++){
+        
+        Boje boja =  (*p++).first;
+        if(p == l.end()) break;
+        if(int(boja) &gt; int((*p).first)) return false;
+        p--;
+        string s = (*p).second;
+        
+        
+        int broj(OdrediVrijednost((*p++).second)), broj1;
+        if((*p).first == boja) { broj1= OdrediVrijednost((*p).second);  if(broj1 &lt; broj) return false; }
+        
+        p--;
+        if(broj == -1 || broj1 == -1) return false;
+        
+        for(int j = 0; j &lt; 4; j++){
+            if((*p).first == Boje(j)) break;
+            if(j == 3) return false;
+        }
+    
+        for(int j = 0; j &lt; v.size(); j++){
+            if((*p).second == v[j]) break;
+            if(j == v.size() - 1) return false;
+        }
+        p++;
+    }
+    
+    return true; 
+}
+
+void IzbaciKarte(Lista &amp;l, multimap&lt;Boje, string&gt; &amp;mapa){
+    
+    if(!ProvjeriListu(l)) throw logic_error ("Neispravna lista!");
+    
+    for(auto p = l.begin(); p != l.end(); p++)
+        for(auto k = mapa.begin(); k != mapa.end(); k++)
+            if((*p).first == k-&gt;first &amp;&amp; (*p).second == k-&gt;second) { l.erase(p); mapa.erase(k); }
+            
+}
+stack &lt;pair &lt;Boje, string&gt;&gt; IzbaciKarteRazbrajanjem(Lista &amp;l, short int r, int b){
+    if(r &lt; 1 || r &gt;52 || b &lt; 0) throw logic_error ("Neispravni elementi za izbacivanje!");
+    if(!ProvjeriListu(l)) throw logic_error ("Neispravna lista!");
+
+    stack &lt;pair &lt;Boje, string&gt;&gt; red;
+    if(b == 0) return red;
+    if(l.size() == 0) return red;
+     
+    int br(0);
+    int br_izbacenih(0);
+
+    for(auto p = l.begin();;p++ ){
+        br++;
+        if(br == r) {
+            red.push(*p);
+            p = l.erase(p);
+            br_izbacenih++;
+            if(r == 1) br = 0;
+            else br = 1;
+        }
+    if(br_izbacenih == b) break;
+    if(p == l.end()) p = l.begin(); 
+    
+    }
+    return red;
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match526-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+void VratiPrvihNKarata(Lista &amp;l, stack&lt;pair &lt;Boje, string&gt;&gt; &amp;red, int n){
+    
+    if(n &lt; 0) throw domain_error ("Broj n je besmislen!");
+    if(n &gt; red.size()) throw range_error ("Nedovoljno karata u redu!");
+    if(!ProvjeriListu(l)) throw logic_error ("Neispravna lista!");
+</font>    
+    vector&lt;pair &lt;Boje, string&gt;&gt; red1(red.size());
+    
+    for(int i = red.size() - 1; i &gt;= 0; i--){
+        if(OdrediVrijednost(red.top().second) == -1) throw logic_error ("Neispravne karte!");
+        red1[i] = red.top();
+        red.pop();
+    }
+    
+    for(int i = 0; i &lt; n; i++)
+        for(auto p = l.begin(); p != l.end(); p++ )
+            if(p-&gt;first == red1[i].first) {
+                if(p-&gt;second == red1[i].second) { i--; break; }
+                else{
+                    
+                    while(p != l.end() &amp;&amp; OdrediVrijednost(p-&gt;second) &lt; OdrediVrijednost(red1[i].second)){
+                        if(p-&gt;first != red1[i].first) break;
+                        if(p-&gt;second == red1[i].second) break;
+                        p++;
+                    }
+                    
+                    if(p == l.end()) break;
+                    
+                    l.insert(p,red1[i]);
+                
+                    break;
+                }
+            }
+        
+    
+}
+
+
+int main ()
+{
+    try{
+        
+        Lista l = KreirajSpil();
+    
+        short int a;
+        cout&lt;&lt;"Unesite korak razbrajanja: ";
+        cin&gt;&gt;a;
+        
+        int b;    
+        cout&lt;&lt;"Unesite broj karata koje zelite izbaciti: ";
+        cin&gt;&gt;b;
+<a name="0"></a><font color="#FF0000"><a href="match526-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+        auto red = IzbaciKarteRazbrajanjem(l,a,b);
+        cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;l.size()&lt;&lt;" karata, i to: "&lt;&lt;endl;
+        Ispisi(l);
+        
+        int n;
+        cout&lt;&lt;"Unesite broj karata koje zelite vratiti u spil: ";
+        cin&gt;&gt;n;
+        VratiPrvihNKarata(l, red, n);
+        
+        cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;l.size()&lt;&lt;" karata, i to: "&lt;&lt;endl;
+        Ispisi(l);
+    
+    }
+    catch(domain_error e){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what()&lt;&lt;endl;
+</font>    }
+    catch(logic_error e){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what()&lt;&lt;endl;
+    }
+    catch(range_error e){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what()&lt;&lt;endl;
+    }
+	return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4841.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4841.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;tuple&gt;
+#include &lt;map&gt;
+using namespace std;
+
+typedef std::map&lt;std::string, std::vector&lt;std:: string&gt;&gt; Knjiga;
+
+int slovo(char a){
+    a=toupper(a);
+    if(a&gt;='A' &amp;&amp; a&lt;='Z') return 1;
+    return 0;
+}
+
+int broj(char a)
+{
+     if(a&gt;='0' &amp;&amp; a&lt;='9') return 1;
+     return 0;
+}
+
+bool slovoilibroj(char a)
+{
+    int s=slovo(a);
+    int b=slovo(b);
+    return (s==1 || b==1);
+}
+
+vector&lt;string&gt; izdvoji(string s){
+    vector&lt;string&gt; rez;
+    for(int i=0; i&lt;s.size(); i++)
+    {
+        string pom;
+        while(slovoilibroj(s[i])) { pom.push_back(s[i]); i++;}
+        if(pom.size()!=0) rez.push_back(pom);
+    }
+<a name="0"></a><font color="#FF0000"><a href="match704-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+    return rez;
+}
+
+map&lt;string,vector&lt;tuple&lt;string,int,int&gt;&gt;&gt; KreirajIndeksPojmova(Knjiga k)
+{
+    map&lt;string,vector&lt;tuple&lt;string,int,int&gt;&gt;&gt; rez;
+    
+    for(auto it=k.begin(); it!=k.end(); it++)
+        for(int i=0; i&lt;(it-&gt;second).size(); i++)
+</font>            for(int j=0; j&lt;(it-&gt;second).at(i).size(); j++)
+                (it-&gt;second).at(i).at(j)=tolower((it-&gt;second).at(i).at(j));
+    
+    vector&lt;string&gt; rijeci;
+    for(auto it=k.begin(); it!=k.end(); it++){
+        for(int i=0; i&lt;(it-&gt;second).size(); i++){
+            vector&lt;string&gt; pom=izdvoji((it-&gt;second).at(i));
+            for(int i=0; i&lt;pom.size(); i++) {
+                bool ima=false;
+                for(int j=0; j&lt;rijeci.size(); j++)
+                    if(rijeci[j]==pom[i]) ima=true;
+                if(!ima) rijeci.push_back(pom[i]);
+            }
+        }
+    }
+    
+    for(int l=0; l&lt;rijeci.size(); l++)
+    {
+        vector&lt;tuple&lt;string,int,int&gt;&gt; skup;
+        for(auto it=k.begin(); it!=k.end(); it++)
+            for(int i=0; i&lt;(it-&gt;second).size(); i++)
+                for(int j=0; j&lt;(it-&gt;second).at(i).size(); j++)
+                    if(rijeci[l]==(it-&gt;second).at(i).substr(j,rijeci[l].size()))
+                    {
+                        //cout&lt;&lt;"ASADADASD"&lt;&lt;endl;
+                        tuple&lt;string,int,int&gt; pom(it-&gt;first,i+1,j);
+                        skup.push_back(pom);
+                    }
+        //rez.insert(pair&lt;string,vector&lt;tuple&lt;string,int,int&gt;&gt;&gt;(rijeci[l]),skup);
+        rez[rijeci[l]]=skup;
+        
+    }
+    
+    return rez;
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match704-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+vector&lt;tuple&lt;string,int,int&gt;&gt; PretraziIndeksPojmova(string s, map&lt;string,vector&lt;tuple&lt;string,int,int&gt;&gt;&gt; m)
+</font>{
+    try{
+        return m[s];
+    }
+    catch(...) {
+        throw logic_error("Pojam nije nadjen");
+    }
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match704-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+void IspisiIndeksPojmova(map&lt;string,vector&lt;tuple&lt;string,int,int&gt;&gt;&gt; m)
+{
+    for(auto it=m.begin(); it!=m.end(); it++)
+    {
+        cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        for(int i=0; i&lt;(it-&gt;second).size(); i++)
+</font>        {
+            tuple&lt;string,int,int&gt; pom=(it-&gt;second).at(i);
+            cout&lt;&lt;get&lt;0&gt;(pom)&lt;&lt;"/"&lt;&lt;get&lt;1&gt;(pom)&lt;&lt;"/"&lt;&lt;get&lt;2&gt;(pom);
+            if(i==(it-&gt;second).size()-1)cout&lt;&lt;endl;
+            else cout&lt;&lt;", ";
+        }
+        cout&lt;&lt;endl;
+    }
+}
+
+int main ()
+{
+    vector&lt;string&gt; v= {"abc qwe stsda abc abc dhi qwe hrkw dhi"};
+   Knjiga knjiga;
+   knjiga["I"]=v;
+   auto k=KreirajIndeksPojmova(knjiga);
+   //cout&lt;&lt;endl&lt;&lt;"weeeee"&lt;&lt;endl;
+   IspisiIndeksPojmova(k);
+	return 0;
+}
+</pre>
+</body>
+</html>

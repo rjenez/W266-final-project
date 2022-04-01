@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z1/student8776.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z5/Z1/student4195.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#define EPSILON 0.001
+#include &lt;math.h&gt;
+#include &lt;string.h&gt;
+
+struct Student {
+	char ime[20], prezime[20];
+	int ocjene[50];
+	int br_ocjena;
+};
+
+/*Funckija za nalazenje prosjeka*/
+float nadji_prosjek(struct Student student){
+	float prosjek;
+	int j,suma=0,prosao=1;
+		for(j=0; j&lt;student.br_ocjena; j++) {
+			if(student.ocjene[j] == 5) {
+				prosao=0;
+				break;
+			} else {
+				suma+= student.ocjene[j];
+			}
+		}
+		if(!prosao || student.br_ocjena==0)
+			prosjek=5.0;
+		else
+			prosjek=suma/(student.br_ocjena*1.0);
+		return prosjek;
+}
+
+/*Funkcija za ispisivanje najboljih prosjeka */
+int vrati_genijalce(struct Student studenti[],int velicina_niza, int indeksi_preskocenih[],int broj_preskocenih) {
+	int i,j,max_indeks=-1,preskoci,postavljen_max=0;
+	float prosjek,max;
+	if(!velicina_niza)	
+		return -1;
+	for(i=0; i&lt;velicina_niza; i++) {
+		preskoci=0;
+		for(j=0; j&lt;broj_preskocenih; j++){
+			if(i==indeksi_preskocenih[j]){
+				preskoci=1;
+				break;
+			}
+		}
+		if(preskoci)
+			continue;
+		if(!postavljen_max) {
+			max=nadji_prosjek(studenti[i]);
+			max_indeks=i;
+			postavljen_max=1;
+			continue;
+		}
+		prosjek=nadji_prosjek(studenti[i]);
+		if((prosjek-max)&gt;EPSILON){
+			max=prosjek;
+			max_indeks=i;
+		}
+		/*Ako prosjek nije veci, provjeri je li isti da bi ih poredao leksikografski */
+		else if(fabs(prosjek-max)&lt;EPSILON) {
+			if(strcmp(studenti[i].prezime,studenti[max_indeks].prezime) &lt; 0){
+				max=prosjek;
+				max_indeks=i;
+			}
+			else if(strcmp(studenti[i].prezime,studenti[max_indeks].prezime) == 0) {
+				if(strcmp(studenti[i].ime,studenti[max_indeks].ime) &lt; 0){
+					max=prosjek;
+					max_indeks=i;
+				}
+			}
+		}
+	}
+	return max_indeks;
+}
+
+/* Funkcija za izbacivanje svih onih sa manjim prosjekom od zadanog */
+int genijalci(struct Student studenti[], int velicina_niza, float genijalni_prosjek){
+	float prosjek;
+	int i,k, broj_preskocenih[3];
+	for(i=0; i&lt;velicina_niza; i++) {
+		prosjek=nadji_prosjek(studenti[i]);
+		if((genijalni_prosjek-prosjek)&gt;EPSILON) {
+<a name="1"></a><font color="#00FF00"><a href="match892-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+		for(k=i; k&lt;velicina_niza-1; k++) {
+			studenti[k]=studenti[k+1];
+		}
+		velicina_niza--;
+		i--;
+		}
+	}
+	for(i=0; i&lt;3; i++) {
+</font>		broj_preskocenih[i]=-1;
+	}
+	if(velicina_niza){
+		for(i=0; i&lt;3; i++){
+			if(i==velicina_niza)
+				break;
+			broj_preskocenih[i] = vrati_genijalce(studenti,velicina_niza,broj_preskocenih,i) ;
+<a name="2"></a><font color="#0000FF"><a href="match892-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+			printf("%s %s\n",studenti[broj_preskocenih[i]].prezime,studenti[broj_preskocenih[i]].ime);
+		}		
+		
+	}
+	return velicina_niza;
+}
+
+int main()
+{
+	struct Student studenti[6] ={
+		{ "Mujo", "Mujic", { 7,7,7,7,8}, 5}, 
+</font>		{ "Meho", "Mujic", { 7,7,7,7,8}, 5}, 
+		{ "Pero", "Peric", { 8,8,8,8,7}, 5}, 
+		{ "Beba", "Bebic", { 6,6,6,6,6}, 5},
+<a name="0"></a><font color="#FF0000"><a href="match892-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+		{ "Mujo", "Mujic", { 7,7,7,7,8}, 5}, 
+		{ "Fata", "Fatic", { 7,7,7,7,8}, 5}, 
+	};
+	genijalci(studenti, 6, 6.5);
+</font>
+	return 0;
+
+}
+</pre>
+</body>
+</html>

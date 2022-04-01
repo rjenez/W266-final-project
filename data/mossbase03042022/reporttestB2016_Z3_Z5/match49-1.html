@@ -1,0 +1,158 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student8100.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student4226.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match49-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_29.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+#include &lt;iterator&gt;
+
+typedef std::vector&lt;std::string&gt; spisak;
+typedef std::vector&lt;std::set&lt;std::string&gt;&gt; skup;
+
+struct Dijete{
+    std::string ime;
+    Dijete *sljedeci;
+};
+
+void Ispisi(skup raspored){
+    for(int i(0); i&lt;raspored.size(); i++){
+        std::cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+        auto it(raspored[i].begin());
+        while(it != --raspored[i].end()){
+            std::cout &lt;&lt; *it &lt;&lt; ", ";
+            it++;
+        }
+        std::cout &lt;&lt; *it &lt;&lt; std::endl;
+    }
+}
+
+void Ispisicvor(Dijete *pocetak, int br){
+    for(int i(0); i&lt;br; i++, pocetak=pocetak-&gt;sljedeci)
+        std::cout &lt;&lt; pocetak-&gt;ime &lt;&lt; " ";
+    std::cout &lt;&lt; std::endl;
+}
+
+int BrojSlova(std::string ime){
+    int brojac(0);
+    for(int i(0); i&lt;ime.length(); i++)
+        if((ime[i]&gt;='a' &amp;&amp; ime[i]&lt;='z') || (ime[i]&gt;='A' &amp;&amp; ime[i]&lt;='Z') || (ime[i]&gt;='0' &amp;&amp; ime[i]&lt;='9')) brojac++;
+</font><a name="0"></a><font color="#FF0000"><a href="match49-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_67.gif"/></a>
+
+    return brojac-1;
+}
+
+skup Razvrstavanje(spisak imena, int br_tim){
+    if(br_tim&lt;1 || br_tim&gt;imena.size()) throw std::logic_error("Razvrstavanje nemoguce");
+    skup krajnji;
+    auto it1(imena.begin());
+    Dijete *pocetak(nullptr), *prethodni;
+    while (it1!=imena.end()){
+        Dijete *novi(new Dijete);
+        if(it1 == --imena.end()){
+            novi-&gt;ime = *it1; novi-&gt;sljedeci=pocetak;
+            prethodni-&gt;sljedeci = novi; prethodni = novi;
+            break;
+        }
+        novi-&gt;ime = *it1; novi-&gt;sljedeci=nullptr;
+        if(!pocetak) pocetak = novi;
+        else prethodni-&gt;sljedeci = novi;
+        prethodni = novi;
+        it1++;
+    }
+    int broj(imena.size());
+    int pomocni1 = broj%br_tim;
+    int pomocni2 = broj/br_tim;
+    int slova(0);
+    Dijete *p = pocetak, *prije_p = prethodni;
+    //Ispisicvor(p);
+    while(br_tim&gt;0){
+        while(slova!=0){
+            slova--;
+            p=p-&gt;sljedeci;
+            prije_p=prije_p-&gt;sljedeci;
+        }
+        std::set&lt;std::string&gt; strskup;
+        strskup.insert(p-&gt;ime);
+        slova = BrojSlova(p-&gt;ime);
+        Dijete *temp1 = p;
+        prije_p-&gt;sljedeci=p-&gt;sljedeci;
+        p=p-&gt;sljedeci;
+        delete temp1;
+        //temp1=nullptr;
+        //Ispisicvor(p, broj);
+        int temp = pomocni2-1;
+        if(pomocni1!=0){
+            while(slova!=0){
+                slova--;
+                p=p-&gt;sljedeci;
+                prije_p=prije_p-&gt;sljedeci;
+            }
+            strskup.insert(p-&gt;ime);
+            slova=BrojSlova(p-&gt;ime);
+            Dijete *temp1 = p;
+            prije_p-&gt;sljedeci=p-&gt;sljedeci;
+            p=p-&gt;sljedeci;
+            delete temp1;
+            //temp1 = nullptr;
+            //Ispisicvor(p, broj);
+            pomocni1--;
+        }
+        while(temp!=0){
+            while(slova!=0){
+                slova--;
+                p=p-&gt;sljedeci;
+                prije_p=prije_p-&gt;sljedeci;
+            }
+            strskup.insert(p-&gt;ime);
+            slova=BrojSlova(p-&gt;ime);
+            Dijete *temp1 = p;
+            prije_p-&gt;sljedeci=p-&gt;sljedeci;
+            p=p-&gt;sljedeci;
+            delete temp1;
+            //temp1 = nullptr;
+            //Ispisicvor(p, broj);
+            temp--;
+        }
+        krajnji.push_back(strskup);
+        br_tim--;
+    }
+    return krajnji;
+}
+
+int main (){
+    int djeca;
+    std::cout &lt;&lt; "Unesite broj djece: ";
+    std::cin &gt;&gt; djeca;
+    std::cin.ignore(10000, '\n');
+    spisak imena;
+    std::cout &lt;&lt; "Unesite imena djece: " &lt;&lt; std::endl;
+    for(int i(0); i&lt;djeca; i++){
+        std::string temp;
+        std::getline(std::cin, temp);
+        imena.push_back(temp);
+    }
+    int timovi;
+    std::cout &lt;&lt;"Unesite broj timova: ";
+    std::cin &gt;&gt; timovi;
+    try{
+        skup kraj(Razvrstavanje(imena, timovi));
+        Ispisi(kraj);
+    }
+    catch(std::logic_error belaj){
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; belaj.what();
+        return 0;
+    }
+	return 0;
+</font>}</pre>
+</body>
+</html>

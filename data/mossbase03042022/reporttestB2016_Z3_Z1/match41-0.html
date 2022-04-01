@@ -1,0 +1,143 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student2148.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student2148.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match41-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 1
+//Autotestovi by Enil Pajic (epajic1@etf.unsa.ba)
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;functional&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+double omega(int i, int n, int d, vector&lt;pair&lt;double,double&gt;&gt; v)
+{
+    int z;
+    if(i-d&gt;1) z=i-d;
+    else z=1;
+    int a;
+    if(n-d&gt;i) a=i;
+    else a=n-d;
+    double suma=0;
+    for(int k=z; k&lt;=a; k++)
+    {
+        //double jedinica=pow(-1, k-1);
+        double pr=1;
+        for(int j=k; j&lt;=k+d; j++)
+            if(j!=i) pr*=1./(v[i-1].first-v[j-1].first);
+        suma+=pr*pow(-1,k-1);
+    }
+    return suma;
+}
+
+function&lt;double(double)&gt;BaricentricnaInterpolacija(vector&lt;pair&lt;double,double&gt;&gt; v, int d)
+{
+    if(d&lt;0 || d&gt;v.size()) throw domain_error("Nedozvoljen red");
+    for(int i=0; i&lt;v.size()-1; i++)
+    {
+        for(int j=i+1; j&lt;v.size(); j++)
+        {
+            if(v[i].first==v[j].first) throw domain_error("Neispravni cvorovi");
+        }
+    }
+    double o1=omega(1,v.size(), d, v);
+    double a=v[0].first, b=v[0].second;
+    function&lt;double(double)&gt; f1=[o1, a, b](double x) { return (o1*b)/(x-a);};
+    function&lt;double(double)&gt; f2=[o1,a](double x) { return o1/(x-a);};
+    for(int i=2; i&lt;=v.size(); i++)
+    {
+        a=v[i-1].first; b=v[i-1].second;
+        double o=omega(i,v.size(), d, v);
+        f1=[f1,o,a,b](double x){ return f1(x)+(o*b)/(x-a); };
+        f2=[f2,o,a](double x){ return f2(x)+o/(x-a); };
+    }
+    f1=[f1,f2,v](double x) {
+        for(int i=0; i&lt;v.size(); i++) if(v[i].first==x ) return v[i].second;
+        return f1(x)/f2(x); };
+    return f1;
+}
+
+template&lt;typename tf&gt;
+function&lt;double(double)&gt; BaricentricnaInterpolacija(tf f, double xmin, double xmax, double delta, int d)
+{
+    if(delta&lt;=0 || xmin&gt;xmax) throw domain_error("Nekorektni parametri");
+    vector&lt;pair&lt;double,double&gt;&gt; v;
+    while(xmin&lt;=xmax)
+    {
+        v.push_back(make_pair(xmin,f(xmin)));
+        xmin+=delta;
+    }
+    function&lt;double(double)&gt; f1=BaricentricnaInterpolacija(v,d);
+    return f1;
+}
+
+int main ()
+{
+	int z=1;
+	try{
+	    cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+	while(1)
+	{
+	    int n; cin&gt;&gt;n;
+	    if(n==1)
+	    {
+	        cout&lt;&lt;"Unesite broj cvorova: ";
+	        int a; cin&gt;&gt;a;
+	        vector&lt;pair&lt;double,double&gt;&gt; v; v.resize(a);
+	        cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+	        for(int i=0; i&lt;v.size(); i++)
+	        {
+	            double b,c; cin&gt;&gt;b&gt;&gt;c; v[i]=make_pair(b,c);
+	        }
+	        cout&lt;&lt;"Unesite red interpolacije: ";
+	        int d; cin&gt;&gt;d;
+	        while(0==0)
+	        {
+	            cout&lt;&lt;"Unesite argument (ili "&lt;&lt;"\"kraj\""&lt;&lt;" za kraj): ";
+	            double x; cin&gt;&gt;x;
+	            if(!cin) { cin.ignore(100000, '\n'); cin.clear(); break; }
+	            else
+	            {
+	                try
+	                {
+	                    auto f=BaricentricnaInterpolacija(v,d);
+	                    cout&lt;&lt;"f("&lt;&lt;x&lt;&lt;") = "&lt;&lt;f(x)&lt;&lt;endl;
+	                } 
+	                catch(domain_error e) { cout&lt;&lt;e.what(); throw; }
+	            }
+	        }
+	    }
+	    else if(n==2)
+	    {
+	        cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+	        double mi, ma, del; cin&gt;&gt;mi&gt;&gt;ma&gt;&gt;del;
+	        cout&lt;&lt;"Unesite red interpolacije: "; 
+	        int d; cin&gt;&gt;d;
+	        while(0==0)
+	        {
+	            cout&lt;&lt;"Unesite argument (ili "&lt;&lt;"\"kraj\""&lt;&lt;" za kraj): ";
+	            double x; cin&gt;&gt;x;
+	            if(!cin) { cin.ignore(100000, '\n'); cin.clear(); break; }
+	            else
+	            {
+	                try
+	                {
+	                    auto f=BaricentricnaInterpolacija([](double x){return x*x+sin(x);},mi,ma,del,d);
+	                    cout&lt;&lt;"f("&lt;&lt;x&lt;&lt;") = "&lt;&lt;x*x+sin(x)&lt;&lt;" fapprox("&lt;&lt;x&lt;&lt;") = "&lt;&lt;f(x)&lt;&lt;endl;
+	                } catch(domain_error e) { cout&lt;&lt;e.what(); throw;}
+	            }
+	        }
+	    }
+	    else break;
+	}
+	return 0;
+	} catch(...) {z++;}
+</font>}</pre>
+</body>
+</html>

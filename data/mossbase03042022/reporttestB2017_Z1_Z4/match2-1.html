@@ -1,0 +1,249 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student5413.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student9567.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+
+<a name="0"></a><font color="#FF0000"><a href="match2-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+int wordcounter (std::string fraza)
+{
+    //Prebroji koliko rijeci ima u frazi
+    int brojac(1);
+    for (int i(0) ; i&lt;fraza.size(); i++ ) {
+        if (fraza.at(i)==' ') brojac++;
+    }
+    return brojac;
+}
+
+
+bool DuzinaCheck (std::string zaP)
+{
+    //Provjera duzine rijeci u recenici
+    //Ukoliko je fraza korijen jedne rijeci u recenici, ova funkcija vrsi provjeru i sprjecava ispis
+    for (int i=0; i&lt;zaP.size(); i++) {
+        if (zaP.at(zaP.size()-1)!=' ') {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
+std::vector&lt;std::string&gt; Proveravac ( std::string recenica,std::vector&lt;std::string&gt; fraze)
+{
+    //Ova funkcija uklanja fraze koje se ne nalaze u recenici
+    std::vector&lt;std::string&gt; rijeci;
+    std::string r;
+    int k(0),max(1);
+    //Prebroji broj rijeci u frazi
+    for (int f(0) ; f&lt;fraze.size(); f++ ) {
+        if (max&lt;wordcounter(fraze.at(f)))
+            max=wordcounter(fraze.at(f));
+    }
+    while (recenica[k]==' ') k++;
+
+    int global(k);
+    //Pronalazi rijeci iz recenice
+    for ( int i(global); i&lt;recenica.size(); i++) {
+        for (int j(i); j&lt;recenica.size(); j++) {
+            if (recenica[j]==' ' || j==recenica.size()-1) {
+                int sizee(j-i);
+                sizee=j-i;
+                if (j==recenica.size()-1) sizee++;
+                r= recenica.substr(i, sizee);
+                rijeci.push_back(r);
+                r.clear();
+                if (j==recenica.size()-1) {
+                    i=j;
+                    break;
+                }
+                while (recenica[j]==' ') j++;
+                i=j-1;
+                break;
+            }
+
+        }
+
+    }
+    //Vrsi eliminaciju fraza koje nisu u recenici
+    int temp(0);
+    std::vector&lt;std::string&gt; zavrsni;
+    for (int i(0); i&lt;rijeci.size() ; i++) {
+        for (int j(0); j&lt;fraze.size() ; j++) {
+            if (rijeci.at(i)== fraze.at(j)) {
+                if (zavrsni.size()&gt;=1) {
+                    for (int k(0); k&lt;zavrsni.size(); k++)  {
+                        if (fraze.at(j)==zavrsni.at(k)) {
+                            temp=1;
+                        }
+                    }
+                }
+                if (temp==0) {
+                    zavrsni.push_back(fraze.at(j));
+                }
+                temp=0;
+                break;
+            } else if (wordcounter(fraze.at(j))&gt;1) {
+                zavrsni.push_back(fraze.at(j));
+            }
+        }
+
+    }
+    return zavrsni;
+}
+
+
+bool Provjera (char x)
+{
+    if ((x&gt;='a' &amp;&amp; x&lt;='z') || (x&gt;='A' &amp;&amp; x&lt;='Z') ) return true;
+
+    return false;
+}
+
+
+std::string PalindromeCreator (std::string a)
+{
+    //Kreiraj palindrom
+    std::string b;
+    for (int i(a.size()-1); i&gt;=0 ; i--) {
+        b.push_back(a.at(i));
+    }
+    a=b;
+    return a;
+}
+
+std::string NapraviPalindrom (std::string recenica, std::vector&lt;std::string&gt; fraze)
+{
+    std::string checker;
+    std::string pS;
+    std::vector &lt;std::string&gt; ProcisceneFraze= Proveravac (recenica, fraze);
+    int fV= ProcisceneFraze.size(), rV=recenica.size();
+    recenica.push_back(' ');
+    recenica.resize(recenica.size()+10000);
+
+    for (int i(0); i&lt;fV; i++) {
+        int fixed=ProcisceneFraze.at(i).size();
+        for (int j(0) ; j&lt;rV; j++) {
+
+            // recenica.resize(recenica.size()+fixed +1);
+            pS= recenica.substr (j, fixed );
+            checker= recenica.substr (j, ProcisceneFraze.at(i).size()+1 );
+            if (pS== ProcisceneFraze.at(i) )  {
+                int krajnik=j+fixed;
+
+                if ((wordcounter(ProcisceneFraze.at(i))==1 &amp;&amp; DuzinaCheck(checker))) continue;
+                if (wordcounter(ProcisceneFraze.at(i))&gt;1 &amp;&amp; ( Provjera (recenica.at(j+fixed)) || Provjera (recenica.at(j-1)))  ) continue;
+                if (j&gt;0) {
+                    if (wordcounter(ProcisceneFraze.at(i))==1 &amp;&amp;  Provjera (recenica.at(j-1))  )  continue;
+                }
+                if (wordcounter(ProcisceneFraze.at(i))==1 &amp;&amp; j==recenica.size()-fixed) continue;
+                j= j+ pS.size()-1; //pozicioniranje na kraj rijeci, tako se moze isjeci
+                rV+=j; //povecanje velicine recenice zbog petlje
+                std::string str1= recenica.substr (0, j+1); //odsjeci prvi dio recenice
+                int ost= recenica.size()-j; //velicina ostatka recenice
+                std::string str2= recenica.substr (j+1, ost); //odsjeci ostatak recenice
+                recenica=str1 + PalindromeCreator(ProcisceneFraze.at(i)) + str2; //umetni palindrom
+            }
+        }
+
+    }
+    //Postavi velicinu stringa, na velicinu recenice
+    int brojac(0);
+    for (int k(0) ; k&lt;recenica.length() ; k++) {
+        if (recenica.at(k)&gt;=' ' &amp;&amp; recenica.at(k)&lt;='~' ) brojac++;
+    }
+    recenica.resize(brojac);
+    return recenica;
+}
+int parNepar (std::string a)
+{
+    //Provjeri da li je velicina rijeci parna ili neparna
+    if (a.size()%2==0) {
+        return (a.size()/2);
+    } else {
+        return ((a.size()/2)+1);
+    }
+}
+std::string PoluPalindrom (std::string a )
+{
+    //Kreiraj polupalindrom
+    std::string b;
+    for (int i((a.size()/2)-1); i&gt;=0 ; i--) {
+        b.push_back(a.at(i));
+    }
+    a=b;
+    return a;
+}
+std::string NapraviPoluPalindrom (std::string recenica, std::vector&lt;std::string&gt; fraze)
+{
+    std::string checker;
+    std::string pS;
+    std::vector &lt;std::string&gt; ProcisceneFraze= Proveravac (recenica, fraze);
+    int fV= ProcisceneFraze.size(), rV=recenica.size();
+    recenica.push_back(' ');
+    recenica.resize(recenica.size()+10000);
+
+    for (int i(0); i&lt;fV; i++) {
+        int fixed=ProcisceneFraze.at(i).size();
+        for (int j(0) ; j&lt;rV; j++) {
+            pS= recenica.substr (j, fixed );
+            checker= recenica.substr (j, ProcisceneFraze.at(i).size()+1 );
+            if (pS== ProcisceneFraze.at(i) )  {
+                if ((wordcounter(ProcisceneFraze.at(i))==1 &amp;&amp; DuzinaCheck(checker))) continue;
+                if (wordcounter(ProcisceneFraze.at(i))&gt;1 &amp;&amp; ( Provjera (recenica.at(j+fixed)) || Provjera (recenica.at(j-1)))  ) break;
+                if (j&gt;0) {
+                    if (wordcounter(ProcisceneFraze.at(i))==1 &amp;&amp; (Provjera (recenica.at(j-1)) ||  j==recenica.size()-1) )  continue;
+                }
+                //Isjecak radi na slicnom principu kao i kod funkcije PraviPalindrom
+                j= j+ pS.size()-1-((ProcisceneFraze.at(i).size())/2); 
+                rV+=j; 
+                std::string str1= recenica.substr (0, j+1); 
+                int ost= recenica.size()-j; 
+                std::string str2= recenica.substr (j+((ProcisceneFraze.at(i).size())/2)+1, ost); 
+                recenica=str1 + PoluPalindrom(ProcisceneFraze.at(i)) + str2; 
+            }
+
+        }
+
+    }
+    //Postavi velicinu stringa, na velicinu recenice
+    int brojac(0);
+    for (int k(0) ; k&lt;recenica.length() ; k++) {
+        if (recenica.at(k)&gt;=' ' &amp;&amp; recenica.at(k)&lt;='~' ) brojac++;
+    }
+    recenica.resize(brojac);
+    return recenica;
+}
+
+
+int main ()
+{
+    std::string rec;
+    std::vector &lt;std::string&gt; fraze;
+    std::string pUnos;
+    std::cout&lt;&lt;"Unesite recenicu: ";
+    std::getline(std::cin,rec);
+    std::cout&lt;&lt;"Unesite fraze: ";
+     int i(0);
+
+    while (1) {
+        std::getline(std::cin,pUnos);
+        fraze.push_back(pUnos);
+        if (fraze.at(i).size()==0) break;
+        i++; 
+    }
+    std::cout &lt;&lt; "Recenica nakon Palindrom transformacije: " &lt;&lt; NapraviPalindrom(rec,fraze)&lt;&lt;std::endl;
+    std::cout &lt;&lt; "Recenica nakon PoluPalindrom transformacije: " &lt;&lt;NapraviPoluPalindrom(rec,fraze)&lt;&lt;std::endl;
+    
+    return 0;
+</font>}
+</pre>
+</body>
+</html>

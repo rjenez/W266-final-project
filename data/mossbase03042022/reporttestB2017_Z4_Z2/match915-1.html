@@ -1,0 +1,306 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student6010.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student7582.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;tuple&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+#include &lt;iterator&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+const double PI(4*atan(1));
+const long double EPSILON(10e-10);
+class NepreklapajucaKugla{
+    double x,y,z,r;
+    NepreklapajucaKugla *pok_na_prethodnu=nullptr;
+    static NepreklapajucaKugla *pok_na_pocetak;
+    static bool Jednaki(const double &amp;x, const double &amp;y){
+        return fabs(x-y)&lt;EPSILON*(fabs(x)+fabs(y));
+    }
+    static bool DaLiSePreklapaju(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+    return RastojanjeCentara(k1,k2)&lt;=k1.r+k2.r;
+}
+    public:
+explicit NepreklapajucaKugla(double r=0);
+NepreklapajucaKugla(double x, double y, double z, double r=0);
+explicit NepreklapajucaKugla(const tuple&lt;double, double, double&gt; &amp;centar, double r=0);
+double DajX() const;
+double DajY() const;
+double DajZ() const;
+tuple&lt;double, double, double&gt; DajCentar() const;
+<a name="1"></a><font color="#00FF00"><a href="match915-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+double DajPoluprecnik() const;
+double DajPovrsinu() const;
+double DajZapreminu() const;
+//static NepreklapajucaKugla *DajPokNaPocetak(){return pok_na_pocetak;}
+NepreklapajucaKugla &amp;PostaviX(double x);
+NepreklapajucaKugla &amp;PostaviY(double y);
+NepreklapajucaKugla &amp;PostaviZ(double z);
+NepreklapajucaKugla &amp;PostaviCentar(double x, double y, double z);
+NepreklapajucaKugla &amp;PostaviCentar(tuple&lt;double, double, double&gt; &amp;centar);
+</font>NepreklapajucaKugla &amp;PostaviPoluprecnik(double r);
+void Ispisi() const;
+void Transliraj(double delta_x, double delta_y, double delta_z);
+NepreklapajucaKugla(const NepreklapajucaKugla &amp;k) = delete;
+NepreklapajucaKugla &amp;operator=(const NepreklapajucaKugla &amp;k) = delete;
+/*friend bool DaLiSuIdenticne(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+friend bool DaLiSuPodudarne(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+friend bool DaLiSuKoncentricne(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+friend bool DaLiSeDodirujuIzvana(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+friend bool DaLiSeDodirujuIznutra(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+friend bool DaLiSePreklapaju(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+friend bool DaLiSeSijeku(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+bool DaLiSadrzi(const NepreklapajucaKugla &amp;k) const;*/
+friend double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+~NepreklapajucaKugla();
+};
+NepreklapajucaKugla *NepreklapajucaKugla::pok_na_pocetak(nullptr);
+NepreklapajucaKugla::NepreklapajucaKugla(double r):x(0),y(0),z(0){
+    if(r&lt;0) throw domain_error("Ilegalan poluprecnik");
+    NepreklapajucaKugla::r=r;
+    if(!pok_na_pocetak) pok_na_pocetak=this;
+    else{
+    for(auto it=pok_na_pocetak;it!=nullptr;it=it-&gt;pok_na_prethodnu){
+       if(DaLiSePreklapaju(*this,*it)) throw logic_error("Nedozvoljeno preklapanje"); 
+    }
+    pok_na_prethodnu=pok_na_pocetak;
+    pok_na_pocetak=this; 
+    }
+}
+NepreklapajucaKugla::NepreklapajucaKugla(double x, double y, double z, double r):x(x),y(y),z(z){
+    if(r&lt;0) throw domain_error("Ilegalan poluprecnik");
+    NepreklapajucaKugla::r=r;
+    if(!pok_na_pocetak) pok_na_pocetak=this;
+    else{
+    for(auto it=pok_na_pocetak;it!=nullptr;it=it-&gt;pok_na_prethodnu){
+       if(DaLiSePreklapaju(*this,*it)) throw logic_error("Nedozvoljeno preklapanje"); 
+    }
+    pok_na_prethodnu=pok_na_pocetak;
+    pok_na_pocetak=this; 
+    }
+}
+//expllicit se ne smije ponavljati i default parametar stavljamo samo u deklaraciji
+NepreklapajucaKugla::NepreklapajucaKugla(const tuple&lt;double, double, double&gt; &amp;centar, double r):x(get&lt;0&gt;(centar)), y(get&lt;1&gt;(centar)), z(get&lt;2&gt;(centar)){
+    if(r&lt;0) throw domain_error("Ilegalan poluprecnik");
+    NepreklapajucaKugla::r=r;
+    if(!pok_na_pocetak) pok_na_pocetak=this;
+    else{
+    for(auto it=pok_na_pocetak;it!=nullptr;it=it-&gt;pok_na_prethodnu){
+       if(DaLiSePreklapaju(*this,*it)) throw logic_error("Nedozvoljeno preklapanje"); 
+    }
+<a name="4"></a><font color="#FF00FF"><a href="match915-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+    pok_na_prethodnu=pok_na_pocetak;
+    pok_na_pocetak=this; 
+    }
+}
+double NepreklapajucaKugla::DajX() const{return x;}
+double NepreklapajucaKugla::DajY() const{return y;}
+double NepreklapajucaKugla::DajZ() const{return z;}
+</font>tuple&lt;double, double, double&gt; NepreklapajucaKugla::DajCentar() const{
+    return make_tuple(x,y,z);
+}
+double NepreklapajucaKugla::DajPoluprecnik() const{return r;}
+double NepreklapajucaKugla::DajPovrsinu() const{
+    return 4*r*r*PI;
+}
+double NepreklapajucaKugla::DajZapreminu() const{
+    return (4./3)*r*r*r*PI;
+}
+NepreklapajucaKugla &amp;NepreklapajucaKugla::PostaviX(double x){
+    NepreklapajucaKugla::x=x;
+    for(auto it=pok_na_pocetak;it!=nullptr;it=it-&gt;pok_na_prethodnu){
+       if(DaLiSePreklapaju(*this,*it)) throw logic_error("Nedozvoljeno preklapanje"); 
+    }
+    return *this;
+}
+NepreklapajucaKugla &amp;NepreklapajucaKugla::PostaviY(double y){
+    NepreklapajucaKugla::y=y; 
+    for(auto it=pok_na_pocetak;it!=nullptr;it=it-&gt;pok_na_prethodnu){
+       if(DaLiSePreklapaju(*this,*it)) throw logic_error("Nedozvoljeno preklapanje"); 
+    }
+    return *this;
+}
+NepreklapajucaKugla &amp;NepreklapajucaKugla::PostaviZ(double z){
+    NepreklapajucaKugla::z=z;
+    for(auto it=pok_na_pocetak;it!=nullptr;it=it-&gt;pok_na_prethodnu){
+       if(DaLiSePreklapaju(*this,*it)) throw logic_error("Nedozvoljeno preklapanje"); 
+    }
+    return *this;
+}
+NepreklapajucaKugla &amp;NepreklapajucaKugla::PostaviCentar(double x, double y, double z){
+    NepreklapajucaKugla::x=x;
+    NepreklapajucaKugla::y=y;
+    NepreklapajucaKugla::z=z;
+    for(auto it=pok_na_pocetak;it!=nullptr;it=it-&gt;pok_na_prethodnu){
+       if(DaLiSePreklapaju(*this,*it)) throw logic_error("Nedozvoljeno preklapanje"); 
+    }
+    return *this;
+}
+NepreklapajucaKugla &amp;NepreklapajucaKugla::PostaviCentar(tuple&lt;double, double, double&gt; &amp;centar){
+    x=get&lt;0&gt;(centar);
+    y=get&lt;1&gt;(centar);
+    z=get&lt;2&gt;(centar);
+    for(auto it=pok_na_pocetak;it!=nullptr;it=it-&gt;pok_na_prethodnu){
+       if(DaLiSePreklapaju(*this,*it)) throw logic_error("Nedozvoljeno preklapanje"); 
+    }
+    return *this;
+}
+NepreklapajucaKugla &amp;NepreklapajucaKugla::PostaviPoluprecnik(double r){
+    if(r&lt;0) throw domain_error("Ilegalan poluprecnik");
+    NepreklapajucaKugla::r=r;
+    return *this;
+}
+<a name="3"></a><font color="#00FFFF"><a href="match915-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+void NepreklapajucaKugla::Ispisi() const{
+    cout&lt;&lt;"{("&lt;&lt;x&lt;&lt;","&lt;&lt;y&lt;&lt;","&lt;&lt;z&lt;&lt;"),"&lt;&lt;r&lt;&lt;"}"&lt;&lt;endl;
+</font>}
+void NepreklapajucaKugla::Transliraj(double delta_x, double delta_y, double delta_z){
+    x+=delta_x;
+    y+=delta_y;
+    z+=delta_z;
+    for(auto it=pok_na_pocetak;it!=nullptr;it=it-&gt;pok_na_prethodnu){
+       if(DaLiSePreklapaju(*this,*it)) throw logic_error("Nedozvoljeno preklapanje"); 
+    }
+}
+/*bool DaLiSuIdenticne(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+    return (NepreklapajucaKugla::Jednaki(k1.x,k2.x) &amp;&amp; NepreklapajucaKugla::Jednaki(k1.y,k2.y) &amp;&amp; NepreklapajucaKugla::Jednaki(k1.z,k2.z) &amp;&amp; NepreklapajucaKugla::Jednaki(k1.r,k2.r));
+}
+bool DaLiSuPodudarne(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+    return NepreklapajucaKugla::Jednaki(k1.r,k2.r);
+}
+bool DaLiSuKoncentricne(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+    return (NepreklapajucaKugla::Jednaki(k1.x,k2.x) &amp;&amp; NepreklapajucaKugla::Jednaki(k1.y,k2.y) &amp;&amp; NepreklapajucaKugla::Jednaki(k1.z,k2.z));
+}*/
+double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+    return sqrt(pow(k1.x-k2.x,2)+pow(k1.y-k2.y,2)+pow(k1.z-k2.z,2));
+}
+/*bool DaLiSeDodirujuIzvana(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+    return NepreklapajucaKugla::Jednaki(k1.r+k2.r,RastojanjeCentara(k1,k2));
+}
+bool DaLiSeDodirujuIznutra(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+    return NepreklapajucaKugla::Jednaki(fabs(k1.r-k2.r),RastojanjeCentara(k1,k2));
+}
+bool DaLiSePreklapaju(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+    return RastojanjeCentara(k1,k2)&lt;k1.r+k2.r;
+}
+bool DaLiSeSijeku(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+    return RastojanjeCentara(k1,k2)&lt;k1.r+k2.r &amp;&amp; RastojanjeCentara(k1,k2)&gt;fabs(k1.r-k2.r);
+}
+bool NepreklapajucaKugla::DaLiSadrzi(const NepreklapajucaKugla &amp;k) const{
+    return RastojanjeCentara(*this,k)&lt;this-&gt;r-k.r;
+}*/
+NepreklapajucaKugla::~NepreklapajucaKugla(){
+    int n(0);
+    for(auto it=pok_na_pocetak;it!=this;it=it-&gt;pok_na_prethodnu){
+        n++;
+    }
+    auto it(pok_na_pocetak);
+    if(!n) pok_na_pocetak=pok_na_pocetak-&gt;pok_na_prethodnu;
+    else{
+    for(int i=1;i&lt;n;i++){
+        it=it-&gt;pok_na_prethodnu;
+    }
+    it-&gt;pok_na_prethodnu=this-&gt;pok_na_prethodnu;
+    }
+}
+int main ()
+{
+    /*NepreklapajucaKugla k1(2, 3, 1, 5);
+    NepreklapajucaKugla k2(10, 7, 8, 2);
+    try{
+      //NepreklapajucaKugla k3(4, 6, 3, 7);  
+    }
+    catch(logic_error izuzetak){
+        cout&lt;&lt;izuzetak.what();
+    }
+    NepreklapajucaKugla k3(-10, -7, -8, -2); 
+    NepreklapajucaKugla k4(-2, -3, -1, -5);*/
+    /*NepreklapajucaKugla k(3,4,5,3);
+    k.Ispisi();
+    NepreklapajucaKugla k1(3,4,5,2);
+    cout&lt;&lt;DaLiSuIdenticne(k,k1)&lt;&lt;endl;
+    cout&lt;&lt;k.DaLiSadrzi(k1)&lt;&lt;endl;
+    cout&lt;&lt;DaLiSeSijeku(k,k1)&lt;&lt;endl;
+    cout&lt;&lt;DaLiSePreklapaju(k,k1);
+    */
+    cout&lt;&lt;"Unesite broj kugli: ";
+    int n;
+    cin&gt;&gt;n;
+    while(n&lt;=0 || !cin){
+        cout&lt;&lt;"Neispravan broj kugli, unesite ponovo!"&lt;&lt;endl;
+        cin.clear();
+<a name="2"></a><font color="#0000FF"><a href="match915-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+        cin.ignore(10000,'\n');
+        cin&gt;&gt;n;
+    }
+    vector&lt;shared_ptr&lt;NepreklapajucaKugla&gt;&gt; v(n);
+    for(int i=0;i&lt;n;i++){
+        cout&lt;&lt;"Unesite centar za "&lt;&lt;i+1&lt;&lt;". kuglu: ";
+</font>        double x,y,z,r;
+<a name="0"></a><font color="#FF0000"><a href="match915-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+        cin&gt;&gt;x&gt;&gt;y&gt;&gt;z;
+        while(!cin){
+          cout&lt;&lt;"Neispravan centar, unesite ponovo: "&lt;&lt;endl;
+          cin.clear();
+          cin.ignore(1000,'\n');
+          cin&gt;&gt;x&gt;&gt;y&gt;&gt;z;
+        }
+        cout&lt;&lt;"Unesite poluprecnik: ";
+        cin&gt;&gt;r;
+</font>        while(r&lt;0 || !cin){
+          cout&lt;&lt;"Neispravan poluprecnik, unesite ponovo: "&lt;&lt;endl;
+          cin.clear();
+          cin.ignore(1000,'\n');
+          cin&gt;&gt;r;
+        }
+            try{
+<a name="5"></a><font color="#FF0000"><a href="match915-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+            v.at(i)=make_shared&lt;NepreklapajucaKugla&gt;(x,y,z,r); 
+            }catch(logic_error izuzetak){
+                cout&lt;&lt;izuzetak.what()&lt;&lt;endl;
+                i--;
+</font>            }
+        }
+    /*cout&lt;&lt;"Unesite parametre translacije (delta_x,delta_y,delta_z): ";
+    double x,y,z;
+    cin&gt;&gt;x&gt;&gt;y&gt;&gt;z;*/
+    //transform(v.begin(), v.end(), v.begin(),[x,y,z](shared_ptr&lt;NepreklapajucaKugla&gt; &amp;k){k-&gt;Transliraj(x,y,z); return k;});
+    sort(v.begin(),v.end(),[](const shared_ptr&lt;NepreklapajucaKugla&gt; &amp;k1,const shared_ptr&lt;NepreklapajucaKugla&gt; &amp;k2){return k1-&gt;DajPovrsinu()&lt;k2-&gt;DajPovrsinu();});
+    cout&lt;&lt;endl&lt;&lt;"Kugle nakon obavljenog sortiranja: "&lt;&lt;endl;
+    for_each(v.begin(),v.end(),[](shared_ptr&lt;NepreklapajucaKugla&gt; &amp;k){k-&gt;Ispisi();});
+    /*
+    cout&lt;&lt;"NepreklapajucaKugla sa najvecom povrsinom je: ";
+    auto najveci=max_element(v.begin(),v.end(),[](const shared_ptr&lt;NepreklapajucaKugla&gt; &amp;k1,const shared_ptr&lt;NepreklapajucaKugla&gt; &amp;k2){return k2-&gt;DajPovrsinu()&gt;k1-&gt;DajPovrsinu();});
+    (*najveci)-&gt;Ispisi();
+    int br(0);
+    bool nesjekuse(true);
+    for_each(v.begin(),v.end(),[&amp;v,&amp;br,&amp;nesjekuse](const shared_ptr&lt;NepreklapajucaKugla&gt; &amp;k1){
+        br++;
+        for_each(v.begin()+br,v.end(),[&amp;k1, &amp;nesjekuse](const shared_ptr&lt;NepreklapajucaKugla&gt; &amp;k2){
+            if(DaLiSeSijeku(*k1,*k2)){
+                nesjekuse=false;
+                cout&lt;&lt;"Presjecaju se kugle: ";
+                k1-&gt;Ispisi();
+                k2-&gt;Ispisi();
+            }
+            
+        });
+    });
+    if(nesjekuse) cout&lt;&lt;"Ne postoje kugle koje se presjecaju!";*/
+	return 0;
+}
+</pre>
+</body>
+</html>

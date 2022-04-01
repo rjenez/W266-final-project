@@ -1,0 +1,421 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z4/student2664.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z4/student2664.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match104-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_10.gif"/></a>
+
+/B2017/2018: Zadaća 4, Zadatak 4
+#include &lt;initializer_list&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;utility&gt; //za pair i za move
+#include &lt;memory&gt; //pametni pok
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;tuple&gt;
+using std::initializer_list;
+using std::domain_error;
+using std::min_element;
+using std::logic_error;
+using std::range_error;
+using std::stable_sort;
+using std::make_shared;
+using std::shared_ptr;
+using std::make_tuple;
+using std::make_pair;
+using std::count_if;
+using std::for_each;
+using std::getline;
+using std::vector;
+using std::string;
+using std::right;
+using std::tuple;
+using std::find;
+using std::swap;
+using std::endl;
+using std::pair;
+using std::cout;
+using std::setw;
+using std::left;
+using std::sort;
+using std::get;
+using std::cin;
+using std::tie;
+typedef tuple&lt;int, int, int&gt; Tapl;
+typedef pair&lt;int, int&gt; Par;
+
+class Datum{
+    int dan, mjesec, godina; 
+  public:
+    Datum(int d, int m, int g) { Postavi(d, m, g); }
+    void Postavi(int d, int m, int g);
+    Tapl Ocitaj() const { return make_tuple(dan, mjesec, godina); }
+    void Ispisi() const { 
+        cout &lt;&lt; dan &lt;&lt; "/" &lt;&lt; mjesec &lt;&lt; "/" &lt;&lt; godina; 
+    }
+};
+void Datum::Postavi(int d, int m, int g){
+    int broj_dana[] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+</font>    if((g % 4 == 0 &amp;&amp; g % 100 != 0) || g % 400 == 0) broj_dana[1]++; //**
+<a name="0"></a><font color="#FF0000"><a href="match104-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_87.gif"/></a>
+
+    if(g &lt; 1 || d &lt; 1 || m &lt; 1 || m &gt; 12 || d &gt; broj_dana[m-1]) throw domain_error("Neispravan datum");
+    dan = d;
+    mjesec = m;
+    godina = g;
+}
+class Vrijeme{
+    int sati, minute;
+  public:
+    Vrijeme(int h, int m) { Postavi(h, m); }
+    void Postavi(int h, int m);
+    Par Ocitaj() const { return make_pair(sati, minute); }
+    void Ispisi() const { 
+        if(sati &lt; 10) cout &lt;&lt; 0; 
+        cout &lt;&lt; sati &lt;&lt; ":";
+        if(minute &lt; 10) cout &lt;&lt; 0; 
+        cout &lt;&lt; minute;
+    }
+};
+void Vrijeme::Postavi(int h, int m){
+    if(h &lt; 0 || h &gt; 23 || m &lt; 0 || m &gt; 59) throw domain_error("Neispravno vrijeme");
+    sati = h;
+    minute = m;
+}
+class Pregled{
+    string ime;
+    Datum datum;
+    Vrijeme vrijeme;
+  public:
+    Pregled(const string &amp;ime_p, const Datum &amp;datum_pregleda, const Vrijeme &amp;vrijeme_pregleda) : ime(ime_p), datum(datum_pregleda), vrijeme(vrijeme_pregleda) {}
+    Pregled(const string &amp;ime_p, int dan_p, int mjesec_p, int godina_p, int sati_p, int minute_p) : ime(ime_p), datum(dan_p, mjesec_p, godina_p), vrijeme(sati_p, minute_p) {}
+    void PromijeniPacijenta(const string &amp;ime_pacijenta) { ime = ime_pacijenta; }
+    void PromijeniDatum(const Datum &amp;novi_datum) { datum = novi_datum; }
+    void PromijeniVrijeme(const Vrijeme &amp;novo_vrijeme) { vrijeme = novo_vrijeme; }
+    void PomjeriDanUnaprijed();
+    void PomjeriDanUnazad();
+    string DajImePacijenta() const { return ime; }
+    Datum DajDatumPregleda() const { return datum; }
+    Vrijeme DajVrijemePregleda() const { return vrijeme; }
+    static bool DolaziPrije(const Pregled &amp;p1, const Pregled &amp;p2);
+    void Ispisi() const {
+        cout &lt;&lt; setw(30) &lt;&lt; left &lt;&lt; ime;
+        datum.Ispisi();
+        cout &lt;&lt; " ";
+        vrijeme.Ispisi();
+        cout &lt;&lt; endl;
+    }
+};
+void Pregled::PomjeriDanUnaprijed() {
+    Tapl d(datum.Ocitaj());
+    int dan(get&lt;0&gt;(d)), mjesec(get&lt;1&gt;(d)), godina(get&lt;2&gt;(d));
+    int broj_dana[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if((godina % 4 == 0 &amp;&amp; godina % 100 != 0) || godina % 400 == 0) broj_dana[1]++; //**
+    dan++;
+    if(dan &gt; broj_dana[mjesec-1]) dan = 1, mjesec++;
+    if(mjesec &gt; 12) mjesec = 1, godina++;
+    if((godina % 4 == 0 &amp;&amp; godina % 100 != 0) || godina % 400 == 0) dan++; //godina prestupna
+    datum = Datum(dan, mjesec, godina);
+}
+void Pregled::PomjeriDanUnazad(){
+    Tapl d(datum.Ocitaj());
+    int dan(get&lt;0&gt;(d)), mjesec(get&lt;1&gt;(d)), godina(get&lt;2&gt;(d));
+    dan--;
+    if(dan == 0) mjesec--;
+    if(mjesec == 0) mjesec = 12, godina--;
+    int broj_dana[] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if(dan == 0) dan = broj_dana[mjesec-1]; // [mjesec-1] a ne [mjesec]
+    if((godina % 4 == 0 &amp;&amp; godina % 100 != 0) || godina % 400 == 0) dan++; //godina prestupna
+    datum = Datum(dan, mjesec, godina);
+}
+bool Pregled::DolaziPrije(const Pregled &amp;p1, const Pregled &amp;p2){
+    int d, m, g, dd, mm, gg;
+    Tapl datum1(p1.datum.Ocitaj()), datum2(p2.datum.Ocitaj());
+    tie(d, m, g) = datum1;
+    tie(dd, mm, gg) = datum2;
+    if(g &lt; gg) return true;
+    else if(g &gt; gg) return false;
+    if(m &lt; mm) return true;
+    else if(m &gt; mm) return false;
+    if(d &lt; dd) return true;
+    else if(d &gt; dd) return false;
+    Par vr1(p1.vrijeme.Ocitaj()), vr2(p2.vrijeme.Ocitaj());
+    int h, min, hh, mmin;
+    tie(h, min) = vr1;
+    tie(hh, mmin) = vr2;
+    if(h &lt; hh) return true;
+    else if(h &gt; hh) return false;
+    if(min &lt; mmin) return true;
+    return false;
+}
+
+class Pregledi{
+    vector&lt;shared_ptr&lt;Pregled&gt;&gt; p;
+  public:
+    Pregledi() {} 
+    explicit Pregledi(initializer_list&lt;Pregled&gt; spisak_pregleda);
+    ~Pregledi();
+    Pregledi(const Pregledi &amp;pregledi);
+    Pregledi(Pregledi &amp;&amp;pregledi) : p(move(pregledi.p)) {}
+    Pregledi&amp; operator =(const Pregledi &amp;pregledi);
+    Pregledi&amp; operator =(Pregledi &amp;&amp;pregledi);
+    void RegistrirajPregled(const string &amp;ime_p, const Datum &amp;datum_p, const Vrijeme &amp;vrijeme_p);
+    void RegistrirajPregled(const string &amp;ime_p, int dan_p, int mjesec_p, int godina_p, int sati_p, int minute_p);
+    void RegistrirajPregled(shared_ptr&lt;Pregled&gt;  pregled) { p[p.size()] = pregled; }
+    int DajBrojPregleda() const  { return p.size();}
+    int DajBrojPregledaNaDatum(const Datum &amp;datum) const;
+    Pregled &amp;DajNajranijiPregled();
+    Pregled DajNajranijiPregled() const;
+    void IsprazniKolekciju();
+    void ObrisiNajranijiPregled();
+    void ObrisiPregledePacijenta(const string &amp;ime_p);
+    void IspisiPregledeNaDatum(const Datum &amp;datum)  ;
+    void IspisiSvePreglede() const ;
+};
+Pregledi::Pregledi(initializer_list&lt;Pregled&gt; spisak_pregleda) : p(vector&lt;shared_ptr&lt;Pregled&gt;&gt; (spisak_pregleda.size(), nullptr)) {
+    for(int i=0; i&lt;p.size(); i++){
+        try{
+            p[i] = make_shared&lt;Pregled&gt;(*(spisak_pregleda.begin() + i));
+        }
+        catch(...){
+            for(int j=0; j&lt;i; j++) p[i] = nullptr;
+            p.resize(0);
+            throw;
+        }
+    }
+}
+Pregledi::~Pregledi() {
+    for(int i=0; i&lt;p.size(); i++) p[i] = nullptr;
+    p.resize(0);
+}
+Pregledi::Pregledi(const Pregledi &amp;pregledi) : p(vector&lt;shared_ptr&lt;Pregled&gt;&gt; (pregledi.p.size(), nullptr)) {
+    try{
+        for(int i=0; i&lt;p.size(); i++) p[i] = make_shared&lt;Pregled&gt;(*pregledi.p[i]);
+    }
+    catch(...){
+        for(int i=0; i&lt;p.size(); i++) p[i] = nullptr;
+        p.resize(0);
+        throw;
+    }
+}
+Pregledi&amp; Pregledi::operator =(const Pregledi &amp;pregledi) {
+    vector&lt;shared_ptr&lt;Pregled&gt;&gt; vec(pregledi.p.size(), nullptr);
+    try{
+        for(int i=0; i&lt;vec.size(); i++) vec[i] = make_shared&lt;Pregled&gt; (*(pregledi.p[i]));
+    }
+    catch(...){
+        for(int i=0; i&lt;vec.size(); i++) vec[i] = nullptr;
+        vec.resize(0);
+        throw;
+    }
+    p = move(vec);
+    return *this;
+
+}
+Pregledi&amp; Pregledi::operator =(Pregledi &amp;&amp;pregledi) {
+    p = move(pregledi.p);
+    return *this;
+}
+void Pregledi::RegistrirajPregled(const string &amp;ime_p, const Datum &amp;datum_p, const Vrijeme &amp;vrijeme_p){
+    try{
+        p.emplace_back(make_shared&lt;Pregled&gt;(ime_p, datum_p, vrijeme_p));
+    }
+    catch(...){
+        throw;
+    }
+}
+void Pregledi::RegistrirajPregled(const string &amp;ime_p, int dan_p, int mjesec_p, int godina_p, int sati_p, int minute_p){
+    try{
+        p.emplace_back(make_shared&lt;Pregled&gt;(ime_p, Datum(dan_p, mjesec_p, godina_p), Vrijeme(sati_p, minute_p)));
+    }
+    catch(...){
+        throw;
+    }
+}
+int Pregledi::DajBrojPregledaNaDatum(const Datum &amp;datum) const {
+    Tapl dat(datum.Ocitaj());
+    int br(count_if(p.begin(), p.end(), [&amp;dat](shared_ptr&lt;Pregled&gt;  pregled){
+        Tapl dat2((pregled-&gt;DajDatumPregleda()).Ocitaj());
+        return dat == dat2;
+    }));
+    return br;
+}
+Pregled&amp; Pregledi::DajNajranijiPregled() {
+    auto pok(min_element(p.begin(), p.end(), [](shared_ptr&lt;Pregled&gt; p1, shared_ptr&lt;Pregled&gt; p2){
+        return Pregled::DolaziPrije(*p1, *p2);
+    })); // **
+    if(pok == p.end()) throw domain_error("Nema registriranih pregleda");
+    return **pok;
+}
+Pregled Pregledi::DajNajranijiPregled() const {
+    auto pok(min_element(p.begin(), p.end(), [](shared_ptr&lt;Pregled&gt; p1, shared_ptr&lt;Pregled&gt; p2){
+        return Pregled::DolaziPrije(*p1, *p2);
+    }));
+    if(pok == p.end()) throw domain_error("Nema registriranih pregleda");
+    return **pok;
+}
+void Pregledi::IsprazniKolekciju() {
+    // **
+    for(int i=0; i&lt;p.size(); i++) p[i] = nullptr;
+    p.resize(0);
+}
+void Pregledi::ObrisiNajranijiPregled() {
+    auto najraniji(min_element(p.begin(), p.end(), [](shared_ptr&lt;Pregled&gt; p1, shared_ptr&lt;Pregled&gt; p2){
+        return Pregled::DolaziPrije(*p1, *p2);
+    }));
+    if(najraniji == p.end()) throw range_error("Prazna kolekcija");
+    p.erase(najraniji);
+}
+void Pregledi::ObrisiPregledePacijenta(const string &amp;ime_p) {
+    for(int i=0; i&lt;p.size(); i++){
+        if(p[i]-&gt;DajImePacijenta() == ime_p){ 
+            p[i] = nullptr; // **
+            p.erase(p.begin()+i);
+        }
+    }
+}
+void Pregledi::IspisiPregledeNaDatum(const Datum &amp;dat)  {
+    sort(p.begin(), p.end(), [](shared_ptr&lt;const Pregled&gt; p1, shared_ptr&lt;const Pregled&gt; p2){
+        return Pregled::DolaziPrije(*p1, *p2);
+    });
+    Tapl d1(dat.Ocitaj());
+    for_each(p.begin(), p.end(), [&amp;d1](shared_ptr&lt;const Pregled&gt; pp){
+        Tapl d2((pp-&gt;DajDatumPregleda()).Ocitaj());
+        if(d1 == d2) pp-&gt;Ispisi();
+    });
+}
+/*void Pregledi::IspisiSvePreglede()  {
+    sort(p.begin(), p.end(), [](shared_ptr&lt;const Pregled&gt; p1, shared_ptr&lt;const Pregled&gt; p2){
+        return Pregled::DolaziPrije(*p1, *p2);
+    });
+    for_each(p.begin(), p.end(), [](shared_ptr&lt;const Pregled&gt; p1){
+        p1-&gt;Ispisi();
+    });
+}
+
+*/
+
+void Pregledi::IspisiSvePreglede() const {
+    auto najmanji(min_element(p.begin(), p.end(), [](shared_ptr&lt;const Pregled&gt; p1, shared_ptr&lt;const Pregled&gt; p2){
+        return Pregled::DolaziPrije(*p1, *p2);
+    }));
+    if(najmanji != p.end()) (*najmanji)-&gt;Ispisi();
+    else return;
+    
+    typedef decltype (najmanji) Tip;
+    auto it(p.begin());
+    int i = 0;
+    for(; it != p.end(), i != p.size(); it++, i++){
+        it = p.begin();
+        Tip najmanji2(it);
+       
+        for(auto it2(p.begin()); it2 != p.end(); it2++){
+            if(Pregled::DolaziPrije(**it2, **najmanji2) &amp;&amp; it2 != najmanji &amp;&amp; !Pregled::DolaziPrije(**it2, **najmanji)){
+                najmanji2 = it2;
+            }
+        }
+                
+        (*najmanji2)-&gt;Ispisi();
+        najmanji = najmanji2;
+        
+    }
+    
+    
+} 
+void Devranisi(){
+    cin.clear();
+    cin.ignore(10000, '\n');
+}
+void UnesiDatum(int &amp;d, int &amp;m, int &amp;g, bool pregleda = false){
+    cout &lt;&lt; "Unesite dan mjesec i godinu ";
+    if(pregleda) cout &lt;&lt; "pregleda";
+    cout &lt;&lt; ": ";
+    cin &gt;&gt; d &gt;&gt; m &gt;&gt; g;
+}
+void IspisiDatum(Tapl t){
+    int d, m, g;
+    tie(d, m, g) = t;
+    cout &lt;&lt; d &lt;&lt; " " &lt;&lt; m &lt;&lt; " " &lt;&lt; g;
+}
+
+int main (){
+    Pregledi p;
+    while(1){
+        cout &lt;&lt; "Unesite ime novog pacijenta ili 'kraj' za zavrsetak unosa: ";
+        string ime_pacijenta;
+        getline(cin, ime_pacijenta);
+        if(ime_pacijenta == "kraj") break;
+        int d, m, g, h, min;
+        UnesiDatum(d, m, g, true);
+        cout &lt;&lt; "Unesite sate i minute pregleda: ";
+        cin &gt;&gt; h &gt;&gt; min;
+        try{
+            p.RegistrirajPregled(ime_pacijenta, d, m, g, h, min);
+        }
+        catch(...){
+            cout &lt;&lt; "belaj";
+        }
+        Devranisi();
+    }
+    cout &lt;&lt; "Trenutno su registrovani sljedeci pregledi\n";
+    p.IspisiSvePreglede();
+    
+    int opcija(0);
+    do{
+        cout &lt;&lt; "Odaberite jednu od sljedecih opcija\n";
+        cout &lt;&lt; "1 - Broj pregleda na datum\n2 - Najraniji pregled\n";
+        cout &lt;&lt; "3 - Obrisi pregled pacijenta\n4 - Obrisi najraniji pregled\n";
+        cout &lt;&lt; "5 - Ispisi sve pregleda na datum\n6 - Ispisi sve preglede\n";
+        cout &lt;&lt; "7 - Kraj programa\n";
+        cin &gt;&gt; opcija;
+        Devranisi();
+        if(opcija == 1) {
+            int d, m, g;
+            UnesiDatum(d, m, g);
+            Datum dat(d, m, g);
+            cout &lt;&lt; "Broj pregleda na datum "; IspisiDatum(dat.Ocitaj()); cout &lt;&lt; " je: ";
+            cout &lt;&lt; p.DajBrojPregledaNaDatum(dat) &lt;&lt; endl;
+        }
+        else if(opcija == 2){
+            cout &lt;&lt; "Najraniji pregled je:\n";
+            p.DajNajranijiPregled().Ispisi();
+        }
+        else if(opcija == 3){
+            cout &lt;&lt; "Unesite ime pacijenta: ";
+            string ime("");
+            getline(cin, ime);
+            int prije(p.DajBrojPregleda());
+            p.ObrisiPregledePacijenta(ime);
+            if(prije != p.DajBrojPregleda()) cout &lt;&lt; "Uspjesno obrisano " &lt;&lt; prije - p.DajBrojPregleda() &lt;&lt; " pregleda\n";
+        }
+        else if(opcija == 4){
+            int prije(p.DajBrojPregleda());
+            p.ObrisiNajranijiPregled();
+            if(prije == p.DajBrojPregleda() + 1) cout &lt;&lt; "Najraniji pregled uspjesno obrisan\n";
+        }
+        else if(opcija == 5){
+            int d, m, g;
+            UnesiDatum(d, m, g); //**dodati try &amp; catch
+            Datum dat(d, m, g);
+            cout &lt;&lt; "Pregledi na datum "; IspisiDatum(dat.Ocitaj()); cout &lt;&lt; " su:\n";
+            p.IspisiPregledeNaDatum(dat);
+        }
+        else if(opcija == 6){
+            p.IspisiSvePreglede();
+        }
+        else if(opcija == 7) break;
+        else return 0;
+        cout &lt;&lt; endl;
+    }while(1);
+</font>    
+    
+	return 0;
+} 
+</pre>
+</body>
+</html>

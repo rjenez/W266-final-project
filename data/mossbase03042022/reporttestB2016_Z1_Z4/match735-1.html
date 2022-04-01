@@ -1,0 +1,185 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student8337.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4903.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+*/
+
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;vector&gt;
+#include&lt;stdexcept&gt;
+
+std::string ObrniFraze(std::string s, std::vector&lt;std::string&gt; v)
+{
+
+
+	for(int i(0); i&lt;v.size(); i++) {
+		int j(0),len(s.size());
+		while(j&lt;len) {
+			if(s[j]==v[i][0]) {
+				int poc(j),duzina(0),k(0);
+				bool jednaki(true);
+				while(j&lt;len &amp;&amp; k&lt;v[i].length()) {
+					duzina++;
+					if(s[j]!=v[i][k]) {
+						jednaki=false;
+						break;
+					}
+
+					j++;
+					k++;
+
+				}
+				j--;
+				std::string rijec(s.substr(poc,duzina));
+				if(rijec!=v[i]) jednaki=false;
+				if(jednaki) {
+
+					std::string rijec(s.substr(poc,duzina));
+					std::string obrnuti(rijec);
+					for(int k(0); k&lt;duzina/2; k++) {
+						char pom(obrnuti[k]);
+						obrnuti[k]=obrnuti[duzina-k-1];
+						obrnuti[duzina-k-1]=pom;
+					}
+					int l(0);
+					for(int k(poc); k&lt;poc+duzina; k++) {
+						s[k]=obrnuti[l];
+						l++;
+					}
+
+				}
+			j=poc;
+			}
+	
+			j++;
+		}
+	}
+
+	return s;
+}
+
+std::string IzmijeniUPigLatin(std::string s, std::vector&lt;std::string&gt; v)
+{
+	for(int i(0); i&lt;v.size(); i++) {
+		for(int j(0); j&lt;v[i].length(); j++) {
+			if((v[i][j]&lt;'A' || v[i][j]&gt;'Z')&amp;&amp;(v[i][j]&lt;'a' || v[i][j]&gt;'z'))
+				throw std::domain_error("Nekorektan izbor rijeci");
+		}
+	}
+
+	if(v.size()&gt;0) {
+		for(int i(0); i&lt;v.size(); i++) {
+			int j(0);
+			bool razmak(true);
+			while(j&lt;s.length()) {
+<a name="1"></a><font color="#00FF00"><a href="match735-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+				if(!((s[j]&gt;='a' &amp;&amp; s[j]&lt;='z')||(s[j]&gt;='A' &amp;&amp; s[j]&lt;='Z'))) razmak=true;
+				else if (razmak==true) {
+					razmak=false;
+</font>					int poc(j),duzina(0);
+					while(j&lt;s.length() &amp;&amp; ((s[j]&gt;='a' &amp;&amp; s[j]&lt;='z')||(s[j]&gt;='A' &amp;&amp; s[j]&lt;='Z')) ) {
+						j++;
+						duzina++;
+					}
+					j--;
+					std::string rijec(s.substr(poc,duzina));
+					char pom(s[poc]);
+					if(rijec==v[i]) {
+						if((poc+duzina)&gt;=s.length()) {
+							s.erase(s.begin()+poc);
+							s.push_back(pom);
+							s.push_back('a');
+							s.push_back('y');
+						} else {
+							s.erase(s.begin()+poc);
+							s.insert(s.begin()+poc+duzina-1,'y');
+							s.insert(s.begin()+poc+duzina-1,'a');
+							s.insert(s.begin()+poc+duzina-1,pom);
+							j+=2;
+						}
+					}
+				}
+
+				j++;
+			}
+		}
+	} else {
+		int j(0);
+		bool razmak(true);
+		while(j&lt;s.length()) {
+<a name="2"></a><font color="#0000FF"><a href="match735-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+			if(!((s[j]&gt;='a' &amp;&amp; s[j]&lt;='z')||(s[j]&gt;='A' &amp;&amp; s[j]&lt;='Z'))) razmak=true;
+			else if (razmak==true) {
+				razmak=false;
+</font>				int poc(j),duzina(0);
+				while(j&lt;s.length() &amp;&amp; ((s[j]&gt;='a' &amp;&amp; s[j]&lt;='z')||(s[j]&gt;='A' &amp;&amp; s[j]&lt;='Z')) ) {
+					j++;
+					duzina++;
+				}
+				j--;
+				char pom(s[poc]);
+				if((poc+duzina)&gt;=s.length()) {
+					s.erase(s.begin()+poc);
+					s.push_back(pom);
+					s.push_back('a');
+					s.push_back('y');
+				} else {
+					s.erase(s.begin()+poc);
+					s.insert(s.begin()+poc+duzina-1,'y');
+					s.insert(s.begin()+poc+duzina-1,'a');
+					s.insert(s.begin()+poc+duzina-1,pom);
+					j+=2;
+				}
+			}
+			j++;
+		}
+	}
+
+	return s;
+
+}
+
+int main ()
+{
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	std::string s,poms;
+	std::getline(std::cin,s);
+	std::cout&lt;&lt;"Unesite fraze: ";
+	std::vector&lt;std::string&gt; v;
+	for(;;)
+	{
+		std::getline(std::cin,poms);
+		if(poms.length()==0) break;
+		else v.push_back(poms);
+	}
+	std::string s1,s2(ObrniFraze(s,v));
+<a name="0"></a><font color="#FF0000"><a href="match735-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+	try{
+	s1=IzmijeniUPigLatin(s,v);
+	std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: "&lt;&lt; s1&lt;&lt;std::endl;
+	}
+		catch(std::domain_error izuzetak)
+	{
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+</font>	}
+	std::cout&lt;&lt;"Recenica nakon obrtanja fraza: "&lt;&lt; s2&lt;&lt;std::endl;
+	return 0;
+}</pre>
+</body>
+</html>

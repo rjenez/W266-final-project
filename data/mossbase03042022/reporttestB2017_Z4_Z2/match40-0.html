@@ -1,0 +1,255 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student5829.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student5829.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match40-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 4, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;tuple&gt;
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+const double PI=4*std::atan(1);
+const double EP=1e-10;
+using std::cout;
+using std::cin;
+using std::vector;
+using std::shared_ptr;
+
+bool Poredi(double a,double b) {
+  return std::abs(a-b)&lt;EP*(std::abs(a)+std::abs(b));
+}
+class NepreklapajucaKugla {
+  double x,y,z,r;
+  static NepreklapajucaKugla *pocetni;
+  NepreklapajucaKugla *prethodni=nullptr;
+  void Testiraj(NepreklapajucaKugla *pocetni,NepreklapajucaKugla *ovaj,double x1=0,double y1=0,double z1=0,double r1=0) {
+  auto poc(pocetni);
+  if(!pocetni) {
+    pocetni=ovaj;
+    return;
+  }
+  double d(std::sqrt((pocetni-&gt;DajX()-x1)*(pocetni-&gt;DajX()-x1)+(pocetni-&gt;DajY()-y1)*(pocetni-&gt;DajY()-y1)+
+                     (pocetni-&gt;DajZ()-z1)*(pocetni-&gt;DajZ()-z1)));
+  while(poc!=nullptr) {
+    if(d&lt;poc-&gt;r+r1 || Poredi(d,poc-&gt;r+r1)) throw std::logic_error("Nedozvoljeno preklapanje");
+    poc=poc-&gt;prethodni;
+  }
+  if(!prethodni) prethodni=pocetni;
+}
+public:
+  explicit NepreklapajucaKugla(double r = 0) {
+    if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+    Testiraj(pocetni,this,x,y,z,r); pocetni=this;
+    NepreklapajucaKugla::r=r; x=y=z=0;
+  }
+  NepreklapajucaKugla(double x, double y, double z, double r = 0) {
+    if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+    Testiraj(pocetni,this,x,y,z,r); pocetni=this;
+    NepreklapajucaKugla::x=x;
+    NepreklapajucaKugla::y=y;
+    NepreklapajucaKugla::z=z;
+    NepreklapajucaKugla::r=r;
+  }
+  explicit NepreklapajucaKugla(const std::tuple&lt;double, double, double&gt; &amp;centar, double r = 0) {
+    if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+    Testiraj(pocetni,this,std::get&lt;0&gt;(centar),std::get&lt;1&gt;(centar),std::get&lt;2&gt;(centar),r); pocetni=this;
+    x=std::get&lt;0&gt;(centar);
+    y=std::get&lt;1&gt;(centar);
+    z=std::get&lt;2&gt;(centar);
+    NepreklapajucaKugla::r=r;
+  }
+  double DajX() const {
+    return x;
+  }
+  double DajY() const {
+    return y;
+  }
+  double DajZ() const {
+    return z;
+  }
+  std::tuple&lt;double, double, double&gt; DajCentar() const {
+    return std::make_tuple(x,y,z);
+  }
+  double DajPoluprecnik() const {
+    return r;
+  }
+  double DajPovrsinu() const {
+    return 4./3*PI*r*r*r;
+  }
+  double DajZapreminu() const {
+    return 4.*PI*r*r;
+  }
+  NepreklapajucaKugla &amp;PostaviX(double x) {
+    double pom(NepreklapajucaKugla::x);
+    NepreklapajucaKugla::x=x;
+    try{
+      Testiraj(pocetni,this,x,y,z,r);
+    }
+    catch(...){
+      NepreklapajucaKugla::x=pom; throw;
+    }
+    return *this;
+  }
+  NepreklapajucaKugla &amp;PostaviY(double y) {
+    double pom(NepreklapajucaKugla::y);
+    NepreklapajucaKugla::y=y;
+    try{
+      Testiraj(pocetni,this,x,y,z,r);
+    }
+    catch(...){
+      NepreklapajucaKugla::y=pom; throw;
+    }
+    return *this;
+  }
+  NepreklapajucaKugla &amp;PostaviZ(double z) {
+    double pom(NepreklapajucaKugla::z);
+    NepreklapajucaKugla::z=z;
+    try{
+      Testiraj(pocetni,this,x,y,z,r);
+    }
+    catch(...){
+      NepreklapajucaKugla::z=pom; throw;
+    }
+    return *this;
+  }
+  NepreklapajucaKugla &amp;PostaviCentar(double x, double y, double z) {
+    double pom1(NepreklapajucaKugla::x),pom2(NepreklapajucaKugla::y),pom3(NepreklapajucaKugla::z);
+    NepreklapajucaKugla::x=x;
+    NepreklapajucaKugla::y=y;
+    NepreklapajucaKugla::z=z;
+    try{
+      Testiraj(pocetni,this,x,y,z,r);
+    }
+    catch(...){
+      NepreklapajucaKugla::x=pom1; NepreklapajucaKugla::y=pom2; NepreklapajucaKugla::z=pom3; throw;
+    }
+    return *this;
+  }
+  NepreklapajucaKugla &amp;PostaviCentar(const std::tuple&lt;double, double, double&gt; &amp;centar) {
+    double pom1(NepreklapajucaKugla::x),pom2(NepreklapajucaKugla::y),pom3(NepreklapajucaKugla::z);
+    x=std::get&lt;0&gt;(centar);
+    y=std::get&lt;1&gt;(centar);
+    z=std::get&lt;2&gt;(centar);
+    try{
+      Testiraj(pocetni,this,x,y,z,r);
+    }
+    catch(...){
+      NepreklapajucaKugla::x=pom1; NepreklapajucaKugla::y=pom2; NepreklapajucaKugla::z=pom3; throw;
+    }
+    return *this;
+  }
+  NepreklapajucaKugla &amp;PostaviPoluprecnik(double r) {
+    if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+    double pom(r);
+    NepreklapajucaKugla::r=r;
+    try{
+      Testiraj(pocetni,this,x,y,z,r);
+    }
+    catch(...){
+      NepreklapajucaKugla::r=pom; throw;
+    }
+    return *this;
+  }
+  void Ispisi() const {
+    cout&lt;&lt;"{("&lt;&lt;x&lt;&lt;","&lt;&lt;y&lt;&lt;","&lt;&lt;z&lt;&lt;"),"&lt;&lt;r&lt;&lt;"}";
+  }
+  void Transliraj(double delta_x, double delta_y, double delta_z) {
+    double pom1(x),pom2(y),pom3(z);
+    x+=delta_x;
+    y+=delta_y;
+    z+=delta_z;
+    try{
+      Testiraj(pocetni,this,x,y,z,r);
+    }
+    catch(...){
+      x=pom1; y=pom2; z=pom3; throw;
+    }
+  }
+  bool DaLiSadrzi(const NepreklapajucaKugla &amp;k) const{
+    if(NepreklapajucaKugla::r&lt;k.r) return false;
+    double d(RastojanjeCentara(*this,k));
+    if(d+k.r&gt;NepreklapajucaKugla::r) return false;
+    return true;
+  }
+  friend double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2) {
+    return std::sqrt((k2.x-k1.x)*(k2.x-k1.x)+(k2.y-k1.y)*(k2.y-k1.y)+(k2.z-k1.z)*(k2.z-k1.z));
+  }
+  NepreklapajucaKugla(const NepreklapajucaKugla &amp;k)=delete;
+  NepreklapajucaKugla &amp;operator=(const NepreklapajucaKugla &amp;k)=delete;
+};
+NepreklapajucaKugla *NepreklapajucaKugla::pocetni(nullptr);
+
+typedef shared_ptr&lt;NepreklapajucaKugla&gt; pok_na_k;
+void Unos(vector&lt;pok_na_k&gt; &amp;vec,int n){
+  double x(0),y(0),z(0),r(0);
+    for(int i(0);i&lt;n;i++){
+      try{
+        cout&lt;&lt;"Unesite centar za "&lt;&lt;i+1&lt;&lt;". kuglu: ";
+        for(;;){
+        try{
+        cin&gt;&gt;x; if(!cin) throw std::logic_error("Neispravan centar, unesite ponovo:");
+        cin&gt;&gt;y; if(!cin) throw std::logic_error("Neispravan centar, unesite ponovo:");
+        cin&gt;&gt;z; if(!cin) throw std::logic_error("Neispravan centar, unesite ponovo:");
+        break;
+        }
+        catch(std::logic_error izuzetak){
+          cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+          cin.clear();
+          cin.ignore(1000,'\n');
+        }}
+        cout&lt;&lt;"Unesite poluprecnik: ";
+        for(;;){
+          cin&gt;&gt;r; if(!cin || r&lt;0) cout&lt;&lt;"Neispravan poluprecnik, unesite ponovo:"&lt;&lt;std::endl;
+          else break;
+          cin.clear();
+          cin.ignore(1000,'\n');
+        }
+        auto pok(std::make_shared&lt;NepreklapajucaKugla&gt;(x,y,z,r));
+        vec.emplace_back(pok);
+      }
+      catch(std::bad_alloc){ throw; }
+      catch(std::logic_error izuzetak){
+        cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+        i--;
+        cin.clear();
+        cin.ignore(1000,'\n');
+      }
+    }
+}
+
+int main ()
+{
+  vector&lt;pok_na_k&gt; vec;
+  int n(0);
+  cout&lt;&lt;"Unesite broj kugli: ";
+  for(;;){
+    cin&gt;&gt;n;
+    if(!cin || n&lt;1){
+      cin.clear();
+      cin.ignore(1000,'\n');
+      cout&lt;&lt;"Neispravan broj kugli, unesite ponovo!"&lt;&lt;std::endl;
+    }
+    else break;
+  }
+  try {
+    Unos(vec,n);
+    std::sort(vec.begin(),vec.end(),[](pok_na_k k1,pok_na_k k2) {
+      return k1-&gt;DajPovrsinu()&lt;k2-&gt;DajPovrsinu();});
+    cout&lt;&lt;std::endl&lt;&lt;"Kugle nakon obavljenog sortiranja: "&lt;&lt;std::endl;
+    for_each(vec.begin(),vec.end(),[](pok_na_k k){ k-&gt;Ispisi(); cout&lt;&lt;std::endl; });
+  } catch(...) {
+    cout&lt;&lt;"Problemi sa memorijom!";
+</font>  }
+  
+  return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student1579.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student1579.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2
+#include&lt;iostream&gt;
+#include&lt;map&gt;
+#include&lt;set&gt;
+#include&lt;string&gt;
+#include&lt;vector&gt;
+#include&lt;algorithm&gt;
+std::vector&lt;std::string&gt; vektorstringova(std::string s){
+    std::vector&lt;std::string&gt; pomvsrt;
+    if(s.length()==0) return pomvsrt;
+    for(int i=0;i&lt;s.length();i++){
+        if((s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z')|| (s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')){
+            std::string pom;
+            int poc=i;
+            while(((s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z')|| (s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')|| (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')) &amp;&amp; i!=s.length()) i++;
+            for(int j=poc;j&lt;i;j++)
+                pom.push_back(s[j]);
+            pomvsrt.push_back(pom);
+        }
+        if(i==s.length()) break;
+    }
+<a name="2"></a><font color="#0000FF"><a href="match626-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+    for(int i=0;i&lt;pomvsrt.size()-1;i++){
+        for(int j=i+1;j&lt;pomvsrt.size();j++){
+</font>            std::transform(pomvsrt[i].begin(),pomvsrt[i].end(),pomvsrt[i].begin(),::tolower);
+            std::transform(pomvsrt[j].begin(),pomvsrt[j].end(),pomvsrt[j].begin(),::tolower);
+            if(pomvsrt[i]==pomvsrt[j]){
+            pomvsrt.erase(pomvsrt.begin()+j);
+            j--;
+            }
+        }
+    }
+    return pomvsrt;
+}
+std::map&lt;std::string,std::set&lt;int&gt;&gt;KreirajIndeksPojmova(std::string s){
+    std::vector&lt;std::string&gt; vs=vektorstringova(s);
+    std::map&lt;std::string,std::set&lt;int&gt;&gt; rez;
+    for(int i=0;i&lt;vs.size();i++){
+        std::string trazi=vs[i];
+       // std::transform(trazi.begin(),trazi.end(),trazi.begin(),::tolower);
+        std::set&lt;int&gt; pomset;
+        for(int j=0;j&lt;s.length();j++){
+            std::string pom;
+<a name="0"></a><font color="#FF0000"><a href="match626-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+            if((s[j]&gt;='A' &amp;&amp; s[j]&lt;='Z')|| (s[j]&gt;='a' &amp;&amp; s[j]&lt;='z') || (s[j]&gt;='0' &amp;&amp; s[j]&lt;='9')){
+                int poc=j;
+                while(( (s[j]&gt;='a' &amp;&amp; s[j]&lt;='z') || (s[j]&gt;='0' &amp;&amp; s[j]&lt;='9'))  &amp;&amp; j!=s.length()) j++;
+</font>                for(int k=poc;k&lt;j;k++)
+                  pom.push_back(s[k]);
+                if(pom==trazi)
+                    pomset.insert(poc);
+            }
+        }
+        rez[vs[i]]=pomset;
+    }
+    return rez;
+}
+void IspisiIndeksPojmova(std::map&lt;std::string,std::set&lt;int&gt;&gt; rez){
+    for(auto i=rez.begin();i!=rez.end();i++){
+        std::cout&lt;&lt;i-&gt;first&lt;&lt;": ";
+        int br=0;
+        for(auto j : i-&gt;second){
+            br++;
+        }
+        int pombr=0;
+        for(auto j : i-&gt;second){
+            if(pombr==br-1){std::cout&lt;&lt;j; break;}
+            std::cout&lt;&lt;j&lt;&lt;",";
+            pombr++;
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+}
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string s,std::map&lt;std::string,std::set&lt;int&gt;&gt; mapa){
+    std::transform(s.begin(),s.end(),s.begin(),::tolower);
+    std::set&lt;int&gt; rez;
+    auto it(mapa.find(s));
+    if(it==mapa.end()) throw std::logic_error("Pojam nije nadjen");
+    else{
+        rez=it-&gt;second;
+    }
+    return rez;
+}
+int main ()
+{
+<a name="1"></a><font color="#00FF00"><a href="match626-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+    std::cout&lt;&lt;"Unesite tekst: ";
+    std::string s;
+    std::getline(std::cin,s);
+    auto rez=KreirajIndeksPojmova(s);
+    IspisiIndeksPojmova(rez);
+    for(;;){
+        std::cout&lt;&lt;"Unesite rijec: ";
+        std::string pom;
+        std::getline(std::cin,pom);
+        if(pom==std::string(".")) break;
+</font>        try{
+        auto rezmape=PretraziIndeksPojmova(pom,rez);
+        int br=0;
+        for(auto j : rezmape){
+            br++;
+        }
+        int pombr=0;
+        for(auto j : rezmape){
+            if(pombr==br-1){std::cout&lt;&lt;j; break;}
+            std::cout&lt;&lt;j&lt;&lt;" ";
+            pombr++;
+        }
+        std::cout&lt;&lt;std::endl;
+        }
+        catch(std::logic_error x){
+           // std::cout&lt;&lt;x.what()&lt;&lt;std::endl;
+           std::cout &lt;&lt; "Unesena rijec nije nadjena!" &lt;&lt; std::endl;
+        }
+    }
+	return 0;
+}</pre>
+</body>
+</html>

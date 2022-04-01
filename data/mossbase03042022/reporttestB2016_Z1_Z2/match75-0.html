@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student9463.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student9463.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt; 
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match75-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_94.gif"/></a>
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+
+Matrica OgledaloMatrica (Matrica hehe){
+	
+	for (int i=0; i&lt;hehe.size(); i++){
+		if (hehe[i].size()!=hehe[0].size()){
+			throw std::domain_error ("Matrica nije korektna");
+			break;
+	}
+	}
+	
+	
+	Matrica h, v, hv, velika;
+	int l=hehe.size(), k;
+	if (l==0) k=0;
+	else k=hehe[0].size();
+	velika.resize(3*l);
+	for (int i=0; i&lt;velika.size(); i++) velika[i].resize(3*k);
+	h.resize(hehe.size());
+	v.resize (hehe.size());
+	hv.resize(hehe.size());
+	for (int i=0; i&lt;hehe.size(); i++){
+		h[i].resize(hehe[i].size());
+		v[i].resize(hehe[i].size());
+		hv[i].resize(hehe[i].size());
+	}
+	
+	/*Vertikalna*/
+	std::vector&lt;double&gt; pomo;
+	for (int i=0; i&lt;v.size(); i++){
+			pomo=hehe[i];
+			v[i]=hehe[v.size()-i-1];
+			v[v.size()-i-1]=pomo;
+		}
+	
+	double pom;
+	/*Horizontalna*/
+	for (int i=0; i&lt;h.size(); i++){
+		for(int j=0; j&lt;h[i].size(); j++){
+			pom=hehe[i][j];
+			h[i][j]=hehe[i][h[i].size()-j-1];
+			h[i][h[i].size()-j-1]=pom;
+			
+		}
+	}
+	
+	/*Kombinovana*/
+	for (int i=0; i&lt;hv.size(); i++){
+		for (int j=0; j&lt;hv[i].size(); j++){
+			pom=v[i][j];
+			hv[i][j]=v[i][hv[i].size()-j-1];
+			hv[i][hv[i].size()-j-1]=pom;
+		}
+	}
+	
+	for (int i=0; i&lt;velika.size(); i++){
+		for (int j=0; j&lt;velika[i].size(); j++){
+			if (i&lt;l &amp;&amp; j&lt;k) velika[i][j]=hv[i][j];
+			else if (i&gt;=2*l &amp;&amp; j&gt;=2*k) velika[i][j]=hv[i-2*l][j-2*k];
+			else if (i&lt;l &amp;&amp; j&gt;=2*k) velika[i][j]=hv[i][j-2*k];
+			else if (i&gt;=2*l &amp;&amp; j&lt;k) velika[i][j]=hv[i-2*l][j];
+			else if (i&lt;l &amp;&amp; j&gt;=k &amp;&amp; j&lt;2*k) velika[i][j]=v[i][j-k];
+			else if (i&gt;=2*l &amp;&amp; j&gt;=k &amp;&amp; j&lt;2*k) velika[i][j]=v[i-2*l][j-k];
+			else if (i&gt;=l &amp;&amp; i&lt;2*l &amp;&amp; j&lt;k) velika[i][j]=h[i-l][j];
+			else if (i&gt;=l &amp;&amp; i&lt;2*l &amp;&amp; j&gt;=2*k) velika[i][j]=h[i-l][j-2*k];
+			
+			else velika[i][j]=hehe[i-l][j-k];
+		}
+	}
+	
+	return velika;
+}
+
+int main ()
+{
+	Matrica mat, velika;
+	int redovi, kolone;
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m n): ";
+	std::cin&gt;&gt; redovi &gt;&gt; kolone;
+	if (redovi&lt;0 || kolone&lt;0) std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+	else{
+	mat.resize(redovi);
+	for (int i=0; i&lt;mat.size(); i++) mat[i].resize(kolone);
+	std::cout&lt;&lt;"Unesite elemente matrice: ";
+	for (int i=0; i&lt;mat.size(); i++){
+		for (int j=0; j&lt;mat[i].size(); j++){
+			std::cin&gt;&gt;mat[i][j];
+		}
+	}
+	std::cout&lt;&lt;"\nRezultantna matrica:\n";
+	try{
+	velika=OgledaloMatrica(mat);
+	for (int i=0; i&lt;velika.size(); i++){
+		for (int j=0; j&lt;velika[i].size(); j++){
+</font><a name="1"></a><font color="#00FF00"><a href="match75-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+			std::cout&lt;&lt;std::setw(4)&lt;&lt;velika[i][j];
+		}
+		std::cout&lt;&lt;std::endl;
+	}
+	}
+	catch(const char izuzetak[]){
+		std::cout&lt;&lt;izuzetak;
+	}
+	}
+	return 0;
+</font>}</pre>
+</body>
+</html>

@@ -1,0 +1,376 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student3732.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student4659.cpp<p></p><pre>
+/B16/17 (Zadaća 5, Zadatak 4)
+//Autotestovi by Ivona Ivkovic (mail: iivkovic2@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+
+template &lt;typename Tip&gt;
+class GMatrica{
+    Tip niz[4][4];
+    int br_redova,br_kolona;
+    void ProvjeriFormat(int a,int b) const {
+        if(a&gt;4 || a&lt;0 || b&gt;4 || b&lt;0)throw std::logic_error("Ilegalan format matrice");
+    }
+    void ProvjeriVektor(std::vector&lt;std::vector&lt;Tip&gt;&gt;v){
+        for(int i=0;i&lt;v.size()-1;i++){
+            if(v[i].size()!=v[i+1].size())throw std::logic_error("Ilegalan format matrice");
+        }
+        try{
+            ProvjeriFormat(v.size(),v[0].size());
+        }
+        catch(...){
+            throw;
+        }
+    }
+    void ProvjeriListu(std::initializer_list&lt;std::initializer_list&lt;Tip&gt;&gt; l){
+        int br;
+        for(auto i : l){br=i.size(); break; }
+        for(auto i: l){
+            if(i.size()!=br)throw std::logic_error("Ilegalan format matrice");
+        }
+        try{
+            ProvjeriFormat(l.size(),br);
+        }
+        catch(...){
+            throw;
+        }
+    }
+    public:
+        //KONSTRUKTOR SA I BEZ PARAMETARA
+        GMatrica(int br_red=0,int br_kol=0,Tip broj=Tip());
+        
+        //PRISTUPNE METODE
+        int DajBrojRedova() const { return br_redova ;}
+        int DajBrojKolona() const { return br_kolona ;}
+        
+        //GENERICKI KOPIRAJUCI KONSTRUKTOR
+<a name="12"></a><font color="#0000FF"><a href="match274-0.html#12" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+        template &lt;typename Tip1&gt;
+        GMatrica(const GMatrica&lt;Tip1&gt; &amp;g);
+        
+        //GENERICKI KONSTRUKTOR (C-ovski 2D niz)
+        template &lt;typename Tip1&gt;
+        GMatrica(Tip1 n [4][4]);
+        
+        //KOSTRUKTOR KOJI PRIMA VEKTOR VEKTORA
+        GMatrica(std::vector&lt;std::vector&lt;Tip&gt;&gt; v);
+</font>        
+        //SEKVENCIJSKI KONSTRUKTOR
+        GMatrica(std::initializer_list&lt;std::initializer_list&lt;Tip&gt;&gt;lista);
+        
+        //OPERATORI + , - , *
+<a name="0"></a><font color="#FF0000"><a href="match274-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+        template &lt;typename Tip1,typename Tip2&gt;
+        friend auto operator +(const GMatrica&lt;Tip1&gt; &amp;m1,const GMatrica&lt;Tip2&gt; &amp;m2)-&gt;GMatrica&lt;decltype(m1.niz[0][0]+m2.niz[0][0])&gt;;
+        
+        template &lt;typename Tip1,typename Tip2&gt;
+        friend auto operator -(const GMatrica&lt;Tip1&gt; &amp;m1,const GMatrica&lt;Tip2&gt; &amp;m2)-&gt;GMatrica&lt;decltype(m1.niz[0][0]-m2.niz[0][0])&gt;;
+        
+        template &lt;typename Tip1,typename Tip2&gt;
+        friend auto operator *(const GMatrica&lt;Tip1&gt; &amp;m1,const GMatrica&lt;Tip2&gt; &amp;m2)-&gt;GMatrica&lt;decltype(m1.niz[0][0]*m2.niz[0][0])&gt;;
+        
+        template &lt;typename Tip1,typename Tip2&gt;
+        friend auto operator *(Tip1 broj,const GMatrica&lt;Tip2&gt; &amp;m2)-&gt;GMatrica&lt;decltype(broj+m2.niz[0][0])&gt;;
+</font>        
+        template &lt;typename Tip1,typename Tip2&gt;
+        friend auto operator *(const GMatrica&lt;Tip1&gt; &amp;m2,Tip2 broj)-&gt;GMatrica&lt;decltype(m2.niz[0][0]+broj)&gt;;
+        
+        //PREKLOPLJENI OPERATORI
+        GMatrica &amp;operator +=(const GMatrica &amp;m2);
+        GMatrica &amp;operator -=(const GMatrica &amp;m2);
+        GMatrica &amp;operator *=(Tip broj);
+        
+        //OPERATORI JEDNAKOSTI/NEJEDNAKOSTI
+        template&lt;typename Tip2&gt;
+        friend bool operator ==(const GMatrica&lt;Tip2&gt; &amp;m1,const GMatrica&lt;Tip2&gt; &amp;m2);
+        
+        template&lt;typename Tip2&gt;
+        friend bool operator !=(const GMatrica&lt;Tip2&gt; &amp;m1,const GMatrica&lt;Tip2&gt; &amp;m2);
+        
+        //OPERATORI () I [][]
+        Tip &amp;operator ()(int i,int j);
+        Tip operator ()(int i,int j)const;
+        Tip* operator [](int i);
+        const Tip* operator [](int i)const;
+        
+        //OPERATORI ISPISA I UNOSA &lt;&lt; &gt;&gt;
+        template&lt;typename Tip2&gt;
+        friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok,const GMatrica&lt;Tip2&gt; &amp;m);
+        
+        template&lt;typename Tip1&gt;
+        friend std::istream &amp;operator &gt;&gt;(std::istream &amp;tok,GMatrica&lt;Tip1&gt; &amp;m);
+        
+};
+
+template&lt;typename Tip&gt;
+GMatrica&lt;Tip&gt;::GMatrica(int br_red,int br_kol,Tip broj){
+    ProvjeriFormat(br_red,br_kol);
+    br_redova=br_red; br_kolona=br_kol;
+    for(int i=0;i&lt;4;i++){
+        for(int j=0;j&lt;4;j++){
+<a name="5"></a><font color="#FF0000"><a href="match274-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+            niz[i][j]=broj;
+        }
+    }
+}
+
+template&lt;typename Tip&gt;
+template&lt;typename Tip1&gt;
+GMatrica&lt;Tip&gt;::GMatrica(const GMatrica&lt;Tip1&gt; &amp;g):br_redova(g.DajBrojRedova()),br_kolona(g.DajBrojKolona()){
+    for(int i=0;i&lt;4;i++){
+</font>        for(int j=0;j&lt;4;j++){
+            if(i&lt;br_redova &amp;&amp; j&lt;br_kolona){
+                niz[i][j]=g.niz[i][j];
+            }
+            else niz[i][j]=Tip();
+        }
+    }
+}
+<a name="3"></a><font color="#00FFFF"><a href="match274-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+template&lt;typename Tip&gt;
+template&lt;typename Tip1&gt;
+GMatrica&lt;Tip&gt;::GMatrica(Tip1 n [4][4]):br_redova(4),br_kolona(4){
+    for(int i=0;i&lt;4;i++){
+        for(int j=0;j&lt;4;j++){
+            niz[i][j]=n[i][j];               
+</font>        }
+    }
+}
+
+template&lt;typename Tip&gt;
+GMatrica&lt;Tip&gt;::GMatrica(std::vector&lt;std::vector&lt;Tip&gt;&gt; v){
+    ProvjeriVektor(v);
+    br_redova=v.size(); br_kolona=v[0].size();
+    for(int i=0;i&lt;4;i++){
+        for(int j=0;j&lt;4;j++){
+            if(i&lt;br_redova &amp;&amp; j&lt;br_kolona){
+                niz[i][j]=v[i][j];
+            }
+            else niz[i][j]=Tip();
+        }
+    }
+}
+
+template&lt;typename Tip&gt;
+GMatrica&lt;Tip&gt;::GMatrica(std::initializer_list&lt;std::initializer_list&lt;Tip&gt;&gt;lista){
+    ProvjeriListu(lista);
+    br_redova=lista.size();
+        for(auto i:lista){ br_kolona=i.size(); break; }
+        int br(0);
+        for(auto i:lista){
+            std::copy(i.begin(),i.end(),niz[br]);
+            br++;
+        }
+}
+
+template &lt;typename Tip1,typename Tip2&gt;
+auto operator +(const GMatrica&lt;Tip1&gt; &amp;m1,const GMatrica&lt;Tip2&gt; &amp;m2)-&gt;GMatrica&lt;decltype(m1.niz[0][0]+m2.niz[0][0])&gt;{
+    if(m1.DajBrojRedova()!=m2.DajBrojRedova() || m1.DajBrojKolona()!=m2.DajBrojKolona()) throw std::domain_error("Nedozvoljena operacija");
+    GMatrica&lt;decltype(m1.niz[0][0]+m2.niz[0][0])&gt; m(m1.DajBrojRedova(),m1.DajBrojKolona(),decltype(m1.niz[0][0]+m2.niz[0][0])());
+    for(int i=0;i&lt;4;i++){
+        for(int j=0;j&lt;4;j++){
+            if(i&lt;m1.DajBrojRedova() &amp;&amp; j&lt; m2.DajBrojKolona())m.niz[i][j]=m1.niz[i][j]+m2.niz[i][j];
+            else m.niz[i][j]=decltype(m1.niz[0][0]+m2.niz[0][0])();
+        }
+    }
+    return m;
+}
+
+template &lt;typename Tip1,typename Tip2&gt;
+<a name="8"></a><font color="#00FFFF"><a href="match274-0.html#8" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+auto operator -(const GMatrica&lt;Tip1&gt; &amp;m1,const GMatrica&lt;Tip2&gt; &amp;m2)-&gt;GMatrica&lt;decltype(m1.niz[0][0]-m2.niz[0][0])&gt;{
+    if(m1.DajBrojRedova()!=m2.DajBrojRedova() || m1.DajBrojKolona()!=m2.DajBrojKolona()) throw std::domain_error("Nedozvoljena operacija");
+</font>    GMatrica&lt;decltype(m1.niz[0][0]-m2.niz[0][0])&gt; m(m1.DajBrojRedova(),m1.DajBrojKolona(),decltype(m1.niz[0][0]-m2.niz[0][0])());
+    for(int i=0;i&lt;4;i++){
+        for(int j=0;j&lt;4;j++){
+            if(i&lt;m1.DajBrojRedova() &amp;&amp; j&lt; m2.DajBrojKolona())m.niz[i][j]=m1.niz[i][j]-m2.niz[i][j];
+            else m.niz[i][j]=decltype(m1.niz[0][0]-m2.niz[0][0])();
+        }
+    }
+    return m;
+}
+
+template &lt;typename Tip1,typename Tip2&gt;
+<a name="4"></a><font color="#FF00FF"><a href="match274-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+auto operator *(const GMatrica&lt;Tip1&gt; &amp;m1,const GMatrica&lt;Tip2&gt; &amp;m2)-&gt;GMatrica&lt;decltype(m1.niz[0][0]*m2.niz[0][0])&gt;{
+    if(m1.DajBrojKolona()!=m2.DajBrojRedova()) throw std::domain_error("Nedozvoljena operacija");
+    GMatrica&lt;decltype(m1.niz[0][0]*m2.niz[0][0])&gt; m(m1.DajBrojRedova(),m2.DajBrojKolona(),decltype(m1.niz[0][0]*m2.niz[0][0])());
+</font>    for(int i=0;i&lt;m1.DajBrojRedova();i++){
+        decltype(m1.niz[0][0]*m2.niz[0][0]) sum;
+        for(int j=0;j&lt;m2.DajBrojKolona();j++){
+            sum=decltype(m1.niz[0][0]*m2.niz[0][0])();
+            for(int k=0;k&lt;m1.DajBrojKolona();k++){
+                sum=sum+m1.niz[i][k]*m2.niz[k][j];
+            }
+            m.niz[i][j]=sum;
+        }
+    }
+    return m;
+}
+
+<a name="13"></a><font color="#00FFFF"><a href="match274-0.html#13" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+template &lt;typename Tip1,typename Tip2&gt;
+auto operator *(Tip1 broj,const GMatrica&lt;Tip2&gt; &amp;m2)-&gt;GMatrica&lt;decltype(broj+m2.niz[0][0])&gt;{
+</font>    GMatrica&lt;decltype(broj*m2.niz[0][0])&gt; m(m2.DajBrojRedova(),m2.DajBrojKolona(),decltype(broj*m2.niz[0][0])());
+    for(int i=0;i&lt;m2.DajBrojRedova();i++){
+        for(int j=0;j&lt;m2.DajBrojKolona();j++){
+            m.niz[i][j]=broj*m2.niz[i][j];
+        }
+    }
+<a name="9"></a><font color="#FF00FF"><a href="match274-0.html#9" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+    return m;
+}
+
+template &lt;typename Tip3,typename Tip4&gt;
+auto operator *(const GMatrica&lt;Tip3&gt; &amp;m2,Tip4 broj)-&gt;GMatrica&lt;decltype(m2.niz[0][0]+broj)&gt;{
+</font>    return broj*m2;
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match274-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+template&lt;typename Tip&gt;
+GMatrica&lt;Tip&gt; &amp;GMatrica&lt;Tip&gt;::operator +=(const GMatrica&lt;Tip&gt; &amp;m2){
+    if(DajBrojRedova()!=m2.DajBrojRedova() || DajBrojKolona()!=m2.DajBrojKolona()) throw std::domain_error("Nedozvoljena operacija");
+    for(int i=0;i&lt;DajBrojRedova();i++){
+        for(int j=0;j&lt;DajBrojKolona();j++){
+            niz[i][j]+=m2.niz[i][j];
+        }
+    }
+    return *this;
+</font>}
+
+<a name="2"></a><font color="#0000FF"><a href="match274-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+template&lt;typename Tip&gt;
+GMatrica&lt;Tip&gt; &amp;GMatrica&lt;Tip&gt;::operator -=(const GMatrica&lt;Tip&gt; &amp;m2){
+    if(DajBrojRedova()!=m2.DajBrojRedova() || DajBrojKolona()!=m2.DajBrojKolona()) throw std::domain_error("Nedozvoljena operacija");
+    for(int i=0;i&lt;DajBrojRedova();i++){
+        for(int j=0;j&lt;DajBrojKolona();j++){
+            niz[i][j]-=m2.niz[i][j];
+        }
+    }
+    return *this;
+</font>}
+
+<a name="6"></a><font color="#00FF00"><a href="match274-0.html#6" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+template&lt;typename Tip&gt;
+GMatrica&lt;Tip&gt; &amp;GMatrica&lt;Tip&gt;::operator *=(Tip broj){
+    for(int i=0;i&lt;DajBrojRedova();i++){
+        for(int j=0;j&lt;DajBrojKolona();j++){
+                niz[i][j]*=broj;
+</font>        }
+    }
+    return *this;
+}
+template&lt;typename Tip&gt;
+bool operator ==(const GMatrica&lt;Tip&gt; &amp;m1,const GMatrica&lt;Tip&gt; &amp;m2){
+    if(m1.DajBrojRedova()!=m2.DajBrojRedova() || m1.DajBrojKolona()!=m2.DajBrojKolona()) return false;
+    for(int i=0;i&lt;m1.DajBrojRedova();i++){
+        for(int j=0;j&lt;m1.DajBrojKolona();j++){
+            if(m1.niz[i][j]!=m2.niz[i][j])return false;
+        }
+    }
+    return true;
+}
+
+template&lt;typename Tip&gt;
+<a name="7"></a><font color="#0000FF"><a href="match274-0.html#7" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+bool operator !=(const GMatrica&lt;Tip&gt; &amp;m1,const GMatrica&lt;Tip&gt; &amp;m2){
+    return !(m1==m2);
+}
+
+template&lt;typename Tip&gt;
+Tip &amp;GMatrica&lt;Tip&gt;::operator ()(int i,int j){
+</font><a name="10"></a><font color="#FF0000"><a href="match274-0.html#10" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+    if(i-1&lt;0 || j-1&lt;0 || i-1&gt;4 || j-1&gt;4 )std::range_error("Nedozvoljen indeks");
+    return niz[i-1][j-1];
+}
+
+template&lt;typename Tip&gt;
+Tip GMatrica&lt;Tip&gt;::operator ()(int i,int j)const{
+    if(i-1&lt;0 || j-1&lt;0 || i-1&gt;4 || j-1&gt;4 )std::range_error("Nedozvoljen indeks");
+</font>    return niz[i-1][j-1];
+}
+
+template&lt;typename Tip&gt;
+Tip* GMatrica&lt;Tip&gt;::operator [](int i){
+    return niz[i];
+}
+
+template&lt;typename Tip&gt;
+const Tip* GMatrica&lt;Tip&gt;::operator [](int i)const {
+    return niz[i];
+}
+
+template&lt;typename Tip&gt;
+std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok,const GMatrica&lt;Tip&gt; &amp;m){    
+    int a(tok.width());
+    for(int i=0;i&lt;m.DajBrojRedova();i++){
+        for(int j=0;j&lt;m.DajBrojKolona();j++){
+            if(a&lt;6) tok &lt;&lt; std::setw(6) &lt;&lt; m.niz[i][j];
+            else tok &lt;&lt; std::setw(a) &lt;&lt; m.niz[i][j];
+        }
+        tok&lt;&lt; std::endl;
+    }
+    return tok;
+}
+
+<a name="11"></a><font color="#00FF00"><a href="match274-0.html#11" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+template&lt;typename Tip&gt;
+std::istream &amp;operator &gt;&gt;(std::istream &amp;tok,GMatrica&lt;Tip&gt; &amp;m){
+    char znak;
+    tok &gt;&gt; std::ws;
+</font>    tok &gt;&gt; znak;
+    if(znak!='[')tok.setstate(std::ios::failbit);
+    else {
+        for(int i=0;i&lt;4;i++){
+            m.br_redova=i+1;
+            for(int j=0;j&lt;4;j++){
+                int br;
+                tok &gt;&gt; std::ws;
+                tok&gt;&gt; br;
+                if(!tok)tok.setstate(std::ios::failbit);
+                m.br_kolona=j+1;
+                m.niz[i][j]=br;
+                    char znak1;
+                    tok &gt;&gt; std::ws;
+                    tok &gt;&gt; znak1;
+                    if(znak1==',')continue;
+                    else if(znak1==';')break;
+                    else if(znak1==']'){ i=5; break; }
+                    else tok.setstate(std::ios::failbit);
+            }
+        }
+    }
+    return tok;
+}
+
+int main ()
+{
+   
+	return 0;
+}</pre>
+</body>
+</html>

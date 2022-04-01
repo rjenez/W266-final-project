@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student3165.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student5842.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match47-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+typedef std::map&lt;std::string, std::set&lt;int&gt;&gt; IndeksMapa;
+typedef std::set&lt;int&gt; IntSkup;
+
+void PretvoriUMalaSlova (std::string &amp;pom) {
+    auto it=pom.begin();
+    while(it!=pom.end()) {
+        if((*it&gt;='A') &amp;&amp; (*it&lt;='Z')) *it-='A'-'a';
+        it++;
+    }
+}
+IntSkup IndeksiRijeci(std::string recenica, std::string rijec) {
+    IntSkup skup;
+    for(int i(0); i&lt;recenica.length(); i++) {
+        int k(0);
+        if(rijec[k]==recenica[i]) {
+            while(rijec[k]==recenica[i+k]) {
+                k++;
+                if(k==rijec.length()) break;
+            }
+        }
+        if(k==rijec.length() &amp;&amp; (i==0 || (!(recenica[i-1]&gt;='a' &amp;&amp; recenica[i-1]&lt;='z') &amp;&amp; !(recenica[i-1]&gt;='0' &amp;&amp; recenica[i-1]&lt;='9'))) &amp;&amp; (i+k==recenica.length() || (!(recenica[i+k]&gt;='a' &amp;&amp; recenica[i+k]&lt;='z') &amp;&amp; !(recenica[i+k]&gt;='0' &amp;&amp; recenica[i+k]&lt;='9')))) {
+            skup.insert(i);
+            i+=k;
+        }
+    }
+    return skup;
+}
+IndeksMapa KreirajIndeksPojmova(std::string recenica) {
+    PretvoriUMalaSlova(recenica);
+    IndeksMapa indeks_pojmova;
+    for(int i(0); i&lt;recenica.length(); i++) {
+        if((recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z') || (recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9')) {
+            std::string rijec;
+            while((recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z') || (recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9')) {
+                rijec.push_back(recenica[i]);
+                i++;
+            }
+            IntSkup skup=IndeksiRijeci(recenica, rijec);
+            if(!indeks_pojmova.count(rijec)) indeks_pojmova.insert(std::make_pair(rijec, skup));
+        }   
+        if(i&lt;recenica.length()) {
+            while(!(recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z') &amp;&amp; !(recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9')) {
+                i++;
+                if(i&gt;=recenica.length()) break;
+            }
+            i--;
+        }    
+    }
+    return indeks_pojmova;
+}
+IntSkup PretraziIndeksPojmova(std::string rijec, IndeksMapa mapa) {
+    //PretvoriUMalaSlova(rijec);
+    if(!mapa.count(rijec)) throw std::logic_error("Pojam nije nadjen");
+    IntSkup skup=mapa[rijec];
+    return skup;    
+}
+void IspisiIndeksPojmova(IndeksMapa mapa) {
+    for(auto it=mapa.begin(); it!=mapa.end(); it++) {
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        for(auto it2=(it-&gt;second).begin(); it2!=(it-&gt;second).end(); it2++) {
+            std::cout&lt;&lt;*it2;
+            auto it3=it2;
+            if((++it3)!=(it-&gt;second).end()) std::cout&lt;&lt;",";
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+}
+int main ()
+{
+    try {
+        std::string recenica;
+        std::cout&lt;&lt;"Unesite tekst: ";
+        std::getline(std::cin, recenica);
+        IndeksMapa mapa=KreirajIndeksPojmova(recenica);
+        IspisiIndeksPojmova(mapa);
+        std::string rijec;
+        for(;;) {
+            std::cout&lt;&lt;"Unesite rijec: ";
+            std::getline(std::cin, rijec);
+            PretvoriUMalaSlova(rijec);
+            if(rijec==".") break;
+            if(!mapa.count(rijec)) std::cout&lt;&lt;"Unesena rijec nije nadjena!";
+            else {
+                IntSkup skup=PretraziIndeksPojmova(rijec, mapa);
+                for(int x : skup) std::cout&lt;&lt;x&lt;&lt;" ";
+            }
+            std::cout&lt;&lt;std::endl;
+        }
+    }
+    catch (std::logic_error izuzetak) {
+        std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+    }
+	return 0;
+</font>}</pre>
+</body>
+</html>

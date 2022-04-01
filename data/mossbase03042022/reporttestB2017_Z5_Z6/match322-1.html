@@ -1,0 +1,267 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z6/student4261.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z6/student6553.cpp<p></p><pre>
+<a name="4"></a><font color="#FF00FF"><a href="match322-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+/B2017/2018: Zadaća 5, Zadatak 6
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;functional&gt;
+#include &lt;algorithm&gt;
+#include &lt;iterator&gt;
+#include &lt;iomanip&gt;
+#include &lt;ostream&gt;
+
+class Berza{
+    std::vector&lt;int&gt; dionice;
+    int min,maks;
+</font>    void TestIndeksa(int  indeks){
+        if(indeks&lt;1 || indeks&gt;dionice.size()) throw std::range_error("Neispravan indeks");
+    }
+<a name="0"></a><font color="#FF0000"><a href="match322-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+    public:
+    Berza(int min, int maks){
+        if(min&lt;=0 || maks&lt;=0) throw std::range_error("Ilegalne granicne cijene");
+        Berza::min=min;
+        Berza::maks=maks;
+    }
+    explicit Berza(int maks){
+        if(maks&lt;=0)  throw std::range_error("Ilegalne granicne cijene");
+        Berza::min=0;
+        Berza::maks=maks;
+         }
+    void RegistrirajCijenu(int cijena){
+        if(cijena&gt;maks || cijena&lt;min) throw std::range_error("Ilegalne granicne cijene");
+        dionice.push_back(cijena);
+    }    
+    int DajBrojRegistriranihCijena () const { return dionice.size();}
+    void BrisiSve() {
+        dionice.resize(0);}
+    //provjeriti je l to znaci postaviti vektor na prazan
+    int DajMinimalnuCijenu() const {
+</font>        if(!dionice.size()) throw std::range_error("Nema registriranih cijena");
+        return *(std::min_element( dionice.begin(),  dionice.end(), [](int a, int b){return a&lt;b;}));
+    }
+    int DajMaksimalnuCijenu() const {
+        if(!dionice.size()) throw std::range_error("Nema registriranih cijena");
+        return *(std::max_element( dionice.begin(),  dionice.end(), [](int a, int b){return a&lt;b;}));
+    }
+     bool operator!(){
+        return !dionice.size();
+    }
+    int DajBrojCijenaVecihOd(int p) const;
+    void Ispisi() const;
+    int operator[](int indeks);
+    void operator++();
+    void operator ++(int);
+    void operator--();
+    void operator --(int);
+    void operator -();
+    friend Berza operator +(Berza x, int y);
+    friend Berza operator +(Berza x, Berza y);
+    friend Berza operator -(Berza x, int y);
+    friend Berza operator -(Berza x, Berza y);
+   Berza operator+=(Berza y);
+     Berza operator +=(int y);
+      Berza operator-=(Berza y);
+     Berza operator -=(int y);
+     friend bool operator ==(Berza x, Berza y);
+    
+   
+        
+};
+ int Berza::DajBrojCijenaVecihOd(int p) const{
+    if(!dionice.size()) throw std::range_error("Nema registriranih cijena");
+   return std::count_if(dionice.begin(), dionice.end(), std::bind(std::greater&lt;int&gt;(), std::placeholders::_1, p));}
+    void Berza::Ispisi() const {
+        std::vector&lt;double&gt; a;
+        std::copy(dionice.begin(), dionice.end(), std::back_inserter(a));
+<a name="1"></a><font color="#00FF00"><a href="match322-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+        std::sort(a.begin(), a.end(), std::greater&lt;int&gt;());
+        std::transform(a.begin(), a.end(),a.begin(), std::bind(std::divides&lt;double&gt;(),std::placeholders::_1, 100 ));
+       // std::for_each(a.begin(), a.end(),  std::ostream_iterator&lt;double&gt;(std::cout,"\n"));
+      
+       std::remove_copy(a.begin(), a.end(),std::ostream_iterator&lt;double&gt;(std::cout&lt;&lt;std::fixed&lt;&lt;std::setprecision(2), "\n"), -1);
+</font>        
+    }
+    int Berza::operator [](int indeks){
+        TestIndeksa(indeks);
+        return dionice[indeks-1];
+    }
+    void Berza::operator ++(){
+        std::transform(dionice.begin(), dionice.end(), dionice.begin(), std::bind(std::plus&lt;int&gt;(), std::placeholders::_1, 1));
+        if(DajBrojCijenaVecihOd(maks)&gt;0) {
+        std::transform(dionice.begin(), dionice.end(), dionice.begin(), std::bind(std::minus&lt;int&gt;(), std::placeholders::_1, 1));
+        throw std::range_error("Prekoracen dozvoljeni opseg cijena");
+    }
+    
+    }
+    void Berza::operator ++(int){
+        ++(*this);
+    }
+    void Berza::operator --(){
+        std::transform(dionice.begin(), dionice.end(), dionice.begin(), std::bind(std::minus&lt;int&gt;(), std::placeholders::_1, 1));
+        if(std::count_if(dionice.begin(), dionice.end(), std::bind(std::less&lt;int&gt;(), std::placeholders::_1, min))) {
+        std::transform(dionice.begin(), dionice.end(), dionice.begin(), std::bind(std::plus&lt;int&gt;(), std::placeholders::_1, 1));
+        throw std::range_error("Prekoracen dozvoljeni opseg cijena");
+    }
+    
+    }
+    void Berza::operator --(int){
+        --(*this);
+    }
+    void Berza::operator-(){
+        std::transform(dionice.begin(), dionice.end(), dionice.begin(), std::bind(std::minus&lt;int&gt;(),maks+min, std::placeholders::_1));
+    }
+    Berza operator +(Berza x, int y){
+        std::transform(x.dionice.begin(), x.dionice.end(), x.dionice.begin(), std::bind(std::plus&lt;int&gt;(), std::placeholders::_1, y));
+        if(x.DajBrojCijenaVecihOd(x.maks)&gt;0) {
+        std::transform(x.dionice.begin(), x.dionice.end(),x.dionice.begin(), std::bind(std::minus&lt;int&gt;(), std::placeholders::_1, y));
+        throw std::domain_error("Prekoracen dozvoljeni opseg cijena");
+    }
+     return x;   
+    }
+    Berza operator +(Berza x, Berza y){
+        if(x.dionice.size()!=y.dionice.size()) throw std::domain_error("Nesaglasni operandi");
+        std::transform(x.dionice.begin(), x.dionice.end(),y.dionice.begin(), x.dionice.begin(), std::plus&lt;int&gt;());
+        if(x.DajBrojCijenaVecihOd(x.maks)&gt;0) {
+<a name="5"></a><font color="#FF0000"><a href="match322-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+        std::transform(x.dionice.begin(), x.dionice.end(),y.dionice.begin(), x.dionice.begin(), std::minus&lt;int&gt;());
+        throw std::domain_error("Prekoracen dozvoljeni opseg cijena");
+</font>    }
+     return x;   
+    }
+    
+     Berza operator -(Berza x, int y){
+<a name="2"></a><font color="#0000FF"><a href="match322-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+        std::transform(x.dionice.begin(), x.dionice.end(), x.dionice.begin(), std::bind(std::minus&lt;int&gt;(), std::placeholders::_1, y));
+        if(std::count_if(x.dionice.begin(), x.dionice.end(), std::bind(std::less&lt;int&gt;(), std::placeholders::_1, x.min))) {
+</font>        std::transform(x.dionice.begin(), x.dionice.end(), x.dionice.begin(), std::bind(std::plus&lt;int&gt;(), std::placeholders::_1, y));
+        throw std::domain_error("Prekoracen dozvoljeni opseg cijena");
+    }
+ return x;
+    }
+    Berza operator -(Berza x, Berza y){
+        if(x.dionice.size()!=y.dionice.size() || x.maks!=y.maks || x.min!=y.min) throw std::domain_error("Nesaglasni operandi");
+<a name="3"></a><font color="#00FFFF"><a href="match322-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+        std::transform(x.dionice.begin(), x.dionice.end(), y.dionice.begin(),x.dionice.begin(), std::minus&lt;int&gt;());
+        if(std::count_if(x.dionice.begin(), x.dionice.end(), std::bind(std::less&lt;int&gt;(), std::placeholders::_1,x.min))) {
+</font>        std::transform(x.dionice.begin(), x.dionice.end(),y.dionice.begin(), x.dionice.begin(), std::plus&lt;int&gt;());
+        throw std::domain_error("Prekoracen dozvoljeni opseg cijena");
+    }
+    return x;
+    }
+    Berza Berza:: operator +=(Berza y){
+        *this=*this+y;
+        return *this;
+    }
+    Berza Berza:: operator -=(Berza y){
+        *this=*this-y;
+        return *this;
+    }
+    Berza Berza:: operator +=(int y){
+        *this=*this+y;
+        return *this;
+    }
+    Berza Berza:: operator -=(int y){
+        *this=*this-y;
+        return *this;
+    }
+    bool operator==(Berza x, Berza y){
+        if(x.dionice.size()!=y.dionice.size() || x.maks!=y.maks || x.min!=y.min) return false;
+        return std::equal(x.dionice.begin(), x.dionice.end(), y.dionice.begin());
+        
+    }
+    bool operator!=(Berza x, Berza y){
+        return !(x==y);
+    }
+     
+    
+
+int main ()
+{
+    std::cout&lt;&lt;"Unesite minimalnu i maksimalnu cijenu: ";
+    int m,n;
+    std::cin&gt;&gt;m&gt;&gt;n;
+    Berza a(m,n);int opcija;
+    do{
+        
+        std::cout&lt;&lt;"Unesite opciju: "&lt;&lt;std::endl
+        &lt;&lt;"1: RegistrirajCijenu"&lt;&lt;std::endl
+        &lt;&lt;"2: Saberi sa cijelim brojem"&lt;&lt;std::endl
+        &lt;&lt;"3: Oduzmi od maksimalne i minimalne "&lt;&lt;std::endl
+        &lt;&lt;"4: Oduzmi za neki iznos"&lt;&lt;std::endl
+        &lt;&lt;"5: Prikazi Minimalnu cijenu: "&lt;&lt;std::endl
+        &lt;&lt;"6: Prikazi broj cijena vecih od zeljene"&lt;&lt;std::endl
+        &lt;&lt;"7: Ispisi cijene"&lt;&lt;std::endl
+        &lt;&lt;"8: Zavrsi"&lt;&lt;std::endl;
+    std::cin&gt;&gt;opcija;
+    switch (opcija){
+        case 8: break;
+        case 1:
+        while(true){
+        try{
+            std::cout&lt;&lt;"Unesite cijenu: ";
+            int cijena;
+            std::cin&gt;&gt;cijena;
+            a.RegistrirajCijenu(cijena);
+            break;
+        
+        
+    } catch(std::range_error iz){
+        std::cout&lt;&lt;iz.what()&lt;&lt;" Unesite ponovo!"&lt;&lt;std::endl;
+    }}
+    break;
+    case 2: try{
+            std::cout&lt;&lt;"Unesite broj: ";
+            int cijena1;
+            std::cin&gt;&gt;cijena1;
+           a+=cijena1;
+            break;
+        
+        
+    } catch(std::range_error iz){
+        std::cout&lt;&lt;iz.what();}
+        break;
+        case 3: 
+        
+           -a;
+            break;
+            case 4: 
+             try{
+            std::cout&lt;&lt;"Unesite broj: ";
+            int cijena2;
+            std::cin&gt;&gt;cijena2;
+           a-=cijena2;
+            break;
+        
+        
+    } catch(std::range_error iz){
+        std::cout&lt;&lt;iz.what();}
+        break;
+        case 5: std::cout&lt;&lt;a.DajMinimalnuCijenu();break;
+        case 6: 
+        std::cout&lt;&lt;"Unesite broj: ";
+            int cijena3;
+            std::cin&gt;&gt;cijena3;
+            std::cout&lt;&lt;"Broj cijena vecih od zeljene: "&lt;&lt;a.DajBrojCijenaVecihOd(cijena3);
+            case 7:
+            a.Ispisi();
+            break;
+    }}while(opcija!=8) ;
+    
+	return 0;
+}
+</pre>
+</body>
+</html>

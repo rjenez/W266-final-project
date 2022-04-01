@@ -1,0 +1,157 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student1966.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student5129.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match183-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+
+typedef std::pair&lt;double, double&gt; DblPair;
+typedef std::function&lt;double(double)&gt; Dbl2Dbl;
+
+// PROTOTIPI
+// Pomocne funkcije
+bool cmpFirst(const DblPair&amp;, const DblPair&amp;);
+
+Dbl2Dbl LinearnaInterpolacija(std::vector&lt;DblPair&gt;);
+Dbl2Dbl LinearnaInterpolacija(Dbl2Dbl, double, double, double);
+
+int main ()
+{
+    int option;
+    std::cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    std::cin &gt;&gt; option;
+    
+    if (option == 1)
+    {
+        int numNodes;
+        std::cout &lt;&lt; "Unesite broj cvorova: ";
+        std::cin &gt;&gt; numNodes;
+        
+        std::vector&lt;DblPair&gt; fnValues(numNodes);
+        std::cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+        for (auto &amp;vlPair : fnValues)
+            std::cin &gt;&gt; vlPair.first &gt;&gt; vlPair.second;
+        
+        Dbl2Dbl interpolated;
+        try {
+            interpolated = LinearnaInterpolacija(fnValues);
+        }
+        catch (const std::exception &amp;ex) {
+            std::cout &lt;&lt; ex.what() &lt;&lt; std::endl;
+            return 0;
+        }
+        
+        for (;;)
+        {
+            double input;
+            std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            std::cin &gt;&gt; input;
+            
+            if (!std::cin || (std::cin.peek() != '\n' &amp;&amp; std::cin.peek() != EOF))
+                break;
+            
+            try {
+                double res = interpolated(input);
+                std::cout &lt;&lt; "f(" &lt;&lt; input &lt;&lt; ") = " &lt;&lt; res &lt;&lt; std::endl;
+            }
+            catch (const std::exception &amp;ex) {
+                std::cout &lt;&lt; ex.what() &lt;&lt; std::endl;
+            }
+        }
+    }
+    else if (option == 2)
+    {
+        double xMin, xMax, dx;
+        std::cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+        std::cin &gt;&gt; xMin &gt;&gt; xMax &gt;&gt; dx;
+        
+        auto f = [](double x) {
+            return x * x + std::sin(x);
+        };
+        
+        Dbl2Dbl interpolated;
+        try {
+            interpolated = LinearnaInterpolacija(f, xMin, xMax, dx);
+        }
+        catch (const std::exception &amp;ex) {
+            std::cout &lt;&lt; ex.what() &lt;&lt; std::endl;
+            return 0;
+        }
+        
+        for (;;)
+        {
+            double input;
+            std::cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+            std::cin &gt;&gt; input;
+            
+            if (!std::cin || (std::cin.peek() != '\n' &amp;&amp; std::cin.peek() != EOF))
+                break;
+            
+            try {
+                double res = interpolated(input);
+                std::cout &lt;&lt; "f(" &lt;&lt; input &lt;&lt; ") = " &lt;&lt; f(input) &lt;&lt; " ";
+                std::cout &lt;&lt; "fapprox(" &lt;&lt; input &lt;&lt; ") = " &lt;&lt; res &lt;&lt; std::endl;
+            }
+            catch (const std::exception &amp;ex) {
+                std::cout &lt;&lt; ex.what() &lt;&lt; std::endl;
+            }
+        }
+    }
+    else
+        std::cout &lt;&lt; "Neispravna opcija!" &lt;&lt; std::endl;
+    
+	return 0;
+}
+
+Dbl2Dbl LinearnaInterpolacija(std::vector&lt;DblPair&gt; fnValues)
+{
+    std::sort(fnValues.begin(), fnValues.end(), cmpFirst);
+    
+    for (int i = 0; i &lt; fnValues.size() - 1; i++)
+        if (std::fabs(fnValues.at(i).first - fnValues.at(i + 1).first) &lt; 1e-6)
+            throw std::domain_error("Neispravni cvorovi");
+        
+    return [fnValues](double x) {
+        if (fnValues.size() == 0 || x &lt; fnValues.begin()-&gt;first || x &gt; fnValues.rbegin()-&gt;first)
+            throw std::range_error("Argument izvan opsega");
+            
+        if (fnValues.size() == 1 || std::fabs(x - fnValues.begin()-&gt;first) &lt; 1e-6)
+            return fnValues.begin()-&gt;second;
+        
+        auto p_iIter(std::lower_bound(fnValues.begin(), fnValues.end(), DblPair(x, 0), cmpFirst));
+        auto p_ipls1 = *p_iIter, p_i = *(p_iIter - 1);
+        
+        return p_i.second + (p_ipls1.second - p_i.second) / (p_ipls1.first - p_i.first) * (x - p_i.first);
+    };
+}
+
+Dbl2Dbl LinearnaInterpolacija(Dbl2Dbl f, double xMin, double xMax, double dx)
+{
+    if (xMin &gt; xMax || dx &lt;= 0)
+        throw std::domain_error("Nekorektni parametri");
+        
+    std::vector&lt;DblPair&gt; fnValues;
+    for (double x = xMin; x &lt;= xMax; x += dx)
+        fnValues.push_back(DblPair(x, f(x)));
+        
+    return LinearnaInterpolacija(fnValues);
+}
+
+bool cmpFirst(const DblPair &amp;p1, const DblPair &amp;p2)
+{
+    return p1.first &lt; p2.first;
+</font>}
+</pre>
+</body>
+</html>

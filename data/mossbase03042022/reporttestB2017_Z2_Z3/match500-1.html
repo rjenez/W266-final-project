@@ -1,0 +1,384 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student7080.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student7655.cpp<p></p><pre>
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;deque&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+template &lt;typename NekiTip&gt;
+bool Da_Li_Je_Peridocan(std::vector&lt;NekiTip&gt;v,int d)
+{
+	bool t(true);
+	if(d&lt;1 || d&gt;=v.size()) return false;
+	for(int i(0);i&lt;v.size()-d;i++)
+	{
+		if(v.at(i)!=v.at(i+d))
+		{
+			t=false;
+			break;
+		}
+	}
+	return t;
+}
+
+template &lt;typename NekiTip&gt;
+int Odredi_Osnovni_Period(std::vector&lt;NekiTip&gt;v)
+{
+	if(v.size()==0) return 0;
+	int osnovni(0);
+	int br(1);
+	while(br!=v.size())
+	{
+		if(Da_Li_Je_Peridocan(v,br)) return br;
+		else br++;
+	}
+	if(br==v.size()) return 0;
+}
+template &lt;typename NekiTip&gt;
+NekiTip **AlocirajFragmentirano(const std::vector&lt;NekiTip&gt; &amp;v,int &amp;koliko_puta)
+{
+	int index,duzina(v.size());
+	int osnovni_period(Odredi_Osnovni_Period(v));
+	if(osnovni_period&gt;0)
+		koliko_puta=std::count(v.begin(),v.end(),v[0]);
+	else koliko_puta=2;
+<a name="1"></a><font color="#00FF00"><a href="match500-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+	if(v.size()==0) throw (" ");
+	for(int i(0);i&lt;v.size();i++)
+		if(v.at(i)&lt;=0) throw std::domain_error(" "); 
+</font>	int period(0),b(1);
+	if(osnovni_period&gt;0)
+	{
+	try
+	{
+	NekiTip **p(new NekiTip *[koliko_puta*osnovni_period]);
+	try
+	{
+	for(int i(0);i&lt;osnovni_period*koliko_puta;i++)
+	{
+		p[i]=new NekiTip [int(v.at(period))];
+		 period++;
+			if(period==osnovni_period) period=0;
+	}
+
+
+	period=osnovni_period;
+	int max(v[0]),ma;
+	for(int i(1);i&lt;v.size();i++)
+		if(v.at(i)&gt;max) max=v[i];
+	ma=max;	
+	for(int i(osnovni_period*koliko_puta-1);i&gt;=0;i--)
+	{
+		max=ma;
+		for(int j(v.at(period-1)-1);j&gt;=0;j--)
+		{
+			p[i][j]=max;
+			max--;
+		}
+		period--;
+		if(period==0) period=osnovni_period;
+	}	
+		return p;
+	}	
+	catch(std::bad_alloc)
+	{
+		for(int i(0);i&lt;v.size();i++)
+			delete [] p[i];
+			delete [] p;
+			throw;
+	}
+	}
+	catch(std::bad_alloc)
+	{
+		throw;
+	}
+	}
+	if(osnovni_period==0)
+	{
+		int k(0),duzina(v.size());
+		try
+		{
+		NekiTip **p(new NekiTip *[koliko_puta*v.size()]);
+		try
+		{
+		for(int i(0);i&lt;koliko_puta*v.size();i++)
+		{
+			p[i]=new NekiTip [int(v.at(k))];
+			k++;
+			if(k==v.size()) k=0;
+		}
+		}	
+		catch(std::bad_alloc)
+		{
+			for(int i(0);i&lt;koliko_puta*v.size();i++)
+				delete [] p[i];
+			delete [] p;
+			throw;
+		}
+		int max(v[0]),ma;
+		for(int i(1);i&lt;v.size();i++)
+			if(v.at(i)&gt;max) max=v[i];
+		ma=max;	
+		for(int i(koliko_puta*v.size()-1);i&gt;=0;i--)
+			{
+				max=ma;
+				for(int j(v.at(duzina-1)-1);j&gt;=0;j--)
+				{
+					p[i][j]=max;
+					max--;
+				}
+				duzina--;
+				if(duzina==0) duzina=v.size();
+			}
+			return p;
+		}
+		catch(std::bad_alloc)
+		{
+			throw;
+		}
+	} 
+
+}
+
+
+template &lt;typename NekiTip&gt;
+NekiTip **AlocirajKontinualno(const std::vector&lt;NekiTip&gt;&amp;v,int &amp;koliko_puta )
+{
+	int index,duzina(v.size());
+	int osnovni_period(Odredi_Osnovni_Period(v));
+	if(osnovni_period&gt;0) koliko_puta=std::count(v.begin(),v.end(),v[0]);
+	else koliko_puta=2;
+	int nh,p(0);
+	if(osnovni_period&gt;0)
+	{
+	for(int i(0);i&lt;v.size();i++)
+	{
+		if((v.size()-i)%osnovni_period==0) { p++; if(p==1) nh=i; }
+	}
+	}
+<a name="2"></a><font color="#0000FF"><a href="match500-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+	if(v.size()==0) throw (" ");
+	for(int i(0);i&lt;v.size();i++)
+	if(v.at(i)&lt;=0) throw std::domain_error(" ");
+</font>	int period(0);
+	if(osnovni_period&gt;0)
+	{
+		int n(0),k(0);
+		try
+		{
+		NekiTip **p(new NekiTip *[koliko_puta*osnovni_period+1]);
+		for(int i(0);i&lt;koliko_puta*osnovni_period;i++)
+		{
+			n+=v.at(k);
+			k++;
+			if(k==v.size()-nh) k=0;
+		} 
+				try
+				{
+				p[0]=new NekiTip [n];
+				}
+				catch(std::bad_alloc)
+				{
+					delete[] p[0];
+					throw;
+				}
+				k=0;
+				for(int i(1);i&lt;koliko_puta*osnovni_period;i++)
+				{
+					p[i]=p[i-1]+int(v.at(k));
+					k++;
+					if(k==v.size()-nh) k=0;
+				}
+			period=osnovni_period;
+
+		int m(1),max(1),ma(1);
+			for(int i(koliko_puta*osnovni_period-1);i&gt;=0;i--)
+			{
+				max=ma;
+				for(int j(v.at(period-1)-1);j&gt;=0;j--)
+				{
+					p[i][j]=max++;
+				}
+				period--;
+				if(period==0) period=osnovni_period;
+			}
+			return p;
+		}
+			catch(std::bad_alloc)
+			{
+				throw;
+			}
+  }
+if(osnovni_period==0)
+{
+	int k(0),duzina(v.size()),j(0);
+	try
+	{
+		NekiTip **p(new NekiTip *[koliko_puta*v.size()]);
+			for(int i(0);i&lt;koliko_puta*v.size();i++) 
+			{
+				k+=v.at(j);
+				j++;
+				if(j==v.size()) j=0;
+			}
+			try
+			{
+			p[0]=new NekiTip [k];
+			}
+			catch(std::bad_alloc)
+			{
+				delete[] p;
+				throw;
+			}
+			k=0;
+
+		for(int i(1);i&lt;koliko_puta*v.size();i++) 
+		{
+			p[i]=p[i-1]+int(v.at(k));
+			k++;
+			if(k==v.size()) k=0;
+		}
+			int max(1),ma(1);
+			for(int i(koliko_puta*v.size()-1);i&gt;=0;i--)
+			{
+				max=ma;
+				for(int j(v.at(duzina-1)-1);j&gt;=0;j--)
+				{
+					p[i][j]=max;
+					max++;
+				}
+				duzina--;
+				if(duzina==0) duzina=v.size();
+				
+			}
+			return p;
+	}
+			catch(std::bad_alloc)
+			{
+				throw;
+			}
+}
+
+}  
+int main ()
+{
+	try
+	{
+	std::cout &lt;&lt; "Unesite broj elemenata vektora: ";;
+	int br_elemenata;
+	std::cin &gt;&gt; br_elemenata; 
+	std::vector&lt;int&gt;v(br_elemenata);
+	int koliko_puta(0);
+	std::cout &lt;&lt; "Unesite elemente vektora: ";
+	for(int i(0);i&lt;br_elemenata;i++)
+    std::cin &gt;&gt; v.at(i); 
+	std::cout &lt;&lt; "Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+	int izbor;
+	std::cin &gt;&gt; izbor;
+
+	if(izbor==0)
+	{
+	auto p0=AlocirajKontinualno(v,koliko_puta);
+	std::cout &lt;&lt; "Dinamicki alocirana matrica:" &lt;&lt; std::endl; 
+	int period(0),osnovni_period(Odredi_Osnovni_Period(v));
+	int duzina(0);
+	if(osnovni_period&gt;0)
+	{
+	for(int i(0);i&lt;osnovni_period*koliko_puta;i++)
+		{
+			for(int j(0);j&lt;v[period];j++)
+			{
+<a name="3"></a><font color="#00FFFF"><a href="match500-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+				std::cout &lt;&lt;std::left&lt;&lt;std::setw(3)&lt;&lt;p0[i][j];
+			}
+			period++;
+			if(period==osnovni_period) period=0;
+</font>			std::cout  &lt;&lt; std::endl;
+		}
+	}
+	else
+	{
+		for(int i(0);i&lt;koliko_puta*v.size();i++)
+		{
+			for(int j(0);j&lt;v[period];j++)
+			{
+<a name="4"></a><font color="#FF00FF"><a href="match500-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+				std::cout &lt;&lt; std::left&lt;&lt;std::setw(3) &lt;&lt;p0[i][j];
+			}
+			period++;
+			if(period==v.size()) period=0;
+</font>			std::cout  &lt;&lt; std::endl;
+		}
+	}
+		delete[] p0[0];
+		delete[] p0;
+	} 
+	if(izbor==1)
+	{
+		auto p1=AlocirajFragmentirano(v,koliko_puta);
+		std::cout &lt;&lt; "Dinamicki alocirana matrica: " &lt;&lt; std::endl;
+
+		int period(0),osnovni_period(Odredi_Osnovni_Period(v));
+		if(osnovni_period&gt;0)
+		{
+		for(int i(0);i&lt;koliko_puta*osnovni_period;i++)
+		{
+			for(int j(0);j&lt;v[period];j++)
+			{
+				std::cout &lt;&lt;std::left&lt;&lt;std::setw(3)&lt;&lt; p1[i][j];
+			}	
+			std::cout  &lt;&lt; std::endl;	
+			period++;
+			if(period==osnovni_period) period=0;
+		}
+		for(int i(0);i&lt;koliko_puta*osnovni_period;i++)
+			delete[] p1[i];
+			delete[] p1;
+		}
+		else
+		{
+			period=0;
+			for(int i(0);i&lt;(koliko_puta*v.size());i++)
+			{
+				for(int j(0);j&lt;v[period];j++)
+					std::cout &lt;&lt; std::left&lt;&lt;std::setw(3)&lt;&lt;p1[i][j] ;
+				std::cout  &lt;&lt; std::endl;
+				period++;
+				if(period==v.size()) period=0;
+			}
+		
+		for(int i(0);i&lt;koliko_puta*v.size();i++)
+			delete [] p1[i];
+			delete [] p1;
+		}
+	}
+	}
+	catch(std::bad_alloc)
+	{
+<a name="0"></a><font color="#FF0000"><a href="match500-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+		std::cout &lt;&lt; "Izuzetak: Alokacija nije uspjela!" &lt;&lt; std::endl;
+	}
+	catch(std::domain_error)
+	{
+		std::cout &lt;&lt;"Izuzetak: Neispravan vektor!" &lt;&lt; std::endl;
+	}
+	catch(...)
+	{
+		std::cout &lt;&lt; "Izuzetak: Prazan vektor!"&lt;&lt; std::endl;
+</font>	}
+	
+	return 0;
+}</pre>
+</body>
+</html>

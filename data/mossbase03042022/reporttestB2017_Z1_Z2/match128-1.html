@@ -1,0 +1,170 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student9081.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student1013.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+
+
+<a name="0"></a><font color="#FF0000"><a href="match128-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+double MaxEl (std::vector&lt;std::vector&lt;double&gt;&gt; v)
+{
+	//Funkcija vraca najveci elemenat u matrici, tj.prvi na koji naidje ako ih ima vise
+	std::vector&lt;double&gt; temp(v.size()*v.at(0).size());
+	for (int i=0;i&lt;v.size();i++)
+	{
+		for (int j=0;j&lt;v.at(i).size();j++)
+		{
+			temp.at(i*v.at(i).size()+j)=v.at(i).at(j);
+		}
+	}
+	double maxe(temp.at(0));
+	for (int i=0;i&lt;temp.size();i++)
+	{
+		if (temp.at(i)&gt;maxe)
+			maxe=temp.at(i);
+	}
+	return maxe;
+}
+
+bool JesuLiJednaki (double a, double b,double eps=1e-10)
+{
+	//Ispitivanje jednakosti i nejednakosti za realne brojeve
+	if ((a&lt;0 &amp;&amp;b&gt;0) || (a&gt;0 &amp;&amp;b&lt;0))
+		return false;
+	return std::fabs(a-b)&lt;=eps*(std::fabs(a)+std::fabs(b));
+}
+
+std::vector&lt;std::vector&lt;double&gt;&gt; NajvecaPlaninaMatrice (std::vector&lt;std::vector&lt;double&gt;&gt; mat)
+{
+	//Ispitujemo da li matrica ima razlicit broj kolona, i u tom slucaju bacamo izuzetak
+	for (int i=0;i&lt;mat.size();i++)
+	{
+		for (int j=i+1;j&lt;mat.size();j++)
+		{
+			if (mat.at(i).size()!=mat.at(j).size())
+				throw std::domain_error("Matrica nije korektna");
+		}
+	}
+	std::vector&lt;std::vector&lt;double&gt;&gt; maxi;
+	double najv;
+	bool nema_vrha(true);
+	bool dim(false);
+	for (int i=0;i&lt;mat.size();i++)
+	{
+		for (int j=0;j&lt;mat.at(i).size();j++)
+		{
+			long double pom(mat.at(i).at(j));
+			int redl(i),redd(i),kolonal(j),kolonad(j);
+			bool planina(true);
+			najv=MaxEl(mat);
+			dim=true;
+			//Cim pronadjemo element u cijoj okolini se nalazi makar jedan koncentricni kvadrat racunamo sumu elemenata tog kvadrata
+			if	(redl&gt;=1 &amp;&amp; kolonal&gt;=1 &amp;&amp; kolonad&lt;mat.at(i).size()-1 &amp;&amp; redd&lt;mat.size()-1)
+			{	
+				while (redl&gt;=1 &amp;&amp; kolonal&gt;=1 &amp;&amp; kolonad&lt;mat.at(i).size()-1 &amp;&amp; redd&lt;mat.size()-1)
+				{
+				long double suma(0);
+				int indeks(0);
+				std::vector&lt;std::vector&lt;double&gt;&gt; temp;
+				for (int k=redl-1;k&lt;=redd+1;k++)
+				{
+					temp.resize(indeks+1);
+					for (int l=kolonal-1;l&lt;=kolonad+1;l++)
+					{
+						temp.at(indeks).push_back(mat.at(k).at(l));
+						if (k==redl-1 || k==redd+1 || l==kolonal-1 || l==kolonad+1)
+						suma+=mat.at(k).at(l);
+					}
+					indeks++;
+				}
+				if (suma&gt;pom || JesuLiJednaki(suma,pom))
+				planina=false;
+				//Ako je veca od prethodne ili veca od vrha, petlja se prekida
+				//Konstno sirimo opseg od pronadjenog elementa,sve dok smo unutar dimenzija matrice
+				redl--;
+				kolonal--;
+				redd++;
+				kolonad++;
+				if (!planina)
+					 break;
+				else if (planina &amp;&amp; temp.size()!=0){
+					pom=suma;
+					nema_vrha=false;
+				if (temp.size()&gt;maxi.size())
+				   maxi=std::move(temp); 
+				else if (temp.size()==maxi.size() &amp;&amp; MaxEl(temp)&gt;MaxEl(maxi) &amp;&amp; !JesuLiJednaki(MaxEl(maxi),MaxEl(temp)))
+					maxi=std::move(temp); 
+				}
+			}
+			}
+		}
+	}
+	if (nema_vrha &amp;&amp; dim)
+	{
+		maxi.resize(1);
+		maxi.at(0).push_back(najv);
+	}
+
+	return maxi;
+}
+
+int main ()
+{
+	//Hvatanje izuzetka u mainu
+	try{
+	int m,n;
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m i n): ";
+	std::cin&gt;&gt;m&gt;&gt;n;
+	if (m&lt;0 || n&lt;0)
+	std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+	else
+	{
+		double unos;
+		std::vector&lt;std::vector&lt;double&gt;&gt; mat(m);
+		std::cout&lt;&lt;"Unesite elemente matrice: ";
+		for (int i=0;i&lt;m;i++)
+		{
+			for (int j=0;j&lt;n;j++)
+			{
+				std::cin&gt;&gt;unos;
+				mat.at(i).push_back(unos);
+			}
+		}
+
+		auto m(NajvecaPlaninaMatrice(mat));
+		std::cout&lt;&lt;"\nNajveca planina unesene matrice je: "&lt;&lt;std::endl;
+		for (std::vector&lt;double&gt; y: m)
+		{
+			for (double x: y)
+				std::cout&lt;&lt;std::setw(6)&lt;&lt;x;
+			std::cout&lt;&lt;"\n";
+		}
+	}}
+	catch (std::domain_error izuzetak){
+		std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+</font>	}
+	return 0;
+}</pre>
+</body>
+</html>

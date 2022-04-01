@@ -1,0 +1,122 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student7346.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student6168.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;climits&gt;
+<a name="0"></a><font color="#FF0000"><a href="match313-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cin;
+using std::endl;
+using std::cout;
+typedef std::vector&lt;int&gt; vektor;
+typedef std::deque&lt;vektor&gt; dekvek;
+enum Smjer {Rastuci, Opadajuci};
+
+bool StepenBrojaDva (int a)
+{
+
+	if (a&lt;1)
+		return false;
+	while (a!=1) {
+		if(a%2!=0)
+			return false ;
+		a/=2;
+	}
+	return true;
+}
+
+int VelicinaPodniza (int lokacija, vektor brojevi, Smjer smjer)
+{
+	if (!StepenBrojaDva(brojevi.at(lokacija)))
+		return 0;
+	int vel(0);
+	if (smjer == Opadajuci) {
+		for (int i=lokacija+1; i&lt;brojevi.size(); i++) {
+			if(brojevi.at(i-1)&gt;=brojevi.at(i) &amp;&amp; StepenBrojaDva(brojevi.at(i)))
+				vel++;
+			else
+				break;
+		}
+	} else {
+		for(int i=lokacija+1; i&lt;brojevi.size(); i++) {
+			if(brojevi.at(i)&gt;=brojevi.at(i-1) &amp;&amp; StepenBrojaDva(brojevi.at(i)))
+				vel++;
+			else
+				break;
+		}
+	}
+	return vel;
+}
+
+dekvek MaksimalniPodnizoviStepenaDvojke (vektor brojevi, Smjer smjer)
+{
+	dekvek krajnji; //Trazeni dek vektora s monotono rastucim/opadajucim podnizovima
+	int brvek(0);
+	for (int i(0); i&lt;brojevi.size(); i++) {
+		int brel(VelicinaPodniza(i, brojevi, smjer));
+		if (brel&gt;=1) {
+			brvek++;
+			krajnji.resize(brvek);
+			for (int j=i; j&lt;=brel+i; j++) {
+				krajnji.at(brvek-1).push_back(brojevi.at(j));
+			}
+			i=i+brel;
+		}
+	}
+	return krajnji;
+}
+
+void IspisiMaksimalnePodnizove (dekvek rezultat, Smjer smjer)
+{
+	if (smjer==Rastuci)
+		cout &lt;&lt; "Maksimalni rastuci podnizovi: " &lt;&lt; endl;
+	else
+		cout &lt;&lt; "Maksimalni opadajuci podnizovi: " &lt;&lt; endl;
+	for (auto x : rezultat) {
+		for (auto y : x)
+			cout &lt;&lt; y &lt;&lt; " ";
+		cout &lt;&lt; endl;
+	}
+}
+
+int main ()
+{
+	vektor elementi;
+	int brel;
+	cout &lt;&lt; "Unesite broj elemenata vektora: ";
+	cin &gt;&gt; brel;
+	cout &lt;&lt; "Unesite elemente vektora: ";
+	for (int i(0); i&lt;brel; i++) {
+		int element;
+		cin &gt;&gt; element;
+		elementi.push_back(element);
+		if(i==INT_MAX) break;
+	}
+	double smjer;
+	cout &lt;&lt; "Unesite: 1 - za rastuce podnizove, 2 - za opadajuce podnizove: ";
+	cin &gt;&gt; smjer;
+	if(smjer!=1 &amp;&amp; smjer!=2)
+		do {
+			cout &lt;&lt; "Neispravan smjer, unesite novi: ";
+			int smjer;
+			cin &gt;&gt; smjer;
+		} while (smjer!=1 &amp;&amp; smjer!=2) ;
+
+	if(smjer==1) {
+		auto rezultat = MaksimalniPodnizoviStepenaDvojke(elementi, Rastuci);
+		IspisiMaksimalnePodnizove(rezultat, Rastuci);
+	} else {
+		auto rezultat = MaksimalniPodnizoviStepenaDvojke(elementi, Opadajuci);
+		IspisiMaksimalnePodnizove(rezultat, Opadajuci);
+	}
+	return 0;
+</font>}</pre>
+</body>
+</html>

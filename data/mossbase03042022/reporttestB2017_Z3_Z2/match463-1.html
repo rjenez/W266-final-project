@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student1468.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student7773.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;map&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;tuple&gt;
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+<a name="2"></a><font color="#0000FF"><a href="match463-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+typedef std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; Mapa;
+
+void PretvoriUMala(std::string &amp;s) {
+</font>    
+<a name="3"></a><font color="#00FFFF"><a href="match463-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+    for(int i=0; i&lt;s.length(); i++) {
+        if(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') s[i]=s[i]+32;
+</font>    }
+    return;
+}
+
+Mapa KreirajIndeksPojmova(Knjiga k){
+	Mapa indeks_pojmova;
+	for(auto itr=k.begin(); itr!=k.end(); itr++){
+	    std::string poglavlje(itr-&gt;first);
+		std::vector&lt;std::string&gt; &amp;v=itr-&gt;second;
+		for(int i=0;i&lt;v.size();i++){
+		    int stranica(i+1);       //ili i+1?
+		    std::string s=v[i];
+		    for(int j=0; j&lt;s.length();j++) {
+               std::string rijec;
+                int pozicija(j);
+                while( (s[j]&gt;='A' &amp;&amp; s[j]&lt;='Z') || (s[j]&gt;='a' &amp;&amp; s[j]&lt;='z') || (s[j]&gt;='0' &amp;&amp; s[j]&lt;='9') ) {
+                   rijec.push_back(s[j]);
+                   j++;
+                }
+            if(rijec.length()==0) continue;
+            PretvoriUMala(rijec);
+<a name="0"></a><font color="#FF0000"><a href="match463-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+            auto it(indeks_pojmova.find(rijec));
+            if(it==indeks_pojmova.end()) {
+            std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; skup;
+            skup.insert(std::make_tuple(poglavlje,stranica,pozicija));
+</font>            indeks_pojmova.insert(std::make_pair(rijec,skup));
+            }
+        
+            else {
+            (it-&gt;second).insert(std::make_tuple(poglavlje,stranica,pozicija));
+            }
+	
+		}
+		}
+	}
+		
+		return indeks_pojmova;
+		
+	}
+	
+	std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; PretraziIndeksPojmova(std::string rijec, Mapa indeks_pojmova) {
+    auto it(indeks_pojmova.find(rijec));
+    if(it==indeks_pojmova.end())
+        throw std::logic_error ("Pojam nije nadjen");
+    else {
+        return it-&gt;second;
+    }
+}
+
+void IspisiIndeksPojmova(Mapa indeks_pojmova) {
+    auto it(indeks_pojmova.begin());
+    
+    while(it!=indeks_pojmova.end()) {
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        auto poc((it-&gt;second).begin());
+         while(poc!=(it-&gt;second).end()){
+             std::tuple&lt;std::string, int, int&gt; t=*poc;
+             if((++poc)--==(it-&gt;second).end()) std::cout &lt;&lt; std::get&lt;0&gt;(t) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(t)&lt;&lt;"/"&lt;&lt;std::get&lt;2&gt;(t);
+             else std::cout &lt;&lt; std::get&lt;0&gt;(t) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(t)&lt;&lt;"/"&lt;&lt;std::get&lt;2&gt;(t)&lt;&lt;", ";
+             
+             poc++;
+         }
+        std::cout&lt;&lt;std::endl;
+        it++;
+    }
+  
+}
+	
+	int main(){
+	    Knjiga knjiga;
+	    std::string poglavlje;
+	    std::string sadrzaj;
+	    std::vector&lt;std::string&gt; stranice;
+	    for(;;){
+	    std::cout&lt;&lt;"Unesite naziv poglavlja: ";
+	    std::getline(std::cin, poglavlje);
+	    if(poglavlje==".") break;
+	    int i(1);
+	    for(;;){
+	        std::cout&lt;&lt;"Unesite sadrzaj stranice "&lt;&lt;i&lt;&lt;": ";
+<a name="1"></a><font color="#00FF00"><a href="match463-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+	        std::getline(std::cin,sadrzaj);
+	        if(sadrzaj==".") break;
+	        stranice.push_back(sadrzaj);
+	        i++;
+	    }
+	    knjiga.insert(std::make_pair(poglavlje,stranice));
+	    }
+	    Mapa indeks_pojmova=KreirajIndeksPojmova(knjiga);
+	    std::cout&lt;&lt;"\nKreirani indeks pojmova:"&lt;&lt;std::endl;
+</font>	    IspisiIndeksPojmova(indeks_pojmova);
+	    for(;;) {
+        std::string rijec;
+        std::cout&lt;&lt;"Unesite rijec: ";
+        std::getline(std::cin, rijec);
+        if(rijec==".") return 0;
+        try {
+<a name="4"></a><font color="#FF00FF"><a href="match463-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+            std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; skup(PretraziIndeksPojmova(rijec, indeks_pojmova));
+            for(auto it=skup.begin(); it!=skup.end();it++){
+            std::cout &lt;&lt; std::get&lt;0&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*it)&lt;&lt;"/"&lt;&lt;std::get&lt;2&gt;(*it)&lt;&lt;" ";
+</font>            }
+        }
+        catch(...) {
+            std::cout&lt;&lt;"Unesena rijec nije nadjena!";
+        }
+        std::cout&lt;&lt;std::endl;
+        }
+	    return 0;
+	}</pre>
+</body>
+</html>

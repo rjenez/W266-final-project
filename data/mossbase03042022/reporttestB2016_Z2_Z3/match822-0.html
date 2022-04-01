@@ -1,0 +1,339 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z3/student1981.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z3/student1981.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 3
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Berina Cocalic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: bcocalic1@etf.unsa.ba
+	
+*/
+
+#include &lt;iostream&gt; 
+#include &lt;sstream&gt;
+#include &lt;cmath&gt;
+#include &lt;deque&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+#include &lt;vector&gt;
+#include &lt;type_traits&gt;
+
+<a name="4"></a><font color="#FF00FF"><a href="match822-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::deque;
+using std::vector;
+
+
+
+int f(long long int broj) {
+	int suma(0),a;
+</font>	while(broj!=0) {
+		a=broj%10;
+		broj=broj/10;
+		suma+=a;
+	}
+	return suma;
+}
+
+int SumaDjelilaca(long long int broj) {
+	int suma(0);
+	if(broj&lt;0) broj*=(-1);
+	for(int i=1; i&lt;=broj; i++) 
+		if(broj%i==0) suma+=i;
+	
+	return suma;
+}
+
+
+bool Prost (long long int x) {
+	int br(1);
+	if(x&lt;=1) return false;
+	for(int i=1; i&lt;=std::sqrt(x); i++) {
+		if(x%i==0) br++;
+		if(br&gt;2) return false;
+	}
+	if(br==2) return true;	
+	
+}
+
+bool Savrsen(int x) {
+	int br(0);
+	
+	for(int i=1; i&lt;x; i++) 
+		if(x%i==0) br+=i;
+	
+	if(br==x) return true;
+	else return false;
+	
+}
+
+int BrojSavrsenihDjelilaca(long long int broj){
+	long long int suma(0);
+	if(broj&lt;0) broj*=(-1);
+		for(int i=1; i&lt;=broj; i++) 
+			if(broj%i==0 &amp;&amp; Savrsen(i)) suma++;
+	
+	return suma;
+}
+
+int BrojProstihFaktora(long long int broj) {
+	int suma(0);
+	
+	for(int i=0; i&lt;=broj; i++) 
+		
+		if(Prost(i) &amp;&amp; broj%i==0) {
+			while(broj%i==0) {
+				broj=broj/i;
+				suma++;
+			}
+		}
+	
+	
+	return suma;
+}
+
+<a name="0"></a><font color="#FF0000"><a href="match822-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+template &lt;typename tip1, typename tip2, typename tip3, typename tip4&gt;
+	auto UvrnutiPresjek (tip1 p1, tip1 p2, tip2 q1, tip2 q2, tip3 f(tip4))-&gt; vector&lt;vector&lt;typename std::remove_reference&lt;decltype (*p1)&gt; ::type&gt; &gt; {
+</font>		typedef typename std::remove_reference&lt;decltype (*p1)&gt; ::type t;
+		vector&lt;vector&lt;t&gt; &gt; mat(100000, vector&lt;t&gt;(3));
+		int i(0);
+		while(p1!=p2) {
+			tip2 q=q1;
+			while(q!=q2) {
+				if(f(*p1)==f(*q)) {
+					mat[i][0]=*p1;
+					mat[i][1]=*q;
+					mat[i][2]=f(*p1);
+		
+					i++;
+				}
+				
+				q++;
+			}
+			p1++;
+		}
+		mat.resize(i);
+		
+	
+	std::sort(mat.begin(),mat.end(), [] (vector&lt;t&gt; a, vector&lt;t&gt; b){return a[1]&lt;b[1];});
+	std::sort(mat.begin(),mat.end(), [] (vector&lt;t&gt; a, vector&lt;t&gt; b){return a[0]&lt;b[0];});
+	
+	std::sort(mat.begin(),mat.end(), [] (vector&lt;t&gt; a, vector&lt;t&gt; b){return a[2]&lt;b[2];});
+		
+		
+		return mat;	
+	}
+
+
+
+
+<a name="1"></a><font color="#00FF00"><a href="match822-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+template &lt;typename tip1, typename tip2, typename tip3, typename tip4&gt;
+	auto UvrnutaRazlika (tip1 p1, tip1 p2, tip2 q1, tip2 q2, tip3 f(tip4))-&gt; vector&lt;vector&lt;typename std::remove_reference&lt;decltype (*p1)&gt; ::type&gt; &gt; {
+</font>		typedef typename std::remove_reference&lt;decltype (*p1)&gt; ::type t;
+		vector&lt;vector&lt;t&gt; &gt; mat(10000, vector&lt;t&gt;(2));
+		int i(0),br(0);
+		tip1 a=p1;
+		while(a!=p2) {
+			tip2 q=q1;
+			br=0;
+			while(q!=q2) {
+				if(f(*a)==f(*q)) br++;	
+				q++;
+			}
+			
+			if(br==0) {
+				mat[i][0]=*a;
+				mat[i][1]=f(*a);
+				i++;
+			}
+			a++;
+		}
+		
+		tip2 b=q1;
+		while(b!=q2) {
+			tip1 q=p1;
+			br=0;
+			while(q!=p2) {
+				if(f(*b)==f(*q)) br++;	
+				q++;
+			}
+			
+			if(br==0) {
+				mat[i][0]=*b;
+				mat[i][1]=f(*b);
+				i++;
+			}
+			b++;
+		}
+		
+		mat.resize(i);
+		
+		std::sort(mat.begin(),mat.end(), [] (vector&lt;t&gt; a, vector&lt;t&gt; b){return a[1]&gt;b[1];});
+		std::sort(mat.begin(),mat.end(), [] (vector&lt;t&gt; a, vector&lt;t&gt; b){return a[0]&gt;b[0];});
+	
+		
+		return mat;	
+	}
+	
+	
+<a name="2"></a><font color="#0000FF"><a href="match822-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+template &lt;typename tip1, typename tip2&gt; 
+	auto UvrnutiPresjek (tip1 p1, tip1 p2, tip2 q1, tip2 q2)-&gt; vector&lt;vector&lt;typename std::remove_reference&lt;decltype (*p1)&gt; ::type&gt; &gt; {
+</font>		typedef typename std::remove_reference&lt;decltype (*p1)&gt; ::type t;
+		vector&lt;vector&lt;t&gt; &gt; mat(100000, vector&lt;t&gt;(3));
+		int i(0);
+		while(p1!=p2) {
+			tip2 q=q1;
+			while(q!=q2) {
+				if(*p1==*q) {
+					mat[i][0]=*p1;
+					i++;
+				}
+				q++;	
+			}	
+				
+			p1++;
+		}
+		mat.resize(i);
+		std::sort(mat.begin(),mat.end(), [] (vector&lt;t&gt; a, vector&lt;t&gt; b){return a[1]&lt;b[1];});
+		std::sort(mat.begin(),mat.end(), [] (vector&lt;t&gt; a, vector&lt;t&gt; b){return a[0]&lt;b[0];});
+	
+		std::sort(mat.begin(),mat.end(), [] (vector&lt;t&gt; a, vector&lt;t&gt; b){return a[2]&lt;b[2];});
+		return mat;
+	}	
+	
+	
+<a name="3"></a><font color="#00FFFF"><a href="match822-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+template &lt;typename tip1, typename tip2&gt;
+	auto UvrnutaRazlika (tip1 p1, tip1 p2, tip2 q1, tip2 q2)-&gt; vector&lt;vector&lt;typename std::remove_reference&lt;decltype (*p1)&gt; ::type&gt; &gt; {
+</font>		typedef typename std::remove_reference&lt;decltype (*p1)&gt; ::type t;
+		vector&lt;vector&lt;t&gt; &gt; mat(10000, vector&lt;t&gt;(2));
+		int i(0),br(0);
+		tip1 a=p1;
+		while(a!=p2) {
+			tip2 q=q1;
+			br=0;
+			while(q!=q2) {
+				if(*a==*q) br++;	
+				q++;
+			}
+			
+			if(br==0) {
+				mat[i][0]=*a;
+				i++;
+			}
+			a++;
+		}
+		
+		tip2 b=q1;
+		while(b!=q2) {
+			tip1 q=p1;
+			br=0;
+			while(q!=p2) {
+				if(*b==*q) br++;	
+				q++;
+			}
+			
+			if(br==0) {
+				mat[i][0]=*b;
+				i++;
+			}
+			b++;
+		}
+		
+		mat.resize(i);
+		std::sort(mat.begin(),mat.end(), [] (vector&lt;t&gt; a, vector&lt;t&gt; b){return a[1]&gt;b[1];});
+		std::sort(mat.begin(),mat.end(), [] (vector&lt;t&gt; a, vector&lt;t&gt; b){return a[0]&gt;b[0];});
+		return mat;
+	}	
+
+int main ()
+{
+	int a,b;
+	deque&lt;long int&gt; d1(0),d2(0);
+	deque&lt;long int&gt;::iterator it1;
+	deque&lt;long int&gt;::iterator it2;
+	cout&lt;&lt;"Unesite broj elemenata prvog kontejnera: ";
+	cin&gt;&gt;a;
+	cout&lt;&lt;"Unesite elemente prvog kontejnera: ";
+	
+	for(int i=0; i&lt;a; i++) {
+		long int n;
+		cin&gt;&gt;n;
+		it1=std::find(d1.begin(),d1.end(),n);
+		if(it1==d1.end()) d1.push_back(n);
+		else a++;
+	
+	}
+
+
+	cout&lt;&lt;"Unesite broj elemenata drugog kontejnera: ";
+	cin&gt;&gt;b;
+	cout&lt;&lt;"Unesite elemente drugog kontejnera: ";
+	for(int i=0; i&lt;b; i++) {
+		long int m;
+		cin&gt;&gt;m;
+		it2=std::find(d2.begin(),d2.end(),m);
+		if(it2==d2.end()) d2.push_back(m);
+		else b++;
+		
+		
+	}
+	cout&lt;&lt;"Uvrnuti presjek kontejnera: "&lt;&lt;endl;;
+	
+	vector&lt;vector&lt;long int&gt;&gt; mat;
+	mat=UvrnutiPresjek(d1.begin(),d1.end(),d2.begin(),d2.end(),f);
+	
+	
+	for(int i=0; i&lt;mat.size(); i++) {
+		for(int j=0; j&lt;3; j++) {
+<a name="5"></a><font color="#FF0000"><a href="match822-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+			cout&lt;&lt;std::right&lt;&lt;std::setw(6)&lt;&lt;mat[i][j]&lt;&lt;" ";
+		}
+		cout&lt;&lt;endl;
+	}
+	
+	
+	cout&lt;&lt;"Uvrnuta razlika kontejnera: "&lt;&lt;endl;
+</font>	mat=UvrnutaRazlika(d1.begin(),d1.end(),d2.begin(),d2.end(), BrojProstihFaktora);
+	
+	
+	for(int i=0; i&lt;mat.size(); i++) {
+		for(int j=0; j&lt;2; j++) {
+			cout&lt;&lt;std::right&lt;&lt;std::setw(6)&lt;&lt;mat[i][j]&lt;&lt;" ";
+		}
+		cout&lt;&lt;endl;
+	}
+	
+	
+	cout&lt;&lt;"Dovidjenja!";
+	
+	
+	
+	
+	return 0;
+}
+
+
+
+
+
+
+</pre>
+</body>
+</html>

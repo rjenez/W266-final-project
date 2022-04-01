@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student9823.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student9823.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+#include &lt;cctype&gt;
+#include &lt;stdexcept&gt;
+
+char toUpper(char c)
+{
+    if(c&gt;='a' &amp;&amp; c&lt;='z') return c-('a' - 'A');
+    return c;
+}
+
+int isSiliC(char c)
+{
+    if(c&gt;='1' &amp;&amp; c&lt;='9') return true;
+    c = toUpper(c);
+    return c&gt;='A' &amp;&amp; c&lt;='Z';
+}
+
+bool JesuliIsti(const std::string &amp;a, const std::string &amp;b)
+{
+    if(a.size() != b.size()) return false;
+    for(int i=0; i &lt; a.size(); i++) {
+        if(toUpper(a[i]) != toUpper(b[i])) return false;
+    }
+    return true;
+}
+
+bool ImaluMapone(const std::map&lt;std::string, std::set&lt;int&gt;&gt; &amp;mapa, const std::string &amp;naziv)
+{
+    auto it(mapa.find(naziv));
+    if(it == mapa.end()) return true;
+    else return false;
+}
+
+void PuMala(std::string &amp;s){
+    for(int i=0; i &lt; s.size(); i++){
+<a name="1"></a><font color="#00FF00"><a href="match825-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+        if(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') s[i] += 'a'-'A';
+    }
+}
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova(const std::string &amp;a)
+</font>{
+    std::string s;
+    s = a;
+    PuMala(s);
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; zaVratit;
+
+    for(unsigned int i=0; i &lt; s.size(); i++) {
+        std::set&lt;int&gt; novi;
+        while(!isSiliC(s[i])) i++;
+        unsigned int pocetak(i);
+        while(isSiliC(s[i])) i++;
+        std::string pomocni = s.substr(pocetak, i-pocetak);
+        novi.insert(pocetak+0);
+
+        for(auto j = i; j &lt; s.size(); j++) {
+            if(isSiliC(s[j])) {
+                unsigned int pocetak2 = j;
+                while(isSiliC(s[j])) j++;
+                std::string pomocni2 = s.substr(pocetak2, j-pocetak2);
+                if(JesuliIsti(pomocni, pomocni2)) {
+                    novi.insert(pocetak2+0);
+                }
+            }
+        }
+<a name="0"></a><font color="#FF0000"><a href="match825-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+        if(ImaluMapone(zaVratit, pomocni)) zaVratit.insert(std::make_pair(pomocni, novi));
+    }
+    return zaVratit;
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova(const std::string &amp;s, const std::map&lt;std::string, std::set&lt;int&gt;&gt; &amp;haloba)
+{
+    std::string a;
+</font>    a = s;
+    PuMala(a);
+    auto it(haloba.find(a));
+    if(it == haloba.end()) throw std::logic_error("Pojam nije nadjen");
+    else return it-&gt;second;
+}
+
+void IspisiIndeksPojmova(const std::map&lt;std::string, std::set&lt;int&gt;&gt; &amp;haloba)
+{
+    auto it(haloba.begin());
+    while(it != haloba.end()) {
+        auto max = *std::max_element((it-&gt;second).begin(), (it-&gt;second).end());
+        std::cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+        for(auto x : it-&gt;second) {
+            if( x == max) std::cout &lt;&lt; x;
+            else std::cout &lt;&lt; x &lt;&lt; ",";
+        }
+        std::cout &lt;&lt; std::endl;
+        it++;
+    }
+}
+
+int main ()
+{
+    std::string str;
+    std::cout &lt;&lt; "Unesite tekst: ";
+<a name="2"></a><font color="#0000FF"><a href="match825-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+    std::getline(std::cin, str);
+    auto z = KreirajIndeksPojmova(str);
+    IspisiIndeksPojmova(z);
+    std::string rijec;
+    do {
+        std::cout &lt;&lt; "Unesite rijec: ";
+        std::getline(std::cin, rijec);
+        if(rijec == ".") return 0;
+</font>        try {
+            std::set&lt;int&gt; novi(PretraziIndeksPojmova(rijec, z));
+            for(auto x : novi) std::cout &lt;&lt; x &lt;&lt; " ";
+            std::cout &lt;&lt; std::endl;
+        } catch(std::logic_error exec) {
+            std::cout &lt;&lt; "Unesena rijec nije nadjena!" &lt;&lt; std::endl;
+        }
+    } while(rijec != ".");  
+    return 0;
+}</pre>
+</body>
+</html>

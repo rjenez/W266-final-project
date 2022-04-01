@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student1571.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student1571.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+#include &lt;set&gt;
+#include &lt;memory&gt;
+
+struct Dijete {
+    std::string ime;
+    std::shared_ptr&lt;Dijete&gt; sljedeci;
+};
+void ispisi_vek_set (std::vector&lt;std::set&lt;std::string&gt;&gt; v_s) {
+    int i(1);
+    for (auto const &amp;a : v_s) {
+       std::cout &lt;&lt; "Tim " &lt;&lt; i &lt;&lt; ": ";
+       i++;
+       int brojac(0);
+        for (auto b : a) {
+            brojac++;
+            if (brojac == a.size())  std::cout &lt;&lt; b;
+            else std::cout &lt;&lt; b &lt;&lt; ", ";
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+double mod (double n, double k) {
+    return std::fmod(n, k);
+}
+int cijeli_dio (double n, double k) {
+    return (n / k);
+}
+int duzina_koraka (std::string s) {
+    int duzina(0);
+    for (int i=0; i&lt;s.length(); i++) {
+<a name="2"></a><font color="#0000FF"><a href="match916-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+        if ((s[i] &gt;= '0' &amp;&amp; s[i] &lt;= '9') || (s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z') || (s[i] &gt;= 'a' &amp;&amp; s[i] &lt;= 'z'))
+            duzina++;
+    }
+    return duzina;
+}
+//NE RADI CURENJE MEMORIJE 
+std::shared_ptr&lt;Dijete&gt; kreiraj_dijete (std::string Ime) {
+</font>    std::shared_ptr&lt;Dijete&gt; novo_dijete(new Dijete); //OPET CURENJE NEGDJE OVO NASTAJE WHY?????? HEJT 
+    novo_dijete-&gt;ime = Ime;
+    novo_dijete-&gt;sljedeci = nullptr;
+    return novo_dijete;
+}
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje (std::vector&lt;std::string&gt; v, int n) {
+    if (n &lt; 1 || n &gt; v.size()) throw std::logic_error ("Razvrstavanje nemoguce");
+
+    std::shared_ptr&lt;Dijete&gt; pocetak(kreiraj_dijete(v[0])), kraj = nullptr, iterator(pocetak);
+    for (int i=1; i&lt;v.size(); i++) {
+        iterator-&gt;sljedeci = kreiraj_dijete(v[i]);
+        iterator = iterator-&gt;sljedeci; 
+    }
+    kraj = iterator;
+    kraj-&gt;sljedeci = pocetak;
+    std::vector&lt;std::set&lt;std::string&gt;&gt; glavna;
+    int broj_djece(v.size()), kopija_broja(broj_djece);
+    iterator = pocetak;
+    int modulo(mod(broj_djece, n)), cijeli(cijeli_dio(broj_djece, n));
+    int prvi(cijeli+1);
+    std::vector&lt;std::string&gt; pomocni_vek(v);
+    for (int i=0; i&lt;n; i++) {
+        int djeca_trenutni;
+        if (i+1 &lt;= modulo) djeca_trenutni = prvi;
+        else  djeca_trenutni = cijeli;
+        std::set&lt;std::string&gt; tim_pomocni;
+        for (int j=0; j&lt;djeca_trenutni; j++) {
+            tim_pomocni.insert(iterator-&gt;ime);
+            int br_slova(duzina_koraka(iterator-&gt;ime));
+            std::shared_ptr&lt;Dijete&gt; pom_iterator (pocetak);
+            while (pom_iterator-&gt;sljedeci != iterator) pom_iterator = pom_iterator-&gt;sljedeci;
+            pom_iterator-&gt;sljedeci = iterator-&gt;sljedeci;
+            if (iterator == pocetak) pocetak = iterator-&gt;sljedeci;
+            iterator = pom_iterator-&gt;sljedeci; //WHY YOU NO WORK
+            kopija_broja--;
+            pomocni_vek.resize(pomocni_vek.size()-1);
+            if (!kopija_broja) break;
+            int k(0);
+            while (k != br_slova - 1) {
+                iterator = iterator-&gt;sljedeci;
+                k++;
+            }
+        }
+<a name="1"></a><font color="#00FF00"><a href="match916-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+        if (pomocni_vek.size() == 0) iterator-&gt;sljedeci = nullptr;
+        glavna.push_back(tim_pomocni);
+    }
+    return glavna;
+}
+int main() {
+    std::cout &lt;&lt; "Unesite broj djece: ";
+    int br;
+    std::cin &gt;&gt; br;
+</font>    try {
+        std::cout &lt;&lt; "Unesite imena djece: " &lt;&lt; std::endl;
+        std::cin.ignore(10000,'\n');
+        std::vector&lt;std::string&gt; vek;
+<a name="0"></a><font color="#FF0000"><a href="match916-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+        for (int i=0; i&lt;br; i++) {
+            std::string ime;
+            std::getline(std::cin, ime);
+            vek.push_back(ime);
+        }
+        std::cout &lt;&lt; "Unesite broj timova: ";
+        int timovi;
+        std::cin &gt;&gt; timovi;
+        std::vector&lt;std::set&lt;std::string&gt;&gt; lista(Razvrstavanje(vek, timovi));
+</font>        ispisi_vek_set(lista);
+    }
+    catch (std::logic_error poruka) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; poruka.what();
+    }
+    catch (std::bad_alloc) {
+       // std::cout &lt;&lt; "Memorija";
+        return 0;
+    }
+    return 0;
+}</pre>
+</body>
+</html>

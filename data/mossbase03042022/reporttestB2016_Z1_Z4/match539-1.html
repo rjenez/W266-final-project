@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student1579.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student8747.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match539-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+std::string ObrniFraze(std::string s, std::vector&lt;std::string&gt;v){
+	for(int i=0;i&lt;v.size();i++){
+		std::string x=v[i];
+		for(int j=0;j&lt;s.size();j++){
+</font>			int k=0;
+			int r=j;
+			while(s[r]==x[k]){
+				if(r==s.size()) break;
+				k++;
+				r++;
+			}
+			if(k==x.size()){
+				r--;
+				for(int l=0;l&lt;x.size();l++){
+					s[r]=x[l];
+					r--;
+				}
+				
+			}
+		}
+	}
+	return s;
+}
+	
+std::string IzmijeniUPigLatin(std::string s,std::vector&lt;std::string&gt; v){
+	if(v.size()==0){
+		int pocetak;
+		if((s[0]&gt;='a' &amp;&amp; s[0]&lt;='z') || (s[0]&gt;='A' &amp;&amp; s[0]&lt;='Z'))  pocetak=0;
+		for(int i=0;i&lt;s.size();i++){
+			if((i==pocetak) || (((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z')) &amp;&amp; !((s[i-1]&gt;='a' &amp;&amp; s[i-1]&lt;='z') || (s[i-1]&gt;='A' &amp;&amp; s[i-1]&lt;='Z')))){
+				 int prvi=i;
+				 char prvo_slovo=s[prvi];
+				 while((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z')) {
+				 	i++;
+				 } 
+				 if(i==s.size()){
+				 	s.push_back(prvo_slovo);
+				 	s.push_back('a');
+				 	s.push_back('y');
+				 }
+				 else{
+				 	s.insert(s.begin()+i, 'y');
+				 	s.insert(s.begin()+i,'a');
+				 	s.insert(s.begin()+i,prvo_slovo);
+				 }
+				 s.erase(s.begin()+prvi);
+			}
+		}
+	}
+	else{
+<a name="2"></a><font color="#0000FF"><a href="match539-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+		for(int i=0;i&lt;v.size();i++){
+			std::string x=v[i];
+			for(int j=0;j&lt;x.size();j++){
+</font>				if(!((x[j]&gt;='a' &amp;&amp; x[j]&lt;='z') || (x[j]&gt;='A' &amp;&amp; x[j]&lt;='Z'))) throw std::domain_error("Nekorektan izbor rijeci");
+			}
+			for(int j=0;j&lt;s.size();j++){
+				int k=0;
+				int p=j;
+				while(s[j]==x[k]){
+					if(j==s.size()) break;
+					k++;
+					j++;
+				}
+				if((s[p]==s[0] || s[p-1]==' ') &amp;&amp; k==x.size() &amp;&amp; (j==s.size() || !((s[j]&gt;='a' &amp;&amp; s[j]&lt;='z') || (s[j]&gt;='A' &amp;&amp; s[j]&lt;='Z')))){
+					if(j==s.size()){
+						s.push_back(s[p]);
+						s.push_back('a');
+						s.push_back('y');
+						s.erase(s.begin()+p);
+					}
+					else{
+						s.insert(s.begin()+j,'y');
+						s.insert(s.begin()+j,'a');
+						s.insert(s.begin()+j,s[p]);
+						s.erase(s.begin()+p);
+					}
+				}
+			}
+		}
+	}
+	return s;
+}
+
+int main ()
+{
+	std::string s;
+	std::cout &lt;&lt; "Unesite recenicu: ";
+	std::getline(std::cin,s);
+	std::cout &lt;&lt; "Unesite fraze: ";
+	std::vector&lt;std::string&gt; v ;
+	int i=0;
+	for(;;){
+		std::string a;
+		std::getline(std::cin,a);
+		if(a.size()==0) break;
+		v.resize(i+1);
+		v[i]=a;
+		i++;
+	
+	}
+	try{
+		std::string d= IzmijeniUPigLatin(s,v);
+<a name="1"></a><font color="#00FF00"><a href="match539-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+		std::cout &lt;&lt; "Recenica nakon PigLatin transformacije: "&lt;&lt; d &lt;&lt; std::endl;
+	}
+	catch(std::domain_error izuzetak){
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+	}
+	std::string m=ObrniFraze(s,v);
+	std::cout&lt;&lt; "Recenica nakon obrtanja fraza: " &lt;&lt; m &lt;&lt; std::endl;
+</font>	return 0;
+}</pre>
+</body>
+</html>

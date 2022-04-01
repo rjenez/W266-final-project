@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student8705.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student8705.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+using std::vector;
+typedef vector&lt;vector&lt;double&gt;&gt; Matrica;
+
+Matrica NajvecaPlaninaMatrice(Matrica mat)
+{
+    if (!mat.size()) return Matrica();
+    int m(mat.size()), n(mat.at(0).size());
+    for (auto red : mat)
+        if (red.size() != n) throw std::domain_error("Matrica nije korektna");
+    if (n == 0) return Matrica();
+    //Glavni dio
+    int maxdim(0), x(0), y(0);
+    double maxvrh(0);
+    for (int i(0); i &lt; m; i++)
+        for (int j(0); j &lt; n; j++)
+        {
+            int d(0), dim(0);
+            double prethodni(mat.at(i).at(j));
+<a name="0"></a><font color="#FF0000"><a href="match622-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_15.gif"/></a>
+
+            while (++d &lt;= i &amp;&amp; d &lt;= j &amp;&amp; d &lt;= m-1-i &amp;&amp; d &lt;= n-1-j)
+            {
+                //Racunanje zbira elemenata d-tog koncentricnog kvadrata
+                double s(0);
+                for (int k(i-d); k &lt;= i+d; k++)
+                    for (int l(j-d); l &lt;= j+d; l++)
+                        if (k == i-d || k == i+d || l == j-d || l == j+d)
+                            s += mat.at(k).at(l);
+                if (s &lt; prethodni) prethodni = s;
+</font>                else break;
+            }
+            //Postavljanje novog kandidata
+            if ((dim = 2*d - 1) &gt; maxdim || (dim == maxdim &amp;&amp; mat.at(i).at(j) &gt; maxvrh))
+            {
+                maxvrh = mat.at(i).at(j);
+                maxdim = dim;
+                x = i - d + 1;
+                y = j - d + 1;
+            }
+        }
+    //Vracanje planine matrice
+    Matrica tmp(maxdim, vector&lt;double&gt;(maxdim));
+<a name="1"></a><font color="#00FF00"><a href="match622-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+    for (int i(x); i &lt; x + maxdim; i++)
+        for (int j(y); j &lt; y + maxdim; j++)
+            tmp.at(i-x).at(j-y) = mat.at(i).at(j);
+</font>    return tmp;
+}
+int main()
+{
+    int m, n;
+    std::cout &lt;&lt; "Unesite dimenzije matrice (m i n): ";
+    std::cin &gt;&gt; m &gt;&gt; n;
+    if (m &lt; 0 || n &lt; 0)
+    {
+        std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!";
+        return 0;
+    }
+    std::cout &lt;&lt; "Unesite elemente matrice:\n";
+    Matrica mat(m, vector&lt;double&gt;(n)), np;
+    for (int i(0); i &lt; m; i++)
+        for (int j(0); j &lt; n; j++)
+            std::cin &gt;&gt; mat.at(i).at(j);
+    try
+    {
+        np = NajvecaPlaninaMatrice(mat);
+        std::cout &lt;&lt; "Najveca planina unesene matrice je:\n";
+<a name="2"></a><font color="#0000FF"><a href="match622-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+        for (auto red : np)
+        {
+            for (double el : red)
+                std::cout &lt;&lt; std::setw(6) &lt;&lt; el;
+            std::cout &lt;&lt; std::endl;
+</font>        }
+    }
+    catch (std::domain_error e)
+    {
+        std::cout &lt;&lt; e.what();
+        return 0;
+    }
+	return 0;
+}</pre>
+</body>
+</html>

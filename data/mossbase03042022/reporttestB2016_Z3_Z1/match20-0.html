@@ -1,0 +1,215 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student2111.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student2111.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match20-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 1
+//Autotestovi by Enil Pajic (epajic1@etf.unsa.ba)
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+#include &lt;set&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+
+double kvadriraj(int koeficijent)
+{
+    if(koeficijent%2==0)
+    return 1;
+    return -1;
+}
+
+std::function&lt;double(double)&gt;BaricentricnaInterpolacija(std::vector&lt;std::pair&lt;double,double&gt;&gt;ulaz,int d)
+{
+    
+    std::vector&lt;std::pair&lt;double,double&gt;&gt;v ;
+    v.resize(ulaz.size()+1);
+    for(int i=1;i&lt;ulaz.size()+1;i++)
+    {
+        v[i]=ulaz[i-1];
+    }
+    
+    
+    for(int i=1;i&lt;v.size();i++)
+    {
+        for(int j=i+1;j&lt;v.size();j++)
+        if(v[i].first==v[j].first)
+        throw std::domain_error("Neispravni cvorovi");
+    }
+    if(d&lt;0 || d&gt;v.size()-1)
+    throw std::domain_error("Nedozvoljen red");
+    
+    return [v,d](double x)
+    {
+       
+        
+        for(int i=1;i&lt;v.size();i++)
+        {
+            if(v[i].first==x)
+            return v[i].second;
+        }
+        int n=v.size()-1;
+        double donja=0;
+        double gornja=0;
+        double vrati;
+        for(int i=1;i&lt;v.size();i++)
+        {
+            double wi=0;
+            int widonja;
+            int wi_gornja;
+            widonja=i-d;
+            if(widonja&lt;=1)
+            widonja=1;
+            wi_gornja=n-d;
+            if(wi_gornja&gt;=i)
+            wi_gornja=i;
+            for(int k=widonja;k&lt;=wi_gornja;k++)
+            {
+                double proizvod=1;
+                for(int j=k;j&lt;=k+d;j++)
+                if(j!=i)
+                proizvod=proizvod*(double)(1/(v[i].first-v[j].first));
+                wi=wi+kvadriraj(k-1)*proizvod;
+            }
+            gornja=gornja+(  (wi*v[i].second)/(x-v[i].first));
+            
+        }
+        
+        for(int i=1;i&lt;v.size();i++)
+        {
+            
+            double wi=0;
+            int widonja;
+            int wi_gornja;
+            widonja=i-d;
+            if(widonja&lt;=1)
+            widonja=1;
+            wi_gornja=n-d;
+            if(wi_gornja&gt;=i)
+            wi_gornja=i;
+            for(int k=widonja;k&lt;=wi_gornja;k++)
+            {
+                double proizvod=1;
+                for(int j=k;j&lt;=k+d;j++)
+                if(j!=i)
+                proizvod=proizvod*(double)(1/(v[i].first-v[j].first));
+                wi=wi+kvadriraj(k-1)*proizvod;
+            }
+            donja=donja+wi/(x-v[i].first);
+        }
+        vrati=gornja/donja;
+        return vrati;
+    };
+    
+}
+
+
+std::function&lt;double(double)&gt;BaricentricnaInterpolacija(std::function&lt;double(double)&gt; ulaz,double xmin,double xmax,double deltax,int d)
+{
+    
+    if(xmin&gt;xmax || deltax&lt;=0)
+    throw std::domain_error("Nekorektni parametri");
+    std::vector&lt;double&gt; xkordinate;
+    while (xmin&lt;=xmax) {
+        xkordinate.push_back(xmin);
+        xmin=xmin+deltax;
+        
+    }
+    
+    std::vector&lt;std::pair&lt;double,double&gt;&gt;vektor;
+    vektor.resize(xkordinate.size());
+    for(int i=0;i&lt;xkordinate.size();i++)
+    {
+        vektor[i].first=xkordinate[i];
+        vektor[i].second=ulaz(xkordinate[i]);
+    }
+    return BaricentricnaInterpolacija(vektor,d);
+    
+}
+
+double funkcija(double x)
+{
+    return x*x+std::sin(x);
+}
+
+
+
+int main ()
+{
+    try{
+    std::cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    int opcija;
+    std::cin&gt;&gt;opcija;
+    if(opcija==1)
+    {
+        std::cout&lt;&lt;"Unesite broj cvorova: ";
+        int broj_cvorova;
+        std::cin&gt;&gt;broj_cvorova;
+        std::vector&lt;std::pair&lt;double,double&gt;&gt; cvorovi;
+        cvorovi.resize(broj_cvorova);
+        std::cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+        for(int i=0;i&lt;broj_cvorova;i++)
+        {
+            double prvi;
+            double drugi;
+            std::cin&gt;&gt;prvi;
+            std::cin&gt;&gt;drugi;
+            cvorovi[i].first=prvi;
+            cvorovi[i].second=drugi;
+        }
+        std::cout&lt;&lt;"Unesite red interpolacije: ";
+        int red_interpolacije;
+        std::cin&gt;&gt;red_interpolacije;
+        std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+        double argument;
+        auto f=BaricentricnaInterpolacija(cvorovi,red_interpolacije);
+        while(1)
+        {
+            std::cin&gt;&gt;argument;
+            if(std::cin.peek()!=10)
+            return 0;
+            std::cout&lt;&lt;"f("&lt;&lt;argument&lt;&lt;") = "&lt;&lt;f(argument);
+            std::cout&lt;&lt;"\nUnesite argument (ili \"kraj\" za kraj): ";
+            
+        }
+        
+    }
+    if(opcija==2)
+    {
+        
+        double pocetak,kraj,deltax;
+        std::cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+        std::cin&gt;&gt;pocetak;
+        std::cin&gt;&gt;kraj;
+        std::cin&gt;&gt;deltax;
+        std::cout&lt;&lt;"Unesite red interpolacije: ";
+        int red_interpolacije;
+        std::cin&gt;&gt;red_interpolacije;
+        std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+        double argument;
+        auto f=BaricentricnaInterpolacija(funkcija,pocetak,kraj,deltax,red_interpolacije);
+        while (1) {
+            std::cin&gt;&gt;argument;
+            if(std::cin.peek()!=10)
+            return 0;
+            std::cout&lt;&lt;"f("&lt;&lt;argument&lt;&lt;") = "&lt;&lt;funkcija(argument)&lt;&lt;" "&lt;&lt;"fapprox("&lt;&lt;argument&lt;&lt;") = "&lt;&lt;f(argument);
+            std::cout&lt;&lt;"\nUnesite argument (ili \"kraj\" za kraj): ";
+        }
+        
+    }
+    }
+    catch(std::domain_error izuzetak)
+    {
+        std::cout&lt;&lt;izuzetak.what();
+</font>    }
+   
+return 0;
+}</pre>
+</body>
+</html>

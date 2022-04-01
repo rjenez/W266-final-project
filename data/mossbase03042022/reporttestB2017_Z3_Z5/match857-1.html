@@ -1,0 +1,831 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student6410.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student2240.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stack&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+#include &lt;map&gt;
+
+
+<a name="2"></a><font color="#0000FF"><a href="match857-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+enum class Boje {Pik, Tref, Herc, Karo};
+
+
+struct Karta
+{
+  Boje boja;
+  std::string vrijednost;
+};
+
+struct Cvor
+{
+    Karta karta;
+    Cvor *sljedeci;
+};
+
+
+Cvor *KreirajSpil()
+</font>{
+    Cvor *pocetak{nullptr}, *prethodni;
+
+    for (int i{};i&lt;52;i++)
+        {
+            Cvor *novi = new Cvor;                                              ///Kreiranje i popunjavanje cvorova.
+
+            if (i == 0 || i == 13 || i == 26 || i == 39)
+                novi-&gt;karta.vrijednost = "2";
+            if (i == 1 || i == 14 || i == 27 || i == 40)
+                novi-&gt;karta.vrijednost = "3";
+            if (i == 2 || i == 15 || i == 28 || i == 41)
+                novi-&gt;karta.vrijednost = "4";
+            if (i == 3 || i == 16 || i == 29 || i == 42)
+                novi-&gt;karta.vrijednost = "5";
+            if (i == 4 || i == 17 || i == 30 || i == 43)
+                novi-&gt;karta.vrijednost = "6";
+            if (i == 5 || i == 18 || i == 31 || i == 44)
+                novi-&gt;karta.vrijednost = "7";
+            if (i == 6 || i == 19 || i == 32 || i == 45)
+                novi-&gt;karta.vrijednost = "8";
+            if (i == 7 || i == 20 || i == 33 || i == 46)
+                novi-&gt;karta.vrijednost = "9";
+            if (i == 8 || i == 21 || i == 34 || i == 47)
+                novi-&gt;karta.vrijednost = "10";
+            if (i == 9 || i == 22 || i == 35 || i == 48)
+                novi-&gt;karta.vrijednost = "J";
+            if (i == 10 || i == 23 || i == 36 || i == 49)
+                novi-&gt;karta.vrijednost = "Q";
+            if (i == 11 || i == 24 || i == 37 || i == 50)
+                novi-&gt;karta.vrijednost = "K";
+            if (i == 12 || i == 25 || i == 38 || i == 51)
+                novi-&gt;karta.vrijednost = "A";
+
+            if (i&gt;=0 &amp;&amp; i&lt;=12)
+                novi-&gt;karta.boja = Boje::Pik;
+            if (i&gt;=13 &amp;&amp; i&lt;=25)
+                novi-&gt;karta.boja = Boje::Tref;
+            if (i&gt;=26 &amp;&amp; i&lt;=38)
+                novi-&gt;karta.boja = Boje::Herc;
+            if (i&gt;=39 &amp;&amp; i&lt;=51)
+                novi-&gt;karta.boja = Boje::Karo;
+
+            novi-&gt;sljedeci = nullptr;
+
+            if (!pocetak)
+                pocetak = novi;
+            else
+                prethodni-&gt;sljedeci = novi;
+
+            prethodni = novi;
+        }
+
+    prethodni-&gt;sljedeci = pocetak;                                              ///Posljednji element pokazuje na prvi.
+
+
+    return pocetak;
+}
+
+int PrebrojiKarte (Cvor *spil)
+{
+    if (spil == nullptr)
+        return 52;
+
+    int brojac{};
+
+    Cvor *p = spil;
+    p = p-&gt;sljedeci;
+    brojac++;
+
+    for (p; p!=spil; p = p-&gt;sljedeci)
+        brojac++;
+
+
+    return 52-brojac;
+}
+
+std::stack&lt;std::pair&lt;std::string,std::string&gt;&gt; IzbaciKarteRazbrajanjem (Cvor *&amp;spil, const int &amp;x, const int &amp;b)
+{
+    std::pair&lt;int,int&gt; izbacivanje (x,b);
+    
+    if (izbacivanje.first&lt;1 || izbacivanje.first&gt;52)
+        throw std::logic_error ("Neispravni elementi za izbacivanje!");
+
+    if (izbacivanje.second&lt;1)
+        throw std::logic_error ("Neispravni elementi za izbacivanje!");
+
+    Cvor *p = spil;                                                             ///Pronalazenje broja elemenata u spilu.
+    p = p-&gt;sljedeci;
+    int n{1};
+    for (p ; p!=spil; p = p-&gt;sljedeci)
+        n++;
+
+    std::stack&lt;std::pair&lt;std::string,std::string&gt;&gt; rezultat;
+
+    int r{};
+    int trenutno_izbaceni{};
+
+    r+=izbacivanje.first;
+
+    p = spil;
+
+    while(true)
+        {
+            if (n == trenutno_izbaceni)
+                break;
+
+            Cvor *pomocni;
+            for (int j{1};j&lt;r;j++)
+                {
+                    if (j == r-1)
+                        pomocni = p;
+
+                    p = p-&gt;sljedeci;
+                }
+
+            if (r == 1)
+                {
+                    pomocni = p;
+                    p = p-&gt;sljedeci;
+                }
+
+
+
+            Cvor *brisanje = p;
+            p = p-&gt;sljedeci;
+
+            if (brisanje == pomocni)                                            ///Ako je ostao samo jedan element u spilu.
+                {
+                    std::string s1,s2;
+                    int broj;
+                    broj = (int)brisanje-&gt;karta.boja;
+                    if (broj == 0)
+                        s1 = "Pik";
+                    if (broj == 1)
+                        s1 = "Tref";
+                    if (broj == 2)
+                        s1 = "Herc";
+                    if (broj == 3)
+                        s1 = "Karo";
+
+                    s2 = brisanje-&gt;karta.vrijednost;
+                    std::pair&lt;std::string,std::string&gt; upis = std::make_pair(s1,s2);
+                    rezultat.push(upis);
+
+                    delete brisanje;
+                    brisanje = nullptr;
+                    pomocni = nullptr;
+                    spil = nullptr;
+                    break;
+                }
+
+            pomocni-&gt;sljedeci = p;
+
+            std::string s1,s2;                                                  ///Upis u red.
+            int broj;
+            broj = (int)brisanje-&gt;karta.boja;
+            if (broj == 0)
+                s1 = "Pik";
+            if (broj == 1)
+                s1 = "Tref";
+            if (broj == 2)
+                s1 = "Herc";
+            if (broj == 3)
+                s1 = "Karo";
+
+            s2 = brisanje-&gt;karta.vrijednost;
+            std::pair&lt;std::string,std::string&gt; upis = std::make_pair(s1,s2);
+
+            rezultat.push(upis);
+
+            if (brisanje == spil)                                               ///Ako je element koji se brise prvi, on postaje slijedeci.
+                spil = p;
+
+            delete brisanje;
+            brisanje = nullptr;
+
+            trenutno_izbaceni++;
+            if (trenutno_izbaceni == izbacivanje.second)
+                break;
+
+        }
+
+    return rezultat;
+}
+
+void IzbaciKarte (Cvor *&amp;spil, std::multimap&lt;Boje, std::string&gt; &amp;mapa)
+{
+    if (PrebrojiKarte(spil) &lt; 0)
+        throw std::logic_error ("Neispravna lista!");
+    
+    auto it_mape = mapa.begin();    
+    while (it_mape != mapa.end())
+    {
+        Boje boja = it_mape-&gt;first;
+        std::string znak = it_mape-&gt;second;
+        
+        int broj_karte;
+        if (znak == "2")
+            broj_karte = 0;
+        if (znak == "3")
+            broj_karte = 1;
+        if (znak == "4")
+            broj_karte = 2;
+        if (znak == "5")
+            broj_karte = 3;
+        if (znak == "6")
+            broj_karte = 4;
+        if (znak == "7")
+            broj_karte = 5;
+        if (znak == "8")
+            broj_karte = 6;
+        if (znak == "9")
+            broj_karte = 7;
+        if (znak == "10")
+            broj_karte = 8;
+        if (znak == "J")
+            broj_karte = 9;
+        if (znak == "Q")
+            broj_karte = 10;
+        if (znak == "K")
+            broj_karte = 11;
+        if (znak == "A")
+            broj_karte = 12;
+        
+        
+        int brojac = 1;
+        bool pocetak = false;
+        
+        Cvor *it = spil;
+        it = it-&gt;sljedeci;
+        brojac++;
+        for (it; it!=spil; it = it-&gt;sljedeci)
+        {
+            if (it-&gt;karta.boja == boja &amp;&amp; it-&gt;karta.vrijednost == znak)
+            {
+                pocetak = true;
+                IzbaciKarteRazbrajanjem(spil,brojac,1);
+                mapa.erase(it_mape);
+                break;
+            }
+            
+            brojac++;
+        }
+        
+        if (pocetak == true)
+        {
+            it_mape = mapa.begin();
+            continue;
+        }
+        
+        
+        
+        it_mape++;
+    }
+    
+}
+
+
+
+void VratiPosljednjihNKarata (Cvor *&amp;spil, std::stack&lt;std::pair&lt;std::string,std::string&gt;&gt; &amp;ubacivanje, int n)
+{
+    if (n &lt; 0)
+        throw std::range_error ("Broj n je besmislen!");
+
+    if (n &gt; ubacivanje.size())
+        throw std::range_error ("Nedovoljno karata u steku!");
+
+<a name="0"></a><font color="#FF0000"><a href="match857-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+    std::stack&lt;std::pair&lt;std::string,std::string&gt;&gt; kopija = ubacivanje;
+
+    while (!kopija.empty())
+        {
+            std::pair&lt;std::string,std::string&gt; element = kopija.top();
+</font>
+            if (element.first!="Herc" &amp;&amp; element.first!="Karo" &amp;&amp; element.first!="Pik" &amp;&amp; element.first!="Tref")
+                throw std::range_error ("Neispravne karte!");
+
+            if (element.second!="2" &amp;&amp; element.second!="3" &amp;&amp; element.second!="4" &amp;&amp; element.second!="5" &amp;&amp; element.second!="6" &amp;&amp;
+            element.second!="7" &amp;&amp; element.second!="8" &amp;&amp; element.second!="9" &amp;&amp; element.second!="10" &amp;&amp; element.second!="J" &amp;&amp;
+            element.second!="Q" &amp;&amp; element.second!="K" &amp;&amp; element.second!="A")
+                throw std::range_error ("Neispravne karte!");
+
+
+            kopija.pop();
+        }
+
+
+    int broj_ubacenih{};
+
+    while(true)
+        {
+            if (n == broj_ubacenih)
+                break;
+
+            std::pair&lt;std::string,std::string&gt; element = ubacivanje.top();
+            int broj;
+            if (element.first == "Pik")
+                broj = 0;
+<a name="1"></a><font color="#00FF00"><a href="match857-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+            if (element.first == "Tref")
+                broj = 1;
+            if (element.first == "Herc")
+                broj = 2;
+            if (element.first == "Karo")
+                broj = 3;
+
+
+            int broj_karte{};
+            if (element.second == "2")
+</font>                broj_karte = 0;
+            if (element.second == "3")
+                broj_karte = 1;
+            if (element.second == "4")
+                broj_karte = 2;
+            if (element.second == "5")
+                broj_karte = 3;
+            if (element.second == "6")
+                broj_karte = 4;
+            if (element.second == "7")
+                broj_karte = 5;
+            if (element.second == "8")
+                broj_karte = 6;
+            if (element.second == "9")
+                broj_karte = 7;
+            if (element.second == "10")
+                broj_karte = 8;
+            if (element.second == "J")
+                broj_karte = 9;
+            if (element.second == "Q")
+                broj_karte = 10;
+            if (element.second == "K")
+                broj_karte = 11;
+            if (element.second == "A")
+                broj_karte = 12;
+
+
+            Cvor *p = spil;
+
+            if (spil == nullptr)                                                ///Ako je spil bio prazan.
+                {
+                            Cvor *upis = new Cvor;
+                            if (broj == 0)
+                                upis-&gt;karta.boja = Boje::Pik;
+                            if (broj == 1)
+                                upis-&gt;karta.boja = Boje::Tref;
+                            if (broj == 2)
+                                upis-&gt;karta.boja = Boje::Herc;
+                            if (broj == 3)
+                                upis-&gt;karta.boja = Boje::Karo;
+
+                            if (broj_karte == 0)
+                                upis-&gt;karta.vrijednost = "2";
+                            if (broj_karte == 1)
+                                upis-&gt;karta.vrijednost = "3";
+                            if (broj_karte == 2)
+                                upis-&gt;karta.vrijednost = "4";
+                            if (broj_karte == 3)
+                                upis-&gt;karta.vrijednost = "5";
+                            if (broj_karte == 4)
+                                upis-&gt;karta.vrijednost = "6";
+                            if (broj_karte == 5)
+                                upis-&gt;karta.vrijednost = "7";
+                            if (broj_karte == 6)
+                                upis-&gt;karta.vrijednost = "8";
+                            if (broj_karte == 7)
+                                upis-&gt;karta.vrijednost = "9";
+                            if (broj_karte == 8)
+                                upis-&gt;karta.vrijednost = "10";
+                            if (broj_karte == 9)
+                                upis-&gt;karta.vrijednost = "J";
+                            if (broj_karte == 10)
+                                upis-&gt;karta.vrijednost = "Q";
+                            if (broj_karte == 11)
+                                upis-&gt;karta.vrijednost = "K";
+                            if (broj_karte == 12)
+                                upis-&gt;karta.vrijednost = "A";
+
+                            spil = upis;
+                            spil-&gt;sljedeci = spil;
+                            ubacivanje.pop();
+                            broj_ubacenih++;
+                            continue;
+                }
+
+            if (broj == 0 &amp;&amp; broj_karte == 0)                                   ///Testiranje upisa za prvi element.
+                {
+                    if ((int)spil-&gt;karta.boja == 0 &amp;&amp; spil-&gt;karta.vrijednost == "2")
+                        {
+                            ubacivanje.pop();
+                            broj_ubacenih++;
+                            continue;
+                        }
+
+                        Cvor *upis = new Cvor;
+                        upis-&gt;karta.boja = Boje::Pik;
+                        upis-&gt;karta.vrijednost = "2";
+                        Cvor *pomocni = spil;
+                        pomocni = pomocni-&gt;sljedeci;
+                        spil = upis;
+                        spil-&gt;sljedeci = pomocni;
+
+                        ubacivanje.pop();
+                        broj_ubacenih++;
+                        continue;
+
+                }
+            Cvor *prethodni;
+            prethodni = spil;
+            p = p-&gt;sljedeci;
+
+            while(true)                                                         ///Testiranje bilo koje karte.
+                {
+                    int a = (int)p-&gt;karta.boja;
+<a name="3"></a><font color="#00FFFF"><a href="match857-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+                    int b;
+                    if (p-&gt;karta.vrijednost == "2")
+                        b = 0;
+                    if (p-&gt;karta.vrijednost == "3")
+                        b = 1;
+                    if (p-&gt;karta.vrijednost == "4")
+</font>                        b = 2;
+                    if (p-&gt;karta.vrijednost == "5")
+                        b = 3;
+                    if (p-&gt;karta.vrijednost == "6")
+                        b = 4;
+                    if (p-&gt;karta.vrijednost == "7")
+                        b = 5;
+                    if (p-&gt;karta.vrijednost == "8")
+                        b = 6;
+                    if (p-&gt;karta.vrijednost == "9")
+                        b = 7;
+                    if (p-&gt;karta.vrijednost == "10")
+                        b = 8;
+                    if (p-&gt;karta.vrijednost == "J")
+                        b = 9;
+                    if (p-&gt;karta.vrijednost == "Q")
+                        b = 10;
+                    if (p-&gt;karta.vrijednost == "K")
+                        b = 11;
+                    if (p-&gt;karta.vrijednost == "A")
+                        b = 12;
+
+                    if (broj == a &amp;&amp; broj_karte == b)
+                        {
+                            broj_ubacenih++;
+                            break;
+                        }
+                        
+                    if (broj == a &amp;&amp; broj_karte == 12)                          ///Testiranje upisa slova A na kraju svake vrste karata.
+                    {
+                            Cvor *upis = new Cvor;
+                            if (broj == 0)
+                                upis-&gt;karta.boja = Boje::Pik;
+                            if (broj == 1)
+                                upis-&gt;karta.boja = Boje::Tref;
+                            if (broj == 2)
+                                upis-&gt;karta.boja = Boje::Herc;
+                            if (broj == 3)
+                                upis-&gt;karta.boja = Boje::Karo;
+                                
+                            upis-&gt;karta.vrijednost = "A";
+                            
+                            prethodni-&gt;sljedeci = upis;
+                            upis-&gt;sljedeci = p;
+
+                            broj_ubacenih++;
+                            break;
+                        
+                    }
+
+                    if (broj == a &amp;&amp; b &gt; broj_karte)
+                        {
+                            Cvor *upis = new Cvor;
+                            if (broj == 0)
+                                upis-&gt;karta.boja = Boje::Pik;
+                            if (broj == 1)
+                                upis-&gt;karta.boja = Boje::Tref;
+                            if (broj == 2)
+                                upis-&gt;karta.boja = Boje::Herc;
+                            if (broj == 3)
+                                upis-&gt;karta.boja = Boje::Karo;
+
+                            if (broj_karte == 0)
+                                upis-&gt;karta.vrijednost = "2";
+                            if (broj_karte == 1)
+                                upis-&gt;karta.vrijednost = "3";
+                            if (broj_karte == 2)
+                                upis-&gt;karta.vrijednost = "4";
+                            if (broj_karte == 3)
+                                upis-&gt;karta.vrijednost = "5";
+                            if (broj_karte == 4)
+                                upis-&gt;karta.vrijednost = "6";
+                            if (broj_karte == 5)
+                                upis-&gt;karta.vrijednost = "7";
+                            if (broj_karte == 6)
+                                upis-&gt;karta.vrijednost = "8";
+                            if (broj_karte == 7)
+                                upis-&gt;karta.vrijednost = "9";
+                            if (broj_karte == 8)
+                                upis-&gt;karta.vrijednost = "10";
+                            if (broj_karte == 9)
+                                upis-&gt;karta.vrijednost = "J";
+                            if (broj_karte == 10)
+                                upis-&gt;karta.vrijednost = "Q";
+                            if (broj_karte == 11)
+                                upis-&gt;karta.vrijednost = "K";
+                            if (broj_karte == 12)
+                                upis-&gt;karta.vrijednost = "A";
+
+                            prethodni-&gt;sljedeci = upis;
+                            upis-&gt;sljedeci = p;
+
+                            broj_ubacenih++;
+                            break;
+                        }
+
+                    if (a&gt;broj)
+                        {
+                            Cvor *upis = new Cvor;
+                            if (broj == 0)
+                                upis-&gt;karta.boja = Boje::Pik;
+                            if (broj == 1)
+                                upis-&gt;karta.boja = Boje::Tref;
+                            if (broj == 2)
+                                upis-&gt;karta.boja = Boje::Herc;
+                            if (broj == 3)
+                                upis-&gt;karta.boja = Boje::Karo;
+
+                            if (broj_karte == 0)
+                                upis-&gt;karta.vrijednost = "2";
+                            if (broj_karte == 1)
+                                upis-&gt;karta.vrijednost = "3";
+                            if (broj_karte == 2)
+                                upis-&gt;karta.vrijednost = "4";
+                            if (broj_karte == 3)
+                                upis-&gt;karta.vrijednost = "5";
+                            if (broj_karte == 4)
+                                upis-&gt;karta.vrijednost = "6";
+                            if (broj_karte == 5)
+                                upis-&gt;karta.vrijednost = "7";
+                            if (broj_karte == 6)
+                                upis-&gt;karta.vrijednost = "8";
+                            if (broj_karte == 7)
+                                upis-&gt;karta.vrijednost = "9";
+                            if (broj_karte == 8)
+                                upis-&gt;karta.vrijednost = "10";
+                            if (broj_karte == 9)
+                                upis-&gt;karta.vrijednost = "J";
+                            if (broj_karte == 10)
+                                upis-&gt;karta.vrijednost = "Q";
+                            if (broj_karte == 11)
+                                upis-&gt;karta.vrijednost = "K";
+                            if (broj_karte == 12)
+                                upis-&gt;karta.vrijednost = "A";
+
+                            prethodni-&gt;sljedeci = upis;
+                            upis-&gt;sljedeci = p;
+
+                            broj_ubacenih++;
+                            break;
+                        }
+
+
+                    p = p-&gt;sljedeci;
+                    prethodni = prethodni-&gt;sljedeci;
+                }
+
+
+            ubacivanje.pop();
+        }
+
+
+}
+
+void UnistiSpil (Cvor *spil)
+{
+    if (spil == nullptr)
+        return;
+
+    Cvor *p = spil;
+    p = p-&gt;sljedeci;
+
+    while (true)
+        {
+            if (p == spil)
+                break;
+
+            Cvor *brisanje = p;
+            p = p-&gt;sljedeci;
+            delete brisanje;
+            brisanje = nullptr;
+        }
+
+    delete spil;
+    spil = nullptr;
+}
+
+
+
+
+
+
+
+
+
+int main() {
+
+    Cvor *spil = nullptr;
+    try
+    {
+        std::cout&lt;&lt;"Unesite korak razbrajanja: ";
+        int prvi;
+        std::cin&gt;&gt;prvi;
+
+        std::cout&lt;&lt;"Unesite broj karata koje zelite izbaciti: ";
+        int drugi;
+        std::cin&gt;&gt;std::ws&gt;&gt;drugi;
+
+        spil = KreirajSpil();
+
+        std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; izbacene_karte = IzbaciKarteRazbrajanjem(spil,prvi,drugi);
+
+        int ostatak_karata = 52-PrebrojiKarte(spil);
+
+        std::cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;ostatak_karata&lt;&lt;" karata, i to:";
+        Cvor *ispis = spil;
+
+        std::cout&lt;&lt;std::endl&lt;&lt;"Pik: ";
+        while(true)
+            {
+                if (ispis-&gt;karta.boja == Boje::Pik)
+                    {
+                        if (ispis-&gt;karta.vrijednost == "A")
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost;
+                        else
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost&lt;&lt;" ";
+                    }
+                else
+                    break;
+
+                ispis = ispis-&gt;sljedeci;
+
+            }
+
+        std::cout&lt;&lt;std::endl&lt;&lt;"Tref: ";
+        while(true)
+            {
+                if (ispis-&gt;karta.boja == Boje::Tref)
+                    {
+                        if (ispis-&gt;karta.vrijednost == "A")
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost;
+                        else
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost&lt;&lt;" ";
+                    }
+                else
+                    break;
+
+                ispis = ispis-&gt;sljedeci;
+
+            }
+
+        std::cout&lt;&lt;std::endl&lt;&lt;"Herc: ";
+        while(true)
+            {
+                if (ispis-&gt;karta.boja == Boje::Herc)
+                    {
+                        if (ispis-&gt;karta.vrijednost == "A")
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost;
+                        else
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost&lt;&lt;" ";
+                    }
+                else
+                    break;
+
+                ispis = ispis-&gt;sljedeci;
+
+            }
+
+        std::cout&lt;&lt;std::endl&lt;&lt;"Karo: ";
+        while(true)
+            {
+                if (ispis-&gt;karta.boja == Boje::Karo)
+                    {
+                        if (ispis-&gt;karta.vrijednost == "A")
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost;
+                        else
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost&lt;&lt;" ";
+                    }
+                else
+                    break;
+
+                ispis = ispis-&gt;sljedeci;
+
+            }
+
+        std::cout&lt;&lt;std::endl&lt;&lt;"Unesite broj karata koje zelite vratiti u spil: ";
+        int n;
+        std::cin&gt;&gt;std::ws&gt;&gt;n;
+
+        VratiPosljednjihNKarata(spil,izbacene_karte,n);
+
+        ostatak_karata = 52-PrebrojiKarte(spil);
+        std::cout&lt;&lt;"U spilu trenutno ima "&lt;&lt;ostatak_karata&lt;&lt;" karata, i to:";
+        
+        std::cout&lt;&lt;std::endl&lt;&lt;"Pik: ";
+        while(true)
+            {
+                if (ispis-&gt;karta.boja == Boje::Pik)
+                    {
+                        if (ispis-&gt;karta.vrijednost == "A")
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost;
+                        else
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost&lt;&lt;" ";
+                    }
+                else
+                    break;
+
+                ispis = ispis-&gt;sljedeci;
+
+            }
+
+        std::cout&lt;&lt;std::endl&lt;&lt;"Tref: ";
+        while(true)
+            {
+                if (ispis-&gt;karta.boja == Boje::Tref)
+                    {
+                        if (ispis-&gt;karta.vrijednost == "A")
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost;
+                        else
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost&lt;&lt;" ";
+                    }
+                else
+                    break;
+
+                ispis = ispis-&gt;sljedeci;
+
+            }
+
+        std::cout&lt;&lt;std::endl&lt;&lt;"Herc: ";
+        while(true)
+            {
+                if (ispis-&gt;karta.boja == Boje::Herc)
+                    {
+                        if (ispis-&gt;karta.vrijednost == "A")
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost;
+                        else
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost&lt;&lt;" ";
+                    }
+                else
+                    break;
+
+                ispis = ispis-&gt;sljedeci;
+
+            }
+
+        std::cout&lt;&lt;std::endl&lt;&lt;"Karo: ";
+        while(true)
+            {
+                if (ispis-&gt;karta.boja == Boje::Karo)
+                    {
+                        if (ispis-&gt;karta.vrijednost == "A")
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost;
+                        else
+                            std::cout&lt;&lt;ispis-&gt;karta.vrijednost&lt;&lt;" ";
+                    }
+                else
+                    break;
+
+                ispis = ispis-&gt;sljedeci;
+
+            }
+
+        UnistiSpil(spil);
+    }
+    catch (std::logic_error g1)
+    {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;g1.what();
+        UnistiSpil(spil);
+    }
+    catch (std::range_error g2)
+    {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;g2.what();
+        UnistiSpil(spil);
+    }
+
+
+    return 0;
+}
+
+</pre>
+</body>
+</html>

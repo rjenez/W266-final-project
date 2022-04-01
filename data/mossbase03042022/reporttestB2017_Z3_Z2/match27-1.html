@@ -1,0 +1,215 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student6517.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student9673.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match27-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;tuple&gt;
+#include &lt;iterator&gt;
+
+std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt;&gt; KreirajIndeksPojmova ( std::map&lt;std::string,std::vector&lt;std::string&gt;&gt; knjiga)
+{
+    std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt;&gt; indeks_pojmova;
+    
+    typename std::map&lt;std::string, std::vector&lt;std::string&gt;&gt;::iterator it_knjiga=knjiga.begin();  //itertaor na prosljedjenu promjenjivu
+    
+    std::string rijec;
+    
+    typename std::string::iterator it_str;
+    int i=0;
+    
+    int pozicija(0);
+    
+    do{
+        do{
+            it_str=it_knjiga-&gt;second.at(i).begin();
+            do{
+                
+                while(it_str!=it_knjiga-&gt;second.at(i).end() &amp;&amp; (*it_str&lt;'a' || *it_str&gt;'z') &amp;&amp; (*it_str&lt;'A' || *it_str&gt;'Z') &amp;&amp; (*it_str&lt;'0' || *it_str&gt;'9') )
+                {
+                    it_str++;
+                    pozicija++;
+                }
+                
+                
+                auto pomocni=it_str;
+                
+                if(it_str==it_knjiga-&gt;second.at(i).end())
+                continue;
+                
+                while(it_str!=it_knjiga-&gt;second.at(i).end() &amp;&amp; ( (*it_str&gt;='a' &amp;&amp; *it_str&lt;='z') || (*it_str&gt;='A' &amp;&amp; *it_str&lt;='Z') || (*it_str&gt;='0' &amp;&amp; *it_str&lt;='9') ) )
+                it_str++;
+                
+                
+                while(pomocni!=it_str)    //sve dok "pomocni" ne dodje do kraja rijeci gdje stoji "it_str" (defincicija rijeci iz postavke)
+                {
+                    if(*pomocni&gt;='A' &amp;&amp; *pomocni&lt;='Z')
+                    {
+                        rijec.push_back(*pomocni+32);
+                        pomocni++;
+                        continue;
+                    }
+                    
+                    rijec.push_back(*pomocni);
+                    pomocni++;
+                }
+                
+                
+                indeks_pojmova[rijec];
+                auto nadji_poziciju=indeks_pojmova.find(rijec);
+                
+                if(nadji_poziciju!=indeks_pojmova.end()) 
+                nadji_poziciju-&gt;second.insert( std::make_tuple(it_knjiga-&gt;first, i+1, pozicija ));
+                
+               pozicija+=rijec.size();
+               
+               rijec.resize(0);     //vracanje promjenjive "rijec" na prazan string
+               
+            }while(it_str!=it_knjiga-&gt;second.at(i).end());  //PROLAZAK KROZ JEDNU STRANICU
+            
+            i++;
+            pozicija=0;
+        }while(i!=it_knjiga-&gt;second.size());               //PRELAZAK NA SLJEDECU STRANU
+            
+        i=0;
+        it_knjiga++;
+    }while(it_knjiga!=knjiga.end());                      //PRELAZAK NA DRUGO POGLAVLJE
+    
+    return indeks_pojmova;
+}
+
+void IspisiSkup( std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; skup, std::string znak)
+{
+    typename std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;::iterator it_set=skup.begin(), it_set_predzadnji;
+    
+    it_set_predzadnji=skup.end();
+    
+    std::advance(it_set_predzadnji, -1);
+    
+    while(it_set!=it_set_predzadnji)
+    {
+        std::cout&lt;&lt; std::get&lt;0&gt;(*it_set) &lt;&lt;"/"&lt;&lt; std::get&lt;1&gt;(*it_set) &lt;&lt;"/"&lt;&lt; std::get&lt;2&gt;(*it_set)&lt;&lt;znak;
+        it_set++;
+    }
+    
+    std::cout&lt;&lt; std::get&lt;0&gt;(*it_set) &lt;&lt;"/"&lt;&lt; std::get&lt;1&gt;(*it_set) &lt;&lt;"/"&lt;&lt; std::get&lt;2&gt;(*it_set);
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string,std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; indeks_pojmova)
+{
+    typename std::map&lt;std::string,std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt;&gt;::iterator it_map=indeks_pojmova.begin();
+    
+    std::cout&lt;&lt;std::endl&lt;&lt;"Kreirani indeks pojmova:"&lt;&lt;std::endl;
+    
+    do{
+        std::cout&lt;&lt; it_map-&gt;first &lt;&lt;": ";
+        
+        /*for(it_set=(it_map-&gt;second).begin(); it_set!=(it_map-&gt;second).end(); it_set++)
+        {
+            std::cout&lt;&lt; std::get&lt;0&gt;(*it_set) &lt;&lt;"/"&lt;&lt; std::get&lt;1&gt;(*it_set) &lt;&lt;"/"&lt;&lt; std::get&lt;2&gt;(*it_set)&lt;&lt;", ";   
+        }
+        std::cout&lt;&lt;std::endl;*/
+        IspisiSkup( it_map-&gt;second, ", ");
+        std::cout&lt;&lt;std::endl;
+        
+        it_map++;
+    }while(it_map!=indeks_pojmova.end());
+}
+
+std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt; PretratziIndeksPojmova(std::string rijec, std::map&lt;std::string,std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; indeks_pojmova)
+{
+    typename std::string::iterator it_rijec=rijec.begin();
+    
+    while(it_rijec!=rijec.end())  
+    {
+        if(*it_rijec&gt;='A' &amp;&amp; *it_rijec&lt;='Z')
+            *it_rijec=(*it_rijec+32);
+        it_rijec++;
+    }
+    
+    std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt; skup;
+    
+    typename std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt;::iterator it_map; //DA LI JE I ZA POSLANU RIJEC SVEJEDNO JE L VELIKA ILI MALA SLOVA KORISTI
+    
+    it_map=indeks_pojmova.find(rijec);
+    
+    if(it_map==indeks_pojmova.end())
+    throw std::logic_error("Unesena rijec nije nadjena!");
+    
+    skup=it_map-&gt;second;
+    
+    return skup;
+}
+
+int main ()
+{
+    std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; knjiga;
+    
+    typename std::map&lt;std::string, std::vector&lt;std::string&gt;&gt;::iterator it_map=knjiga.begin();
+    
+    std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt;&gt; indeks_pojmova;
+    
+        std::string poglavlje, sadrzaj_stranice;
+        do{
+            std::cout&lt;&lt;"Unesite naziv poglavlja: ";
+            getline(std::cin, poglavlje);
+            
+            if(poglavlje!=".")
+            {
+                knjiga[poglavlje];
+                
+                it_map=knjiga.find(poglavlje);
+                
+                int i(0);
+                do{
+                    std::cout&lt;&lt;"Unesite sadrzaj stranice "&lt;&lt;i+1&lt;&lt;": ";
+                    getline(std::cin, sadrzaj_stranice);
+                    i++;
+                    
+                    if(sadrzaj_stranice!=".")
+                    (it_map-&gt;second).push_back(sadrzaj_stranice);
+                    
+                }while(sadrzaj_stranice!=".");
+            }
+            
+        }while(poglavlje!=".");
+        
+        indeks_pojmova=KreirajIndeksPojmova(knjiga);
+        IspisiIndeksPojmova(indeks_pojmova);
+        
+        std::string rijec;
+        do{
+            try
+            {
+                std::cout&lt;&lt;"Unesite rijec: ";
+                getline(std::cin, rijec);
+                if(rijec==".")
+                break;
+                
+                auto skup=PretratziIndeksPojmova(rijec, indeks_pojmova);
+                IspisiSkup(skup, " ");
+                std::cout&lt;&lt;" "&lt;&lt;std::endl;
+            }
+            catch(std::logic_error poruka)
+            {
+                std::cout&lt;&lt;poruka.what()&lt;&lt;std::endl;
+            }
+        }while(rijec!=".");
+   
+	return 0;
+</font>}
+
+
+//abc qwe stsda abc abc dhi qwe hrkw dhi</pre>
+</body>
+</html>

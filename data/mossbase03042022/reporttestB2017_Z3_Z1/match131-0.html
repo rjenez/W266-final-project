@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student6363.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student6363.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+#include &lt;stdexcept&gt;
+#include &lt;exception&gt;
+#include &lt;cmath&gt;
+#include &lt;string&gt;
+<a name="0"></a><font color="#FF0000"><a href="match131-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+double e {0.00000001};
+using std::vector;
+using std::pair;
+using std::string;
+using std::cout;
+using std::cin;
+using std::endl;
+
+template &lt;class Iterator&gt;
+Iterator binarna_pretraga (Iterator prvi, Iterator zadnji, double x)
+{
+    Iterator y = std::lower_bound(prvi,zadnji,x,[](const std::pair&lt;double, double&gt; &amp;x, double y) -&gt; bool
+    { return x.first &lt; y; });
+    if(y!=zadnji) std::advance(y,-1);
+    return y;
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(vector&lt;pair&lt;double,double&gt;&gt; v)
+{
+    std::sort(v.begin(),v.end(),[](pair&lt;double,double&gt; x,pair&lt;double,double&gt; y) {
+        return ((x.first&lt;y.first) || (x.first==y.first &amp;&amp; x.second&lt;y.second));
+    });
+    for(int i=0; i&lt;v.size(); i++)
+        if(i+1&lt;v.size() &amp;&amp; v.at(i).first==v.at(i+1).first)
+            throw std::domain_error("Neispravni cvorovi");
+    return [v](double x) -&gt;double {
+        vector&lt;pair&lt;double,double&gt;&gt;::const_iterator vIt(binarna_pretraga(v.begin(),v.end(),x));
+        if(v.empty() || x&lt;v.at(0).first || x&gt;v.at(v.size()-1).first || vIt==v.end())
+            throw std::range_error("Argument izvan opsega");
+        if(x==v.at(v.size()-1).first) return v.at(v.size()-1).second;
+        if(x==v.at(0).first) return v.at(0).second;
+        auto vIt1 = vIt;
+        vIt1++;
+        if(vIt1==v.end()) vIt--;
+        return (vIt-&gt;second + (vIt1-&gt;second - vIt-&gt;second)/(vIt1-&gt;first-vIt-&gt;first) * (x-vIt-&gt;first));
+    };
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::function&lt;double(double)&gt; f,double xmin, double xmax, double dx)
+{
+
+    if(xmin &gt; xmax || dx &lt;= 0) throw std::domain_error("Nekorektni parametri");
+    vector&lt;pair&lt;double,double&gt;&gt; v;
+    int faktor {};
+    for(;;) {
+        if(xmin+faktor*dx&gt;=xmax) {
+            v.push_back(std::make_pair(xmax,f(xmax)));
+            break;
+        }
+        v.push_back(std::make_pair(xmin+faktor*dx,f(xmin+faktor*dx)));
+        faktor++;
+    }
+    return LinearnaInterpolacija(v);
+}
+
+/* bool ispravanString(const string &amp;s) {
+    string::const_iterator sIt(s.begin());
+    while(sIt!=s.end()) {
+        if(*sIt==' ') sIt++;
+        else if(!((*sIt&gt;='0' &amp;&amp; *sIt&lt;='9') || *sIt=='.' || *sIt=='-')) return false;
+        sIt++;
+    }
+    return true;
+}*/
+
+int main ()
+{
+    try {
+        string opcija;
+        do {
+            cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+            cin &gt;&gt; opcija;
+            if(!(opcija=="1" || opcija=="2")) cout &lt;&lt; "Neispravan unos. Unesite ponovo: ";
+        } while(!(opcija=="1" || opcija=="2"));
+
+        if(opcija=="1") {
+            int n;
+            cout &lt;&lt; "Unesite broj cvorova: ";
+            cin &gt;&gt; n;
+            cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+            vector&lt;pair&lt;double,double&gt;&gt; vp;
+            for(int i=0; i&lt;n; i++) {
+                int x,y;
+                cin &gt;&gt; x &gt;&gt; y;
+                vp.push_back(std::make_pair(x,y));
+            }
+            string unos;
+            auto f(LinearnaInterpolacija(vp));
+            for(;;) {
+                double x;
+                cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                cin &gt;&gt; unos;
+                try {
+                    x = std::stod(unos);
+                } catch(...) {
+                    return 0;
+                }
+                try {
+                    cout &lt;&lt; "f(" &lt;&lt; x &lt;&lt; ") = " &lt;&lt; f(x) &lt;&lt; endl;
+                } catch(std::exception &amp;ex) {
+                    cout &lt;&lt; ex.what() &lt;&lt; endl;
+                }
+            }
+        } else {
+            cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+            double xmin,xmax,dx;
+            cin &gt;&gt; xmin &gt;&gt; xmax &gt;&gt; dx;
+            auto fo([](double x) {
+                return x*x+sin(x);
+            });
+            auto f(LinearnaInterpolacija(fo,xmin,xmax,dx));
+            string unos;
+            for(;;) {
+                double x;
+                cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                cin &gt;&gt; unos;
+                try {
+                    x = std::stod(unos);
+                } catch(...) {
+                    return 0;
+                }
+                try {
+                    cout &lt;&lt; "f(" &lt;&lt; x &lt;&lt; ") = " &lt;&lt; fo(x) &lt;&lt; " " &lt;&lt; "fapprox(" &lt;&lt; x &lt;&lt; ") = " &lt;&lt; f(x) &lt;&lt; endl;
+                } catch(std::exception &amp;ex) {
+                    cout &lt;&lt; ex.what() &lt;&lt; endl;
+                }
+            }
+        }
+    } catch(std::exception &amp;ex) {
+        cout &lt;&lt; ex.what();
+</font>    }
+    return 0;
+}
+</pre>
+</body>
+</html>

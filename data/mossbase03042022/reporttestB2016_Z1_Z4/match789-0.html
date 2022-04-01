@@ -1,0 +1,141 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student9676.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student9676.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+typedef std::vector&lt;std::string&gt; ena;
+bool provjeri (ena rijeci){
+	for (int i=0; i&lt;rijeci.size(); i++){
+<a name="0"></a><font color="#FF0000"><a href="match789-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_10.gif"/></a>
+
+		for(int j=0; j&lt;rijeci[i].length(); j++){
+			if (!((rijeci[i][j]&gt;='a'&amp;&amp;rijeci[i][j]&lt;='z')||(rijeci[i][j]&gt;='A'&amp;&amp;rijeci[i][j]&lt;='Z'))) 
+			return false;
+		}
+	}
+	return true;
+}
+
+std::string  ObrniFraze(std::string rec, ena rijeci){
+</font>	std::string vrati;
+	for(unsigned int i = 0; i &lt; rijeci.size(); i++){
+		int j(0);
+		while(j &lt;int(rec.length())){
+			if(rijeci[i] == rec.substr(j, rijeci[i].length())){
+				int save = j;
+				int k = j,x=j+rijeci[i].length();
+				char temp;
+				while (k &lt; j + rijeci[i].length()/2){
+					temp = rec[k];
+					rec[k] = rec[x-1-k + save];
+					rec[x-1-k+save]=temp;
+					k++;
+				}
+				j = save;
+			}
+			j++;
+		}
+	}
+	return rec;
+}
+
+bool je_alfabet (char alfa){
+	return ((alfa&gt;='a' &amp;&amp; alfa&lt;='z')||(alfa&gt;='A'&amp;&amp;alfa&lt;='Z'));
+}
+
+int rijec (std::string s, int loc){ //vraca duzinu rijeci ako je rijec 0 ako nije rijec
+	bool start=false,end=false;
+	int save{loc};
+	
+	if (loc==0 || !je_alfabet(s[loc-1])) start =true;
+	while (loc&lt;s.length() &amp;&amp; je_alfabet(s[loc])){
+		loc++;
+	}
+	if (loc==s.length()|| !je_alfabet(s[loc])) end=true;
+	if (start &amp;&amp; end) return (loc-save);
+	return 0;
+}
+
+std::string IzmijeniUPigLatin(std::string rec, ena rijeci){
+	if (!provjeri(rijeci)) throw std::domain_error ("Nekorektan izbor rijeci");
+	int duzina = rijeci.size();
+	
+	if(rijeci.size() == 0){
+		duzina = 1;
+	
+	}
+	for(int i = 0; i &lt; duzina; i++){
+		int j(0);
+		if(rijeci.size() == 0){
+			while(j&lt;rec.length()){
+				int pomjeri(rijec(rec,j));
+				if(pomjeri){
+					char tmp(rec[j]);
+					rec = rec.substr(0, j) + rec.substr(j+1, pomjeri -1) + tmp + "ay" + rec.substr(j+pomjeri, rec.length() - j - pomjeri);
+				}
+				j++;
+			}
+		}
+		else{
+			while(j &lt; int(rec.length())){
+				int pomjeri(rijec(rec,j));
+				if(pomjeri &amp;&amp; rijeci[i] == rec.substr(j, pomjeri)){
+					char tmp(rec[j]);
+					rec = rec.substr(0,j) + rec.substr(j +1, pomjeri - 1) + tmp + "ay" + rec.substr(j + pomjeri, rec.length() - j - pomjeri);
+				}
+				j++;
+			}
+		}
+	}
+	return rec;
+}
+
+
+
+int main (){
+	
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	std::string rec;
+	std::getline(std::cin, rec);
+	std::cout&lt;&lt;"Unesite fraze: ";
+	ena rijeci;
+	std::string s;
+	while (std::cin.peek()!='\n'){
+		std::getline(std::cin, s);
+		rijeci.push_back(s);
+	}
+	
+	try{
+<a name="1"></a><font color="#00FF00"><a href="match789-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+	std::string s(IzmijeniUPigLatin(rec,rijeci));
+	std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: ";
+	std::cout&lt;&lt;s&lt;&lt;std::endl;
+	
+	} catch (std::domain_error greska){
+	std::cout&lt;&lt;"Izuzetak: "&lt;&lt;greska.what()&lt;&lt;std::endl;
+</font>}
+
+	std::cout&lt;&lt;"Recenica nakon obrtanja fraza: ";
+	std::cout&lt;&lt;ObrniFraze(rec,rijeci);
+
+	return 0;
+}</pre>
+</body>
+</html>

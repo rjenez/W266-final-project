@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student4473.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student4473.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iterator&gt;
+#include &lt;string&gt;
+bool DaLiJeSlovo(char c){
+    if((c&gt;='A' and c&lt;='Z') or (c&gt;='0' and c&lt;='9') or (c&gt;='a' and c&lt;='z'))
+        return 1;
+    else return 0;
+}
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; osobe, int n){
+<a name="1"></a><font color="#00FF00"><a href="match582-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_7.gif"/></a>
+
+    std::vector&lt;std::set&lt;std::string&gt;&gt; glavni(n);
+    std::list&lt;std::string&gt; kopija;
+    for(int i=0;i&lt;osobe.size();i++){
+        kopija.push_back(osobe[i]);
+</font>    }
+    if(n&lt;1 or n&gt;osobe.size()) throw std::logic_error("Razvrstavanje nemoguce");
+    //racunanje osoba u timovima
+    int m(osobe.size()/n);
+    //std::cout&lt;&lt;m;
+    int brojac(0);
+    int ubaceni(0);
+    auto it=kopija.begin();
+    //prvo dijete
+    int duzina(0);
+    for(int k=0;k&lt;(*it).size();k++){
+            if(DaLiJeSlovo((*it)[k])) duzina++;}
+    glavni[brojac].insert(*it);
+    ubaceni++;
+    do{ 
+        it=kopija.erase(it);
+        if(it==kopija.end()) it=kopija.begin();
+        for(int i=0;i&lt;duzina-1;i++) {
+            it++;
+            if(it==kopija.end())
+                it=kopija.begin();
+        }
+        duzina=0;
+        for(int k=0;k&lt;(*it).size();k++){
+            if(DaLiJeSlovo((*it)[k])) duzina++;
+        }
+        if(brojac&lt;osobe.size()%n){
+            if(ubaceni==m+1){
+                brojac++;
+                ubaceni=0;
+            }
+        }
+        else{
+            if(ubaceni==m){
+                brojac++;
+                ubaceni=0;
+            }
+        }
+        glavni[brojac].insert(*it);
+        ubaceni++;
+        if(kopija.size()==1) break;
+    
+    }
+    while(it!=kopija.end());
+    return glavni;
+}
+int main ()
+<a name="0"></a><font color="#FF0000"><a href="match582-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_14.gif"/></a>
+
+{   std::cout &lt;&lt; "Unesite broj djece: " ;
+    int n;
+    std::cin &gt;&gt; n;
+    std::cin.ignore(1000, '\n');
+    std::cout &lt;&lt; "Unesite imena djece: " &lt;&lt; std::endl;
+    std::vector&lt;std::string&gt; djeca(n);
+    for(int i=0;i&lt;n;i++) std::getline(std::cin, djeca[i]);
+    std::cout &lt;&lt; "Unesite broj timova: " ;
+    int brtimova;
+    std::cin &gt;&gt; brtimova;
+    std::vector&lt;std::set&lt;std::string&gt;&gt; rjesenje;
+</font>    
+    try{
+        rjesenje=(Razvrstavanje(djeca,brtimova));
+    }
+    catch(std::logic_error err){
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;err.what();
+    }
+    for(int i=0; i&lt;rjesenje.size(); i++){
+        std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+        int br(0);
+        for(auto x: rjesenje[i]) {
+            if(br==rjesenje[i].size()-1){ std::cout&lt;&lt;x; break;}
+            std::cout &lt;&lt; x &lt;&lt; ", ";
+            br++;}
+    std::cout &lt;&lt; std::endl;
+    }
+	return 0;
+}</pre>
+</body>
+</html>

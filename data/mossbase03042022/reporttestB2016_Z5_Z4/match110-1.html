@@ -1,0 +1,178 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student1329.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student9238.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;initializer_list&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match110-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_73.gif"/></a>
+
+template &lt;typename TipElementa&gt;
+class GMatrica {
+    int broj_redova, broj_kolona;
+    TipElementa matrica[4][4];
+public:
+    GMatrica(int broj_redova = 0, int broj_kolona = 0, TipElementa element = TipElementa());
+    template &lt;typename DrugiTip&gt;
+    GMatrica(const GMatrica&lt;DrugiTip&gt; &amp;g);
+    template &lt;typename DrugiTip&gt;
+    GMatrica &amp;operator = (const GMatrica&lt;DrugiTip&gt; &amp;g);
+    GMatrica(const TipElementa niz[4][4]);
+    GMatrica(const std::vector&lt;std::vector&lt;TipElementa&gt;&gt; &amp;m);
+    GMatrica(const std::initializer_list&lt;std::initializer_list&lt;TipElementa&gt;&gt; &amp;l1);
+    int DajBrojRedova() const { return broj_redova; }
+    int DajBrojKolona() const { return broj_kolona; }
+    
+    //friend operator + (const GMatrica&lt;Tip1&gt; &amp;g1, const GMatrica&lt;Tip2&gt; &amp;g2);
+    //friend operator - (const GMatrica&lt;Tip1&gt; &amp;g1, const GMatrica&lt;Tip2&gt; &amp;g2);
+    //friend operator * (const GMatrica&lt;Tip1&gt; &amp;g1, const GMatrica&lt;Tip2&gt; &amp;g2);
+    
+    template &lt;typename Tip&gt;
+    friend bool operator == (const GMatrica&lt;Tip&gt; &amp;g1, const GMatrica&lt;Tip&gt; &amp;g2);
+    template &lt;typename Tip&gt;
+    friend bool operator != (const GMatrica&lt;Tip&gt; &amp;g1, const GMatrica&lt;Tip&gt; &amp;g2);
+    
+    TipElementa &amp;operator () (int x, int y);
+    TipElementa operator () (int x, int y) const;
+    //TipElementa* &amp;operator [] (int x) { return matrica[x]; }
+    //TipElementa operator [] (int x) const { return matrica[x]; }
+    
+    template &lt;typename Tip&gt;
+    friend std::ostream &amp;operator &lt;&lt; (std::ostream &amp;tok, const GMatrica&lt;Tip&gt; &amp;g1);
+    //template &lt;typename Tip&gt;
+    //friend std::istream &amp;operator &gt;&gt; (std::istream &amp;tok, GMatrica&lt;Tip&gt; &amp;g1);
+};
+
+template &lt;typename TipElementa&gt;
+GMatrica&lt;TipElementa&gt;::GMatrica(int broj_redova, int broj_kolona, TipElementa element) {
+    if(broj_redova &lt; 0 || broj_kolona &lt; 0 || broj_kolona &gt; 4 || broj_redova &gt; 4)
+        throw std::logic_error("Ilegalan format matrice");
+    GMatrica&lt;TipElementa&gt;::broj_redova = broj_redova; GMatrica&lt;TipElementa&gt;::broj_kolona = broj_kolona;
+    for(int i = 0; i &lt; broj_redova; i++) {
+        for(int j = 0; j &lt; broj_kolona; j++)
+            matrica[i][j] = element;
+    }
+}
+
+template &lt;typename TipElementa&gt;
+template &lt;typename DrugiTip&gt;
+GMatrica&lt;TipElementa&gt;::GMatrica(const GMatrica&lt;DrugiTip&gt; &amp;g) : broj_redova(g.broj_redova), broj_kolona(g.broj_kolona) {
+    for(int i = 0; i &lt; broj_redova; i++) {
+        for(int j = 0; j &lt; broj_kolona; j++) {
+            matrica[i][j] = static_cast&lt;TipElementa&gt;(g[i][j]);
+        }
+    }
+}
+
+template &lt;typename TipElementa&gt;
+template &lt;typename DrugiTip&gt;
+GMatrica&lt;TipElementa&gt; &amp;GMatrica&lt;TipElementa&gt;::operator = (const GMatrica&lt;DrugiTip&gt; &amp;g) {
+    for(int i = 0; i &lt; broj_redova; i++) {
+        for(int j = 0; j &lt; broj_kolona; j++) {
+            matrica[i][j] = static_cast&lt;TipElementa&gt;(g[i][j]);
+        }
+    }
+}
+
+template &lt;typename TipElementa&gt;
+GMatrica&lt;TipElementa&gt;::GMatrica(const TipElementa niz[4][4]) : broj_redova(4), broj_kolona(4) {
+    for(int i = 0; i &lt; 4; i++) {
+        for(int j = 0; j &lt; 4; j++) {
+            matrica[i][j] = niz[i][j];
+        }
+    }
+}
+
+template &lt;typename TipElementa&gt;
+GMatrica&lt;TipElementa&gt;::GMatrica(const std::vector&lt;std::vector&lt;TipElementa&gt;&gt; &amp;m) {
+    if(m.size() &lt; 0 || m.size() &gt; 4)
+        throw std::logic_error("Ilegalan format matrice");
+    for(int i = 0; i &lt; m.size(); i++)
+        if(m[i].size() &gt; 4) throw std::logic_error("Ilegalan format matrice");
+    for(int i = 0; i &lt; m.size(); i++) {
+        for(int j = 0; j &lt; m[i].size(); j++)
+            matrica[i][j] = m[i][j];
+    }
+    broj_redova = m.size(); broj_kolona = m[0].size();
+}
+
+template &lt;typename TipElementa&gt;
+GMatrica&lt;TipElementa&gt;::GMatrica(const std::initializer_list&lt;std::initializer_list&lt;TipElementa&gt;&gt; &amp;l1) {
+    if(l1.size() &lt; 0 || l1.size() &gt; 4)
+        throw std::logic_error("Ilegalan format matrice");
+    for(int i = 0; i &lt; l1.size(); i++)
+        if((*(l1.begin() + i)).size() &gt; 4) throw std::logic_error("Ilegalan format matrice");
+    broj_redova = l1.size(); broj_kolona = (*l1.begin()).size();
+    int i(0), j(0);
+    for(auto x : l1) {
+        for(auto y : x) {
+            matrica[i][j] = y;
+            j++;
+            if(j == broj_kolona) j = 0;
+        }
+        i++;
+        if(i == broj_redova) i = 0;
+    }    
+}
+
+template &lt;typename Tip&gt;
+bool operator == (const GMatrica&lt;Tip&gt; &amp;g1, const GMatrica&lt;Tip&gt; &amp;g2) {
+    for(int i = 0; i &lt; g1.broj_redova; i++) {
+        for(int j = 0; j &lt; g1.broj_kolona; j++) {
+</font><a name="1"></a><font color="#00FF00"><a href="match110-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_24.gif"/></a>
+
+            if(g1.matrica[i][j] != g2.matrica[i][j]) return false;
+        }
+    }
+    return true;
+}
+
+template &lt;typename Tip&gt;
+bool operator != (const GMatrica&lt;Tip&gt; &amp;g1, const GMatrica&lt;Tip&gt; &amp;g2) {
+    return !(g1 == g2);
+}
+
+template &lt;typename TipElementa&gt;
+TipElementa &amp;GMatrica&lt;TipElementa&gt;::operator () (int x, int y) {
+    if(x &lt; 1 || x &gt; broj_redova || y &lt; 1 || y &gt; broj_kolona) throw std::range_error("Nedozvoljen indeks");
+    return matrica[x - 1][y - 1];
+}
+
+template &lt;typename TipElementa&gt;
+TipElementa GMatrica&lt;TipElementa&gt;::operator () (int x, int y) const {
+    if(x &lt; 1 || x &gt; broj_redova || y &lt; 1 || y &gt; broj_kolona) throw std::range_error("Nedozvoljen indeks");
+    return matrica[x - 1][y - 1];
+}
+
+template &lt;typename Tip&gt;
+std::ostream &amp;operator &lt;&lt; (std::ostream &amp;tok, const GMatrica&lt;Tip&gt; &amp;g1) {
+    int sirina(tok.width());
+    if(sirina &lt; 6) sirina = 6;
+    for(int i = 0; i &lt; g1.broj_redova; i++) {
+        for(int j = 0; j &lt; g1.broj_kolona; j++)
+            tok &lt;&lt; std::setw(sirina) &lt;&lt; g1.matrica[i][j];
+        tok &lt;&lt; std::endl;
+    }
+    return tok;
+}
+
+/*template &lt;typename Tip&gt;
+std::istream &amp;operator &gt;&gt; (std::istream &amp;tok, GMatrica&lt;Tip&gt; &amp;g1) {
+    
+}*/
+
+int main() {
+    
+    GMatrica&lt;int&gt; g1 {{1,2,3}, {2,3,4}};
+    std::cout &lt;&lt; std::setw(3) &lt;&lt; g1;
+</font>    
+    return 0;
+}</pre>
+</body>
+</html>

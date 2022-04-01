@@ -1,0 +1,159 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student9160.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student4959.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match158-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;map&gt;
+#include &lt;algorithm&gt;
+
+enum class Boje {Pik, Tref, Herc, Karo};
+const std::vector&lt;std::string&gt; ImeKarte{"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+
+struct Karta{
+    Boje boja;
+    std::string karta;
+};
+
+struct Cvor{
+    Karta karta;
+    Cvor *sljedeci;
+};
+
+int BrojElemenata(Cvor *pocetak){
+    int brojac(1);
+    auto poc = pocetak-&gt;sljedeci;
+    for(auto c = poc; c!=pocetak; c = c-&gt;sljedeci)
+    brojac++;
+    return brojac;
+}
+
+Cvor* KreirajSpil(){
+    Cvor *pocetak(nullptr), *prethodni;
+    for(int i(0);i&lt;4;i++){
+        for(int j(0);j&lt;ImeKarte.size();j++){
+            // kreiranje cvora
+            Cvor *novi(nullptr);
+            try{
+                novi = new Cvor;
+            }catch(std::bad_alloc){
+                throw;
+            }
+            (novi-&gt;karta).boja = Boje(i);
+            (novi-&gt;karta).karta = ImeKarte.at(j);
+            novi-&gt;sljedeci = nullptr; 
+            // spajanje svorova
+            if(!pocetak) pocetak = novi;
+            else prethodni-&gt;sljedeci = novi;
+            prethodni = novi;
+            if(j==ImeKarte.size()-1 &amp;&amp; i == 3)
+                novi-&gt;sljedeci = pocetak;
+        }
+    }
+    return pocetak;
+}
+
+void IspisiSpil(Cvor *pocetak){
+    const std::vector&lt;std::string&gt; boje{"Pik","Tref","Herc","Karo"};
+    Boje temp = Boje::Pik;
+    for(int b(0);b&lt;4;b++){
+        std::cout&lt;&lt;boje.at(b)&lt;&lt;": ";
+        //Boje temp_boja = pocetak-&gt;karta.boja;
+        while(pocetak-&gt;karta.boja == temp){
+            std::cout&lt;&lt;pocetak-&gt;karta.karta&lt;&lt;" ";
+            pocetak = pocetak-&gt;sljedeci;
+        }
+        temp = (*pocetak).karta.boja;
+        std::cout&lt;&lt;std::endl;
+    }    
+}
+bool CompCard(std::string a, std::string b){
+    const std::vector&lt;std::string&gt; karte {"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+    auto prvi(std::find(karte.begin(),karte.end(),a));
+    auto drugi(std::find(karte.begin(),karte.end(),b));
+    if(std::distance(prvi,drugi)&lt;=0)return false;
+    return true;
+}
+bool Sortirano(Cvor *pocetak){
+    Cvor *it(pocetak),*slj(pocetak-&gt;sljedeci);
+    if(it == slj)return true;
+    do{
+        if(slj-&gt;karta.boja == it-&gt;karta.boja &amp;&amp; CompCard(slj-&gt;karta.karta,it-&gt;karta.karta))
+            return false;
+        it = it-&gt;sljedeci;
+        slj = slj-&gt;sljedeci;
+    }while(it != pocetak);
+    return true;
+}
+bool Sadrzaj(Cvor *pocetak){
+    const std::vector&lt;std::string&gt; karte {"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+    int n=BrojElemenata(pocetak);
+    
+    for(int i(0);i&lt;n;i++){
+        int brojac(0);
+        for(int j(0);j&lt;karte.size();j++)
+            if(pocetak-&gt;karta.karta != karte.at(j))brojac++;
+        if(brojac == karte.size())return false;
+        pocetak = pocetak-&gt;sljedeci;
+    }
+    return true;
+}
+void Test(Cvor *pocetak){
+    if(BrojElemenata(pocetak)&gt;52 || !Sortirano(pocetak) || !Sadrzaj(pocetak))
+        throw std::logic_error("Neispravna lista");
+}
+bool Isti(Cvor c, std::pair&lt;Boje,std::string&gt; p){
+    return c.karta.boja == p.first &amp;&amp; c.karta.karta == p.second;
+}
+void IzbaciKarte(Cvor *&amp;pocetak, std::multimap&lt;Boje,std::string&gt; parovi){
+    // treba testirati
+    Test(pocetak);
+    
+   /* for(auto itMapa(parovi.begin());itMapa!=parovi.end();){
+        auto itList(pocetak);auto n(BrojElemenata(pocetak));
+        for(int i(0);i&lt;n;i++){
+            auto temp1=itList-&gt;sljedeci;
+            if(Isti(*temp1,*itMapa)){
+                // brisanje elemenata mape i elemnata iz lanca cvorova
+                auto temp=itList-&gt;sljedeci;
+                itList = temp-&gt;sljedeci;
+                delete temp;
+                itMapa = parovi.erase(itMapa);
+                if(itMapa == parovi.end())return;
+            }
+        }
+    }
+*/
+}
+int main ()
+{
+    try{
+        auto spil(KreirajSpil());
+        int n = BrojElemenata(spil);
+        std::cout&lt;&lt;n&lt;&lt;std::endl;
+        IspisiSpil(spil);
+        std::pair&lt;Boje,std::string&gt; par(std::make_pair(Boje::Pik,std::string("2")));
+        std::pair&lt;Boje,std::string&gt; pa2(std::make_pair(Boje::Tref,std::string("2")));
+        
+        std::multimap&lt;Boje,std::string&gt; m{par,par,par,pa2,pa2,pa2};
+        
+        IzbaciKarte(spil,m);
+        IspisiSpil(spil);
+    }catch(std::bad_alloc){
+        std::cout&lt;&lt;"Nema memorije"&lt;&lt;std::endl;
+    }
+    catch(std::logic_error e){
+        std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+    }
+	return 0;
+</font>}</pre>
+</body>
+</html>

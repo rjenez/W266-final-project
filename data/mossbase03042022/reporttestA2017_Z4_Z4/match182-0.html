@@ -1,0 +1,102 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z4/Z4/student1352.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z4/Z4/student1352.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#define DEBUG 0
+
+<a name="0"></a><font color="#FF0000"><a href="match182-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+char veliko(char x) {
+	if (x&gt;='a' &amp;&amp; x&lt;='z') return x-32;
+	return x;
+}
+
+const char* daj_zatvarajuci(const char* s) {
+	const char* pocetak = s;
+	if (*s == '&lt;') {
+		if (*(s+1) == '&gt;') {
+			if (DEBUG) printf("&lt;&gt; nije validno %s\n", pocetak);
+			return 0;
+		}
+		/* Prvo nalazimo kraj taga */
+		while (*s != '&gt;' &amp;&amp; *s != '\0') s++;
+		if (*s == '\0') {
+			if (DEBUG) printf("Tag se nikada ne zavrsava %s\n", pocetak);
+			return 0;
+		}
+		s++;
+	}
+	
+	/* Trazimo sljedeci tag */
+	while (*s != '\0') {
+		if (*s == '&gt;') {
+			if (DEBUG) printf("Invalidan &gt; na lokaciji %s\n", s);
+			return 0;
+		}
+		
+		/* Pronadjen novi otvarajuci tag */
+		if (*s == '&lt;' &amp;&amp; *(s+1) != '/') {
+			s = daj_zatvarajuci(s);
+			if (s==0) return 0;
+			
+		} else if (*s == '&lt;') break;
+		
+		s++;
+	}
+	
+	/* Prvi poziv funkcije */
+	if (*pocetak != '&lt;') {
+		if (*s == '\0') return s; /* Sve ok */
+		
+		if (DEBUG) printf("Prvi tag u stringu je zatvarajuci %s\n", s);
+		return 0;
+	}
+
+	/* Jedina preostala mogucnost je da smo naisli na zatvarajuci tag */
+	/* Provjeravamo da li je odgovarajuceg tipa */
+	
+	const char* tmp = pocetak+1;
+	s += 2;
+	while (veliko(*s) == veliko(*tmp) &amp;&amp; *s != '&gt;' &amp;&amp; *s != ' ' &amp;&amp; *s != '\0') { s++; tmp++; }
+	
+	/* Preskacemo razmake u zatvarajucem tagu (koji su dozvoljeni) */
+	while (*s == ' ') s++;
+	
+	if (*s == '\0') {
+		if (DEBUG) printf("Zatvarajuci tag se nikada ne zavrsava %s\n", pocetak);
+		return 0;
+	}
+	/* Zatvarajuci pronadjen */
+	if ((*tmp == ' ' || *tmp == '&gt;') &amp;&amp; *s == '&gt;') return s;
+	
+	if (DEBUG) printf("Nije odgovarajuci zatvarajuci tag %s\n", pocetak);
+	return 0;
+}
+
+int provjeri(const char* tekst) {
+	while (*tekst != '\0') {
+		tekst = daj_zatvarajuci(tekst);
+		if (tekst == 0) return 0;
+		if (*tekst == '&gt;') tekst++;
+	}
+	return 1;
+}
+
+int main() {
+	printf ("Provjera  7: %d\n", provjeri("&lt;p&gt;razmak prije p a poslije / &lt;/ p&gt;"));
+	printf ("Provjera  8: %d\n", provjeri("&lt;p   &gt;a ovo je ipak validno, razmaci NAKON p&lt;/p&gt;"));
+	printf ("Provjera  9: %d\n", provjeri("&lt;p   &gt;i ovo je validno, razmaci NAKON p&lt;/p    &gt;"));
+	printf ("Provjera 10: %d\n", provjeri("&lt;&gt;&lt;/&gt;")); /* nije validno */
+	printf ("Provjera 11: %d\n", provjeri("")); /* ok */
+	printf ("Provjera 12: %d\n", provjeri("                                            ")); /* ok */
+	printf ("Provjera 13: %d\n", provjeri("&lt; p&gt; razmak prije p i prije / p, sto nije ispravno!  &lt;/ p&gt;"));
+		
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student9482.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student9482.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match73-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+std::string ObrniFraze(std::string s,std::vector&lt;std::string&gt; fr)
+{
+	std::string c;
+	std::string vratiti;
+	for(int i=0;i&lt;fr.size();i++)
+	{
+		int duzina1(fr[i].length());
+		for(int j=0;j&lt;s.length();j++)
+		{
+			int duzina2(j+duzina1);
+			if(duzina2&lt;=s.length())
+			{
+				c=s.substr(j,duzina1);
+				if(c==fr[i])
+				{
+					vratiti=s.substr(0,j);
+					int b(c.length()-1);
+					for(int k=0;k&lt;c.length()/2;k++)
+					{
+						char pomoc;
+						pomoc=c[k];
+						c[k]=c[b];
+						c[b]=pomoc;
+						b--;
+					}
+					vratiti+=c;
+					vratiti+=(s.substr(duzina2,s.length()));
+					s=vratiti;
+					vratiti="";
+				}
+			}
+		}
+	}
+	return s;
+}
+std::string IzmijeniUPigLatin(std::string s,std::vector&lt;std::string&gt; fr)
+{
+	int pozicija2=0,pozicija1=0;
+	std::string vratiti;
+	std::string poredjenje;
+	if(fr.size()!=0)
+	{
+		for(int i=0;i&lt;fr.size();i++)
+		{
+			for(int j=0;j&lt;fr[i].length();j++)
+			{
+				if((fr[i][j]&lt;'A' &amp;&amp; fr[i][j]!=' ') || (fr[i][j]&gt;'Z' &amp;&amp; fr[i][j]&lt;'a') || (fr[i][j]&gt;'z'))
+				{
+					throw std::domain_error("Nekorektan izbor riječi");
+				}
+			}
+		}
+		for(int i=0;i&lt;s.length()-1;i++)
+		{
+			if((s[i]==' ' &amp;&amp; s[i+1]!=' ')||(s[i]!=' ' &amp;&amp; s[i+1]!=' ' &amp;&amp; i==0))
+			{
+				if(i!=0)
+				{
+					i++;
+				}
+				pozicija1=i;
+				while(s[i]!=' ' &amp;&amp; i&lt;s.length())
+				{
+					pozicija2++;
+					i++;
+				}
+				poredjenje=s.substr(pozicija1,pozicija2);
+				bool slucaj(false);
+				for(int j=0;j&lt;fr.size();j++)
+				{
+					if(poredjenje==fr[j])
+					{
+						char pomoc(poredjenje[0]);
+						for(int k=0;k&lt;poredjenje.length();k++)
+						{
+							if(k&lt;poredjenje.length()-1)
+							{
+								poredjenje[k]=poredjenje[k+1];
+							}
+							else
+							{
+								poredjenje[k]=pomoc;
+							}
+						}
+						slucaj=true;
+						goto l1;
+					}
+				}
+				vratiti+=poredjenje+" ";
+				l1:
+				if(slucaj)
+				{
+					vratiti+=poredjenje+"ay"+" ";
+				}
+				i--;
+				pozicija2=0;
+			}
+		}
+	}
+	if(fr.size()==0)
+	{
+		for(int i=0;i&lt;s.length()-1;i++)
+		{
+			if((s[i]==' ' &amp;&amp; s[i+1]!=' ')||(s[i]!=' ' &amp;&amp; s[i+1]!=' ' &amp;&amp; i==0))
+			{
+				if(i!=0)
+				{
+					i++;
+				}
+				pozicija1=i;
+				while(s[i]!=' ' &amp;&amp; i&lt;s.length())
+				{
+					pozicija2++;
+					i++;
+				}
+				poredjenje=s.substr(pozicija1,pozicija2);
+				char pomoc;
+				int a(poredjenje.length()-1);
+				pomoc=poredjenje[0];
+				poredjenje[0]=poredjenje[a];
+				poredjenje[a]=pomoc;
+				vratiti+=poredjenje+"ay"+" ";
+				i--;
+				pozicija2=0;
+			}
+		}
+	}
+	return vratiti;
+}
+int main ()
+{
+	std::string recenica;
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	std::getline(std::cin,recenica,'\n');
+	std::string pomocna;
+	std::cout&lt;&lt;"Unesite fraze: ";
+	std::vector&lt;std::string&gt; fraze;
+	for(;;)
+	{
+		std::getline(std::cin,pomocna,'\n');
+		if(pomocna!="")
+		{
+			fraze.push_back(pomocna);
+		}
+		else
+		{
+			break;
+		}
+	}
+	try
+	{
+	std::string recenica2(recenica);
+	std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: ";
+	std::string s2(IzmijeniUPigLatin(recenica,fraze));
+	std::cout&lt;&lt;s2&lt;&lt;std::endl;
+	std::cout&lt;&lt;"Recenica nakon obrtanja fraza: ";
+	std::string obrnute_fraze(ObrniFraze(recenica2,fraze));
+	std::cout&lt;&lt;obrnute_fraze&lt;&lt;std::endl;
+	}
+	catch(...)
+	{
+		std::cout&lt;&lt;"Nekorektan izbor riječi";
+	}
+	return 0;
+</font>}</pre>
+</body>
+</html>

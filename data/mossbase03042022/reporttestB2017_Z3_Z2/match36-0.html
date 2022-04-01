@@ -1,0 +1,226 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student1534.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student1534.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+#include &lt;tuple&gt;
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+<a name="0"></a><font color="#FF0000"><a href="match36-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_95.gif"/></a>
+
+typedef std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; Pojmovi;
+typedef std::vector&lt;std::string&gt; VekStr;
+
+std::string PodString(int poz, std::string rec)
+{
+    std::string temp;
+    for(int i(poz); i &lt; rec.size(); i++) {
+        while(rec[i] &gt;= 'a' &amp;&amp; rec[i] &lt;= 'z' || rec[i] &gt;= 'A' &amp;&amp; rec[i] &lt;= 'Z' || rec[i] &gt;= '0' &amp;&amp; rec[i] &lt;= '9') {
+            temp.push_back(rec[i]);
+            i++;
+        }
+        if(!(rec[i] &gt;= 'a' &amp;&amp; rec[i] &lt;= 'z' || rec[i] &gt;= 'A' &amp;&amp; rec[i] &lt;= 'Z' || rec[i] &gt;= '0' &amp;&amp; rec[i] &lt;= '9')) break;
+    }
+    return temp;
+}
+
+Pojmovi KreirajIndeksPojmova(Knjiga &amp;knjiga)
+{
+    if(knjiga.empty()) return {{},{}};
+    //pretvaramo sva slova u mala ukoliko to ona već nisu
+    auto it(knjiga.begin());
+    for(auto &amp;x : it-&gt;second) {
+        for(auto &amp;y : x) y = tolower(y);
+    }
+
+    Pojmovi Indeks;
+    int krug(1);
+    //kretanje kroz knjigu
+    for(auto it(knjiga.begin()); it != knjiga.end(); it++) {
+        int stranica(0);
+        std::string poglavlje {};
+        int pozicija(0);
+        std::tuple&lt;std::string, int, int&gt; trojka {};
+        std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; skup {};
+        poglavlje = it-&gt;first;
+        //kretanje po stranicama
+        for(int i(0); i &lt; it-&gt;second.size(); i++) {
+            stranica = krug;
+            //Vadimo rijec po rijec i izvlacimo pozicije
+            for(int j(0); j &lt; it-&gt;second[i].size(); j++) {
+                std::string pomocni {};
+                if(j == it-&gt;second[i].size()-1 &amp;&amp; it-&gt;second[i].size() &gt; 1) break;
+                while(it-&gt;second[i][j] == ' ') {
+                    j++;
+                    if(j == it-&gt;second[i].size()-1) break;
+                }
+                pozicija = j;
+                pomocni = PodString(j, it-&gt;second[i]);
+                if(pomocni.empty()) continue;
+                trojka = std::make_tuple(poglavlje, stranica, pozicija);
+                skup.insert(trojka);
+                //Ubacujemo rijec, kao i skup sa poglavljem, brojem stranice i pozicijom riječu na stranici
+                //Ako na drugoj stranici postoji isti string
+                //auto it2(Indeks.begin());
+                //auto str(it2-&gt;first);
+                for(auto it2(Indeks.begin()); it2 != Indeks.end(); it2++) {
+                    if(!Indeks.empty() &amp;&amp; !it2-&gt;first.empty() &amp;&amp; (it2-&gt;first == pomocni || it2-&gt;first.find(pomocni))) Indeks[pomocni].insert(trojka);
+                }
+                if(Indeks.empty()) Indeks.insert({pomocni, skup});
+                trojka = {};
+                skup = {};
+                j+=pomocni.size();
+                if(j == it-&gt;second[i].size()-1) break;
+                /*
+                //provjeravamo da li se podstring pojavljuje vise u tekstu
+                std::string::size_type poc(0);
+                std::vector&lt;int&gt; v1;
+                while(std::string::npos != (poc = it-&gt;second[i].find(pomocni, poc))) {
+                    v1.push_back(poc);
+                    poc++;
+                }
+                if(!v1.empty()) {
+                    //sada kad imamo pozicije, trebamo ih dodijeliti trojci, i ubaciti u skup
+                    for(int k(0); k &lt; v1.size(); k++) {
+                        trojka = std::make_tuple(poglavlje, stranica, v1[k]);
+                        skup.insert(trojka);
+                        trojka = {};
+                    }
+                    for(auto &amp;x : skup) Indeks[pomocni].insert(x);
+                }
+                */
+                pomocni.clear();
+                skup = {};
+                //stranica++;
+            }
+            //for(auto )
+            krug++;
+            stranica = 0;
+        }
+    }
+    return Indeks;
+
+}
+
+std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; PretraziIndeksPojmova(std::string s, const Pojmovi &amp;mapa)
+{
+    if(!mapa.count(s)) throw std::logic_error("Pojam nije pronadjen");
+    else {
+        auto it(mapa.find(s));
+        return it-&gt;second;
+    }
+
+}
+
+void IspisiJedanPojam(const std::string &amp;s, const std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; &amp;skup)
+{
+    std::cout &lt;&lt; s &lt;&lt; ": ";
+    int i(0);
+    for(auto it(skup.begin()); it != skup.end(); it++, i++) {
+        std::cout &lt;&lt; std::get&lt;0&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(*it);
+        if(i != skup.size()-1) std::cout &lt;&lt; ", ";
+    }
+}
+
+void IspisiJedanPojam(const std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; &amp;skup)
+{
+    int i(0);
+    for(auto it(skup.begin()); it != skup.end(); it++, i++) {
+        std::cout &lt;&lt; std::get&lt;0&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(*it);
+        //if(i != skup.size()-1)
+        std::cout &lt;&lt; " ";
+    }
+}
+
+void IspisiIndeksPojmova(const Pojmovi &amp;mapa)
+{
+    for(auto it(mapa.begin()); it != mapa.end(); it++) {
+        IspisiJedanPojam(it-&gt;first, it-&gt;second);
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+int main ()
+{
+    Knjiga knjiga {};
+    VekStr stranice_knjige {};
+    int br_str(1);
+    for(;;) {
+        std::cout &lt;&lt; "Unesite naziv poglavlja: ";
+        std::string poglavlje;
+        //Unos poglavlja u privremeni string
+        std::getline(std::cin, poglavlje);
+        if(poglavlje == ".") break;
+        //Unos stranice u privremeni string
+        while(1) {
+            std::cout &lt;&lt; "Unesite sadrzaj stranice " &lt;&lt; br_str &lt;&lt; ": ";
+            std::string stranica;
+            std::getline(std::cin, stranica);
+            if(stranica == ".") {
+                break;
+            }
+            stranice_knjige.push_back(stranica);
+            br_str++;
+        }
+        poglavlje.erase(std::remove(poglavlje.begin(), poglavlje.end(), '.'), poglavlje.end());
+        knjiga.insert({poglavlje, stranice_knjige});
+        poglavlje.clear();
+        stranice_knjige.clear();
+        //std::cin.ignore(1000, '\n');
+    }
+
+    auto indeks_pojmova(KreirajIndeksPojmova(knjiga));
+
+    //Sluzi za provjeru unosa sadrzaja Knjige
+    /*for(auto it(knjiga.begin()); it != knjiga.end(); it++) {
+        std::cout &lt;&lt; "Naziv poglavlja: " &lt;&lt; it-&gt;first;
+        int str(1);
+        for(int i(0); i &lt; it-&gt;second.size(); i++){
+        std::cout &lt;&lt; std::endl &lt;&lt; "Sadrzaj stranice " &lt;&lt; str &lt;&lt; " je: " &lt;&lt; it-&gt;second[i];
+        str++;
+        }
+        std::cout &lt;&lt; std::endl;
+    }*/
+    std::cout &lt;&lt; std::endl &lt;&lt; "Kreirani indeks pojmova:" &lt;&lt; std::endl;
+    IspisiIndeksPojmova(indeks_pojmova);
+    std::cout &lt;&lt; "Unesite rijec: ";
+    //std::cin.ignore(1000, '\n');
+    while(1) {
+        std::string rijec;
+        std::getline(std::cin, rijec);
+        if(rijec == ".") break;
+        /*try {
+            auto pojam(PretraziIndeksPojmova(rijec, indeks_pojmova));
+            IspisiJedanPojam(pojam);
+        } catch(std::logic_error izuzetak) {
+            std::cout &lt;&lt; izuzetak.what();
+            return 0;
+        }*/
+        for(auto &amp;x : rijec) x = tolower(x);
+        if(!indeks_pojmova.count(rijec)) std::cout &lt;&lt; "Unesena rijec nije nadjena!";
+         else {
+             auto it(indeks_pojmova[rijec]);
+             IspisiJedanPojam(it);
+         }
+         //std::cout &lt;&lt; std::endl &lt;&lt; "Unesite rijec: ";
+         //std::cin.ignore(1000, '\n');
+        std::cout &lt;&lt; std::endl &lt;&lt; "Unesite rijec: ";
+</font>    }
+
+
+    return 0;
+}
+</pre>
+</body>
+</html>

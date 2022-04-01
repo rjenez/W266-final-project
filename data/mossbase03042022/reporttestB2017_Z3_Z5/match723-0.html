@@ -1,0 +1,449 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student3315.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student3315.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;map&gt;
+#include &lt;algorithm&gt;
+#include &lt;queue&gt;
+#include &lt;stack&gt;
+
+using namespace std;
+
+enum class Boje {Pik, Tref, Herc, Karo};
+typedef Boje Suit;
+
+const string CARDS[] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+const int NUMBER_OF_COLORS = 4, NUMBER_OF_VALUES = 13;
+const int MAX_NUMBER_OF_CARDS = 52;
+
+struct Karta
+{
+    Boje boja;
+    string vrijednost;
+};
+
+struct Cvor
+{
+    Karta karta;
+    Cvor* sljedeci;
+};
+
+int getCardValue(string card)
+{
+    auto result = find(CARDS, CARDS + NUMBER_OF_VALUES, card);
+<a name="0"></a><font color="#FF0000"><a href="match723-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+    return result - CARDS;
+}
+
+string getSuit(Suit suit)
+{
+    if(suit == Suit::Pik)
+    {
+        return "Pik";
+    }
+    else if(suit == Suit::Tref)
+    {
+        return "Tref";
+    }
+    else if(suit == Suit::Herc)
+    {
+        return "Herc";
+    }
+    else
+    {
+        return "Karo";
+    }
+}
+
+Suit getSuitValue(string suit)
+{
+    if(suit == "Pik")
+    {
+        return Suit::Pik;
+    }
+    else if(suit == "Tref")
+    {
+        return Suit::Tref;
+    }
+    else if(suit == "Herc")
+    {
+        return Suit::Herc;
+    }
+    else
+    {
+        return Suit::Karo;
+</font>    }
+}
+
+void printSuit(Suit suit)
+{
+    cout &lt;&lt; getSuit(suit) &lt;&lt; ": ";
+}
+
+void printDeck(Cvor* deck)
+{
+    if(deck == nullptr)
+    {
+        return;
+    }
+    Suit suit;
+    suit = deck-&gt;karta.boja;
+    printSuit(suit);
+    Cvor* last = deck;
+    for(Cvor* it = deck; it-&gt;sljedeci != deck; it = it-&gt;sljedeci)
+    {
+        if(it-&gt;karta.boja != suit)
+        {
+            suit = it-&gt;karta.boja;
+            cout &lt;&lt; endl;
+            printSuit(suit);
+        }
+        cout &lt;&lt; it-&gt;karta.vrijednost &lt;&lt; " ";
+        last = it;
+    }
+    cout &lt;&lt; last-&gt;sljedeci-&gt;karta.vrijednost &lt;&lt; " ";
+}
+
+bool checkDeck(Cvor* deck)
+{
+    Cvor* it = deck;
+    Cvor* prethodni = it;
+    int i = 0;
+    for(;;)
+    {
+        if(i &gt; MAX_NUMBER_OF_CARDS)
+        {
+            return false;
+        }
+        
+        if(i &gt; 1 &amp;&amp; it == deck)
+        {
+            return true;
+        }
+        
+        if(it-&gt;karta.vrijednost.length() &lt; 1 || it-&gt;karta.vrijednost.length() &gt; 2)
+        {
+            return false;
+        }
+        else if(it-&gt;karta.vrijednost.length() == 2)
+        {
+            if(it-&gt;karta.vrijednost != "10")
+            {
+                return false;
+            }
+        }
+        else if(it-&gt;karta.vrijednost.length() == 1)
+        {
+            if(!((it-&gt;karta.vrijednost[0] &gt;= '2' &amp;&amp; it-&gt;karta.vrijednost[0] &lt;= '9') || 
+            it-&gt;karta.vrijednost == "J" ||  it-&gt;karta.vrijednost == "Q" || it-&gt;karta.vrijednost == "K" || it-&gt;karta.vrijednost == "A"))
+            {
+                return false;
+            }
+        }
+        
+        if(int(it-&gt;karta.boja) * 13 + getCardValue(it-&gt;karta.vrijednost) &lt; int(prethodni-&gt;karta.boja) * 13 + getCardValue(prethodni-&gt;karta.vrijednost))
+        {
+            return false;
+        }
+        ++i;
+        prethodni = it;
+        it = it-&gt;sljedeci;
+    }
+
+    return true;
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match723-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+bool checkCard(pair&lt;string, string&gt; card)
+{
+    if(card.first != "Pik" &amp;&amp; card.first != "Tref" &amp;&amp; card.first != "Herc" &amp;&amp; card.first != "Karo")
+    {
+        return false;
+    }
+    if(card.second.length() &lt; 1 || card.second.length() &gt; 2)
+</font>    {
+        return false;
+    }
+    else if(card.second.length() == 2)
+    {
+        if(card.second != "10")
+        {
+            return false;
+        }
+    }
+    else if(card.second.length() == 1)
+    {
+        if(!((card.second[0] &gt;= '2' &amp;&amp; card.second[0] &lt;= '9') || card.second == "J" ||  card.second == "Q" || card.second == "K" || card.second == "A"))
+        {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+void insertCard(Cvor*&amp; deck, pair&lt;string, string&gt; card)
+{
+    pair&lt;string, string&gt; lastCard = make_pair("", "");
+    Cvor *it = deck, *prethodni = deck;
+    
+    for(;prethodni-&gt;sljedeci != deck;)
+    {
+        prethodni = prethodni-&gt;sljedeci;
+    }
+    for(;;)
+    {
+        //cout &lt;&lt; card.first &lt;&lt; " " &lt;&lt; card.second &lt;&lt; "; ";
+        if(int(getSuitValue(card.first)) * 13 + getCardValue(card.second) &lt; int(it-&gt;karta.boja) * 13 + getCardValue(it-&gt;karta.vrijednost))
+        {
+            if(!(card.first == lastCard.first &amp;&amp; card.second == lastCard.second))
+            {
+                Cvor* temp = new Cvor;
+                temp-&gt;karta.boja = getSuitValue(card.first);
+                temp-&gt;karta.vrijednost = card.second;
+                temp-&gt;sljedeci = it;
+                prethodni-&gt;sljedeci = temp;
+                if(it == deck)
+                {
+                    deck = temp;
+                }
+                //cout &lt;&lt; "Inserted " &lt;&lt; card.first &lt;&lt; " " &lt;&lt; card.second &lt;&lt; "; ";
+            }
+            return;
+        }
+        lastCard = make_pair(getSuit(it-&gt;karta.boja), it-&gt;karta.vrijednost);
+        if(it-&gt;sljedeci == deck)
+        {
+            prethodni = it;
+            it = it-&gt;sljedeci;
+            break;
+        }
+        prethodni = it;
+        it = it-&gt;sljedeci;
+    }
+
+    if(!(card.first == lastCard.first &amp;&amp; card.second == lastCard.second))
+    {
+
+        Cvor* temp = new Cvor;
+        temp-&gt;karta.boja = getSuitValue(card.first);
+        temp-&gt;karta.vrijednost = card.second;
+        temp-&gt;sljedeci = it;
+        prethodni-&gt;sljedeci = temp;
+    }
+}
+
+Cvor* KreirajSpil()
+{
+    Cvor* prvi = new Cvor;
+    Cvor *trenutni, *prethodni;
+    
+    for(int i = 0; i &lt; NUMBER_OF_COLORS; ++i)
+    {
+        for(int j = 0; j &lt; NUMBER_OF_VALUES; ++j)
+        {
+            if(!(i == 0 &amp;&amp; j == 0))
+            {
+                trenutni = new Cvor;
+                trenutni-&gt;karta.boja = Boje(i);
+                trenutni-&gt;karta.vrijednost = CARDS[j];
+                prethodni-&gt;sljedeci = trenutni;
+                prethodni = trenutni;
+            }
+            else // i == 0 &amp;&amp; j == 0
+            {
+                prvi-&gt;karta.boja = Boje(i);
+                prvi-&gt;karta.vrijednost = CARDS[j];
+                prethodni = prvi;
+            }
+        }
+    }
+    trenutni-&gt;sljedeci = prvi;
+    
+    return prvi;
+}
+
+void IzbaciKarte(Cvor*&amp; deck, multimap&lt;Suit, string&gt;&amp; cardList)
+{
+    if(!checkDeck(deck))
+    {
+        throw logic_error("Izuzetak: Neispravna lista!");
+    }
+    
+    for(auto it1 = cardList.begin(); it1 != cardList.end(); ++it1)
+    {
+        pair&lt;Suit, string&gt; card = *it1;
+        Cvor* it2 = deck;
+        Cvor* prethodni = deck;
+        for(;prethodni-&gt;sljedeci != deck;)
+        {
+            prethodni = prethodni-&gt;sljedeci;
+        }
+        for(;;)
+        {
+            if(card.first == it2-&gt;karta.boja &amp;&amp; card.second == it2-&gt;karta.vrijednost)
+            {
+                cardList.erase(it1);
+                if(deck == deck-&gt;sljedeci)
+                {
+                    delete deck;
+                    deck = nullptr;
+                }
+                else if(it2 == deck)
+                {
+                    deck = deck-&gt;sljedeci;
+                }
+                prethodni-&gt;sljedeci = it2-&gt;sljedeci;
+                delete it2;
+                it2 = prethodni-&gt;sljedeci;
+            }
+        }
+    }
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match723-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+stack&lt;pair&lt;string, string&gt;&gt; IzbaciKarteRazbrajanjem(Cvor*&amp; deck, const short int &amp;r, const int &amp;b)
+{
+    if(r &lt; 1 || r &gt; 52 || b &lt; 1)
+</font>    {
+        throw logic_error("Izuzetak: Neispravni elementi za izbacivanje!");
+    }
+    if(!checkDeck(deck))
+    {
+        throw logic_error("Izuzetak: Neispravna lista!");
+    }
+    int left = b;
+    stack&lt;pair&lt;string, string&gt;&gt; result;
+    Cvor *it = deck, *prethodni = it;
+    while(deck != nullptr &amp;&amp; left &gt; 0)
+    {
+        if(r == 1)
+        {
+            for(;prethodni-&gt;sljedeci != deck;)
+            {
+                prethodni = prethodni-&gt;sljedeci;
+            }
+        }
+        for(int i = 1; i &lt; r; ++i)
+        {
+            prethodni = it;
+            it = it-&gt;sljedeci;
+        }
+        result.push(make_pair(getSuit(it-&gt;karta.boja), it-&gt;karta.vrijednost));
+        
+        if(deck == deck-&gt;sljedeci)
+        {
+            delete deck;
+            deck = nullptr;
+            return result;
+        }
+        else if(it == deck)
+        {
+            deck = deck-&gt;sljedeci;
+        }
+        prethodni-&gt;sljedeci = it-&gt;sljedeci;
+        delete it;
+        it = prethodni-&gt;sljedeci;
+        
+        /*cout &lt;&lt; getSuit(deck-&gt;karta.boja) &lt;&lt; " " &lt;&lt; deck-&gt;karta.vrijednost;
+        printDeck(deck);
+        int a;
+        cin &gt;&gt; a;*/
+        --left;
+    }
+    return result;
+}
+
+void VratiPosljednjihNKarata(Cvor*&amp; deck, stack&lt;pair&lt;string, string&gt;&gt;&amp; thrownCards, int n)
+{
+    if(n &gt; 0 &amp;&amp; n &gt; thrownCards.size())
+    {
+        throw range_error("Izuzetak: Nedovoljno karata u steku!");
+    }
+    else if(n &lt; 0)
+    {
+        throw domain_error("Izuzetak: Broj n je besmislen!");
+    }
+    if(!checkDeck(deck))
+    {
+        throw logic_error("Izuzetak: Neispravna lista!");
+    }
+
+    for(int i = 0; i &lt; n; ++i)
+    {
+        /*printDeck(deck);
+        cout &lt;&lt; endl;
+        int a; cin &gt;&gt; a;*/
+        auto card = thrownCards.top();
+        if(!checkCard(card))
+        {
+            throw logic_error("Izuzetak: Neispravne karte!");
+        }
+        thrownCards.pop();
+        insertCard(deck, card);
+    }
+}
+
+void UnistiSpil(Cvor* deck)
+{
+    if(deck != nullptr)
+    {
+        Cvor* it = deck-&gt;sljedeci;
+        while(it != deck)
+        {
+            Cvor* temp = it;
+            it = it-&gt;sljedeci;
+            delete temp;
+        }
+        delete deck;
+        deck = nullptr;
+    }
+}
+
+int main()
+{
+    int m;
+    short int n;
+    auto deck = KreirajSpil();
+    cout &lt;&lt; "Unesite korak razbrajanja: ";
+    cin &gt;&gt; n;
+    cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    cin &gt;&gt; m;
+    try
+    {
+        auto thrownCards = IzbaciKarteRazbrajanjem(deck, n, m);
+        cout &lt;&lt; "U spilu trenutno ima "&lt;&lt; 52 - m &lt;&lt; " karata, i to:" &lt;&lt; endl;
+        printDeck(deck);
+        
+        int k;
+        cout &lt;&lt; endl &lt;&lt; "Unesite broj karata koje zelite vratiti u spil: ";
+        cin &gt;&gt; k;
+        VratiPosljednjihNKarata(deck, thrownCards, k);
+        cout &lt;&lt; "U spilu trenutno ima "&lt;&lt; 52 - m + k &lt;&lt; " karata, i to: " &lt;&lt; endl;
+        printDeck(deck);
+    }
+    catch(std::domain_error e){
+        std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+    }
+    catch(std::logic_error e){
+        std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+    }
+    catch(std::range_error e){
+        std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+    }
+    UnistiSpil(deck);
+    return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8100.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student7713.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;new&gt;
+#include &lt;stdexcept&gt;
+int PotencijalniKrivci(char** &amp;pok, std::vector&lt;std::string&gt; v) {
+	pok=nullptr;
+	try {
+<a name="3"></a><font color="#00FFFF"><a href="match151-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_4.gif"/></a>
+
+		pok=new char*[v.size()];
+		for(int i(0); i&lt;v.size(); i++) pok[i]=nullptr;
+		try {
+			for(int i(0); i&lt;v.size(); i++) pok[i]=new char[v[i].length()+1];
+</font>		}
+		catch(...) {
+<a name="7"></a><font color="#0000FF"><a href="match151-0.html#7" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+			for(int i(0); i&lt;v.size(); i++) delete[] pok[i];
+			delete[] pok;
+			throw std::bad_alloc();
+		}
+	}
+	catch(...) {
+		delete[] pok;
+		throw std::bad_alloc();
+	}
+	int brojac(0);
+	for(int i(0); i&lt;v.size(); i++) {
+</font><a name="6"></a><font color="#00FF00"><a href="match151-0.html#6" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+		for(int j(0); j&lt;v[i].length()+1; j++) {
+			if(j==v[i].length()) {
+				pok[i][j]='\0';
+				break;
+			}
+			pok[i][j]=v[i][j];
+		}
+		brojac++;	
+</font>	}
+	return brojac;
+}
+
+int OdbaciOptuzbu(char** &amp;pok, int n, std::string s) {
+	bool naslo=false;
+	for(int i(0); i&lt;n; i++) {
+		if(pok[i]==nullptr) continue;
+			int j(0);
+			if(pok[i][0]==s[0]) {
+				while (pok[i][j]==s[j]) {
+					j++;
+					if(j==s.length()-1) break;
+				}
+			}
+			if(j==s.length()-1) {
+				naslo=true;
+				delete[] pok[i];
+				pok[i]=nullptr;
+			}
+	}
+	if(naslo==false) throw std::domain_error("Osoba sa imenom "+s+" nije bila optuzena");
+return n;
+	
+}
+
+int DodajOptuzbu(char** &amp;pok, int n, std::string s) {
+	char * novi= nullptr;
+	try{
+<a name="13"></a><font color="#00FFFF"><a href="match151-0.html#13" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+		novi=new char[s.length()+1];
+	}
+	catch(...) {
+		delete[] novi;
+		throw std::bad_alloc();
+	}
+	for(int i(0); i&lt;s.length()+1; i++) {
+</font>		if(i==s.length()) {
+			novi[i]='\0';
+			break;
+		}
+		novi[i]=s[i];
+	}
+	bool imaprazno=false;
+	for(int i(0); i&lt;n; i++) {
+		if(pok[i]==nullptr) {
+			try{
+				pok[i]=new char[s.length()+1];
+			}
+			catch(...) {
+				delete[] pok[i];
+				throw std::bad_alloc();
+			}
+			imaprazno=true;
+			for(int j(0); j&lt;s.length()+1; j++) 	pok[i][j]=novi[j];
+			break;
+		}
+	}
+	if(imaprazno==false) {
+<a name="0"></a><font color="#FF0000"><a href="match151-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+	char**pok2=nullptr;
+	try {
+		pok2=new char*[n+1];
+		for(int i(0); i&lt;n+1; i++) pok2[i]=nullptr;
+		try {
+			for(int i(0); i&lt;n+1; i++) {
+				if(i==n) {
+					pok2[i]=new char[s.length()+1];
+					break;
+				}
+				int brsl(0);
+				auto k=pok[i];
+</font><a name="2"></a><font color="#0000FF"><a href="match151-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+				while (*k!='\0') {
+					k++;
+					brsl++;
+				}
+				pok2[i]=new char[brsl+1];
+			}
+		}
+		catch(...) {
+			for(int i(0); i&lt;n+1; i++) delete[] pok2[i];
+			delete[] pok2;
+			throw std::bad_alloc();
+</font>			}
+		}
+	catch(...) {
+		delete[] pok2;
+		throw std::bad_alloc();
+		}
+	
+	for(int i(0); i&lt;n+1; i++) {
+		if(i==n) {
+			for(int j(0); j&lt;s.length()+1; j++)
+			pok2[i][j]=novi[j];
+			break;
+		}
+		int brsl(0);
+		auto k=pok[i];
+<a name="4"></a><font color="#FF00FF"><a href="match151-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+		while (*k!='\0') {
+			k++;
+			brsl++;
+		}
+		for(int j(0); j&lt;brsl+1; j++) {
+			if(j==brsl) {
+				pok2[i][j]='\0';
+				break;
+			}
+			pok2[i][j]=pok[i][j];
+</font>		}
+	}
+	
+	for(int i(0); i&lt;n; i++) delete[] pok[i];
+	delete[] pok;
+	pok=pok2;
+	}
+	delete[] novi;
+	return n+1;
+}
+
+void IzlistajOptuzbu(char** pok, int n) {
+	for(int i(0); i&lt;n; i++) {
+		if(pok[i]==nullptr) continue;
+			int brsl(0);
+			auto k=pok[i];
+<a name="5"></a><font color="#FF0000"><a href="match151-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+			while (*k!='\0') {
+				k++;
+				brsl++;
+			}
+			for(int j(0); j&lt;brsl; j++) 
+				std::cout&lt;&lt;pok[i][j];
+		std::cout&lt;&lt;std::endl;
+</font>	}
+}
+
+int main ()
+{
+	std::cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? "&lt;&lt;std::endl;
+	int broj;
+	std::cin&gt;&gt;broj;
+	std::cin.ignore(10000,'\n');
+	std::cout&lt;&lt;"Unesite potencijalne krivce: "&lt;&lt;std::endl;
+<a name="8"></a><font color="#00FFFF"><a href="match151-0.html#8" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+	std::vector&lt;std::string&gt; v;
+	for(int i(0); i&lt;broj; i++) {
+		std::string pom;
+		std::getline(std::cin, pom);
+		v.push_back(pom);
+	}
+	char **pok;
+	int broj2(0);
+	try {
+</font>		broj2=PotencijalniKrivci(pok,v);
+		while (1) {
+<a name="9"></a><font color="#FF00FF"><a href="match151-0.html#9" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+			std::cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: "&lt;&lt;std::endl;
+			int a;
+			std::cin&gt;&gt;a;
+			std::cin.ignore(10000,'\n');
+			if(a==0) break;
+</font>			else if(a==3) {
+				try {
+				IzlistajOptuzbu(pok,broj2);
+				}
+				catch(std::bad_alloc) {
+					std::cout&lt;&lt;"Alokacija nije uspjela";
+				}
+			}
+			else if(a==1) {
+				try {
+<a name="10"></a><font color="#FF0000"><a href="match151-0.html#10" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+				std::cout&lt;&lt;"Unesite ime novog optuzenog: "&lt;&lt;std::endl;
+				std::string optuzeni;
+				std::getline(std::cin,optuzeni);
+				broj2=DodajOptuzbu(pok,broj2,optuzeni);
+</font>				}
+				catch(std::bad_alloc) {
+					std::cout&lt;&lt;"Alokacija nije uspjela";
+				}
+			}
+			else if(a==2) {
+				try {
+<a name="11"></a><font color="#00FF00"><a href="match151-0.html#11" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+				std::cout&lt;&lt;"Unesite ime koje zelite izbaciti: "&lt;&lt;std::endl;
+				std::string optuzeni;
+				std::getline(std::cin, optuzeni);
+				broj2=OdbaciOptuzbu(pok,broj2,optuzeni);
+</font>				}
+<a name="12"></a><font color="#0000FF"><a href="match151-0.html#12" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+				catch(std::bad_alloc) {
+					std::cout&lt;&lt;"Alokacija nije uspjela";
+				}
+				catch(std::domain_error izuzetak) {
+					std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+</font>				}
+			}
+		}
+		for(int i(0); i&lt;broj2; i++) {
+<a name="1"></a><font color="#00FF00"><a href="match151-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+			delete[] pok[i];
+			pok[i]=nullptr;
+		}
+		delete[] pok;
+		pok=nullptr;
+	}
+	catch(std::bad_alloc) {
+		for(int i(0); i&lt;broj2; i++) {
+			delete[] pok[i];
+			pok[i]=nullptr;
+		}
+		delete[] pok;
+		std::cout&lt;&lt;"Nedovoljno memorije";
+</font>	}
+	return 0;
+}</pre>
+</body>
+</html>

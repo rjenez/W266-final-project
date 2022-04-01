@@ -1,0 +1,151 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student6049.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student6049.cpp<p></p><pre>
+/B2017/2018: Zadaća 4, Zadatak 2
+/B2017/2018: Zadaća 4, Zadatak 1
+#include&lt;iostream&gt;
+#include&lt;stdexcept&gt;
+#include&lt;tuple&gt;
+#include&lt;cmath&gt;
+#include&lt;vector&gt;
+#include&lt;algorithm&gt;
+#include&lt;memory&gt;
+#include&lt;iterator&gt;
+class NepreklapajucaKugla {
+    double x,y,z;
+    double r;
+    NepreklapajucaKugla *prethodni;
+    static NepreklapajucaKugla *poc;
+    bool PreklapajuSe(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+    public:
+    explicit NepreklapajucaKugla(double r=0) {
+        if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+        NepreklapajucaKugla::r=r;
+    }
+    NepreklapajucaKugla(double x, double y, double z, double r=0) {
+        if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+        NepreklapajucaKugla::x=x;
+        NepreklapajucaKugla::y=y;
+        NepreklapajucaKugla::z=z;
+        NepreklapajucaKugla::r=r;
+    }
+    explicit NepreklapajucaKugla(const std::tuple&lt;double,double,double&gt; &amp;centar, double r=0) {
+        if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+        x=std::get&lt;0&gt;(centar);
+        y=std::get&lt;1&gt;(centar);
+        z=std::get&lt;2&gt;(centar);
+        NepreklapajucaKugla::r=r;
+    }
+    double DajX() const { return x; }
+    double DajY() const { return y; }
+    double DajZ() const { return z; }
+    std::tuple&lt;double,double,double&gt; DajCentar() const { return std::make_tuple(x,y,z); }
+    double DajPoluprecnik() const { return r; }
+    double DajPovrsinu() const { return 16*r*r*atan(1); }
+    double DajZapreminu() const { return (16*r*r*r*atan(1))/3; }
+    NepreklapajucaKugla &amp;PostaviX(double x) { NepreklapajucaKugla::x=x; return *this; }
+    NepreklapajucaKugla &amp;PostaviY(double y) { NepreklapajucaKugla::y=y; return *this; }
+    NepreklapajucaKugla &amp;PostaviZ(double z) { NepreklapajucaKugla::z=z; return *this; }
+    NepreklapajucaKugla &amp;PostaviCentar(double x, double y, double z);
+    NepreklapajucaKugla &amp;PostaviCentar(const std::tuple&lt;double, double, double&gt; &amp;centar);
+    NepreklapajucaKugla &amp;PostaviPoluprecnik(double r);
+<a name="1"></a><font color="#00FF00"><a href="match745-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+    void Ispisi() const { std::cout&lt;&lt;"{("&lt;&lt;DajX()&lt;&lt;","&lt;&lt;DajY()&lt;&lt;","&lt;&lt;DajZ()&lt;&lt;"),"&lt;&lt;DajPoluprecnik()&lt;&lt;"}"&lt;&lt;std::endl; }
+    void Transliraj(double delta_x, double delta_y, double delta_z) { x+=delta_x; y+=delta_y; z+=delta_z; }
+    //friend bool DaLiSuIdenticne(const Kugla &amp;k1, const Kugla &amp;k2);
+    //friend bool DaLiSuPodudarne(const Kugla &amp;k1, const Kugla &amp;k2);
+    //friend bool DaLiSuKoncentricne(const Kugla &amp;k1, const Kugla &amp;k2);
+    //friend bool DaLiSeDodirujuIzvana(const Kugla &amp;k1, const Kugla &amp;k2);
+    //friend bool DaLiSeDodirujuIznutra(const Kugla &amp;k1, const Kugla &amp;k2);
+    //friend bool DaLiSePreklapaju(const Kugla &amp;k1, const Kugla &amp;k2);
+    //friend bool DaLiSeSijeku(const Kugla &amp;k1, const Kugla &amp;k2);
+    //bool DaLiSadrzi(const NepreklapajucaKugla &amp;k) const;
+    friend double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+</font>};
+NepreklapajucaKugla *NepreklapajucaKugla::poc=nullptr;
+bool NepreklapajucaKugla::PreklapajuSe(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2) {
+<a name="5"></a><font color="#FF0000"><a href="match745-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+    if(RastojanjeCentara(k1,k2)&lt;(k1.DajPoluprecnik()+k2.DajPoluprecnik()) &amp;&amp; RastojanjeCentara(k1,k2)&gt;std::fabs(k1.DajPoluprecnik()-k2.DajPoluprecnik())) return true;
+</font>    return false;
+}
+NepreklapajucaKugla &amp;NepreklapajucaKugla::PostaviCentar(double x, double y, double z) {
+    (*this).PostaviX(x).PostaviY(y).PostaviZ(z);
+    return *this;
+}
+NepreklapajucaKugla &amp;NepreklapajucaKugla::PostaviCentar(const std::tuple&lt;double,double,double&gt; &amp;centar) {
+    (*this).PostaviX(std::get&lt;0&gt;(centar)).PostaviY(std::get&lt;1&gt;(centar)).PostaviZ(std::get&lt;2&gt;(centar));
+    return *this;
+}
+NepreklapajucaKugla &amp;NepreklapajucaKugla::PostaviPoluprecnik(double r) {
+    if(r&lt;0) throw std::domain_error("Ilegalan poluprecnik");
+    NepreklapajucaKugla::r=r;
+    return *this;
+}
+<a name="2"></a><font color="#0000FF"><a href="match745-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2) {
+    return std::sqrt((k2.DajX()-k1.DajX())*(k2.DajX()-k1.DajX())+(k2.DajY()-k1.DajY())*(k2.DajY()-k1.DajY())+(k2.DajZ()-k1.DajZ())*(k2.DajZ()-k1.DajZ()));
+</font>}
+int main () {
+    int broj;
+    std::cout&lt;&lt;"Unesite broj kugli: ";
+    for(;;) {
+        std::cin&gt;&gt;broj;
+        if(!std::cin || broj&lt;=0) {
+            std::cout&lt;&lt;"Neispravan broj kugli, unesite ponovo: "&lt;&lt;std::endl;
+            std::cin.clear();
+            std::cin.ignore(1000,'\n');
+        }
+        else break;
+    }
+    std::vector&lt;std::shared_ptr&lt;NepreklapajucaKugla&gt;&gt; v(broj);
+    for(int i=0; i&lt;broj; i++) {
+        double x,y,z;
+        std::cout&lt;&lt;"Unesite centar za "&lt;&lt;i+1&lt;&lt;". kugle: ";
+        for(;;) {
+<a name="4"></a><font color="#FF00FF"><a href="match745-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+            std::cin&gt;&gt;x&gt;&gt;y&gt;&gt;z;
+            if(!std::cin) {
+                std::cout&lt;&lt;"Neispravan centar, unesite ponovo: "&lt;&lt;std::endl;
+                std::cin.clear();
+                std::cin.ignore(1000,'\n');
+</font>            } else break;
+        }
+        std::cout&lt;&lt;"Unesite poluprecnik: ";
+        double r;
+        for(;;) {
+            std::cin&gt;&gt;r;
+            if(!std::cin || r&lt;0) {
+                std::cout&lt;&lt;"Neispravan poluprecnik, unesite ponovo: "&lt;&lt;std::endl;
+                std::cin.clear();
+                std::cin.ignore(1000,'\n');
+            } else break;
+        }
+        try {
+            v[i]=std::make_shared&lt;NepreklapajucaKugla&gt;(NepreklapajucaKugla(x,y,z,r));
+        } catch(std::domain_error izuz) {
+            std::cout&lt;&lt;izuz.what()&lt;&lt;std::endl;
+            i--;
+        } catch (std::logic_error izuz) {
+<a name="3"></a><font color="#00FFFF"><a href="match745-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+            std::cout&lt;&lt;izuz.what()&lt;&lt;std::endl;
+            i--;
+        }
+    }
+    std::sort(v.begin(),v.end(),[](std::shared_ptr&lt;const NepreklapajucaKugla&gt; k1, std::shared_ptr&lt; const NepreklapajucaKugla&gt; k2) { return k1-&gt;DajPovrsinu()&lt;k2-&gt;DajPovrsinu(); });
+</font><a name="0"></a><font color="#FF0000"><a href="match745-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+    std::cout&lt;&lt;std::endl&lt;&lt;"Kugle nakon obavljenog sortiranja: "&lt;&lt;std::endl;
+    std::for_each(v.begin(),v.end(), [](std::shared_ptr&lt;NepreklapajucaKugla&gt; k) { k-&gt;Ispisi(); });
+</font>    return 0;
+}</pre>
+</body>
+</html>

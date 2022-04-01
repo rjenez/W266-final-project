@@ -1,0 +1,160 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student7346.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student7346.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match132-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;tuple&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iterator&gt;
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::get;
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+typedef std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; IndeksPojmova;
+typedef std::multimap&lt;std::string, int&gt; RijeciJedneStranice;
+typedef std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; Lokacije;
+std::vector&lt;std::string&gt; UnosPoglavlja () {
+    std::vector&lt;std::string&gt; str;
+    int brojac(1);
+    for(;;) {
+        cout &lt;&lt; "Unesite sadrzaj stranice " &lt;&lt; brojac &lt;&lt; ": ";
+        std::string recenica;
+        std::getline(cin, recenica);
+        if(recenica == ".") break;
+        str.push_back(recenica);
+        brojac++;
+    }
+    return str;
+}
+
+
+bool Slovo (char znak)
+{
+    if ((znak &gt;= 'A' &amp;&amp; znak &lt;= 'Z') || (znak &gt;= 'a' &amp;&amp;  znak &lt;= 'z') || (znak &gt;= '0' &amp;&amp; znak &lt;= '9'))
+        return true;
+    return false;
+}
+
+RijeciJedneStranice KreirajSpisakRijeciJedneStranice (std::string stranica) {
+    std::transform(stranica.begin(), stranica.end(), stranica.begin(), ::tolower);
+    RijeciJedneStranice Rijeci;
+    for (int i(0); i&lt;stranica.size(); i++) {
+        while (i&lt;stranica.size() &amp;&amp; !Slovo(stranica[i])) i++;
+        int pozicija(i); 
+        std::string rijec;
+        while (i&lt;stranica.size() &amp;&amp; Slovo(stranica[i])) {
+            rijec += stranica[i];
+            i++;
+        }
+        if(rijec.length())
+            Rijeci.insert({rijec, pozicija});
+    }
+    return Rijeci;
+}
+
+IndeksPojmova KreirajIndeksPojmova (Knjiga book)
+{
+    IndeksPojmova povratni;
+    for(auto poglavlje : book) {
+        for (int i(0); i&lt;poglavlje.second.size(); i++) {
+            auto RijeciTrenutneStranice = KreirajSpisakRijeciJedneStranice(poglavlje.second[i]);
+            for (auto rijec : RijeciTrenutneStranice) {
+                if(!povratni.count(rijec.first)) {
+                    int stranica(i+1);
+                    std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; parametri;
+                    parametri.insert(std::tie(poglavlje.first, stranica, rijec.second));
+                    povratni.insert({rijec.first, parametri});
+                }
+                
+                else {
+                    auto mjesto(povratni.find(rijec.first));
+                    int stranica(i+1);
+                    mjesto-&gt;second.insert(std::tie(poglavlje.first, stranica, rijec.second));
+                }
+            }
+        }
+    }
+    return povratni;
+}
+
+
+Lokacije PretraziIndeksPojmova(std::string &amp;trazena_rijec, IndeksPojmova pojmovi) {
+    std::transform(trazena_rijec.begin(), trazena_rijec.end(), trazena_rijec.begin(), ::tolower);
+    if(!pojmovi.count(trazena_rijec))
+        throw std::logic_error("Pojam nije nadjen");
+    auto mjesto(pojmovi.find(trazena_rijec));
+    return mjesto-&gt;second;
+}
+
+
+void IspisiIndeksPojmova (IndeksPojmova indeks_pojmova) {
+    for (auto pojam : indeks_pojmova) {
+        cout &lt;&lt; pojam.first &lt;&lt; ": ";
+        int cntr(0);
+        auto info = pojam.second;
+        for (auto lokacije : info) {
+            cout &lt;&lt; std::get&lt;0&gt;(lokacije) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(lokacije) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(lokacije);
+            if(cntr&lt;info.size()-1)
+                cout &lt;&lt; ", ";
+            cntr++;
+        }
+        cout &lt;&lt; endl;
+    }
+}
+
+
+
+int main ()
+{
+    Knjiga book;
+    for (;;) {
+        cout &lt;&lt; "Unesite naziv poglavlja: ";
+        std::string naziv_poglavlja;
+        std::getline(cin, naziv_poglavlja);
+        if (naziv_poglavlja == ".") break;
+        std::vector&lt;std::string&gt; Poglavlje = UnosPoglavlja();
+        book.insert({naziv_poglavlja, Poglavlje});
+    }
+    
+    IndeksPojmova rez = KreirajIndeksPojmova(book);
+    cout &lt;&lt; endl &lt;&lt; "Kreirani indeks pojmova:" &lt;&lt; endl;
+    IspisiIndeksPojmova(rez);
+    
+    for(;;) {
+        cout &lt;&lt; "Unesite rijec: ";
+        std::string trazena_rijec;
+        std::getline(cin, trazena_rijec);
+        if(trazena_rijec == ".") break;
+        std::transform(trazena_rijec.begin(), trazena_rijec.end(), trazena_rijec.begin(), ::tolower);
+        if(!rez.count(trazena_rijec)) cout &lt;&lt; "Unesena rijec nije nadjena!" &lt;&lt; endl;
+        else {
+            try {
+                auto lokacije = PretraziIndeksPojmova(trazena_rijec, rez);
+                for(auto lokacija : lokacije)
+                    cout &lt;&lt; get&lt;0&gt;(lokacija) &lt;&lt; "/" &lt;&lt; get&lt;1&gt;(lokacija) &lt;&lt; "/" &lt;&lt; get&lt;2&gt;(lokacija) &lt;&lt; " ";
+                cout &lt;&lt; endl;
+            }
+            catch (std::exception izuzetak) {
+                cout &lt;&lt; izuzetak.what();
+</font>            }
+        }
+    }
+    return 0;
+}
+</pre>
+</body>
+</html>

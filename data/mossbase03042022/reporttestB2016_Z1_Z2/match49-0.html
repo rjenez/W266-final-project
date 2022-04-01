@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student8521.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student8521.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+
+<a name="0"></a><font color="#FF0000"><a href="match49-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+typedef vector&lt;vector&lt;double&gt;&gt;Matrica;
+
+Matrica OgledaloMatrica(Matrica m){
+	if(m.size()==0){
+		Matrica nula;
+		return nula;
+	}
+	int br_red(m.size()),br_kol(m[0].size());
+	for (int i=0;i&lt;br_red-1;i++){
+	if(m[i].size()!=m[i+1].size())throw domain_error("Matrica nije korektna");
+	}
+	Matrica m1(br_red,vector&lt;double&gt;(br_kol)),m2(br_red,vector&lt;double&gt;(br_kol)),m3(br_red,vector&lt;double&gt;(br_kol));
+	for(int i=0;i&lt;int(br_red);i++){
+		for(int j=0;j&lt;int(br_kol);j++){
+			m1[i][j]=m[i][j];
+			m2[i][j]=m[i][j];
+		}
+	}
+	//pravi vertikalno ogledalo
+	for(int i=0,j=int(br_red)-1;j&gt;i;i++,j--){
+	for(int k=0;k&lt;int(br_kol);k++){
+		double temp(m1[i][k]);
+		m1[i][k]=m1[j][k];
+		m1[j][k]=temp;
+	}
+	}
+	//pravi horizontalno ogledalo
+	for(int i=0,j=int(br_kol)-1;j&gt;i;i++,j--){
+		for(int k=0;k&lt;int(br_red);k++){
+			double temp(m2[k][i]);
+			m2[k][i]=m2[k][j];
+			m2[k][j]=temp;
+		}
+	}
+	//prepisi u m3 clanove m2
+	for(int i=0;i&lt;int(br_red);i++){
+		for(int j=0;j&lt;int(br_kol);j++)
+			m3[i][j]=m2[i][j];
+		
+	}
+	//pravi hv ogledalo od m3
+	for(int i=0,j=int(br_red)-1;j&gt;i;i++,j--){
+	for(int k=0;k&lt;int(br_kol);k++){
+		double temp(m3[i][k]);
+		m3[i][k]=m3[j][k];
+		m3[j][k]=temp;
+	}
+	}
+	Matrica rez(3*br_red,vector&lt;double&gt;(3*br_kol));
+	//popunjavanje matrice
+	for(int i=0;i&lt;int(br_red);i++){
+		for(int j=0;j&lt;int(br_kol);j++)rez[i][j]=m3[i][j];
+	}
+	for(int i=0;i&lt;int(br_red);i++){
+		for(int j=int(br_kol);j&lt;2*int(br_kol);j++)rez[i][j]=m1[i][j-int(br_kol)];
+	}
+	for(int i=0;i&lt;int(br_red);i++){
+		for(int j=2*int(br_kol);j&lt;3*int(br_kol);j++)rez[i][j]=m3[i][j-2*int(br_kol)];
+	}
+	for(int i=int(br_red);i&lt;2*int(br_red);i++){
+		for(int j=0;j&lt;int(br_kol);j++)rez[i][j]=m2[i-int(br_red)][j];
+	}
+	for(int i=int(br_red);i&lt;2*int(br_red);i++){
+		for(int j=int(br_kol);j&lt;2*int(br_kol);j++)rez[i][j]=m[i-int(br_red)][j-int(br_kol)];
+	}
+	for(int i=int(br_red);i&lt;2*int(br_red);i++){
+		for(int j=2*int(br_kol);j&lt;3*int(br_kol);j++)rez[i][j]=m2[i-int(br_red)][j-2*int(br_kol)];
+	}
+	for(int i=2*int(br_red);i&lt;3*int(br_red);i++){
+		for(int j=0;j&lt;int(br_kol);j++)rez[i][j]=m3[i-2*int(br_red)][j];
+	}
+	for(int i=2*int(br_red);i&lt;3*int(br_red);i++){
+		for(int j=int(br_kol);j&lt;2*int(br_kol);j++)rez[i][j]=m1[i-2*int(br_red)][j-int(br_kol)];
+	}
+	for(int i=2*int(br_red);i&lt;3*int(br_red);i++){
+		for(int j=2*int(br_kol);j&lt;3*int(br_kol);j++)rez[i][j]=m3[i-2*int(br_red)][j-2*int(br_kol)];
+	}
+	return rez;
+}
+
+int main ()
+{
+	cout&lt;&lt;"Unesite dimenzije matrice (m n): ";
+	int a,b;
+	cin&gt;&gt;a&gt;&gt;b;
+	if(a&lt;0 || b&lt;0){cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!"; return 0;}
+	Matrica mat(a,vector&lt;double&gt;(b));
+	cout&lt;&lt;"Unesite elemente matrice: ";
+	for(int i=0;i&lt;a;i++){
+		for(int j=0;j&lt;b;j++){
+			cin&gt;&gt;mat[i][j];
+		}
+	}
+	try {
+	Matrica rezultantna;
+	rezultantna=OgledaloMatrica(mat);
+	cout&lt;&lt;endl&lt;&lt;"Rezultantna matrica: "&lt;&lt;endl;
+	for(int i=0;i&lt;int(rezultantna.size());i++){
+		for(int j=0;j&lt;int(rezultantna[i].size());j++)
+		cout&lt;&lt;setw(4)&lt;&lt;rezultantna[i][j];
+		cout&lt;&lt;endl;
+		
+	}
+		
+	}
+	catch(domain_error izuzetak){
+		cout&lt;&lt;izuzetak.what();
+</font>	}
+	
+	return 0;
+}</pre>
+</body>
+</html>

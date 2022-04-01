@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student8638.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student8638.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+
+std::vector&lt;std::string&gt; IzdvojiRijeci(std::string str){
+    std::vector&lt;std::string&gt; vek;
+    std::string::size_type temp=0, kraj;
+    
+    do{
+        kraj = str.find(' ', temp);
+        if(kraj == std::string::npos){
+            kraj = str.size();
+        }
+        vek.push_back(str.substr(temp, kraj - temp));
+        temp = kraj + 1;
+    } while(temp &lt; str.size());
+    
+    return vek;
+}
+
+std::set&lt;int&gt; Pozicija(std::string str, std::vector&lt;std::string&gt; vek){
+    std::set&lt;int&gt; tivra;
+    int brojac_slova=0;
+    
+    for(int i=0; i&lt;vek.size(); i++){
+        if(str == vek[i]){
+            tivra.insert(i+brojac_slova);
+        }
+        brojac_slova += vek[i].size();
+    }
+    return tivra;
+}
+
+bool Ima_li_ga(std::map &lt;std::string, std::set &lt;int&gt;&gt; mapa, std::string str){
+    bool tivra = false;
+    for(auto it = mapa.begin(); it != mapa.end(); it++){
+        if(it-&gt;first == str){
+            tivra = true;
+            break;
+        }
+    }
+    return tivra;
+}
+
+std::map &lt;std::string, std::set &lt;int&gt;&gt; KreirajIndeksPojmova(std::string str){
+    std::map &lt;std::string, std::set &lt;int&gt;&gt; tivra;
+    std::string tekst;
+    tekst = str;
+    std::transform(tekst.begin(), tekst.end(), tekst.begin(), ::tolower);
+    
+    std::vector&lt;std::string&gt; vek = IzdvojiRijeci(tekst);
+    
+    for(int i=0; i&lt;vek.size(); i++){
+        if(Ima_li_ga(tivra,vek[i]) == false){
+            tivra.insert(std::pair &lt;std::string, std::set&lt;int&gt;&gt; (vek[i], Pozicija(vek[i], vek)) );
+        }
+    }
+    
+    return tivra;
+}
+
+
+<a name="0"></a><font color="#FF0000"><a href="match990-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string str, std::map &lt;std::string, std::set &lt;int&gt;&gt; mapa){
+    
+    std::set&lt;int&gt; tivra;
+    bool nisam_naso(false);
+    
+    for(auto it1 = mapa.begin(); it1 != mapa.end(); it1++){
+        if(str == it1 -&gt; first){
+</font>            tivra = it1 -&gt; second;
+            nisam_naso = true;
+        } 
+    }
+    
+    
+   if(nisam_naso == false) throw std::logic_error("Pojam nije nadjen");
+   
+   else return tivra;
+}
+
+
+void IspisiIndeksPojmova (std::map &lt;std::string, std::set &lt;int&gt;&gt; mapa){
+    
+    for(auto it1 = mapa.begin(); it1 != mapa.end(); it1++){
+        std::cout &lt;&lt; it1 -&gt; first &lt;&lt;": ";
+        for(auto x = (it1-&gt;second).begin() ; x != (it1-&gt;second).end(); x++) {
+<a name="1"></a><font color="#00FF00"><a href="match990-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+            if(x == prev((it1-&gt;second).end())) std::cout &lt;&lt; *x;
+            else std::cout &lt;&lt; *x &lt;&lt; ",";
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+int main (){
+    
+    
+    std::cout &lt;&lt; "Unesite tekst: ";
+</font>    std::string tekst;
+    std::cin.clear();
+<a name="2"></a><font color="#0000FF"><a href="match990-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+    std::getline(std::cin, tekst);
+    
+    std::map &lt;std::string, std::set &lt;int&gt;&gt; mapa;
+    mapa = KreirajIndeksPojmova(tekst);
+    
+    IspisiIndeksPojmova(mapa);
+</font>    
+    std::cout &lt;&lt; "Unesite rijec: ";
+    std::string rijec;
+    std::cin.clear();
+    std::getline(std::cin, rijec);
+    
+    while(rijec!= "."){
+        try{
+        std::set&lt;int&gt; indeksi;
+        indeksi = PretraziIndeksPojmova(rijec, mapa);
+        for(auto x : indeksi) std::cout &lt;&lt; x &lt;&lt; " ";
+        std::cout &lt;&lt; std::endl;
+        }
+        catch(std::logic_error e1){
+            std::cout &lt;&lt; "Unesena rijec nije nadjena!" &lt;&lt; std::endl;
+        }
+        std::cout &lt;&lt; "Unesite rijec: ";
+        rijec.clear();
+        std::getline(std::cin, rijec);
+    }
+    
+	return 0;
+}</pre>
+</body>
+</html>

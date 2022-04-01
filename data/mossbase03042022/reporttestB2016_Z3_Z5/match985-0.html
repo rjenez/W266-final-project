@@ -1,0 +1,128 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student9998.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student9998.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include&lt;set&gt;
+#include&lt;vector&gt;
+#include&lt;string&gt;
+#include&lt;stdexcept&gt;
+
+struct Dijete{
+    std::string ime;
+    Dijete *sljedeci;
+};
+
+<a name="1"></a><font color="#00FF00"><a href="match985-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+int broj_znakova(std::string s){
+    int broj=0;
+    for(int i=0;i&lt;s.length();i++){
+        if((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')) broj++;
+</font><a name="0"></a><font color="#FF0000"><a href="match985-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_10.gif"/></a>
+
+    }
+    return broj;
+}
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje (std::vector&lt;std::string&gt;v, int broj_timova){
+   if(broj_timova&lt;1 || broj_timova&gt;v.size()) throw std::logic_error("Razvrstavanje nemoguce");
+   
+    Dijete *pocetak(nullptr);
+</font>    Dijete *prethodni;
+    try{
+    for(int i=0;i&lt;v.size();i++){
+        Dijete *novi=new Dijete;
+        if(pocetak==nullptr) pocetak=novi;
+        else prethodni-&gt;sljedeci=novi;
+        novi-&gt;ime=v[i];
+        novi-&gt;sljedeci=pocetak;
+        prethodni=novi;
+     }
+    }
+    catch(...){
+        while(pocetak!=prethodni){
+            Dijete *pom=pocetak;
+            pocetak=pocetak-&gt;sljedeci;
+            pom-&gt;sljedeci=nullptr;
+            delete pom;
+        }
+        delete prethodni;
+    }
+    
+    int mod=v.size()%broj_timova;
+    std::vector&lt;std::set&lt;std::string&gt;&gt;vrati;
+    vrati.resize(broj_timova);
+    int n=v.size();
+    int limit;
+    Dijete *trenutni=pocetak;
+    for(int i=0;i&lt;broj_timova;i++){
+        if(i&lt;mod) limit=(int) n/broj_timova+1;
+        else limit=(int)n/broj_timova;
+        std::set&lt;std::string&gt;s;
+        for(int i=0;i&lt;limit;i++){
+            s.insert(trenutni-&gt;ime);
+            int brojac=1;
+            int j=broj_znakova(trenutni-&gt;ime);
+            Dijete *pom;
+            pom=trenutni;
+            while(pom-&gt;sljedeci!=trenutni){
+                pom=pom-&gt;sljedeci;
+            }
+            pom-&gt;sljedeci=trenutni-&gt;sljedeci;
+            if(pom==trenutni){
+                delete trenutni;
+                break;
+            }
+            delete trenutni;
+            trenutni=pom-&gt;sljedeci;
+            while(brojac&lt;j){
+                trenutni=trenutni-&gt;sljedeci;
+                brojac++;
+            }
+        }
+        vrati[i]=s;
+    }
+    return vrati;
+    
+}
+int main ()
+{
+    try{
+        std::cout&lt;&lt;"Unesite broj djece: ";
+        int n;
+        std::cin&gt;&gt;n;
+        std::cout&lt;&lt;"Unesite imena djece: \n";
+        std::vector&lt;std::string&gt;v;
+        v.resize(n);
+        std::cin.ignore(1000,'\n');
+        for(int i=0;i&lt;n;i++){
+            std::string s;
+            std::getline(std::cin, s);
+            v[i]=s;
+        }
+        std::cout&lt;&lt;"Unesite broj timova: ";
+        int br;
+        std::cin&gt;&gt;br;
+        std::vector&lt;std::set&lt;std::string&gt;&gt; vrati=Razvrstavanje(v,br);
+        for(int i=0;i&lt;vrati.size();i++){
+            std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+            auto zadnji=vrati[i].end();
+            zadnji--;
+            for(auto it=vrati[i].begin();it!=vrati[i].end();it++){
+                if(it!=zadnji) std::cout&lt;&lt;*it&lt;&lt;", ";
+                else std::cout&lt;&lt;*it;
+            }
+            std::cout&lt;&lt;std::endl;
+        }
+    }
+    catch(std::logic_error e){
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what();
+    }
+	return 0;
+}</pre>
+</body>
+</html>

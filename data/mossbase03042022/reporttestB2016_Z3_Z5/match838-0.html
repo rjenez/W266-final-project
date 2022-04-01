@@ -1,0 +1,90 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student1671.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student1671.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;set&gt;
+#include &lt;cctype&gt;
+
+int DuzinaImena(std::string s) {
+    int brojac(0);
+    for (int i = 0; i &lt; s.size(); i++)
+<a name="0"></a><font color="#FF0000"><a href="match838-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_20.gif"/></a>
+
+        if ((tolower(s[i]) &gt;= 'a' &amp;&amp; tolower(s[i]) &lt;= 'z') || (s[i] &gt;= '0' &amp;&amp; s[i] &lt;= '9')) brojac++;
+    return brojac;
+}
+struct Dijete {
+    std::string ime;
+    Dijete *sljedeci;
+};
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; imena_djece, int broj_timova) {
+    if (broj_timova &lt; 1 || broj_timova &gt; imena_djece.size()) throw std::logic_error ("Razvrstavanje nemoguce");
+    Dijete *pocetak(nullptr), *prethodni(nullptr);
+    for (int i = 0; i &lt; imena_djece.size(); i++) {
+        Dijete *novi(new Dijete);
+        novi-&gt;ime = imena_djece[i];
+</font>        novi-&gt;sljedeci = nullptr;
+        if (i == imena_djece.size() - 1) novi-&gt;sljedeci = pocetak;
+        if (!pocetak) pocetak = novi;
+        else prethodni-&gt;sljedeci = novi;
+        prethodni = novi;
+    }
+    std::vector&lt;std::set&lt;std::string&gt;&gt; rezultat;
+    auto pok(pocetak);
+    for (int i = 0; i &lt; broj_timova; i++) {
+        int test(0);
+        int brojac_clanova(0);
+        if (i &lt; (imena_djece.size()%broj_timova)) test = 1;
+        std::set&lt;std::string&gt; skup;
+        while (brojac_clanova &lt; imena_djece.size()/broj_timova + test) {
+            skup.insert(pok-&gt;ime);
+            auto duzina(DuzinaImena(pok-&gt;ime));
+            prethodni-&gt;sljedeci = pok-&gt;sljedeci;
+            delete pok;
+            if (++brojac_clanova == imena_djece.size()/broj_timova + test &amp;&amp; i == broj_timova - 1) break;
+            pok = prethodni-&gt;sljedeci;
+            for (int i = 0; i &lt; duzina - 1; i++) pok = pok-&gt;sljedeci, prethodni = prethodni-&gt;sljedeci;
+        }
+        rezultat.push_back(skup);
+    }
+    return rezultat;
+}
+int main ()
+{
+	try {
+	    int broj_djece;
+	    std::cout &lt;&lt; "Unesite broj djece: ";
+	    std::cin &gt;&gt; broj_djece;
+	    std::cin.ignore(10000, '\n');
+	    std::vector&lt;std::string&gt; imena_djece(broj_djece);
+	    std::cout &lt;&lt; "Unesite imena djece: ";
+	    for (int i = 0; i &lt; broj_djece; i++) std::getline(std::cin, imena_djece[i]);
+	    int broj_timova;
+	    std::cout &lt;&lt; "\nUnesite broj timova: ";
+	    std::cin &gt;&gt; broj_timova;
+	    auto kontejner(Razvrstavanje(imena_djece, broj_timova));
+	    for (int i = 0; i &lt; kontejner.size(); i++) {
+	        std::cout &lt;&lt; "Tim " &lt;&lt; i + 1 &lt;&lt; ": ";
+	        for (auto it(kontejner[i].begin()); it != kontejner[i].end(); it++) {
+	            std::cout &lt;&lt; *it;
+	            auto test(it);
+	            if (++test != kontejner[i].end()) std::cout &lt;&lt; ", ";
+	        }
+	        std::cout &lt;&lt; std::endl;
+	    }
+	}
+	catch(std::logic_error izuzetak) {
+	    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+	}
+	return 0;
+}</pre>
+</body>
+</html>

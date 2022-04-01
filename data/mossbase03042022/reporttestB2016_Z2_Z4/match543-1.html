@@ -1,0 +1,238 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student4415.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8986.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;new&gt;
+
+int BrojZnakova(char *p) {
+    int brojac(0);
+    while(*p!='\0') {
+        brojac++;
+        p++;
+    }
+    return brojac;
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match543-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+int PotencijalniKrivci(char **&amp;pocetak, std::vector&lt;std::string&gt; imena) {
+    char **pok(nullptr);
+try {
+    
+    pok=new char*[imena.size()];
+</font>    pocetak=pok;
+    try {
+    for(int i=0; i&lt;imena.size(); i++) {
+        pok[i]=nullptr;
+    }
+    for(int i=0; i&lt;imena.size(); i++) {
+        pok[i]=new char [imena[i].length()+1];
+    }
+    for(int i=0; i&lt;imena.size(); i++) {
+        int j;
+<a name="4"></a><font color="#FF00FF"><a href="match543-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+        for(j=0; j&lt;imena[i].length(); j++) {
+            pok[i][j]=imena[i][j];
+        }
+        pok[i][j]='\0';
+    }
+    }
+    catch(...) {
+</font>        for(int i=0; i&lt;imena.size(); i++) {
+            delete[] pok[i];
+        }
+        delete[] pok;
+        pok=nullptr;
+        throw;
+    }
+}
+    catch(...) {
+        delete[] pok;
+        throw;
+    }
+    
+<a name="1"></a><font color="#00FF00"><a href="match543-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+    return imena.size();
+    
+}
+
+int OdbaciOptuzbu(char **&amp;pocetak, int n, std::string ime) {
+    
+    bool optuzen(false);
+    int obrisani(0);
+    for(int i=0; i&lt;n; i++) {
+</font>        int j;
+        if(pocetak[i]==nullptr) obrisani++;
+        for(j=0; j&lt;ime.size(); j++) {
+            if(ime[j]!=pocetak[i][j]) break;
+        }
+        if(j==ime.size() &amp;&amp; pocetak[i][j]=='\0') {
+            optuzen=true;
+            delete[] pocetak[i];
+            pocetak[i]=nullptr;
+            obrisani++;
+            
+        }
+    }
+    if(!optuzen) {
+        std::string tekst("Osoba sa imenom ");
+        tekst+=ime;
+        tekst+=" nije bila optuzena";
+        throw std::domain_error (tekst);
+    }
+    
+    if(obrisani&gt;10) {
+        char **pom=nullptr;
+        try {
+        
+        pom=new char*[n-obrisani];
+<a name="3"></a><font color="#00FFFF"><a href="match543-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+        for(int i=0; i&lt;n-obrisani; i++) pom[i]=nullptr;
+        
+        int k(0);
+        for(int i=0; i&lt;n-obrisani; i++) {
+</font>            if(pocetak[k]==nullptr) {
+                k++;
+                i--;
+            }
+            else {
+                pom[i]=pocetak[k];
+                k++;
+            }
+        }
+        delete[] pocetak;
+        
+        pocetak=pom;
+        n-=obrisani;
+        }
+<a name="0"></a><font color="#FF0000"><a href="match543-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+        catch(...) {delete[] pom;}
+    }
+    
+    
+    
+    return n;
+    
+}
+
+int DodajOptuzbu(char **&amp;pocetak, int n, std::string ime) {
+    char *novi(nullptr);
+    try {
+    novi=new char [ime.length()+1];
+</font>    }
+    catch(...) {
+        delete[] novi; throw std::bad_alloc ();
+    }
+    int j;
+    for(j=0; j&lt;ime.length();j++)
+        novi[j]=ime[j];
+    novi[j]='\0';
+    int i;
+    for(i=0; i&lt;n; i++) {
+        if(pocetak[i]==nullptr) {
+            pocetak[i]=novi;
+            break;
+        }
+    }
+    if(i==n) {
+        char **pom(nullptr);
+        try {
+        pom=new char*[n+1];
+        int i;
+        for(i=0; i&lt;n; i++) {
+            pom[i]=pocetak[i];
+        }
+        pom[i]=novi;
+        delete[] pocetak;
+        pocetak=pom;
+        }
+        catch(...) {
+            delete[] pom;
+            throw std::bad_alloc ();
+        }
+        
+        n+=1;
+    }
+    
+    return n;
+}
+
+void IzlistajOptuzbu(char **p, int n) {
+    for(int i=0; i&lt;n; i++) {
+        if(p[i]==nullptr) continue;
+        for(int j=0; j&lt;BrojZnakova(p[i]); j++)
+            std::cout&lt;&lt;p[i][j];
+        std::cout&lt;&lt;std::endl;
+    }
+}
+
+
+int main ()
+{
+    
+    try {
+    std::vector&lt;std::string&gt; optuzeni;
+    int br;
+    std::cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? "&lt;&lt;std::endl;
+    std::cin&gt;&gt;br;
+    std::cin.ignore(10000, '\n');
+    std::cout&lt;&lt;"Unesite potencijalne krivce: "&lt;&lt;std::endl;
+    for(int i=0; i&lt;br; i++) {
+        std::string clan;
+        std::getline(std::cin, clan);
+        optuzeni.push_back(clan);
+    }
+    int n, komanda;
+    char **p(nullptr);
+    n=PotencijalniKrivci(p, optuzeni);
+    for(;;) {
+        std::cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: "&lt;&lt;std::endl;
+        std::cin&gt;&gt;komanda;
+        std::cin.ignore(10000, '\n');
+        if(komanda==0) break;
+        else if(komanda==1) {
+            std::string ime;
+            std::cout&lt;&lt;"Unesite ime novog optuzenog: "&lt;&lt;std::endl;
+            std::getline(std::cin, ime);
+            n=DodajOptuzbu(p, n, ime);
+        }
+        else if(komanda==2) {
+            std::string ime;
+            std::cout&lt;&lt;"Unesite ime koje zelite izbaciti: "&lt;&lt;std::endl;
+            std::getline(std::cin, ime);
+            n=OdbaciOptuzbu(p, n, ime);
+        }
+        else if(komanda==3) {
+            IzlistajOptuzbu(p, n);
+        }
+    }
+    
+    for(int i=0; i&lt;n; i++)
+        delete[] p[i];
+    delete[] p;
+    }
+    
+    catch(std::domain_error izuzetak) {
+        std::cout&lt;&lt;izuzetak.what();
+    }
+    catch(std::bad_alloc) {
+        
+    }
+    
+    
+    
+	return 0;
+}</pre>
+</body>
+</html>

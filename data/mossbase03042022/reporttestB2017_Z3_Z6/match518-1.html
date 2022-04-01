@@ -1,0 +1,340 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z6/student7090.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z6/student3329.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;utility&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;stack&gt;
+#include &lt;vector&gt;
+#include &lt;new&gt;
+#include &lt;memory&gt;
+
+enum class Boje { Pik, Tref, Herc, Karo };
+
+static const char *BojeString [] { "Pik", "Tref", "Herc", "Karo" };
+static const char *KarteString [] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+
+const std::map &lt; std::string, short &gt; StrBoje = { { "Pik", 0 }, { "Tref", 1 }, { "Herc", 2 }, { "Karo", 3 } };
+const std::map &lt; std::string, short &gt; karte = { { "2", 0 }, { "3", 1 }, { "4", 2 }, { "5", 3 }, { "6", 4 }, { "7", 5 }, { "8", 6 }, { "9", 7 }, 
+                                                { "10", 8 }, { "J", 9 }, { "Q", 10 }, { "K", 11 }, { "A", 12 } };
+
+struct Karta 
+{ 
+    Boje boja; 
+    std::string broj; 
+};
+
+struct Cvor 
+{ 
+    Karta karta; 
+    std::shared_ptr &lt; Cvor &gt; sljedeci; 
+};
+
+namespace ab
+{
+    bool besmisleno ( std::shared_ptr &lt; Cvor &gt; it )
+    {
+    /*** vraca 'true' ako se vrijednosti iz parametra 'it' ne nalaze u predefinisanim vrijednostima koje oznacavaju karte ***/
+        if ( karte.find ( it -&gt; karta.broj ) == karte.end () ) // provjera za broj
+            return true;
+       
+        for ( const std::pair &lt; std::string, short &gt; &amp;boja : StrBoje ) // provjera za znak
+            if ( it -&gt; karta.boja == static_cast &lt; Boje &gt; ( boja.second ) )
+                return false;
+       
+        return true;
+    }
+    
+    unsigned size ( std::shared_ptr &lt; Cvor &gt; first )
+    {
+    /*** vraca velicinu liste***/
+        if ( first == nullptr ) // prazan spil
+            return 0;
+        
+        unsigned vel { 0 };
+        std::shared_ptr &lt; Cvor &gt; slider { first };
+        do
+        {
+            vel++;
+            if ( vel &gt; 52 ) // prelazak validne velicine za spil
+                break;
+            slider = slider -&gt; sljedeci;
+        }while ( slider != first and slider != nullptr ); // i ciklicne i linearne liste
+        
+        return vel;
+    }
+    
+    void CardValidation ( std::shared_ptr &lt; Cvor &gt; first )
+    {
+    /*** testiranje na izuzetke definisane za tip 'Spil' ***/
+        if ( first == nullptr )
+            return;
+    
+        if ( size ( first ) &gt; 52 or besmisleno ( first ) ) // provjerava takodjer prvi element, jer ne provjerava zajedno sa ostalim el. u petlji ispod 
+            throw std::logic_error ( "Neispravna lista!" );
+            
+        std::shared_ptr &lt; Cvor &gt; slider { first }, aftbeg { first -&gt; sljedeci };
+        do // provjera da li su elementi sortirani po postavci zadatka i da li odgovaraju predefinisanim vrijednostima za karte
+        {          
+            if ( ( static_cast &lt; int &gt; ( slider -&gt; karta.boja ) &gt; static_cast &lt; int &gt; ( aftbeg -&gt; karta.boja ) and
+                karte.at ( slider -&gt; karta.broj ) &gt; karte.at ( aftbeg -&gt; karta.broj ) ) or 
+                besmisleno ( aftbeg ) )
+                    throw std::logic_error ( "Neispravna lista!" );      
+            
+            aftbeg = aftbeg -&gt; sljedeci;
+            slider = slider -&gt; sljedeci;
+        }while ( aftbeg != first );
+    }
+    
+    void StackValidation ( std::stack &lt; std::pair &lt; std::string, std::string &gt; &gt; stek, int n )
+    {
+    /*** testiranje na izuzetke definisane za neki tip reda ***/
+        if ( n &lt; 0 or n &gt; 52 )
+            throw std::domain_error ( "Broj n je besmislen!" );
+        if ( n &gt; stek.size () )
+            throw std::range_error ( "Nedovoljno karata u steku!" );
+        // provjera da li se vrijednosti reda nalaze u predefinisanim vrijednostima za karte        
+        while ( !stek.empty () )
+        {
+            std::pair &lt; std::string, std::string &gt; card = stek.top ();
+            stek.pop ();
+            if ( karte.find ( card.second ) == karte.end () or
+                StrBoje.find ( card.first ) == StrBoje.end () )
+                    throw std::logic_error ( "Neispravne karte!" );
+        }
+    }
+    
+    std::shared_ptr &lt; Cvor &gt; last_el ( std::shared_ptr &lt; Cvor &gt; first )
+    {
+    /*** vraca adresu "posljednjeg" elementa u listi ***/
+        if ( first == nullptr ) // prazan spil
+            return nullptr;
+            
+        std::shared_ptr &lt; Cvor &gt; slider { first }, pre { first };
+        do
+        {
+            if ( slider != first )
+                pre = pre -&gt; sljedeci;
+            slider = slider -&gt; sljedeci;
+        }while ( slider != first );
+    
+        return pre;
+    }
+    
+    std::shared_ptr &lt; Cvor &gt; find ( std::shared_ptr &lt; Cvor &gt; first, const std::pair &lt; Boje, std::string &gt; &amp;el )
+    {        
+    /*** vraca element koji se nalazi prije elemente iz liste koji je jednak parametru 'el' ***/
+        if ( first == nullptr ) // prazna lista
+            return nullptr;
+            
+        std::shared_ptr &lt; Cvor &gt; slider { first };
+        do
+        {
+            if ( slider -&gt; karta.boja == el.first and slider -&gt; karta.broj == el.second )
+                return last_el ( slider );
+
+            slider = slider -&gt; sljedeci;
+        }while ( slider != first );            
+        
+        return nullptr; // parametar 'el' se ne podudara niti sa jednim elementom iz liste
+    }
+    
+    std::shared_ptr &lt; Cvor &gt; insert ( std::shared_ptr &lt; Cvor &gt; first, const std::pair &lt; Boje, std::string &gt; &amp;el )
+    {
+        if ( first == nullptr )
+        {
+<a name="3"></a><font color="#00FFFF"><a href="match518-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+            first = std::make_shared &lt; Cvor &gt; ();
+            first -&gt; karta.boja = el.first; first -&gt; karta.broj = el.second;
+            first -&gt; sljedeci = nullptr;
+</font>            return first -&gt; sljedeci = first;
+        }
+        
+        std::shared_ptr &lt; Cvor &gt; exist { find ( first, el ) }, pre { nullptr };
+        if ( !exist ) // da li vec postoji element u listi
+        {
+            std::shared_ptr &lt; Cvor &gt; slider { first };
+            while ( static_cast &lt; int &gt; ( slider -&gt; karta.boja ) &lt; static_cast &lt; int &gt; ( el.first ) )
+                slider = slider -&gt; sljedeci;
+                
+            while ( karte.at ( slider -&gt; karta.broj ) &lt; karte.at ( el.second ) )
+                slider = slider -&gt; sljedeci;
+                
+            pre = last_el ( slider );    
+                
+<a name="1"></a><font color="#00FF00"><a href="match518-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+            std::shared_ptr &lt; Cvor &gt; novi = std::make_shared &lt; Cvor &gt; ();
+            novi -&gt; karta.boja = el.first; novi -&gt; karta.broj = el.second;
+            novi -&gt; sljedeci = slider;
+            
+            pre -&gt; sljedeci = novi;
+</font>        }
+        
+        return pre -&gt; sljedeci; // vraca se pokazivac na novouneseni element
+    }
+    
+    std::shared_ptr &lt; Cvor &gt; erase ( std::shared_ptr &lt; Cvor &gt; it )
+    {
+        if ( it -&gt; sljedeci == it ) // brisanje elementa koji je jedini clan liste, nakon ovoga lista je prazna
+        {
+            it -&gt; sljedeci = nullptr;
+            return it = nullptr;
+        }
+        
+        std::shared_ptr &lt; Cvor &gt; pre { last_el ( it ) };
+        
+        pre -&gt; sljedeci = it -&gt; sljedeci;
+        
+        return pre; // vraca pokazivac na prethodni element obrisanog elementa
+    }
+}
+
+void IspisiSpil ( std::shared_ptr &lt; Cvor &gt; first )
+{
+/*** ispis kontejnera 'Spil' u formatu zadanom u postavci zadatka ***/;
+    std::shared_ptr &lt; Cvor &gt; slider { first }, pre { ab::last_el ( first ) };
+    
+    std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; ab::size ( first ) &lt;&lt; " karata, i to:";
+    for ( const char *boja : BojeString )
+    {
+        std::cout &lt;&lt; std::endl &lt;&lt; boja &lt;&lt; ":";
+        if ( first == nullptr or static_cast &lt; std::string &gt; ( boja ) != BojeString [ static_cast &lt; int &gt; ( slider -&gt; karta.boja ) ] )
+            continue; // prazna lista ili se ne poklapa znak
+            
+        do
+        {
+            std::cout &lt;&lt; " " &lt;&lt; slider -&gt; karta.broj;
+            
+            pre = pre -&gt; sljedeci;
+            slider = slider -&gt; sljedeci;
+        }while ( karte.at ( slider -&gt; karta.broj ) &gt; karte.at ( pre -&gt; karta.broj ) );
+    }    
+}
+
+std::shared_ptr &lt; Cvor &gt; KreirajSpil ( void )
+{
+/*** vraca pokazivac na prvi 'element' liste ***/
+
+    std::shared_ptr &lt; Cvor &gt; prvi, last;
+    
+    for ( int i = 0; i &lt; 4; i++ )
+        for ( const char *broj : KarteString )
+        {
+            std::shared_ptr &lt; Cvor &gt; novi = std::make_shared &lt; Cvor &gt; ();
+            novi -&gt; karta.boja = static_cast &lt; Boje &gt; ( i ); novi -&gt; karta.broj = static_cast &lt; std::string &gt; ( broj );
+            novi -&gt; sljedeci = nullptr;
+            ( !prvi ) ? ( prvi = novi ) : ( last -&gt; sljedeci = novi );
+            last = novi;
+        }
+        
+    return last -&gt; sljedeci = prvi;
+}
+
+void IzbaciKarte ( std::shared_ptr &lt; Cvor &gt; &amp;spil, std::multimap &lt; Boje, std::string &gt; &amp;izb )
+{    
+    ab::CardValidation ( spil );
+    
+    std::shared_ptr &lt; Cvor &gt; del;
+    for ( typename std::multimap &lt; Boje, std::string &gt;::iterator card = izb.begin (); card != izb.end(); card++ )
+    {
+        del = ab::find ( spil, *card );
+        if ( !del )
+        {
+            card = izb.erase ( card );
+            
+            ab::erase ( del -&gt; sljedeci );
+        }
+    }
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match518-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+std::stack &lt; std::pair &lt; std::string, std::string &gt; &gt; IzbaciKarteRazbrajanjem ( std::shared_ptr &lt; Cvor &gt; &amp;first, const short &amp;r, const int &amp;b )
+</font>{
+    if ( r &lt; 1 or r &gt; 52 or b &lt; 1 )
+        throw std::logic_error ( "Neispravni elementi za izbacivanje!" );
+    ab::CardValidation ( first );
+    
+    std::shared_ptr &lt; Cvor &gt; slider { first };
+    
+    std::stack &lt; std::pair &lt; std::string, std::string &gt; &gt; stek;
+    int i { 0 }, count { 0 };
+    while ( slider != nullptr and i != b )
+    {
+        if ( ++count == r )
+        {
+            stek.emplace ( BojeString [ static_cast &lt; int &gt; ( slider -&gt; karta.boja ) ], slider -&gt; karta.broj );
+            
+            slider = ab::erase ( slider );
+            
+            if ( slider == nullptr )
+                break;
+
+            count = 0;
+            i++;
+        }
+
+        slider = slider -&gt; sljedeci;
+    }    
+
+<a name="0"></a><font color="#FF0000"><a href="match518-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+    return stek;
+}
+
+void VratiPosljednihNKarata ( std::shared_ptr &lt; Cvor &gt; &amp;first, std::stack &lt; std::pair &lt; std::string, std::string &gt; &gt; &amp;stek, int n )
+</font>{
+    ab::StackValidation ( stek, n );
+    ab::CardValidation ( first );
+    
+    std::pair &lt; std::string, std::string &gt; par;
+    int i { 0 };
+    while ( i++ != n )
+    {
+        par = stek.top ();
+        stek.pop ();
+        
+        ab::insert ( first, std::make_pair ( static_cast &lt; Boje &gt; ( StrBoje.at ( par.first ) ), par.second ) );
+    }
+}
+
+int main ( void ) 
+{
+    short raz;
+    std::cout &lt;&lt; "Unesite korak razbrajanja: ";
+    std::cin &gt;&gt; raz;
+    
+    int izb;
+    std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    std::cin &gt;&gt; izb;
+    
+    std::shared_ptr &lt; Cvor &gt; spil;
+    try
+    {
+        spil = KreirajSpil ();
+<a name="4"></a><font color="#FF00FF"><a href="match518-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+        std::stack &lt; std::pair &lt; std::string, std::string &gt; &gt; obrisane { IzbaciKarteRazbrajanjem ( spil, raz, izb ) };
+        
+        IspisiSpil ( spil );
+        
+        std::cout &lt;&lt; "\nUnesite broj karata koje zelite vratiti u spil: ";
+        std::cin &gt;&gt; izb;
+        VratiPosljednihNKarata ( spil, obrisane, izb );
+        
+        IspisiSpil ( spil );
+    }
+    catch ( const std::exception &amp;exc ) { std::cout &lt;&lt; "Izuzetak: " &lt;&lt; exc.what (); }
+</font>    return 0;
+}</pre>
+</body>
+</html>

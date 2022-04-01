@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student9391.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student9391.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match763-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_10.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;list&gt;
+#include &lt;set&gt;
+#include &lt;vector&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+
+using namespace std;
+
+int pomocna(string s) {
+    int brojac=0;
+    for(int i=0; i&lt;s.size(); i++) {
+        if((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')) brojac++;
+</font><a name="0"></a><font color="#FF0000"><a href="match763-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_11.gif"/></a>
+
+    }
+    return brojac;
+}
+
+
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector&lt;string&gt; sve, int br_timova) {
+    if(br_timova&lt;1 || br_timova&gt;sve.size()) throw logic_error("Razvrstavanje nemoguce");
+    list&lt;string&gt; svi;
+</font>    vector&lt;set&lt;string&gt;&gt; povrat;
+    for(int i=0; i&lt;sve.size(); i++)
+        svi.push_back(sve[i]);
+    list&lt;string&gt;::iterator it=svi.begin();
+    int do_kada=pomocna(svi.front()), ukupno=sve.size(), pamti=0, when=0;
+    while(svi.size()!=0) {
+        pamti=ukupno % br_timova;
+        if(pamti != 0) when=ukupno/br_timova + 1;
+        else when=ukupno/br_timova;
+        set&lt;string&gt; temp;
+        for(int i=0; i&lt;when; i++) {
+            temp.insert(*it);
+            do_kada=pomocna(*it)-1;
+            it=svi.erase(it);
+            if(svi.begin()==svi.end()) break;
+            for(int j=0; j&lt;do_kada; j++) {
+                if(it==svi.end()) it=svi.begin();
+                    advance(it, 1);
+                if(it==svi.end()) it=svi.begin();
+            }
+        }
+        povrat.push_back(temp);
+        ukupno -=when;
+        br_timova--;
+    }
+    return povrat;
+}
+
+
+int main () {
+    int broj_djece;
+    string temp;
+    cout &lt;&lt; "Unesite broj djece: ";
+    cin &gt;&gt; broj_djece;
+    cout &lt;&lt; "Unesite imena djece: ";
+    vector&lt;string&gt; s;
+    cin.ignore(10000, '\n');
+    for(int i=0; i&lt;broj_djece; i++) {
+        getline(cin, temp);
+        s.push_back(temp);
+    }
+    int tim;
+    cout &lt;&lt; "\nUnesite broj timova: ";
+	cin &gt;&gt; tim;
+	try {
+	    vector&lt;set&lt;string&gt;&gt; v=Razvrstavanje(s,tim);
+	    int brojac=0;
+	    for(int i=0; i&lt;v.size(); i++) {
+	        cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+	        brojac=0;
+	        for(auto x: v[i]) {
+	            brojac++;
+	            if(brojac&lt;v[i].size())
+	                cout &lt;&lt; x &lt;&lt; ", ";
+	            else cout &lt;&lt; x &lt;&lt; endl;
+	        }
+	    }
+	    
+	} catch(logic_error greska) {
+	    cout &lt;&lt; greska.what() &lt;&lt; endl;
+	}
+	return 0;
+}</pre>
+</body>
+</html>

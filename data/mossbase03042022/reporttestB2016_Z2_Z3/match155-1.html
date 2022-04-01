@@ -1,0 +1,201 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z3/student2922.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z3/student3071.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 3
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Berina Cocalic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: bcocalic1@etf.unsa.ba
+	
+*/
+#include&lt;iostream&gt;
+#include&lt;deque&gt;
+#include&lt;vector&gt;
+#include&lt;type_traits&gt;
+#include&lt;iterator&gt;
+#include&lt;cmath&gt;
+#include&lt;algorithm&gt;
+#include&lt;iomanip&gt;
+<a name="0"></a><font color="#FF0000"><a href="match155-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+template &lt;typename Tip1, typename Tip2, typename TipFunkc, typename TipVrac&gt; 
+vector&lt;vector&lt;TipVrac&gt;&gt; UvrnutiPresjek(Tip1 poc1, Tip1 kraj1, Tip2 poc2, Tip2 kraj2, TipFunkc (*f) (TipVrac)=nullptr)
+ {
+	vector&lt;vector&lt;TipVrac&gt;&gt; Matrix;
+	
+	for(int i{0}; i&lt;distance(poc1,kraj1); i++){
+		
+		for(int j{0}; j&lt;distance(poc2,kraj2); j++){
+			std::vector&lt;TipVrac&gt;red ;
+			if(f!=nullptr){
+			if (f(*(poc1+i))==f(*(poc2+j))){
+				red.push_back(*(poc1+i));
+				red.push_back(*(poc2+j));
+				red.push_back(f(*(poc1+i)));
+				Matrix.push_back(red);
+			}
+			}else{
+				if(*(poc1+i)==*(poc2+j)){
+					red.push_back(*(poc1+i));
+					red.push_back(0);
+					red.push_back(0);
+					Matrix.push_back(red);
+				}
+			}
+			
+		}
+		
+	}
+	
+	sort(begin(Matrix),
+	end(Matrix),
+	[](vector&lt;TipVrac&gt; a, vector&lt;TipVrac&gt; b){
+		
+		if(a.at(2)!=b.at(2))	return a.at(2)&lt;b.at(2);
+		
+		if(a.at(0)!=b.at(0))	return a.at(0)&lt;b.at(0);
+		
+		if(a.at(1)!=b.at(1))	return a.at(1)&lt;b.at(1);
+	});
+	return Matrix;
+}
+template &lt;typename Tip1, typename Tip2, typename TipFunkc, typename TipVrac&gt;
+vector&lt;vector&lt;TipVrac&gt;&gt; UvrnutaRazlika(Tip1 poc1, Tip1 kraj1, Tip2 poc2, Tip2 kraj2, TipFunkc (*f) (TipVrac)=nullptr)
+{
+	vector&lt;vector&lt;TipVrac&gt;&gt; Matrix;
+	
+	for(int i{0}; i&lt;distance(poc1, kraj1); i++){
+		
+		for(int j{0}; j&lt;distance(poc2, kraj2); j++){
+			std::vector&lt;TipVrac&gt;red ;
+			if(f!=nullptr){
+				//Ukoliko je proslijedjena fkt neka funkcija 
+				//A ne idemo po defaultu
+				int prebrojani{0};
+				for(; prebrojani&lt;distance(poc2,kraj2); prebrojani++ ){
+					if(f(*(poc1+i))==f(*(poc2+j))) break;
+				}
+				if(prebrojani==distance(poc2,kraj2)){
+					red.push_back(*(poc1+i));
+					red.push_back(f(*(poc1+i)));
+					Matrix.push_back(red);
+				}
+			} else {
+				int prebrojani{0};
+				for(; prebrojani&lt;distance(poc2, kraj2); prebrojani++){
+					if(*(poc1+i)==*(poc2+j)) break;
+					if(prebrojani==distance(poc2,kraj2)){
+						red.push_back(*(poc1+i));
+						red.push_back(0);
+						Matrix.push_back(red);
+					}
+				}
+			}
+		}
+		
+		
+	}
+	sort(begin(Matrix), end(Matrix),
+	[](vector&lt;TipVrac&gt;  a, vector&lt;TipVrac&gt; b){
+		if(a.at(0) != b.at(0) ) return a.at(0)&lt;b.at(0);
+		return a.at(1)&lt;b.at(1);
+	});
+	
+	return Matrix;
+}
+int SumaDjelilaca (long long int x){
+	int suma{0};
+	for(long long int i{0}; i&lt;x/2; i++ ){
+		//Uslov djeljivosti
+		if(x % i ==0) suma+=i;
+	}
+	return suma;
+}
+bool IsPrime( long long int x ){
+	int num_divisors{0};
+	if(x==2) return true;
+	for( long long int i{1}; i&lt;=sqrt(x); i+=2){
+		if(x%i==0) num_divisors++;
+		if(num_divisors&gt;2) return false;
+	}
+	return true;
+}
+int BrojProstihFaktora( long long int x){
+	int br_prostih{0};
+	for(long long int i{1}; i&lt;x; i++){
+		if(x%i==0 &amp;&amp; IsPrime(i)) {br_prostih++;x/=i;i--;}
+	}
+	return br_prostih;
+}
+int BrojSavrsenihDjelilaca( long long int x ){
+	int br_savrsenih{0};
+	for(long long int i{2}; i&lt;=x; i++){
+		if(x%i==0){
+			//  auto pom ( x );
+			long long int suma_djelilaca{0};
+			for(long long int i{1}; i&lt;x; i++) if (x%i==0)suma_djelilaca++;
+			if(suma_djelilaca==x) br_savrsenih++;
+		}
+	}
+	return br_savrsenih;
+}
+int SumaCifara(int x){
+	int suma{0};
+	while(x&gt;0){ suma+=x%10; x=x/10; }
+	return suma;
+}
+
+int main (){
+	cout&lt;&lt;"Unesite broj elemenata prvog kontejnera: ";
+	int n;
+	cin&gt;&gt;n;
+	deque&lt;int&gt; dek1(n);
+	int br_pon{0};
+	cout&lt;&lt;"Unesite elemente prvog kontejnera: ";
+	for(int i{0}; i&lt;n; i++){
+		int x;
+		cin&gt;&gt;x;
+		if(binary_search(begin(dek1), end(dek1), x)) {br_pon++; continue;}
+		dek1.at(i)=x;
+	}
+	dek1.resize(n-br_pon);
+	cout&lt;&lt;"Unesite broj elemenata drugog kontejnera: ";
+	int m;
+	cin&gt;&gt;m;
+	deque&lt;int&gt; dek2;
+	cout&lt;&lt;"Unesite elemente drugog kontejnera: ";
+	br_pon=0;
+	for(int i{0}; i&lt;m; i++){
+		
+		int x;
+		cin&gt;&gt;x;
+		if(binary_search(begin(dek2),end(dek2), x)) {br_pon++;continue;}
+		dek2.at(i)=x;
+	}
+	dek2.resize(m-br_pon);
+	cout&lt;&lt;"Uvrnuti presjek kontejnera: "&lt;&lt;endl;
+	auto Presjek = UvrnutiPresjek( begin(dek1), end(dek1), begin(dek2), end(dek2), SumaCifara );
+	for(auto red : Presjek){
+		for(auto x : red ){
+			cout&lt;&lt;setw(6)&lt;&lt;x;
+		}
+		cout&lt;&lt;endl;
+	}
+	cout&lt;&lt;"Uvrnuta razlika kontejnera: "&lt;&lt;endl;
+	auto Razlika ( UvrnutaRazlika( begin(dek1), end(dek1), begin(dek2), end(dek2),  BrojProstihFaktora ));
+	for(auto red : Razlika){
+		for( auto x:red ){
+			cout&lt;&lt;setw(6)&lt;&lt;x;
+		}
+		cout&lt;&lt;endl;
+	}
+	return 0;
+</font>}</pre>
+</body>
+</html>

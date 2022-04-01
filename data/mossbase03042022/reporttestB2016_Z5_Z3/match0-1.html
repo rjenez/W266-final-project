@@ -1,0 +1,946 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student7970.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student5397.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match0-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_12.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 3)
+//Autotestovi by Enil Pajic (mail: epajic1@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;initializer_list&gt;
+#include &lt;set&gt;
+#include &lt;limits&gt;
+#include &lt;sstream&gt;
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::set;
+using std::logic_error;
+using std::overflow_error;
+using std::initializer_list;
+
+
+class Razlomak
+{
+  long long int b, n;
+  
+  static long long int NZD (long long int p, long long int q)
+  {
+      if (p==0)
+      {
+        return q;
+      }
+      
+      return NZD(q%p,p);
+  };
+  
+  public:
+  
+  Razlomak ()
+  {
+      b=0;
+      n=1;
+  };
+  
+  Razlomak(long long int x, long long int y)
+  {
+      long long int d;
+      
+      if (y==0) throw logic_error("Nekorektan razlomak");
+      
+      d=NZD(x,y);
+      d=abs(d);
+      b=x/d;
+      n=y/d;
+      
+      if (n&lt;0)
+      {
+          n=abs(n);
+          b=b*(-1);
+      }
+      
+      if (b&lt;0 &amp;&amp; n&lt;0)
+      {
+          b=abs(b);
+          n=abs(n);
+      }
+  };
+  
+  
+  Razlomak (long long int x)
+  {
+      b=x;
+      n=1;
+  };
+  
+  Razlomak (long int x)
+  {
+      b=x;
+      n=1;
+  };
+  
+  Razlomak (int x)
+  {
+      b=x;
+      n=1;
+  };
+  
+  Razlomak (initializer_list &lt;long long int&gt; lista)
+  {
+      int broj(0);
+      long long int x, y, d;
+      
+      for (auto it(lista.begin()); it!=lista.end(); it++)
+      {
+          broj++;
+      }
+      
+      if (broj==0)
+      {
+          b=0;
+          n=1;
+      }
+      
+      if (broj==1)
+      {
+          b=*lista.begin();
+          n=1;
+      }
+      
+      if (broj==2)
+      {
+          for (auto it(lista.begin()); it!=lista.end(); it++)
+          {
+              if (*it==*lista.begin())
+              {
+                  x=*it;
+              }
+              
+              else
+              {
+                  y=*it;
+                  if (y==0) throw logic_error("Nekorektan razlomak");
+              }
+          }
+          
+          d=NZD(x,y);
+          d=abs(d);
+          b=x/d;
+          n=y/d;
+          
+          if (n&lt;0)
+          {
+            n=abs(n);
+            b=b*(-1);
+          }
+      
+          if (b&lt;0 &amp;&amp; n&lt;0)
+          {
+            b=abs(b);
+            n=abs(n);
+          }
+      }
+  };
+  
+  operator long double() const;
+  
+  
+  long long int DajBrojnik() {return b;};
+  long long int DajNazivnik() {return n;};
+  
+  friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, const Razlomak &amp;s);
+  friend std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, Razlomak &amp;s);
+  friend Razlomak operator +(const Razlomak &amp;r1, const Razlomak &amp;r2);
+  friend Razlomak operator +=(Razlomak &amp;r1, const Razlomak &amp;r2);
+  friend Razlomak operator -(const Razlomak &amp;r1, const Razlomak &amp;r2);
+  friend Razlomak operator -=(Razlomak &amp;r1, const Razlomak &amp;r2);
+  friend Razlomak operator *(const Razlomak &amp;r1, const Razlomak &amp;r2);
+  friend Razlomak operator *=(Razlomak &amp;r1, const Razlomak &amp;r2);
+  friend Razlomak operator /(const Razlomak &amp;r1, const Razlomak &amp;r2);
+  friend Razlomak operator /=(Razlomak &amp;r1, const Razlomak &amp;r2);
+  friend Razlomak operator +(const Razlomak &amp;r);
+  friend Razlomak operator -(Razlomak &amp;r);
+  friend Razlomak &amp;operator ++ (Razlomak &amp;r);
+  friend Razlomak operator ++ (Razlomak &amp;r, int);
+  friend Razlomak &amp;operator -- (Razlomak &amp;r);
+  friend Razlomak operator -- (Razlomak &amp;r, int);
+  friend bool operator == (const Razlomak&amp; r1, const Razlomak&amp; r2);
+  friend bool operator != (const Razlomak&amp; r1, const Razlomak&amp; r2);
+  friend bool operator &gt; (const Razlomak&amp; r1, const Razlomak&amp; r2);
+  friend bool operator &lt; (const Razlomak&amp; r1, const Razlomak&amp; r2);
+</font><a name="0"></a><font color="#FF0000"><a href="match0-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_86.gif"/></a>
+
+  friend bool operator &gt;= (const Razlomak&amp; r1, const Razlomak&amp; r2);
+  friend bool operator &lt;= (const Razlomak&amp; r1, const Razlomak&amp; r2);
+};
+
+Razlomak::operator long double() const 
+{
+  long double rez, temp1(b), temp2(n);
+
+  rez=temp1/temp2;
+  
+  return rez;
+}
+
+std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, Razlomak &amp;s)
+{
+  char znak;
+  long long int d, x, y;
+
+  tok&gt;&gt;std::ws;
+  if (tok.peek()&gt;='a' &amp;&amp; tok.peek()&lt;='z') tok.setstate(std::ios::failbit);
+ 
+  tok&gt;&gt;x;
+  if (tok.peek()!='/') 
+  {
+    s.b=x;
+    s.n=1;
+  }
+  
+  else
+  {
+    tok&gt;&gt;znak&gt;&gt;y;
+    d=s.NZD(x,y);
+    s.b=x/d;
+    s.n=y/d;
+    if (tok.peek()&gt;='a' &amp;&amp; tok.peek()&lt;='z') tok.setstate(std::ios::failbit);
+  }
+  
+	return tok;
+}
+
+std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, const Razlomak &amp;s)
+{
+  
+  if ((s.b&gt;0 &amp;&amp; s.n==1) || (s.b&lt;0 &amp;&amp; s.n==1))
+  {
+    tok&lt;&lt;s.b;
+  }
+  
+  else if (s.b==0)
+  {
+    tok&lt;&lt;0;
+  }
+  
+  else
+  {
+    tok&lt;&lt;s.b;
+	  tok&lt;&lt;"/";
+	  tok&lt;&lt;s.n;
+  }
+  
+	return tok;
+}
+
+Razlomak operator +(const Razlomak &amp;r1, const Razlomak &amp;r2)
+{
+	Razlomak rez;
+	long long int t, x, y, d, min, max;
+	t=rez.NZD(r1.n,r2.n);
+	
+	
+	min=std::numeric_limits&lt;long long int&gt;::min();
+  max=std::numeric_limits&lt;long long int&gt;::max();
+	
+	if ((r2.b*(r1.n/t))&lt;0)
+	{
+	  if ((r1.b*(r2.n/t))&lt;(min-(r2.b*(r1.n/t)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.b*(r2.n/t))&gt;(max-(r2.b*(r1.n/t)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	x=(r1.b*(r2.n/t))+(r2.b*(r1.n/t));
+	y=r1.n*(r2.n/t);
+	
+	
+	d=rez.NZD(x,y);
+      
+  rez.b=x/d;
+  rez.n=y/d;
+  
+  if (rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=rez.b*(-1);
+  }
+      
+  if (rez.b&lt;0 &amp;&amp; rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=abs(rez.b);
+  }
+  
+	return rez;
+}
+
+Razlomak operator +=(Razlomak &amp;r1, const Razlomak &amp;r2)
+{
+	Razlomak rez;
+	long long int t, x, y, d, min, max;
+	t=rez.NZD(r1.n,r2.n);
+	
+	
+	min=std::numeric_limits&lt;long long int&gt;::min();
+  max=std::numeric_limits&lt;long long int&gt;::max();
+	
+	if ((r2.b*(r1.n/t))&lt;0)
+	{
+	  if ((r1.b*(r2.n/t))&lt;(min-(r2.b*(r1.n/t)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.b*(r2.n/t))&gt;(max-(r2.b*(r1.n/t)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	x=(r1.b*(r2.n/t))+(r2.b*(r1.n/t));
+	y=r1.n*(r2.n/t);
+	
+	
+	d=rez.NZD(x,y);
+      
+  rez.b=x/d;
+  rez.n=y/d;
+  
+  if (rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=rez.b*(-1);
+  }
+      
+  if (rez.b&lt;0 &amp;&amp; rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=abs(rez.b);
+  }
+  
+  r1.b=rez.b;
+  r1.n=rez.n;
+  
+	return r1;
+}
+
+Razlomak operator -(const Razlomak &amp;r1, const Razlomak &amp;r2)
+{
+	Razlomak rez;
+	long long int t, x, y, d, min, max;
+	t=rez.NZD(r1.n,r2.n);
+	
+	
+	min=std::numeric_limits&lt;long long int&gt;::min();
+  max=std::numeric_limits&lt;long long int&gt;::max();
+	
+	if ((r2.b*(r1.n/t))&lt;0)
+	{
+	  if ((r1.b*(r2.n/t))&gt;(max+(r2.b*(r1.n/t)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.b*(r2.n/t))&lt;(min+(r2.b*(r1.n/t)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	x=(r1.b*(r2.n/t))-(r2.b*(r1.n/t));
+	y=r1.n*(r2.n/t);
+	
+	
+	d=rez.NZD(x,y);
+      
+  rez.b=x/d;
+  rez.n=y/d;
+  
+  if (rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=rez.b*(-1);
+  }
+      
+  if (rez.b&lt;0 &amp;&amp; rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=abs(rez.b);
+  }
+  
+	return rez;
+}
+
+
+Razlomak operator -=(Razlomak &amp;r1, const Razlomak &amp;r2)
+{
+	Razlomak rez;
+	long long int t, x, y, d, min, max;
+	t=rez.NZD(r1.n,r2.n);
+	
+	
+	min=std::numeric_limits&lt;long long int&gt;::min();
+  max=std::numeric_limits&lt;long long int&gt;::max();
+	
+	if ((r2.b*(r1.n/t))&lt;0)
+	{
+	  if ((r1.b*(r2.n/t))&gt;(max+(r2.b*(r1.n/t)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.b*(r2.n/t))&lt;(min+(r2.b*(r1.n/t)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	x=(r1.b*(r2.n/t))-(r2.b*(r1.n/t));
+	y=r1.n*(r2.n/t);
+	
+	
+	d=rez.NZD(x,y);
+      
+  rez.b=x/d;
+  rez.n=y/d;
+  
+  if (rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=rez.b*(-1);
+  }
+      
+  if (rez.b&lt;0 &amp;&amp; rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=abs(rez.b);
+  }
+  
+  r1.b=rez.b;
+  r1.n=rez.n;
+  
+	return r1;
+}
+
+Razlomak operator *(const Razlomak &amp;r1, const Razlomak &amp;r2)
+{
+	Razlomak rez;
+	long long int s, t, x, y, d, min, max;
+	s=rez.NZD(r1.b,r2.n);
+	t=rez.NZD(r2.b,r1.n);
+	
+	
+	min=std::numeric_limits&lt;long long int&gt;::min();
+  max=std::numeric_limits&lt;long long int&gt;::max();
+	
+	if ((r2.b/t)&lt;0)
+	{
+	  if ((r1.b/s)==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.b/s)*(-1))&gt;(max/((r2.b/t)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.b/s)*(-1))&lt;(min/((r2.b/t)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.b/s)&lt;(min/(r2.b/t))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if ((r1.b/s)&gt;(max/(r2.b/t))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	if ((r2.n/s)&lt;0)
+	{
+	  if ((r1.n/t)==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.n/t)*(-1))&gt;(max/((r2.n/s)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.n/t)*(-1))&lt;(min/((r2.n/s)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.n/t)&lt;(min/(r2.n/s))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if ((r1.n/t)&gt;(max/(r2.n/s))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	x=(r1.b/s)*(r2.b/t);
+	y=(r1.n/t)*(r2.n/s);
+	
+	
+	d=rez.NZD(x,y);
+      
+  rez.b=x/d;
+  rez.n=y/d;
+  
+  if (rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=rez.b*(-1);
+  }
+      
+  if (rez.b&lt;0 &amp;&amp; rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=abs(rez.b);
+  }
+  
+	return rez;
+}
+
+Razlomak operator *=(Razlomak &amp;r1, const Razlomak &amp;r2)
+{
+	Razlomak rez;
+	long long int s, t, x, y, d, min, max;
+	s=rez.NZD(r1.b,r2.n);
+	t=rez.NZD(r2.b,r1.n);
+	
+	
+	min=std::numeric_limits&lt;long long int&gt;::min();
+  max=std::numeric_limits&lt;long long int&gt;::max();
+	
+	if ((r2.b/t)&lt;0)
+	{
+	  if ((r1.b/s)==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.b/s)*(-1))&gt;(max/((r2.b/t)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.b/s)*(-1))&lt;(min/((r2.b/t)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.b/s)&lt;(min/(r2.b/t))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if ((r1.b/s)&gt;(max/(r2.b/t))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	if ((r2.n/s)&lt;0)
+	{
+	  if ((r1.n/t)==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.n/t)*(-1))&gt;(max/((r2.n/s)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.n/t)*(-1))&lt;(min/((r2.n/s)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.n/t)&lt;(min/(r2.n/s))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if ((r1.n/t)&gt;(max/(r2.n/s))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	x=(r1.b/s)*(r2.b/t);
+	y=(r1.n/t)*(r2.n/s);
+	
+	
+	d=rez.NZD(x,y);
+      
+  rez.b=x/d;
+  rez.n=y/d;
+  
+  if (rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=rez.b*(-1);
+  }
+      
+  if (rez.b&lt;0 &amp;&amp; rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=abs(rez.b);
+  }
+  
+  r1.b=rez.b;
+  r1.n=rez.n;
+  
+	return r1;
+}
+
+Razlomak operator /(const Razlomak &amp;r1, const Razlomak &amp;r2)
+{
+	Razlomak rez;
+	long long int u, t, x, y, d, min, max;
+	u=rez.NZD(r1.b,r2.b);
+	t=rez.NZD(r1.n,r2.n);
+	
+	min=std::numeric_limits&lt;long long int&gt;::min();
+  max=std::numeric_limits&lt;long long int&gt;::max();
+	
+	if ((r2.n/t)&lt;0)
+	{
+	  if ((r1.b/u)==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.b/u)*(-1))&gt;(max/((r2.n/t)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.b/u)*(-1))&lt;(min/((r2.n/t)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.b/u)&lt;(min/(r2.n/t))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if ((r1.b/u)&gt;(max/(r2.n/t))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	if ((r2.b/u)&lt;0)
+	{
+	  if ((r1.n/t)==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.n/t)*(-1))&gt;(max/((r2.b/u)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.n/t)*(-1))&lt;(min/((r2.b/u)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.n/t)&lt;(min/(r2.b/u))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if ((r1.n/t)&gt;(max/(r2.b/u))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	x=(r1.b/u)*(r2.n/t);
+	y=(r1.n/t)*(r2.b/u);
+	
+	
+	d=rez.NZD(x,y);
+      
+  rez.b=x/d;
+  rez.n=y/d;
+  
+  if (rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=rez.b*(-1);
+  }
+      
+  if (rez.b&lt;0 &amp;&amp; rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=abs(rez.b);
+  }
+  
+	return rez;
+}
+
+
+Razlomak operator /=(Razlomak &amp;r1, const Razlomak &amp;r2)
+{
+	Razlomak rez;
+	long long int u, t, x, y, d, min, max;
+	u=rez.NZD(r1.b,r2.b);
+	t=rez.NZD(r1.n,r2.n);
+	
+	min=std::numeric_limits&lt;long long int&gt;::min();
+  max=std::numeric_limits&lt;long long int&gt;::max();
+	
+	if ((r2.n/t)&lt;0)
+	{
+	  if ((r1.b/u)==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.b/u)*(-1))&gt;(max/((r2.n/t)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.b/u)*(-1))&lt;(min/((r2.n/t)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.b/u)&lt;(min/(r2.n/t))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if ((r1.b/u)&gt;(max/(r2.n/t))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	if ((r2.b/u)&lt;0)
+	{
+	  if ((r1.n/t)==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.n/t)*(-1))&gt;(max/((r2.b/u)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if (((r1.n/t)*(-1))&lt;(min/((r2.b/u)*(-1)))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	else
+	{
+	  if ((r1.n/t)&lt;(min/(r2.b/u))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	  if ((r1.n/t)&gt;(max/(r2.b/u))) throw overflow_error("Nemoguce dobiti tacan rezultat");
+	}
+	
+	x=(r1.b/u)*(r2.n/t);
+	y=(r1.n/t)*(r2.b/u);
+	
+	
+	d=rez.NZD(x,y);
+      
+  rez.b=x/d;
+  rez.n=y/d;
+  
+  if (rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=rez.b*(-1);
+  }
+      
+  if (rez.b&lt;0 &amp;&amp; rez.n&lt;0)
+  {
+    rez.n=abs(rez.n);
+    rez.b=abs(rez.b);
+  }
+  
+  r1.b=rez.b;
+  r1.n=rez.n;
+  
+	return r1;
+}
+
+Razlomak operator +(const Razlomak &amp;r)
+{
+	return r;
+}
+
+Razlomak operator -(Razlomak &amp;r)
+{
+  long long int min;
+  min=std::numeric_limits&lt;long long int&gt;::min();
+  
+  if (r.b==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+  
+  else
+  {
+    if (r.n&lt;0)
+    {
+      r.n=abs(r.n);
+      r.b=r.b*(-1);
+    }
+      
+    if (r.b&lt;0 &amp;&amp; r.n&lt;0)
+    {
+      r.n=abs(r.n);
+      r.b=abs(r.b);
+    }
+    
+    r.b=r.b*(-1);
+  }
+
+	return r;
+}
+
+Razlomak &amp;operator ++ (Razlomak &amp;r)
+{
+  long long int max, d;
+  max=std::numeric_limits&lt;long long int&gt;::max();
+  if (r.b==max) throw overflow_error("Nemoguce dobiti tacan rezultat");
+  if (r.b&gt;max-r.n) throw overflow_error("Nemoguce dobiti tacan rezultat");
+  
+  r.b=r.b+r.n;
+  
+  d=r.NZD(r.b,r.n);
+  d=abs(d);
+  
+  r.b=r.b/d;
+  r.n=r.n/d;
+  
+  return r;
+}
+
+Razlomak operator ++ (Razlomak &amp;r, int)
+{
+  long long int max, d;
+  Razlomak kopija (r);
+  max=std::numeric_limits&lt;long long int&gt;::max();
+  if (r.b==max) throw overflow_error("Nemoguce dobiti tacan rezultat");
+  if (r.b&gt;max-r.n) throw overflow_error("Nemoguce dobiti tacan rezultat");
+  
+  r.b=r.b+r.n;
+  
+  d=r.NZD(r.b,r.n);
+  d=abs(d);
+  
+  r.b=r.b/d;
+  r.n=r.n/d;
+  
+  return kopija;
+}
+
+Razlomak &amp;operator -- (Razlomak &amp;r)
+{
+  long long int min, d;
+  min=std::numeric_limits&lt;long long int&gt;::min();
+  if (r.b==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+  if (r.b&lt;min+r.n) throw overflow_error("Nemoguce dobiti tacan rezultat");
+  
+  r.b=r.b-r.n;
+  
+  d=r.NZD(r.b,r.n);
+  d=abs(d);
+  
+  r.b=r.b/d;
+  r.n=r.n/d;
+  
+  return r;
+}
+
+Razlomak operator -- (Razlomak &amp;r, int)
+{
+  long long int min, d;
+  Razlomak kopija (r);
+  min=std::numeric_limits&lt;long long int&gt;::min();
+  if (r.b==min) throw overflow_error("Nemoguce dobiti tacan rezultat");
+  if (r.b&lt;min+r.n) throw overflow_error("Nemoguce dobiti tacan rezultat");
+  
+  r.b=r.b-r.n;
+  
+  d=r.NZD(r.b,r.n);
+  d=abs(d);
+  
+  r.b=r.b/d;
+  r.n=r.n/d;
+  
+  return kopija;
+}
+
+bool operator == (const Razlomak&amp; r1, const Razlomak&amp; r2)
+{
+  long double rez1, rez2, temp1, temp2;
+  
+  temp1=r1.b;
+  temp2=r1.n;
+  
+  rez1=temp1/temp2;
+  
+  temp1=r2.b;
+  temp2=r2.n;
+  
+  rez2=temp1/temp2;
+
+  return rez1==rez2;
+}
+
+bool operator != (const Razlomak&amp; r1, const Razlomak&amp; r2)
+{
+  long double rez1, rez2, temp1, temp2;
+  
+  temp1=r1.b;
+  temp2=r1.n;
+  
+  rez1=temp1/temp2;
+  
+  temp1=r2.b;
+  temp2=r2.n;
+  
+  rez2=temp1/temp2;
+
+  return rez1!=rez2;
+}
+
+bool operator &gt; (const Razlomak&amp; r1, const Razlomak&amp; r2)
+{
+  long double rez1, rez2, temp1, temp2;
+  
+  temp1=r1.b;
+  temp2=r1.n;
+  
+  rez1=temp1/temp2;
+  
+  temp1=r2.b;
+  temp2=r2.n;
+  
+  rez2=temp1/temp2;
+
+  return rez1&gt;rez2;
+}
+
+bool operator &lt; (const Razlomak&amp; r1, const Razlomak&amp; r2)
+{
+  long double rez1, rez2, temp1, temp2;
+  
+  temp1=r1.b;
+  temp2=r1.n;
+  
+  rez1=temp1/temp2;
+  
+  temp1=r2.b;
+  temp2=r2.n;
+  
+  rez2=temp1/temp2;
+
+  return rez1&lt;rez2;
+}
+
+bool operator &gt;= (const Razlomak&amp; r1, const Razlomak&amp; r2)
+{
+  long double rez1, rez2, temp1, temp2;
+  
+  temp1=r1.b;
+  temp2=r1.n;
+  
+  rez1=temp1/temp2;
+  
+  temp1=r2.b;
+  temp2=r2.n;
+  
+  rez2=temp1/temp2;
+
+  return rez1&gt;=rez2;
+}
+
+bool operator &lt;= (const Razlomak&amp; r1, const Razlomak&amp; r2)
+{
+  long double rez1, rez2, temp1, temp2;
+  
+  temp1=r1.b;
+  temp2=r1.n;
+  
+  rez1=temp1/temp2;
+  
+  temp1=r2.b;
+  temp2=r2.n;
+  
+  rez2=temp1/temp2;
+
+  return rez1&lt;=rez2;
+}
+ 
+
+int main ()
+{
+  try
+  {
+    Razlomak r, r3(5), r4{1/-7}, r5, r6{};
+    long long int x, y;
+    
+    cout&lt;&lt;"Unesi brojnik i nazivnik: ";
+    cin&gt;&gt;x&gt;&gt;y;
+    Razlomak r1(x,y);
+    cout&lt;&lt;"Unesi brojnik i nazivnik: ";
+    cin&gt;&gt;x&gt;&gt;y;
+    Razlomak r2{x,y};
+    cout&lt;&lt;"Razlomak 1 glasi: "&lt;&lt;r1&lt;&lt;endl;
+    cout&lt;&lt;"Razlomak 2 glasi: "&lt;&lt;r2&lt;&lt;endl;
+    cout&lt;&lt;"Razlomak 3 glasi: "&lt;&lt;r3&lt;&lt;endl;
+    cout&lt;&lt;"Razlomak 4 glasi: "&lt;&lt;r4&lt;&lt;endl;
+    cout&lt;&lt;"Razlomak 5 glasi: "&lt;&lt;r5&lt;&lt;endl;
+    cout&lt;&lt;"Razlomak 6 glasi: "&lt;&lt;r6&lt;&lt;endl;
+    cout&lt;&lt;"Zbir ova dva razlomka je: "&lt;&lt;r1+r2&lt;&lt;endl;
+    r=r1;
+    r1+=r2;
+    cout&lt;&lt;"Zbir (+=) ova dva razlomka je: "&lt;&lt;r1&lt;&lt;endl;
+    r1=r;
+    cout&lt;&lt;"Razlika ova dva razlomka je: "&lt;&lt;r1-r2&lt;&lt;endl;
+    r=r1;
+    r1-=r2;
+    cout&lt;&lt;"Razlika (-=) ova dva razlomka je: "&lt;&lt;r1&lt;&lt;endl;
+    r1=r;
+    cout&lt;&lt;"Proizvod ova dva razlomka je: "&lt;&lt;r1*r2&lt;&lt;endl;
+    r=r1;
+    r1*=r2;
+    cout&lt;&lt;"Proizvod (*=) ova dva razlomka je: "&lt;&lt;r1&lt;&lt;endl;
+    r1=r;
+    cout&lt;&lt;"Kolicnik ova dva razlomka je: "&lt;&lt;r1/r2&lt;&lt;endl;
+    r=r1;
+    r1/=r2;
+    cout&lt;&lt;"Kolicnik (/=) ova dva razlomka je: "&lt;&lt;r1&lt;&lt;endl;
+    r1=r;
+    if (r1==r2)
+    cout&lt;&lt;"Razlomci su jednaki."&lt;&lt;endl;
+    if (r1!=r2)
+    cout&lt;&lt;"Razlomci su razliciti."&lt;&lt;endl;
+    if (r1&gt;r2)
+    cout&lt;&lt;"Prvi razlomak je veci od drugog."&lt;&lt;endl;
+    if (r1&lt;r2)
+    cout&lt;&lt;"Prvi razlomak je manji od drugog."&lt;&lt;endl;
+    if (r1&gt;=r2)
+    cout&lt;&lt;"Prvi razlomak je ili veci od ili jednak drugom."&lt;&lt;endl;
+    if (r1&lt;=r2)
+    cout&lt;&lt;"Prvi razlomak je ili manji od ili jednak drugom."&lt;&lt;endl;
+  }
+    
+  catch (overflow_error izuzetak)
+  {
+    cout&lt;&lt;izuzetak.what();
+  }
+  
+	return 0;
+</font>}</pre>
+</body>
+</html>

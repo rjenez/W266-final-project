@@ -1,0 +1,138 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z1/student5496.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z1/student5529.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match253-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_61.gif"/></a>
+
+/B 2016/2017, Zadaća 4, Zadatak 1
+//Napomena: testovi ce biti dostupni dan pred rok!
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt;
+#include &lt;iomanip&gt;
+#include &lt;algorithm&gt;
+typedef std::pair&lt;double, double&gt; Tacka;
+class Trougao{
+Tacka  t1, t2, t3;
+public:
+Trougao(const Tacka &amp;t1, const Tacka &amp;t2, const Tacka &amp;t3){
+    double Ut1=(atan(t1.second/t1.first));
+    double Ut2=(atan(t2.second/t2.second));
+    double Ut3=(atan(t3.second/t3.first));
+    if(Ut1==Ut2 || Ut2==Ut3) throw std::domain_error ("Nekorektne pozicije");
+}
+void Postavi(const Tacka &amp;t1, const Tacka &amp;t2, const Tacka &amp;t3){
+    *this=Trougao(t1,t2,t3);
+}
+void TestirajIndeks(int indeks) const {
+    if(indeks&lt;1 || indeks&gt;3) throw std::range_error ("Nekorektan indeks");
+}
+void Postavi(int indeks, const Tacka &amp;t){
+    TestirajIndeks(indeks);
+    if(indeks==1) *this=Trougao(t,t2,t3);
+    if(indeks==2) *this=Trougao(t1,t,t3);
+    if(indeks==3) *this=Trougao(t1,t2,t);
+}
+
+static int Orijentacija(const Tacka &amp;t1, const Tacka &amp;t2, const Tacka &amp;t3){
+    double x=(t1.first*(t2.second-t3.second)+t2.first*(t1.second-t3.second)+t3.first*(t1.second-t2.second));
+    if(x&gt;0) return 1;
+    if(x&lt;0) return -1;
+    if(x==0) return 0;
+}
+Tacka DajTjeme(int indeks) const{
+    if(indeks&lt;1 || indeks&gt;3) throw std::range_error ("Nekorektan indeks");
+    if(indeks==1) return t1;
+    if(indeks==2) return t2;
+    if(indeks==3) return t3;
+}
+double DajStranicu(int indeks) const {
+    TestirajIndeks(indeks);
+    double stranica;
+    if(indeks==1) stranica=(sqrt((t2.first-t3.first)*(t2.first-t3.first)+(t2.second-t3.second)*(t2.second-t3.second))); return stranica;
+    if(indeks==2) stranica=(sqrt((t1.first-t3.first)*(t1.first-t3.first)+(t1.second-t3.second)*(t1.second-t3.second))); return stranica;
+    if(indeks==3) stranica=(sqrt((t1.first-t2.first)*(t1.first-t2.first)+(t1.second-t2.second)*(t1.second-t2.second))); return stranica;
+}
+/*double DajUgao(int indeks){
+    TestirajIndeks(indeks);
+    double Fi1,Fi2;
+
+}*/
+Tacka DajCentar() const{
+    return Tacka((t1.first+t2.first+t3.first)/3,(t1.second+t2.second+t3.second)/3);
+}
+double DajObim() const{
+    double obim=DajStranicu(1)+DajStranicu(2)+DajStranicu(3);
+    return obim;
+}
+double DajPovrsinu() const{
+  double s=DajObim()/2;
+  double povrsina=sqrt(s*(s-DajStranicu(1))*(s-DajStranicu(2))*(s-DajStranicu(3)));
+  return povrsina;
+}
+bool DaLiJePozitivnoOrjentiran() const{
+    return Orijentacija(t1,t2,t3);
+}
+/*bool DaLiJeUnutra(const Tacka &amp;t) const{
+    
+}*/
+void Ispisi() const{
+ std::cout&lt;&lt;"(("&lt;&lt;t1.first&lt;&lt;","&lt;&lt;t1.second&lt;&lt;"),("&lt;&lt;t2.first&lt;&lt;","&lt;&lt;t2.second&lt;&lt;"),("&lt;&lt;t3.first&lt;&lt;","&lt;&lt;t3.second&lt;&lt;"))"; 
+</font>}
+void Transliraj(double delta_x, double delta_y){
+t1.first+=delta_x;
+t1.second+=delta_y;
+t2.first+=delta_x;
+<a name="2"></a><font color="#0000FF"><a href="match253-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_9.gif"/></a>
+
+t2.second+=delta_y;
+t3.first+=delta_x;
+t3.second+=delta_y;
+}
+void Centriraj(const Tacka &amp;t){
+  Tacka c=DajCentar();
+  int dx=t.first-c.first;
+  int dy=t.second-c.second;
+  Transliraj(dx,dy);
+}
+void Rotiraj(const Tacka &amp;t, double ugao){
+    Tacka c=DajCentar();
+    Tacka nova;
+    nova.first=(c.first+(t.first-c.first)*cos(ugao)-(t.second-c.second)*sin(ugao));
+</font><a name="1"></a><font color="#00FF00"><a href="match253-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_17.gif"/></a>
+
+    nova.second=c.second+(t.first-c.first)*sin(ugao)+(t.second-c.second)*cos(ugao);
+}
+/*void Skaliraj(const Tacka &amp;t, double faktor){
+    if(faktor=0) throw std::domain_error ("Nekorektan faktor skaliranja");
+    
+}
+void Skaliraj(double faktor){
+    if(faktor=0) throw std::domain_error ("Nekorektan faktor skaliranja");
+}*/
+};
+
+int main (){
+   int n;
+    std::cout&lt;&lt;"Koliko zelite kreirati trouglova: ";
+    std::cin&gt;&gt;n;
+    try{
+        std::vector&lt;std::shared_ptr&lt;Trougao&gt;&gt;Trouglovi(n);
+        for(int i=0; i&lt;n; i++){
+        Tacka t1,t2,t3;
+        std::cout&lt;&lt;"Unesite podatake za "&lt;&lt;i+1&lt;&lt;". trougao (x1 y1 x2 y2 x3 y3): ";
+        std::cin&gt;&gt;t1.first&gt;&gt;t1.second&gt;&gt;t2.first&gt;&gt;t2.second&gt;&gt;t3.first&gt;&gt;t3.second;
+        Trouglovi[i]=std::make_shared&lt;Trougao&gt;(Trougao(t1,t2,t3));
+        Trouglovi[i]-&gt;Ispisi();
+    }
+    }catch(...){
+        std::cout&lt;&lt;"Problemi sa memorijom";
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

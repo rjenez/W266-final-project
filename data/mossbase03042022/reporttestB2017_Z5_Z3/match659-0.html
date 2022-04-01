@@ -1,0 +1,200 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z3/student8006.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z3/student8006.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+
+class Datum {
+    int dan, mjesec, godina;
+    static bool Prestupna(int g) {return g % 400 == 0 || (g % 100 != 0 &amp;&amp; g % 4 == 0);}
+    static int PretvoriUDane(const Datum &amp;dat) {
+        int g(dat.godina - 1800-1), n((dat.godina-1800)*365);
+        n += g/4 + (g+200)/400 - g/100;
+        int d_u_m[12] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        if (Datum::Prestupna(dat.godina)) d_u_m[1]++;
+        for (int i = 0; i &lt; dat.mjesec-1; i++) n += d_u_m[i];
+        n += dat.dan;
+        return n;
+    }
+    static Datum PretvoriUDatum(int n);
+public:
+    enum Mjeseci {Januar = 1, Februar, Mart, April, Maj, Juni, Juli, August,
+        Septembar, Oktobar, Novembar, Decembar};
+<a name="1"></a><font color="#00FF00"><a href="match659-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+    enum Dani {Ponedjeljak = 1, Utorak, Srijeda, Cetvrtak, Petak, 
+        Subota, Nedjelja};
+    Datum(int d, int m, int g) { Postavi(d,m,g); }
+    Datum(int d, Mjeseci m, int g) { Postavi(d,m,g); }
+    Datum &amp;Postavi(int d, int m, int g); 
+</font>    Datum &amp;Postavi(int d, Mjeseci m, int g) { return Postavi(d, int(m), g); }
+    int DajDan() const { return dan; }
+    Mjeseci DajMjesec() const { return Mjeseci(mjesec); }
+    int DajGodinu() const { return godina; }
+    Dani DanUSedmici() const {
+        int n((Datum::PretvoriUDane(*this)-1)%7);
+        n -= 1; if (n &lt; 0) n+= 7;
+        return Dani(n);
+    }
+    const char *DajImeMjeseca() const;
+    const char *DajImeDanaUSedmici() const;
+    friend std::ostream &amp;operator &lt;&lt; (std::ostream &amp;tok, const Datum &amp;dat) {
+        return tok &lt;&lt; std::string(dat) &lt;&lt; std::endl;    
+    }
+<a name="3"></a><font color="#00FFFF"><a href="match659-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+    friend std::istream &amp;operator &gt;&gt; (std::istream &amp;tok, Datum &amp;dat);
+    friend Datum &amp;operator += (Datum &amp;dat, int n);
+    friend Datum &amp;operator -= (Datum &amp;dat, int n);
+    friend Datum operator ++ (Datum &amp;dat, int) {
+</font>        Datum novi(dat); dat+=1;
+        return novi;
+    }
+    friend Datum &amp;operator ++ (Datum &amp;dat) {
+        return dat += 1;
+    }
+    friend Datum operator -- (Datum &amp;dat, int) {
+        Datum novi(dat); dat-=1;
+        return novi;
+    }
+    friend Datum &amp;operator -- (Datum &amp;dat) {
+        return dat-=1;
+    }
+    friend Datum operator + (const Datum &amp;dat, int n) {
+        Datum novi(dat); return novi+=n;
+    }
+    friend Datum operator + (int n, const Datum &amp;dat) {
+        Datum novi(dat); return novi += n;
+    }
+    friend Datum operator - (const Datum &amp;dat, int n) {
+        Datum novi(dat); return novi-=n;
+    }
+    friend Datum operator - (int n, const Datum &amp;dat) {
+        Datum novi(dat); return novi -= n;
+    }
+    friend int operator - (const Datum &amp;dat1, const Datum &amp;dat2) {
+        return abs(Datum::PretvoriUDane(dat1) - Datum::PretvoriUDane(dat2));
+    }
+<a name="0"></a><font color="#FF0000"><a href="match659-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+    friend bool operator == (const Datum &amp;dat1, const Datum &amp;dat2) {
+        return dat1.dan == dat2.dan &amp;&amp; dat1.mjesec == dat2.mjesec
+            &amp;&amp; dat1.godina == dat2.godina;
+    }
+    friend bool operator != (const Datum &amp;dat1, const Datum &amp;dat2) {
+        return !(dat1 == dat2);
+    }
+    friend bool operator &lt; (const Datum &amp;dat1, const Datum &amp;dat2) {
+</font>        return dat1.dan &lt; dat2.dan &amp;&amp; dat1.mjesec &lt;= dat2.mjesec
+            &amp;&amp; dat1.godina &lt;= dat2.godina;
+    }
+    friend bool operator &lt;= (const Datum &amp;dat1, const Datum &amp;dat2) {
+        return dat1.dan &lt;= dat2.dan &amp;&amp; dat1.mjesec &lt;= dat2.mjesec
+            &amp;&amp; dat1.godina &lt;= dat2.godina;
+    }
+    friend bool operator &gt; (const Datum &amp;dat1, const Datum &amp;dat2) {
+        return dat1.dan &gt; dat2.dan &amp;&amp; dat1.mjesec &gt;= dat2.mjesec
+            &amp;&amp; dat1.godina &gt;= dat2.godina;
+    }
+    friend bool operator &gt;= (const Datum &amp;dat1, const Datum &amp;dat2) {
+        return dat1.dan &gt;= dat2.dan &amp;&amp; dat1.mjesec &gt;= dat2.mjesec
+            &amp;&amp; dat1.godina &gt;= dat2.godina;
+    }
+    operator std::string() const {
+        return std::to_string(DajDan()) + ". " + std::string(DajImeMjeseca()) 
+            + " " + std::to_string(DajGodinu()) + ".(" 
+            + std::string(DajImeDanaUSedmici()) + ")";  
+    }
+    explicit operator int() const {
+        return Datum::PretvoriUDane(*this) - 1;
+    }
+};
+
+Datum &amp;Datum::Postavi(int d, int m, int g) {
+    int d_u_m[12] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (Datum::Prestupna(g)) d_u_m[1]++;
+    if (d &lt; 1 || d &gt; d_u_m[m-1] || m &lt; 1 || m &gt; 12 || g &lt; 1800)
+        throw std::domain_error("Nelegalan datum");
+    dan = d; mjesec = m; godina = g;
+    return *this;
+}
+
+Datum Datum::PretvoriUDatum(int n) {
+    Datum dat(1,1,1800);
+    int god(n/365);
+    n -= god/4 + (god+200)/400 - god/100 + 1;
+    dat.godina += n/365; n %= 365;
+    int d_u_m[12] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (Datum::Prestupna(dat.godina)) d_u_m[1]++;
+    for (int i = 0; i &lt; 12; i++) {
+        if (n &lt; d_u_m[i]) break;
+        n -= d_u_m[i]; dat.mjesec++;
+    }
+    dat.dan += n;
+    return dat;
+}
+        
+<a name="2"></a><font color="#0000FF"><a href="match659-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+const char* Datum::DajImeMjeseca() const {
+    const char *ime_mjeseca[12]{"Januar", "Februar", "Mart", "April", "Maj",
+        "Juni", "Juli", "August", "Septembar", "Oktobar", "Novembar", "Decembar"};
+    return ime_mjeseca[mjesec-1];
+</font>}
+
+<a name="4"></a><font color="#FF00FF"><a href="match659-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+const char* Datum::DajImeDanaUSedmici() const {
+    const char *ime_dana[7] {"Ponedjeljak", "Utorak", "Srijeda", "Cetvrtak",
+        "Petak", "Subota", "Nedjelja"};
+    return ime_dana[int(DanUSedmici())];
+</font>}
+
+std::istream &amp;operator &gt;&gt; (std::istream &amp;tok, Datum &amp;dat) {
+    char c;
+    int d, m, g;
+    if (tok &gt;&gt; d &gt;&gt; c &amp;&amp; c == '/' &amp;&amp; tok &gt;&gt; m &gt;&gt; c &amp;&amp; c == '/' &amp;&amp; tok &gt;&gt; g)
+        dat.Postavi(d,m,g);
+    else tok.setstate(std::ios::failbit);
+    return tok;
+}
+
+
+Datum &amp;operator += (Datum &amp;dat, int n) {
+    int dani1(Datum::PretvoriUDane(dat));
+    dat = Datum::PretvoriUDatum(dani1+n);
+    if (dat.DajDan() &lt; 1) throw std::domain_error("Nelegalan datum");
+    return dat;
+}
+
+Datum &amp;operator -= (Datum &amp;dat, int n) {
+    int dani1(Datum::PretvoriUDane(dat));
+    dat = Datum::PretvoriUDatum(dani1-n);
+    if (dat.DajDan() &lt; 1) throw std::domain_error("Nelegalan datum");
+    return dat;
+}
+
+enum Mjeseci {Januar = 1, Februar, Mart, April, Maj, Juni, Juli, August,
+    Septembar, Oktobar, Novembar, Decembar};
+enum Dani {Ponedjeljak = 1, Utorak, Srijeda, Cetvrtak, Petak, 
+    Subota, Nedjelja};
+
+int main ()
+{
+    Datum dan(1,Januar,1800);
+    std::cin &gt;&gt; dan;
+    std::string s(dan);
+    std::cout &lt;&lt; s &lt;&lt; std::endl;
+    int x(dan);
+    Datum novi(1+dan);
+    std::cout &lt;&lt; novi &lt;&lt; x;
+	return 0;
+}
+</pre>
+</body>
+</html>

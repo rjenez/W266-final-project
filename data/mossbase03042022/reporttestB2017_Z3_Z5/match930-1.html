@@ -1,0 +1,206 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student7540.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student5261.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;map&gt;
+#include &lt;utility&gt;
+#include &lt;stack&gt;
+#include &lt;new&gt;
+//Provjereno, poslano.
+enum class Boje { Pik, Tref, Herc, Karo };
+std::string _karte_[13]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+std::string _boje_[4]{"Pik", "Tref", "Herc", "Karo"};
+struct Karta
+{
+    Boje boja;
+    std::string vrijednost;
+};
+struct Cvor
+{
+    Karta karta;
+    Cvor *sljedeci;
+};
+bool manji(const Karta &amp;a, const Karta &amp;b)
+{
+    return int(a.boja) &lt; int(b.boja) || (a.boja == b.boja &amp;&amp; std::find(_karte_, _karte_ + 13, a.vrijednost) &lt; std::find(_karte_, _karte_ + 13, b.vrijednost));
+}
+bool jednaki(const Karta &amp;a, const Karta &amp;b) { return a.boja == b.boja &amp;&amp; a.vrijednost == b.vrijednost; }
+int velicina(Cvor *spil)
+{
+    int vel(0);
+    for (Cvor *c(spil); c != nullptr &amp;&amp; (c != spil || vel == 0); c = c-&gt;sljedeci) ++vel;
+    return vel;
+}
+Cvor *zadnji_element(Cvor *spil)
+{
+    for (Cvor *c(spil); c != nullptr; c = c-&gt;sljedeci)
+        if (c-&gt;sljedeci == spil) return c;
+    return nullptr;
+}
+void provjeri_spil(Cvor *spil)
+{
+    Cvor *c(spil);
+    for (int i(0); i &lt; 52 &amp;&amp; c != nullptr &amp;&amp; (i != 0 &amp;&amp; c != spil); ++i, c = c-&gt;sljedeci)
+        if (!c-&gt;sljedeci || (c-&gt;sljedeci != spil &amp;&amp; (manji(c-&gt;sljedeci-&gt;karta, c-&gt;karta) || jednaki(c-&gt;karta, c-&gt;sljedeci-&gt;karta)))
+        || std::find(_karte_, _karte_+13, c-&gt;karta.vrijednost) == _karte_+13)
+            throw std::logic_error("Neispravna lista!");
+    if (c != spil) throw std::logic_error("Neispravna lista!");
+}
+void izbaci(Cvor *&amp;prvi, Cvor *&amp;zadnji, Cvor *&amp;prije)
+{
+    Cvor *&amp;zrtva(prije-&gt;sljedeci);
+    if (zadnji == nullptr) zadnji = zadnji_element(prvi);
+    Cvor *pom(zrtva-&gt;sljedeci);
+    delete zrtva;
+    if (prvi == zadnji) { prije-&gt;sljedeci = prvi = zadnji = nullptr; return; } //Ako izbacujemo jedini element
+    if (zrtva == prvi) zadnji-&gt;sljedeci = prvi = pom; //Ako izbacujemo prvi element
+    else if (zrtva == zadnji) zadnji = prije; //Ako izbacujemo zadnji element
+    prije-&gt;sljedeci = pom;
+}
+void ubaci(Cvor *&amp;prvi, Cvor *&amp;zadnji, Cvor *&amp;prije, const Karta &amp;k)
+{
+    if (zadnji == nullptr) zadnji = zadnji_element(prvi);
+    Cvor *pom(prije-&gt;sljedeci), *&amp;novi(prije-&gt;sljedeci);
+    novi = new Cvor{ k, pom };
+    if (prije == zadnji) zadnji = novi; //Ako ubacujemo element na kraj
+    else if (pom == prvi) prvi = novi; //Ako ubacujemo element na pocetak
+    if (!zadnji) zadnji = prvi; //Ako je spil prethodno bio prazan
+    zadnji-&gt;sljedeci = prvi;
+}
+void ispisi(Cvor *spil)
+{
+    std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; velicina(spil) &lt;&lt; " karata, i to:";
+    Cvor *c(spil);
+    bool prvi(true);
+    for (int i(0); i &lt; 4; ++i)
+    {
+        std::cout &lt;&lt; '\n' &lt;&lt; _boje_[i] &lt;&lt; ':';
+        for (; c != nullptr &amp;&amp; (c != spil || prvi) &amp;&amp; c-&gt;karta.boja == Boje(i); c = c-&gt;sljedeci)
+        {
+            if (prvi) prvi = false;
+            std::cout &lt;&lt; ' ' &lt;&lt; c-&gt;karta.vrijednost;
+        }
+    }
+}
+//?Da li azuriramo spil na nullptr
+void UnistiSpil(Cvor *spil)
+{
+    bool prvi(true);
+    for (Cvor *c(spil); c != nullptr &amp;&amp; (c != spil || prvi); )
+    {
+        if (prvi) prvi = false;
+        Cvor *pom(c-&gt;sljedeci);
+        delete c;
+        c = pom;
+    }
+}
+Cvor *KreirajSpil()
+{
+    Cvor *cvor(new Cvor), *c(cvor);
+    try
+    {
+        for (int i(0); i &lt; 4; ++i)
+            for (int j(0); j &lt; 13; ++j, c = c-&gt;sljedeci)
+                *c = { { Boje(i), _karte_[j] }, (i == 3 &amp;&amp; j == 12 ? cvor : new Cvor) };
+    }
+    catch (...) { UnistiSpil(cvor); throw; }
+    return cvor;
+}
+void IzbaciKarte(Cvor *&amp;spil, std::multimap&lt;Boje, std::string&gt; &amp;m)
+{
+    provjeri_spil(spil);
+    Cvor c{ {}, spil }, *prije(&amp;c), *zadnji(zadnji_element(spil));
+    for (; prije-&gt;sljedeci &amp;&amp; prije != zadnji; )
+    {
+        auto j(std::find(m.begin(), m.end(), std::pair&lt;const Boje, std::string&gt; { prije-&gt;sljedeci-&gt;karta.boja, prije-&gt;sljedeci-&gt;karta.vrijednost }));
+        if (j != m.end())
+        {
+            izbaci(spil, zadnji, prije);
+            auto x(*j);
+            for (auto k(j = m.erase(j)); k != m.end() &amp;&amp; (k = std::find(k, m.end(), x)) != m.end();) k = m.erase(k);
+        }
+        else prije = prije-&gt;sljedeci;
+    }
+}
+<a name="0"></a><font color="#FF0000"><a href="match930-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; IzbaciKarteRazbrajanjem(Cvor *&amp;spil, const short int &amp;r, const int &amp;b)
+{
+    if (r &lt; 1 || r &gt; 52 || b &lt; 1) throw std::logic_error("Neispravni elementi za izbacivanje!");
+    provjeri_spil(spil);
+    std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; stek;
+</font>    if (!spil) return stek;
+    Cvor c{ {}, spil }, *prije(&amp;c), *zadnji{};
+    int pozicija(0), br(b), vel(velicina(spil));
+    for (int i((r-1) % vel); prije-&gt;sljedeci &amp;&amp; br &gt; 0; --br, i = (i + r-1) % vel)
+    {
+        if (i &gt; pozicija)
+            for (; pozicija &lt; i; ++pozicija) prije = prije-&gt;sljedeci;
+        else if (i &lt; pozicija)
+            for (pozicija = 0, (prije = &amp;c)-&gt;sljedeci = spil; pozicija &lt; i; ++pozicija) prije = prije-&gt;sljedeci;
+        stek.push( { _boje_[int(prije-&gt;sljedeci-&gt;karta.boja)], prije-&gt;sljedeci-&gt;karta.vrijednost } );
+        izbaci(spil, zadnji, prije);
+        if (--vel == 0) break;
+    }
+<a name="1"></a><font color="#00FF00"><a href="match930-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+    return stek;
+}
+//?Sta uraditi ako alokacija ne uspije?
+void VratiPosljednjihNKarata(Cvor *&amp;spil, std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; &amp;stek, int n)
+</font>{
+    if (n &lt; 0) throw std::domain_error("Broj n je besmislen!");
+    if (n &gt; stek.size()) throw std::range_error("Nedovoljno karata u steku!");
+    provjeri_spil(spil);
+    Cvor *zadnji(zadnji_element(spil));
+    for (int i(0); i &lt; n; ++i)
+    {
+        if (std::find(_boje_, _boje_+4, stek.top().first) == _boje_+4 || std::find(_karte_, _karte_+13, stek.top().second) == _karte_+13)
+            throw std::logic_error("Neispravne karte!");
+        Karta karta{ Boje(std::find(_boje_, _boje_+4, stek.top().first) - _boje_), stek.top().second };
+        Cvor c{ {}, spil }, *za_ubaciti(&amp;c);
+        bool prvi(true);
+        for (Cvor *c(spil); c != nullptr &amp;&amp; (c != spil || prvi); c = c-&gt;sljedeci)
+        {
+            if (prvi) prvi = false;
+            if (jednaki(c-&gt;karta, karta)) goto preskok;
+            if (manji(c-&gt;karta, karta)) za_ubaciti = c;
+        }
+        ubaci(spil, zadnji, za_ubaciti, karta);
+        preskok:
+        stek.pop();
+    }
+}
+int main()
+{
+    int r, b;
+    std::cout &lt;&lt; "Unesite korak razbrajanja: ";
+    std::cin &gt;&gt; r;
+    std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    std::cin &gt;&gt; b;
+    Cvor *spil;
+    try
+    {
+        spil = KreirajSpil();
+<a name="2"></a><font color="#0000FF"><a href="match930-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+        auto izbacene(IzbaciKarteRazbrajanjem(spil, r, b));
+        ispisi(spil);
+        std::cout &lt;&lt; "\nUnesite broj karata koje zelite vratiti u spil: ";
+        std::cin &gt;&gt; b;
+        VratiPosljednjihNKarata(spil, izbacene, b);
+        ispisi(spil);
+    }
+    catch (const std::exception &amp;e) { std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what(); }
+</font>    catch (...) {}
+    UnistiSpil(spil);
+	return 0;
+}</pre>
+</body>
+</html>

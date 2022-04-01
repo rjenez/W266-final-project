@@ -1,0 +1,128 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student2949.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student7665.cpp<p></p><pre>
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;map&gt;
+#include&lt;set&gt;
+#include&lt;stdexcept&gt;
+#include&lt;utility&gt;
+#include&lt;vector&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match121-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string s){
+    
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; TempMap;
+    std::set&lt;int&gt; Set;
+    std::string TempStr;  
+    std::vector&lt;std::string&gt; Vektor;
+    
+    for(int i=0; i&lt;s.length(); i++){                                              //Petlja cije je svrha da potencijalnu pojavu velikih slova pretvori u mala slova
+        if(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') 
+            s[i]+=32;
+    }
+    
+    for(int i=0; i&lt;s.length(); i++){  
+    int br(0);
+       if(s[i]!=' '){                                                             //string koji pamti rijec
+           TempStr.push_back(s[i]);
+       }
+       
+       if(TempStr.size()&gt;0 &amp;&amp; (s[i]==' ' || i==int(s.length())-1)){            
+           
+           for(int j=0; j&lt;s.length(); j++){                                       //Oformisati skup brojeva koji ukazuju na mjesta pojavljivanja rijeci
+              int p(j);
+              
+              if(s[j]==TempStr[0]){
+                  bool X(true);
+                  
+                  if(p!=0){
+                      if(s[p-1]!=' ') X=false;
+                  }
+                  for(int k=1; k&lt;int(TempStr.length()); k++){
+                      p++;
+                      if(s[p]!=TempStr[k] || s[p]==int(s.length())-1){
+                          X=false;
+                          break;
+                      } 
+                  }
+                  
+                  if(X==true) 
+                      Set.insert(br);
+                }
+               
+              br++;
+           }
+           
+           if(TempMap.count(TempStr)==0)                                          //Ukoliko se pronadjena rijec prethodno vec ne nalazi u mapi, smjesti u mapu tu rijec zajedno sa skupom brojeva koji sadrzi pozicije pojavljivanja te rijeci u pocetnom stringu
+                TempMap.insert(std::make_pair(TempStr, Set));
+           
+           TempStr.resize(0);                                                     //Isprazni pomocni string za pamcenje jedne rijeci
+           while(!Set.empty()){                                                   //Isprazni skup 
+               Set.erase(Set.begin());
+           }
+       }
+    }
+    
+    return TempMap;                                                               //Vrati mapu
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova (std::string s, std::map&lt;std::string, std::set&lt;int&gt;&gt; indekspojmova){
+    if (indekspojmova.count(s)!=1) throw std::logic_error("Unesena rijec nije nadjena!");
+    else return indekspojmova.find(s)-&gt;second;
+    
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;int&gt;&gt; MapaPojmova){
+    
+    for(auto x: MapaPojmova){
+        auto MaxEl(0);
+        std::cout&lt;&lt;x.first&lt;&lt;": ";
+        for(auto y: x.second) if(y&gt;MaxEl) MaxEl=y;
+            
+            for(auto y: x.second){
+                if(y==MaxEl) std::cout&lt;&lt;y;
+                else std::cout&lt;&lt;y&lt;&lt;",";
+            }
+            
+        std::cout&lt;&lt;std::endl;
+    }
+}
+
+int main ()
+{
+    std::string S;
+    std::cout&lt;&lt;"Unesite tekst: ";
+    std::getline(std::cin, S);
+    
+    auto PovratnaMapa(KreirajIndeksPojmova(S));
+    IspisiIndeksPojmova(PovratnaMapa);
+    std::string pom;
+    
+    for(;;){
+        std::cout&lt;&lt;"Unesite rijec: ";
+        std::getline(std::cin, pom);
+        
+        if(pom[0]=='.' &amp;&amp; pom.length()==1) break;
+        
+        try{
+            auto pomocno(PretraziIndeksPojmova(pom, PovratnaMapa));
+            for(auto a: pomocno){
+                std::cout&lt;&lt;a&lt;&lt;" ";
+            }
+            std::cout&lt;&lt;std::endl;
+        }
+        catch(std::logic_error uhvati){
+            std::cout&lt;&lt;uhvati.what()&lt;&lt;std::endl;
+        }
+        pom.clear();  
+    }
+	return 0;
+</font>}</pre>
+</body>
+</html>

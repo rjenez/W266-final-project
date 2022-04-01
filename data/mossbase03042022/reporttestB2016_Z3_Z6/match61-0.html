@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student8139.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student8139.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt;
+
+<a name="1"></a><font color="#00FF00"><a href="match61-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+int BrojacSlova(std::string s){
+    int brojac(0);
+    for(int i=0; i&lt;s.length(); i++){
+        if((s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z') || (s[i] &gt;= 'a' &amp;&amp; s[i] &lt;= 'z') || (s[i] &gt;= '0' &amp;&amp; s[i] &lt;= '9')) brojac++;
+</font><a name="0"></a><font color="#FF0000"><a href="match61-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_92.gif"/></a>
+
+    }
+    return brojac;
+}
+
+std::vector&lt;int&gt; Timovi(int broj_djece, int broj_timova){
+    if(broj_timova &lt; 1 || broj_timova &gt; broj_djece) throw std::logic_error("Razvrstavanje nemoguce");
+    std::vector&lt;int&gt; v;
+    v.resize(broj_timova);
+    for(int i=0; i&lt;v.size(); i++) v[i]=broj_djece/broj_timova;
+    int ostatak = broj_djece - (broj_djece/broj_timova)*broj_timova;
+    int i(0);
+    while(ostatak != 0){
+        v[i]++;
+        ostatak--;
+        i++;
+    }
+    return v;
+}
+
+struct Dijete{
+    std::string ime;
+    std::shared_ptr&lt;Dijete&gt; sljedeci;
+};
+
+std::shared_ptr&lt;Dijete&gt; NapraviListu(std::vector&lt;std::string&gt; v, std::shared_ptr&lt;Dijete&gt; &amp;prethodni){
+    std::shared_ptr&lt;Dijete&gt; pocetak(nullptr);
+    for(int i=0; i&lt;v.size(); i++){
+        Dijete a;
+        auto novo(std::make_shared&lt;Dijete&gt; (a));
+        novo-&gt;ime = v[i]; novo-&gt;sljedeci = nullptr;
+        if(!pocetak) pocetak = novo;
+        else prethodni-&gt;sljedeci = novo;
+        prethodni = novo;
+    }
+    prethodni-&gt;sljedeci = pocetak;
+    return pocetak;
+}
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; v, int broj){
+    auto timovi(Timovi(v.size(), broj));
+    std::shared_ptr&lt;Dijete&gt; prethodni;
+    auto trenutni(NapraviListu(v,prethodni));
+    std::vector&lt;std::set&lt;std::string&gt;&gt; rez;
+    rez.resize(broj);
+    for(int i=0; i&lt;rez.size(); i++){
+        for(int j=0; j&lt;timovi[i]; j++){
+            int br(BrojacSlova(trenutni-&gt;ime));
+            rez[i].insert(trenutni-&gt;ime);
+            prethodni-&gt;sljedeci=trenutni-&gt;sljedeci;
+            trenutni = nullptr;
+            trenutni = prethodni-&gt;sljedeci;
+            for(int k=0; k&lt;br-1; k++){
+                trenutni = trenutni-&gt;sljedeci;
+                prethodni = prethodni-&gt;sljedeci;
+            }
+        }
+    }
+    trenutni-&gt;sljedeci=nullptr;
+    //trenutni = nullptr; prethodni = nullptr;
+    return rez;
+}
+
+void IspisiLijepo(std::vector&lt;std::set&lt;std::string&gt;&gt; v){
+    for(int i=0; i&lt;v.size(); i++){
+        std::cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+        auto it(v[i].begin());
+        while(it != v[i].end()){
+            if(v[i].size()==1){
+                std::cout &lt;&lt; *it;
+                break;
+            }
+            std::cout &lt;&lt; *it &lt;&lt; ", ";
+            it=v[i].erase(it);
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+int main ()
+{
+	std::vector&lt;std::string&gt; v;
+	int broj_djece;
+	std::cout &lt;&lt; "Unesite broj djece: " ;
+	std::cin &gt;&gt; broj_djece;
+	std::cout &lt;&lt; "Unesite imena djece: " &lt;&lt; std::endl;
+	std::string ime;
+	std::cin &gt;&gt; std::ws;
+	for(int i=0; i&lt;broj_djece; i++){
+	    std::cin &gt;&gt; std::ws;
+	    std::getline(std::cin, ime);
+	    v.push_back(ime);
+	}
+	int broj_timova;
+	std::cout &lt;&lt; "Unesite broj timova: " ;
+	std::cin &gt;&gt; broj_timova;
+	try{
+	    auto rezultat(Razvrstavanje(v,broj_timova));
+	    IspisiLijepo(rezultat);
+	}
+	catch(std::logic_error e){
+	    std::cout &lt;&lt;"Izuzetak: "&lt;&lt; e.what() &lt;&lt; std::endl;
+	}
+	return 0;
+</font>}
+//Damir, Ana, Muhamed, Marko, Ivan, Mirsad, Nikolina, Alen, Jasmina i Merima</pre>
+</body>
+</html>

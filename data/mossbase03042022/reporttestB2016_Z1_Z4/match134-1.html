@@ -1,0 +1,220 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student8993.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student3402.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match134-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+string pomocna_fja(string rijec)
+{
+    int i = 0, j = rijec.length() - 1;
+    string obrnuta = rijec;
+    while(rijec[i] != 0)
+    {
+        obrnuta[j--] = rijec[i++];
+    }
+
+    return obrnuta;
+}
+
+string obrni_rijec(string rijec)
+{
+    int i = 0;
+    int brojac = 0;
+    string obrnut;
+    vector&lt;string&gt; vise_njih;
+    string obrnuta;
+    do
+    {
+        while(rijec[i] != ' ' &amp;&amp; rijec[i] != '\0')
+        {
+            brojac++;
+            i++;
+        }
+
+        string nova = rijec.substr(i-brojac, brojac);
+
+        obrnut = pomocna_fja(nova);
+
+        vise_njih.push_back(obrnut);
+
+        if(i != (rijec.length()) &amp;&amp; rijec[i+1] != 0)
+        {
+            string razmak = " ";
+            vise_njih.push_back(razmak);
+        }
+
+        brojac = 0;
+    }
+    while(rijec[i++] != 0);
+
+    for(string dio : vise_njih)
+    {
+        obrnuta += dio;
+    }
+
+    return obrnuta;
+}
+
+string ObrniFraze(string recenica, vector&lt;string&gt; fraze)
+{
+    for(string r : fraze)
+    {
+        int i = 0, j = 0;
+        while(i &lt; recenica.length())
+        {
+            if(recenica[i] == r[j])
+            {
+                while(j &lt; r.length())
+                {
+                    if(r[j] == recenica[i])
+                    {
+                        j++;
+                        i++;
+                    }
+                    else
+                        break;
+                }
+
+                if(j == r.length())
+                {
+                    int brojac = i - j;
+                    string obrnuta = obrni_rijec(r);
+                    int k = 0;
+                    while(obrnuta[k] != 0)
+                    {
+                        recenica[brojac++] = obrnuta[k++];
+                    }
+                }
+                else continue;
+            }
+            i++;
+        }
+    }
+
+    return recenica;
+}
+
+bool ispitaj(string rijec)
+{
+    int i = 0;
+    while(rijec[i] != 0)
+    {
+        if((rijec[i] &gt; 90 &amp;&amp; rijec[i] &lt; 97) || rijec[i] &lt; 65 || rijec[i] &gt; 122)
+            return false;
+        i++;
+    }
+
+    return true;
+}
+
+string dodaj_ay(string rijec)
+{
+    string dodatak = rijec;
+    char prvo_slovo = rijec[0];
+    dodatak.resize(rijec.length()+1);
+    dodatak[rijec.length()] = prvo_slovo;
+    
+    for(int i(0); i &lt; dodatak.length(); i++){
+        dodatak[i] = dodatak[i+1];
+        if(i == dodatak.length() - 2)
+            dodatak.resize(dodatak.length() - 1);
+    }
+
+    return dodatak;
+}
+
+string IzmijeniUPigLatin(string recenica, vector&lt;string&gt; rijeci)
+{
+    for(string provjera : rijeci)
+    {
+        if(!ispitaj(provjera))
+            throw domain_error("Nekorektan izbor rijeci");
+    }
+
+    for(string provjera : rijeci)
+    {
+        int i = 0, j = 0;
+        while(i &lt; recenica.length())
+        {
+            if(recenica[i] == provjera[j])
+            {
+                while(j &lt; provjera.length())
+                {
+                    if(recenica[i] == provjera[j])
+                    {
+                        i++;
+                        j++;
+                    }
+                    else break;
+                }
+
+                if(j == provjera.length())
+                {
+                    int brojac = i - j;
+                    string dodatak = dodaj_ay(provjera);
+                    int k = 0;
+                    while(k &lt; dodatak.length())
+                    {
+                        recenica[brojac++] = dodatak[k++];
+                    }
+
+                    string ay = "ay";
+                    recenica.insert(brojac, ay);
+                }
+                else continue;
+            }
+            i++;
+        }
+    }
+
+    return recenica;
+}
+
+int main()
+{
+    cout &lt;&lt; "Unesite recenicu: ";
+    string recenica, rijec;
+    vector&lt;string&gt; fraze;
+    
+    getline(cin, recenica);
+    cout &lt;&lt; "Unesite fraze: ";
+    while(1){
+        getline(cin, rijec);
+        fraze.push_back(rijec);
+        if(rijec.size() == 0)
+            break;
+    }
+    string pigtolatin;
+    try{
+        pigtolatin = IzmijeniUPigLatin(recenica, fraze);
+    }
+    catch(domain_error err){
+        cout &lt;&lt; "Izuzetak: " &lt;&lt; err.what() &lt;&lt; endl;
+        cout &lt;&lt; "Recenica nakon obrtanja fraza: ";
+        string obrni = ObrniFraze(recenica, fraze);
+        cout &lt;&lt; obrni;
+        return 0;
+    }
+    cout &lt;&lt; "Recenica nakon PigLatin transformacije: ";
+    cout &lt;&lt; pigtolatin &lt;&lt; endl;
+    
+    cout &lt;&lt; "Recenica nakon obrtanja fraza: ";
+    string obrni = ObrniFraze(recenica, fraze);
+    cout &lt;&lt; obrni;
+</font>
+    return 0;
+}
+</pre>
+</body>
+</html>

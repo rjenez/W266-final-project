@@ -1,0 +1,235 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student6824.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student9388.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match3-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+void Okreni(std::string &amp;s, std::vector&lt;std::string&gt;f, int i, int pocetak, int kraj, int duz){
+    int l{0}, pocetak1{0}, kraj1{0}, pokaz1{0}, duz1{0}, j{0};
+    char slovo;
+    for(int k=0; k&lt;s.size(); k++){
+        if(s[k]==f[i][pocetak+l]){
+            if(pokaz1==0){
+                pokaz1=1;
+                pocetak1=k;
+                kraj1=k;
+            }
+            else
+               kraj1=k;
+             duz1++;
+             l++;
+        }
+        else{
+            if(duz==duz1){
+                j=kraj1;
+                for(int p=0; p&lt;duz1/2; p++){
+                    slovo=s[pocetak1+p];
+                    s[pocetak1+p]=s[j];
+                    s[j]=slovo;
+                    j--;
+                }
+            }
+            l=0;
+            pokaz1=0;
+            duz1=0;
+        }
+    }
+    if(duz==duz1){
+        j=kraj1;
+        for(int p=0; p&lt;duz1/2; p++){
+            slovo=s[pocetak1+p];
+            s[pocetak1+p]=s[j];
+            s[j]=slovo;
+            j--;
+        }
+    }
+}
+std::string ObrniFraze(std::string s, std::vector&lt;std::string&gt;f){
+    int pokaz{0}, pocetak{0}, kraj{0}, duz{0};
+    for(int i=0; i&lt;f.size(); i++){
+        pokaz=0;
+        duz=0;
+        for(int j=0;;j++){
+            if(f[i][j]=='\0') {break;}
+            if(pokaz==0){
+                pokaz=1;
+                pocetak=j;
+                kraj=j;
+            }
+            else{
+                kraj=j;
+            }
+        }
+        duz=kraj+1-pocetak;
+        Okreni(s,f,i,pocetak,kraj,duz);
+    }
+    return s;
+}
+void Promijeni1(std::string &amp;s){
+    char slovo;
+    int pokaz1{0}, pocetak1{0}, kraj1{0};
+    for(int k=0; k&lt;s.size(); k++){
+        if((s[k]&gt;='A' &amp;&amp; s[k]&lt;='Z') || (s[k]&gt;='a' &amp;&amp; s[k]&lt;='z')){
+            if(pokaz1==0){
+                pokaz1=1;
+                slovo=s[k];
+                pocetak1=k;
+                kraj1=k;
+            }
+            else{
+                kraj1=k;
+            }
+        }
+        else{
+            if(pokaz1==1){
+                s.insert(s.begin()+kraj1+1,slovo);
+                s.insert(s.begin()+kraj1+2,'a');
+                s.insert(s.begin()+kraj1+3,'y');
+                s.erase(s.begin()+pocetak1);
+                pokaz1=0;
+                k++;
+            }
+        }
+    }
+    if(pokaz1==1){
+    s.insert(s.begin()+kraj1+1,slovo);
+    s.insert(s.begin()+kraj1+2,'a');
+    s.insert(s.begin()+kraj1+3,'y');
+    s.erase(s.begin()+pocetak1);
+    }
+}
+void Promijeni(std::string &amp;s, std::vector&lt;std::string&gt;f, int i, int pocetak, int kraj, int duz){
+    int l{0}, pocetak1{0}, kraj1{0}, pokaz1{0}, duz1{0}, brojac{0}, ind{0};
+    char slovo;
+    for(int k=0; k&lt;s.size(); k++){
+        if((s[k]&gt;='A' &amp;&amp; s[k]&lt;='Z') || (s[k]&gt;='a' &amp;&amp; s[k]&lt;='z')){
+         if(s[k]==f[i][pocetak+l]){
+            if(pokaz1==0){
+                pokaz1=1;
+                slovo=s[k];
+                pocetak1=k;
+                kraj1=k;
+            }
+            else
+             kraj1=k;
+             duz1++;
+             l++;
+         }
+         else{brojac++;}
+        }
+        else{
+            if(duz1&gt;0) {duz1=duz1+brojac; if(brojac&gt;0) ind=1; brojac=0;}
+            else brojac=0;
+            if(duz1==duz &amp;&amp; ind==0){
+                for(int p=0; p&lt;3; p++){
+                    if(p==0) s.insert(s.begin()+kraj1+1,slovo);
+                    if(p==1) s.insert(s.begin()+kraj1+2,'a');
+                    if(p==2) s.insert(s.begin()+kraj1+3,'y');
+                }
+                s.erase(s.begin()+pocetak1);
+            }
+            l=0;
+            pokaz1=0;
+            duz1=0;
+            ind=0;
+        }
+    }
+    if(duz1&gt;0){duz1=duz1+brojac; brojac=0;}
+    else brojac=0;
+    if(duz1==duz){
+        for(int p=0; p&lt;3; p++){
+            if(p==0) s.insert(s.begin()+kraj1+1,slovo);
+            if(p==1) s.insert(s.begin()+kraj1+2,'a');
+            if(p==2) s.insert(s.begin()+kraj1+3,'y');
+        }
+        s.erase(s.begin()+pocetak1);
+    }
+}
+std::string IzmijeniUPigLatin(std::string s, std::vector&lt;std::string&gt;f){
+        int pokaz{0}, pocetak{0}, kraj{0}, ind{0}, duz{0}, j{0};
+        for(int i=0; i&lt;f.size(); i++){
+            j=0;
+            pokaz=0;
+            while(f[i][j]!='\0'){
+                if(f[i][j]=='\0') {break;}
+                if(pokaz==0){
+                    pokaz=1;
+                    pocetak=j;
+                    kraj=j;
+                }
+                else{
+                    kraj=j;
+                    if(f[i][j]==' '){throw std::domain_error("Nekorektan izbor rijeci");}
+                }
+                j++;
+            }
+        }
+        if(f.size()==0) {Promijeni1(s);}
+        else{
+         for(int i=0; i&lt;f.size(); i++){
+            pokaz=0;
+            ind=0;
+            duz=0;
+            for(int j=0;;j++){
+                if(f[i][j]=='\0'){break;}
+                if(pokaz==0){
+                    pokaz=1;
+                    pocetak=j;
+                    kraj=j;
+                }
+                else{
+                    kraj=j;
+                    if(f[i][j]==' ') ind=1;
+                }
+            }
+            duz=kraj+1-pocetak;
+            if(ind==1){}
+            else{
+                Promijeni(s,f,i,pocetak,kraj,duz);
+            }
+         }
+        }
+    return s;
+}
+int main ()
+{
+    std::string s;
+    std::vector&lt;std::string&gt;f;
+	try{
+	    std::cout&lt;&lt;"Unesite recenicu: ";
+	    std::getline(std::cin,s);
+	    std::cout&lt;&lt;"Unesite fraze: ";
+	    std::string pomoc;
+	    while(std::cin.peek()!='\n'){
+	        std::getline(std::cin,pomoc);
+	        for(int i=0; i&lt;pomoc.size(); i++){
+	            if(!((pomoc[i]&gt;='A' &amp;&amp; pomoc[i]&lt;='Z') || (pomoc[i]&gt;='a' &amp;&amp; pomoc[i]&lt;='z') || (pomoc[i]==' ')))
+	            throw std::domain_error("Nekorektan izbor rijeci");
+	        }
+	        f.push_back(pomoc);
+	    }
+	    std::string s1;
+	    s1=IzmijeniUPigLatin(s,f);
+	    std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: ";
+	    for(int i=0; i&lt;s1.size(); i++)
+	     std::cout&lt;&lt;s1[i];
+	}
+	catch(std::domain_error izuzetak){
+	    std::cout &lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+	}
+	std::string s2;
+	std::cout&lt;&lt;std::endl&lt;&lt;"Recenica nakon obrtanja fraza: ";
+	s2=ObrniFraze(s,f);
+	for(int i=0; i&lt;s2.size(); i++)
+	 std::cout&lt;&lt;s2[i];
+	return 0;
+</font>}</pre>
+</body>
+</html>

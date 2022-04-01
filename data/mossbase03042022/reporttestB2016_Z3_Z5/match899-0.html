@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student3483.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student3483.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+struct Dijete
+{
+    std::string ime;
+    Dijete *sljedeci;
+};
+ 
+<a name="1"></a><font color="#00FF00"><a href="match899-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstaj(std::vector&lt;std::string&gt; djeca, int brojtimova)
+{
+    if(brojtimova &lt; 1 || brojtimova &gt; djeca.size())
+        throw std::logic_error("Razvrstavanje nemoguce");
+    std::vector&lt;std::set&lt;std::string&gt;&gt; vektimova(brojtimova);
+</font>    Dijete *pocetak(nullptr), *prethodni;
+    int ukupno(1);
+    for(int i = 0; i &lt; djeca.size(); i++)
+        {
+            Dijete *novi(new Dijete);
+            novi-&gt;ime = djeca[i];
+            novi-&gt;sljedeci = nullptr;
+            if(!pocetak)
+                pocetak = novi;
+            else
+            {
+                prethodni-&gt;sljedeci = novi;
+                ukupno++;
+            }
+            prethodni = novi;
+        }
+        prethodni-&gt;sljedeci = pocetak;
+    int br(djeca.size()/brojtimova);
+    std::vector&lt;int&gt; brojutimu(brojtimova, br);
+    int trenutnapodjela(brojtimova*br);
+    for(int i = 0; i &lt; brojutimu.size(); i++)
+    {
+        if((djeca.size() - trenutnapodjela) != 0)
+        {
+            brojutimu[i]++;
+            trenutnapodjela++;
+        }
+        else
+            break;
+    }
+    int trenutnitim(0), brojslova(0), brojpodijeljenih(0);
+    Dijete *p = pocetak;
+    while(ukupno &gt; 0)
+    {
+        std::string tempstr;
+        tempstr = p-&gt;ime;
+        brojslova = tempstr.size();
+        for(int i = 0; i &lt; tempstr.size(); i++)
+            if((tempstr[i] &lt; 'a' || tempstr[i] &gt; 'z') &amp;&amp; (tempstr[i] &lt; 'A' || tempstr[i] &gt; 'Z') &amp;&amp; (tempstr[i] &lt; '0' || tempstr[i] &gt; '9'))
+                brojslova--;
+        vektimova[trenutnitim].insert(p-&gt;ime);
+        brojpodijeljenih++;
+        if(brojpodijeljenih == brojutimu[trenutnitim])
+        {
+            trenutnitim++;
+            brojpodijeljenih = 0;
+        }
+        Dijete *pd(p);
+        prethodni-&gt;sljedeci = p-&gt;sljedeci;
+        p = p-&gt;sljedeci;
+        delete pd;
+        ukupno--;
+        if(ukupno &gt; 0)
+        for(int i = 1; i &lt; brojslova; i++)
+        {
+            p = p-&gt;sljedeci;
+            prethodni = prethodni-&gt;sljedeci;
+        }
+    }
+    return vektimova;
+}
+
+int main ()
+{
+    int brojdjece;
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    std::cin&gt;&gt;brojdjece;
+    std::vector&lt;std::string&gt; djeca(brojdjece);
+    std::cin.ignore(10000, '\n');
+    std::cout&lt;&lt;"Unesite imena djece: ";
+    for(int i = 0; i &lt; brojdjece; i++)
+        std::getline(std::cin, djeca[i]);
+    std::cout&lt;&lt;std::endl&lt;&lt;"Unesite broj timova: ";
+    int brojtimova;
+<a name="0"></a><font color="#FF0000"><a href="match899-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+    std::cin&gt;&gt;brojtimova;
+    try{
+    std::vector&lt;std::set&lt;std::string&gt;&gt; timovi(Razvrstaj(djeca, brojtimova));
+    for(int i = 0; i &lt; timovi.size(); i++)
+    {
+        std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+</font>        int vel(timovi[i].size()), trvel(1);
+        for(auto x : timovi[i])
+        {
+            if(trvel == vel)
+                std::cout&lt;&lt;x;
+            else
+            {
+<a name="2"></a><font color="#0000FF"><a href="match899-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+                std::cout&lt;&lt;x&lt;&lt;", ";
+                trvel++;
+            }
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+    }
+    catch(std::logic_error x)
+    {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;x.what();
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

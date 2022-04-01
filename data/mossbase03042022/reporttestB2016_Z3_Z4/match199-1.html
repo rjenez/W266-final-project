@@ -1,0 +1,79 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student2675.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student5744.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;list&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match199-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_95.gif"/></a>
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; vek,int k)
+{
+    int n=vek.size();
+    if(k&lt;=0 || k&gt;vek.size()) throw std::logic_error("Razvrstavanje nemoguce");
+    std::list&lt;std::string&gt; lista;
+    std::copy(vek.begin(),vek.end(),std::back_inserter(lista));
+    int clan=0,skup=0,uskupu=0;
+    std::vector&lt;std::set&lt;std::string&gt;&gt; timovi(k);
+    auto it=lista.begin();
+    while(lista.size()!=0)
+    {
+        if(clan&lt;=1)
+        {
+           clan=std::count_if((*it).begin(),(*it).end(),[](char x){return ((x&gt;='A'&amp;&amp;x&lt;='Z')||(x&gt;='a'&amp;&amp;x&lt;='z')||(x&gt;='0'&amp;&amp;x&lt;='9'));});
+           timovi[skup].insert(*it);
+           uskupu++;
+           if(skup&lt;n%k &amp;&amp; uskupu==n/k+1) skup++,uskupu=0;
+           if(skup&gt;=n%k &amp;&amp; uskupu==n/k) skup++,uskupu=0;
+           it=lista.erase(it);
+           if(it==lista.end()) it=lista.begin();
+        }
+        else{ it++;
+        clan--;}
+        if(it==lista.end()) it=lista.begin();
+    }
+    return timovi;
+}
+
+int main ()
+{
+    std::cout &lt;&lt; "Unesite broj djece: ";
+    int n;
+    std::cin &gt;&gt; n;
+    std::cout &lt;&lt; "Unesite imena djece:\n";
+    if(n&gt;0)std::cin &gt;&gt; std::ws;
+    std::vector&lt;std::string&gt; vek (n);
+    for(std::string &amp;s:vek) std::getline(std::cin, s);
+    std::cout &lt;&lt; "Unesite broj timova: ";
+    std::cin &gt;&gt; n;
+    try
+    {
+        std::vector&lt;std::set&lt;std::string&gt;&gt; s=Razvrstavanje(vek,n);
+        for(int i=0;i&lt;n;i++)
+        { 
+            std::cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+            bool prvi=true;
+            for(auto b:s[i])
+            {
+                if(!prvi) std::cout &lt;&lt; ", ";
+                std::cout &lt;&lt; b; 
+                prvi=false;
+            }
+            std::cout &lt;&lt; "\n";
+        }
+    }
+    catch(std::logic_error x){std::cout &lt;&lt; "Izuzetak: " &lt;&lt; x.what();}
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

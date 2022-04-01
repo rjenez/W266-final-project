@@ -1,0 +1,157 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student1579.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student6776.cpp<p></p><pre>
+ /B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+#include &lt;algorithm&gt;
+std::string PretvoriUMala(std::string rijec){
+    for(int i=0;i&lt;rijec.length();i++){
+        if(rijec[i]&gt;='A' &amp;&amp; rijec[i]&lt;='Z') {rijec[i]+=32;}
+    }
+    return rijec;
+}
+int Brojrijeci(std::string recenica){
+    int brojac{};
+    for(int i=0;i&lt;recenica.length();i++){
+        while (!((recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9') || (recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') || (recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z'))) i++;
+        while(((recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9') || (recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') || (recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z'))) i++;
+         brojac++;
+    }
+    return brojac;
+}
+std::vector&lt;std::string&gt; DajVektorRijeci(std::string recenica){
+    std::vector&lt;std::string&gt; rezultat;
+    for(int i=0;i&lt;recenica.length();i++){
+        if(recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') {recenica[i]+=32;}
+    }
+    for(int i=0;i&lt;recenica.length();i++){
+        std::string pomocna;
+<a name="1"></a><font color="#00FF00"><a href="match410-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+        while(!((recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9') || (recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') || (recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z')) &amp;&amp; i!=recenica.length()) {i++;}
+</font>        int j=i, duzina{};
+<a name="2"></a><font color="#0000FF"><a href="match410-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+        while(((recenica[j]&gt;='0' &amp;&amp; recenica[j]&lt;='9') || (recenica[j]&gt;='A' &amp;&amp; recenica[j]&lt;='Z') || (recenica[j]&gt;='a' &amp;&amp; recenica[j]&lt;='z')) &amp;&amp; j!=recenica.length())  {j++; duzina++;}
+</font>        pomocna=recenica.substr(i,duzina);
+        i=j-1;
+        rezultat.push_back(pomocna);
+    }
+    return rezultat;
+}
+void DodajRijec(std::vector&lt;std::string&gt; &amp;vs, std::string s){
+    bool ima=false;
+      for (int j=0; j&lt;vs.size(); j++) if (s==vs[j]) ima=true;
+       if (ima==false)vs.push_back(s); 
+}
+std::string Rijec(std::string recenica, int &amp;broj){
+    std::string rezultat;
+    for(int i=broj;i&lt;recenica.length();i++){
+        std::string pomocna;
+        while(!((recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9') || (recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') || (recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z')) &amp;&amp; i!=recenica.length()) {i++;}
+        int j=i, duzina{};
+        while(((recenica[j]&gt;='0' &amp;&amp; recenica[j]&lt;='9') || (recenica[j]&gt;='A' &amp;&amp; recenica[j]&lt;='Z') || (recenica[j]&gt;='a' &amp;&amp; recenica[j]&lt;='z')) &amp;&amp; j!=recenica.length())  {j++; duzina++;}
+        pomocna=recenica.substr(i,duzina);
+        //i=j-1;
+        broj=j;
+        rezultat=pomocna;
+        break;
+    }
+    return rezultat;
+}
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string recenica){
+    int n{Brojrijeci(recenica)};
+    for(int i=0;i&lt;recenica.length();i++){
+        if(recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z') {recenica[i]+=32;}
+    }
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa;
+    std::vector&lt;std::string&gt; vs;
+    auto VektorRijeci = DajVektorRijeci(recenica);
+    
+    for(int i=0;i&lt;n;i++){
+        DodajRijec(vs, VektorRijeci[i]);
+    }
+    std::vector&lt;std::set&lt;int&gt;&gt; vekskup;
+    for(int i=0;i&lt;vs.size();i++){
+        std::set&lt;int&gt; skup;
+        for(int j=0;j&lt;recenica.length();j++){
+            std::string pomocna{Rijec(recenica, j)};
+            int index{};
+            if(vs[i]==pomocna) {
+                index=j-pomocna.length(); 
+                skup.insert(index);}
+        }
+        vekskup.push_back(skup);
+    }
+    
+    for(int i=0;i&lt;vs.size();i++){
+        mapa.insert(std::make_pair(vs[i], vekskup[i]));
+    }
+	return mapa;
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa ){
+    for(auto it=mapa.begin(); it!=mapa.end(); it++){
+        std::cout&lt;&lt; it-&gt;first&lt;&lt;": ";
+    
+    auto it2 = it;
+    std::set&lt;int&gt; intovi = it2-&gt;second;
+    auto jedan = intovi.begin();
+    std::cout&lt;&lt;*jedan;
+    jedan++;
+    for(; jedan!=intovi.end();jedan++){
+        std::cout&lt;&lt;","&lt;&lt;*jedan;
+    }
+<a name="3"></a><font color="#00FFFF"><a href="match410-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+    std::cout&lt;&lt;std::endl;
+    }
+}
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string rijec, std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa){
+</font>    for(int i=0;i&lt;rijec.length();i++){
+        if(rijec[i]&gt;='A' &amp;&amp; rijec[i]&lt;='Z') {rijec[i]+=32;}
+    }
+<a name="0"></a><font color="#FF0000"><a href="match410-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+    std::set&lt;int&gt; skup;
+    auto it(mapa.find(rijec));
+    if(it == mapa.end()) throw std::logic_error("Pojam nije nadjen");
+    else skup = it-&gt;second;
+    return skup;
+}
+int main (){
+    std::cout&lt;&lt;"Unesite tekst: ";
+    std::string recenica;
+    std::getline(std::cin, recenica);
+	
+	std::vector&lt;std::string&gt; vek {DajVektorRijeci(recenica)};
+</font>	std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa;
+	
+    mapa = KreirajIndeksPojmova(recenica);
+	IspisiIndeksPojmova(mapa);
+	std::cout&lt;&lt;"Unesite rijec: ";
+	std::string rijec;
+    while(std::getline(std::cin, rijec) &amp;&amp; rijec!="."){
+        std::set&lt;int&gt; skup;
+        try{
+            skup = PretraziIndeksPojmova(rijec, mapa);
+            for(auto x: skup) std::cout&lt;&lt;x&lt;&lt;" ";
+        }catch(...){
+            std::cout&lt;&lt;"Unesena rijec nije nadjena!";
+        }
+        std::cout&lt;&lt;"\nUnesite rijec: ";
+    }
+
+	return 0;
+}</pre>
+</body>
+</html>

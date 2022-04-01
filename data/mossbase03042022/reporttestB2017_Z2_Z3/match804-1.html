@@ -1,0 +1,214 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student9325.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student1066.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+template&lt;typename Tip&gt;
+bool Periodicnost (const std::vector&lt;Tip&gt; &amp;v, int p)  // Provjerava da li je dati vektor periodican za dati period p
+{
+	if (p&gt;=v.size() || v.size()==1) return false;
+	for (int i = 0; i&lt;v.size()-p; i++)
+		if (fabs (v.at(i)-v.at(i+p))&gt;0.0000001) return false;
+	return true;
+
+}
+
+template &lt;typename Tip&gt;
+int OdrediOsnovniPeriod(const std::vector&lt;Tip&gt; &amp;v)  // Određuje osnovni period vektora zajedno sa funkcijom Periodicnost
+{
+	for (int i = 1; i&lt; v.size(); i++)
+		if (Periodicnost(v,i)) return i;
+	return 0;
+}
+
+template &lt;typename Tip&gt;
+void Periodiziraj(const std::vector&lt;Tip&gt; &amp;v, int Period, int &amp;koliko_puta) // Trazi kolika je vrijednost od koliko_puta
+{
+	if (!Period)   // Ako je period 0 onda moraju biti dva perioda
+		koliko_puta=2;
+	else {
+		double broj_perioda;
+		broj_perioda = double (v.size())/Period;
+		if ((broj_perioda-int(broj_perioda)) &lt; 0.000001)
+			koliko_puta=int(broj_perioda);
+		else
+			koliko_puta=int(broj_perioda)+1;
+	}
+}
+
+template &lt;typename Tip&gt;
+int Max (const std::vector&lt;Tip&gt; v) // Trazi najveci broj u vektoru
+{
+	int max(0);
+<a name="2"></a><font color="#0000FF"><a href="match804-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+	for (int i = 0; i&lt;v.size(); i++)
+		if (v.at(i)&gt;max) max=v.at(i);
+	return max;
+}
+
+template &lt;typename Tip&gt;
+</font>int SumaPeriode (const std::vector&lt;Tip&gt; v)  // Trazi sumu jednog perioda
+{
+	Tip suma(0);
+	int novi_period;
+
+	if (!OdrediOsnovniPeriod(v)) novi_period=v.size();
+	else novi_period=OdrediOsnovniPeriod(v);
+
+	for (int i = 0; i&lt;novi_period; i++)
+		suma+=v.at(i);
+	return suma;
+}
+
+template &lt;typename Tip&gt;
+Tip **AlocirajFragmentirano (const std::vector&lt;Tip&gt; &amp;v, int &amp;koliko_puta)
+{
+	try {
+		if (!v.size()) throw std::domain_error ("Prazan vektor!");
+		for (int i = 0; i&lt;v.size(); i++)
+			if (v.at(i)&lt;=0) throw std::domain_error ("Neispravan vektor!");
+	} catch (std::domain_error izuzetak) {
+		throw;
+	}
+
+	int broj(Max(v)),pomoc(broj),s(0),novi_period;   // s- mi govori koji je po redu element jedne periode // broj je najveci element vektora
+
+	if (!OdrediOsnovniPeriod(v)) novi_period=v.size();
+	else novi_period=OdrediOsnovniPeriod(v);
+
+	Periodiziraj (v,OdrediOsnovniPeriod(v),koliko_puta);
+
+	Tip **mat(new int *[novi_period*koliko_puta]);   // Broj redova matrice
+	for (int k = 0; k&lt;koliko_puta; k++) {
+		for (int i = 0; i&lt;novi_period; i++) {
+<a name="0"></a><font color="#FF0000"><a href="match804-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+			mat[s]=new int [v.at(i)];
+			for (int j = v.at(i)-1; j&gt;=0; j--) {
+				mat[s][j]=broj;
+</font>				broj--;
+			}
+			broj=pomoc;
+			s++;
+		}
+	}
+	return mat;
+}
+
+template &lt;typename Tip&gt;
+Tip **AlocirajKontinualno (const std::vector&lt;Tip&gt; &amp;v, int &amp;koliko_puta)
+{
+	try {
+		if (v.size()==0) throw std::domain_error ("Prazan vektor!");
+		for (int i = 0; i&lt;v.size(); i++)
+			if (v.at(i)&lt;=0) throw std::domain_error("Neispravan vektor!");
+	} catch (std::domain_error izuzetak) {
+		throw;
+	}
+	int novi_period;
+	if (!OdrediOsnovniPeriod(v)) novi_period=v.size();
+	else novi_period=OdrediOsnovniPeriod(v);
+	Periodiziraj(v,OdrediOsnovniPeriod(v),koliko_puta);
+
+	Tip **mat(new int*[novi_period*koliko_puta]);
+
+	mat[0]=new int[koliko_puta*SumaPeriode(v)];
+	int s(0);
+	for (int i = 1; i&lt;novi_period*koliko_puta; i++) {
+		mat[i]=mat[i-1]+v.at(s);
+		s++;
+		if (s==novi_period) s=0;
+	}
+	s=0;
+	for (int j = 0; j&lt;novi_period*koliko_puta; j++) {
+		Tip jedan(1);
+		for (int k = v.at(s)-1; k&gt;=0; k--) {
+			mat[j][k]=jedan;
+			jedan++;
+		}
+		s++;
+		if (s==novi_period) s=0;
+	}
+	return mat;
+}
+
+int main ()
+{
+	try {
+		std::cout&lt;&lt;"Unesite broj elemenata vektora: ";
+		int n;
+		std::cin&gt;&gt;n;
+		std::cout&lt;&lt;"Unesite elemente vektora: ";
+		std::vector&lt;int&gt; v;
+		for (int i = 0; i&lt;n; i++) {
+			int broj;
+			std::cin&gt;&gt;broj;
+			v.push_back(broj);
+		}
+
+		std::cout&lt;&lt;"Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+		int alokacija,koliko_puta;
+		std::cin&gt;&gt;alokacija;
+
+		if (alokacija) {
+			auto mat(AlocirajFragmentirano(v,koliko_puta));
+			std::cout&lt;&lt;"Dinamicki alocirana matrica:"&lt;&lt;std::endl;
+			int novi_period;
+			if (!OdrediOsnovniPeriod(v)) novi_period=v.size();  // novi_period je novi period vektora
+			else novi_period=OdrediOsnovniPeriod(v);
+			int s(0);   // s-je red matrice koju treba ispisati
+
+			for (int i = 0; i&lt;koliko_puta; i++) {
+				for (int k = 0; k&lt;novi_period; k++) {
+<a name="1"></a><font color="#00FF00"><a href="match804-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+					for (int j = 0; j&lt;v.at(k); j++) {
+						std::cout&lt;&lt;std::left&lt;&lt;std::setw(3)&lt;&lt;mat[s][j];
+</font>					}
+					s++;
+					std::cout&lt;&lt;std::endl;
+				}
+			}
+			for (int i = 0; i&lt;koliko_puta*3; i++) delete[] mat[i];
+			delete []mat;
+		} else {
+			auto mat(AlocirajKontinualno(v,koliko_puta));
+			std::cout&lt;&lt;"Dinamicki alocirana matrica:"&lt;&lt;std::endl;
+			int novi_period;
+			if (!OdrediOsnovniPeriod(v)) novi_period=v.size();  // novi_period je novi period vektora
+			else novi_period=OdrediOsnovniPeriod(v);
+			int s(0);   // s-je red matrice koju treba ispisati
+
+			for (int i = 0; i&lt;koliko_puta; i++) {
+				for (int k = 0; k&lt;novi_period; k++) {
+					for (int j = 0; j&lt;v.at(k); j++) {
+						std::cout&lt;&lt;std::left&lt;&lt;std::setw(3)&lt;&lt;mat[s][j];
+					}
+					s++;
+					std::cout&lt;&lt;std::endl;
+				}
+			}
+			delete [] mat[0];
+			delete [] mat;
+
+		}
+<a name="3"></a><font color="#00FFFF"><a href="match804-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+	} catch (std::domain_error izuzetak) {
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+	} catch (...) {
+		std::cout&lt;&lt;"Izuzetak: Nešto ne valja";
+	}
+	return 0;
+</font>}</pre>
+</body>
+</html>

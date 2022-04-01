@@ -1,0 +1,116 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student7633.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student9924.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match198-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+typedef std::vector&lt;std::vector&lt;double&gt; &gt; matrix;
+
+matrix UnesiMatricu(int x,int y)
+{
+	std::cout&lt;&lt;"Unesite elemente matrice: ";
+	matrix matrica(x, std::vector&lt;double&gt; (y));
+	for(int i=0; i&lt;x; i++)
+		for(int j=0; j&lt;y; j++)
+			std::cin&gt;&gt;matrica.at(i).at(j);
+	return matrica;
+}
+
+void IspisiMatricu(matrix matrica){
+	for(auto red:matrica){
+		for(auto element:red)
+		std::cout&lt;&lt;std::setw(6)&lt;&lt;element;
+		std::cout&lt;&lt;std::endl;
+	}
+}
+
+int SrednjiElementMatrice(matrix matrica){
+	return matrica.at(matrica.size()/2).at(matrica.size()/2);
+}
+int ZbirElemenataOmotaca(matrix matrica,int omotac){
+	int zbir(0);
+	for(int i=0;i&lt;matrica.size();i++)
+	   for(int j=0;j&lt;matrica.at(0).size();j++){
+	   	int pom1=std::min(matrica.size()- 1 -i,matrica.at(0).size()- 1 -j);
+	   	int pom2=std::min(i,j);
+	   	int minimalan=std::min(pom1,pom2);
+	   	if(minimalan==omotac)
+	   	     zbir+=matrica.at(i).at(j);
+	   }
+	   return zbir;
+}
+
+matrix IzvuciMatricu(matrix matrica,int x,int y,int velicina)
+{
+	matrix ekstraktovana(velicina,std::vector&lt;double&gt;(velicina));
+	for(int i=0; i&lt;velicina; i++)
+		for(int j=0; j&lt;velicina; j++)
+			ekstraktovana.at(i).at(j)=matrica.at(i+x).at(j+y);
+	return ekstraktovana;
+}
+
+
+bool JeLiPlanina(matrix matrica)
+{
+	for(int i=1; i&lt;matrica.size()/2; i++)
+		if(ZbirElemenataOmotaca(matrica,i) &lt;= ZbirElemenataOmotaca(matrica,i-1))
+			return false;
+	return true;
+}
+matrix NajvecaPlaninaMatrice(matrix matrica)
+{
+	bool flag(false);
+	for(int i=0;i&lt;matrica.size();i++){
+		if(matrica.at(0).size()!=matrica.at(i).size()) flag=true;
+	}
+	if(flag==true) throw std::domain_error("Matrica nije korektna");
+	int manja =std::min(matrica.size(),matrica.at(0).size());
+	matrix rezultat;
+	for(int velicina=1; velicina&lt;=manja; velicina++) {
+		for(int i=0; i&lt;=matrica.size()-velicina; i++) {
+			for(int j=0; j&lt;=matrica.at(0).size()-velicina; j++) {
+				matrix mat=IzvuciMatricu(matrica,i,j,velicina);
+				bool pomoc2=(mat.size()==rezultat.size()) &amp;&amp; (SrednjiElementMatrice(mat)&gt;SrednjiElementMatrice(rezultat));
+				bool pomoc1=mat.size()&gt;rezultat.size();
+				if(JeLiPlanina(mat) &amp;&amp; (pomoc1 || pomoc2)) rezultat=IzvuciMatricu(matrica,i,j,velicina);
+			}
+		}
+	}
+	return rezultat;
+}
+
+
+int main ()
+{
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m i n): ";
+	int m,n;
+	std::cin&gt;&gt;m&gt;&gt;n;
+	if(m&lt;0 || n&lt;0){
+		std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+		return 0;
+	}
+	matrix matrica=UnesiMatricu(m,n);
+	std::cout&lt;&lt;std::endl;
+	std::cout&lt;&lt;"Najveca planina unesene matrice je: "&lt;&lt;std::endl;
+	try{
+		IspisiMatricu(NajvecaPlaninaMatrice(matrica));
+	}
+	catch (const std::domain_error&amp; e){
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt; e.what() &lt;&lt;std::endl;
+	}
+	catch(...){
+		std::cout&lt;&lt;"Pogresan izuzetak!";
+</font>	}
+	return 0;
+}</pre>
+</body>
+</html>

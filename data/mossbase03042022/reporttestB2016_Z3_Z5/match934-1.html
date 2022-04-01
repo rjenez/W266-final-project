@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student1317.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student6332.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match934-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;stdexcept&gt;
+#include&lt;set&gt;
+#include&lt;vector&gt;
+using namespace std;
+
+struct Dijete {
+    string ime;
+    Dijete *sljedeci;
+</font>};
+Dijete *KreirajListu(vector&lt;string&gt; v)
+{
+    Dijete *pocetak=nullptr, *prethodni=nullptr;
+    for(int i=0; i&lt;v.size(); i++) {
+        Dijete *novi(new Dijete);
+        novi-&gt;ime=v[i];
+        novi-&gt;sljedeci=nullptr;
+        if(!pocetak) pocetak=novi;
+        else prethodni-&gt;sljedeci=novi;
+        prethodni=novi;
+
+    }
+    prethodni-&gt;sljedeci=pocetak;
+    return pocetak;
+}
+
+
+int KolikoSlova(string s)
+{
+    int brojac=0;
+    for(int i=0; i&lt;s.size(); i++)
+<a name="0"></a><font color="#FF0000"><a href="match934-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+        if((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')) brojac ++;
+    return brojac;
+}
+
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector&lt;string&gt; v, int k)
+{
+    if(k&lt;1 || k&gt;v.size()) throw logic_error("Razvrstavanje nemoguce");
+</font>    auto pok=KreirajListu(v);
+    int n=v.size();
+    
+    auto pomoc=pok-&gt;sljedeci;
+    while(pomoc-&gt;sljedeci != pok) pomoc=pomoc-&gt;sljedeci;
+    
+    vector&lt;set&lt;string&gt;&gt; skup(k);
+    int x=n%k, x1=int(n/k)+1;
+    int y1=int(n/k);
+    int p=1;
+    for(int i=0; i&lt;x; i++) {
+        for(int j=0; j&lt;x1; j++) {
+            int m=0;
+            
+            while(m&lt;p-1) {
+                pomoc=pok;
+                pok=pok-&gt;sljedeci;
+                m++;
+            }
+
+            p=KolikoSlova(pok-&gt;ime);
+            skup[i].insert(pok-&gt;ime);
+            auto pom=pok;
+            pok=pok-&gt;sljedeci;
+            pomoc-&gt;sljedeci=pok;
+            delete pom;
+
+        }
+
+    }
+
+    for(int i=x; i&lt;k; i++) {
+        for(int j=0; j&lt;y1; j++) {
+            int m=0;
+            
+            while(m&lt;p-1) {
+                pomoc=pok;
+                pok=pok-&gt;sljedeci;
+                m++;
+            }
+
+            p=KolikoSlova(pok-&gt;ime);
+            skup[i].insert(pok-&gt;ime);
+            auto pom=pok;
+            pok=pok-&gt;sljedeci;
+            pomoc-&gt;sljedeci=pok;
+            delete pom;
+
+        }
+    }
+
+    return skup;
+}
+
+int main ()
+{
+    cout&lt;&lt;"Unesite broj djece: ";
+    int n;
+    cin&gt;&gt;n;
+    cout&lt;&lt;"Unesite imena djece: \n";
+    vector&lt;string&gt; v(n);
+    cin.ignore(1000, '\n');
+    for(int i=0; i&lt;n; i++) getline(cin, v[i]);
+    cout&lt;&lt;"Unesite broj timova: ";
+    int k;
+    cin&gt;&gt;k;
+    try {
+        vector&lt;set&lt;string&gt;&gt; skup;
+<a name="2"></a><font color="#0000FF"><a href="match934-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+        skup=Razvrstavanje(v,k);
+
+        for(int i=0; i&lt;skup.size(); i++) {
+            cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+            auto it=skup[i].begin();
+</font>            int x=distance(skup[i].begin(), skup[i].end());
+            for(int i=0; i&lt;x-1; i++) {
+                cout&lt;&lt;*it&lt;&lt;", ";
+                it++;
+            }
+            cout&lt;&lt;*it;
+            cout&lt;&lt;endl;
+        }
+    }
+    catch(logic_error izuzetak){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+    }
+    return 0;
+}</pre>
+</body>
+</html>

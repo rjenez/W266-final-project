@@ -1,0 +1,162 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student4852.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student1110.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+std::string ObrniRijec (std::string rijec){
+	for(int i=0; i&lt;rijec.length()/2; i++){
+	    std::string pomocna;
+	    pomocna.resize(1);
+	    pomocna[0]=rijec[i];
+	    rijec[i]=rijec[rijec.length()-1-i];
+	    rijec[rijec.length()-1-i]=pomocna[0];
+	}
+	return rijec;
+}
+
+std::string OvoPigNesto (std::string rijec){
+	std::string pomocna;
+	pomocna.resize(0);
+	pomocna[0]=rijec[0];
+	for(int i=0; i&lt;rijec.length()-1; i++){
+		rijec[i]=rijec[i+1];
+		if(i==rijec.length()-2)rijec[rijec.length()-1]=pomocna[0];
+	}
+	rijec+="ay";
+	return rijec;
+}
+
+std::string ObrniFraze(std::string a, std::vector&lt;std::string&gt; b){
+	for(int i=0; i&lt;b.size(); i++){ 
+	    for(int j=0; j&lt;a.length(); j++){
+	    	int z=0;
+	    	std::string f(b[i]);
+	    	//std::cout &lt;&lt; "b[" &lt;&lt; i &lt;&lt; "]= " &lt;&lt; b[i] &lt;&lt; " \n";
+		    while(a[j]==f[z]){
+		    	z++;
+		    	j++;
+                if(z==b[i].length()){
+                	for(int x=0; x&lt;z; x++){
+                		std::string obrnuta(ObrniRijec(b[i]));
+                	    a[j-z+x]=obrnuta[x];
+                	}
+                	break;
+                }
+                if(j&gt;=a.length())break;
+		    }
+	    }
+	}
+	return a;
+}
+
+std::string IzmijeniUPigLatin(std::string a, std::vector&lt;std::string&gt; b){
+	
+	for(int i=0; i&lt;b.size(); i++){
+<a name="0"></a><font color="#FF0000"><a href="match516-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_10.gif"/></a>
+
+		for(int j=0; j&lt;b[i].length(); j++){
+			if( (b[i][j]&lt;'A' || b[i][j]&gt;'Z') &amp;&amp; (b[i][j]&lt;'a' || b[i][j]&gt;'z') ) throw std::domain_error("Nekorektan izbor rijeci");
+		}
+	}
+	
+	for(int i=0; i&lt;b.size(); i++){
+		for(int j=0; j&lt;a.length(); j++){
+</font>			int z=0;
+			std::string f(b[i]);
+			while(a[j]==f[z]){
+				z++;
+				j++;
+				//std::cout &lt;&lt; " a-j ___" &lt;&lt; a[j] &lt;&lt; "____ !\n";
+				if(z==b[i].length() &amp;&amp; ((a[j]&lt;'A' || a[j] &gt;'Z') &amp;&amp; (a[j]&lt;'a' || a[j]&gt;'z')) &amp;&amp; (j-z==0 || ((a[j-z-1]&lt;'A' || a[j-z-1]&gt;'Z') &amp;&amp; (a[j-z-1]&lt;'a' || a[j-z-1]&gt;'z')) )){
+					a.resize(a.length()+2);
+					for(int x=a.length()-1; x&gt;=j; x--){
+						a[x]=a[x-2];
+					}
+					std::string ObradjenaRijec(OvoPigNesto(b[i]));
+					for(int x=0; x&lt;ObradjenaRijec.length(); x++){
+						a[j-z+x]=ObradjenaRijec[x];
+					}
+					break;
+				}
+				if(j&gt;a.length())break;
+			}
+		}
+	}
+	/*if(b.size()==0){ // svaka rijec treba kad se unese prazan vektor ko drugi parametar
+		for(int i=0; i&lt;a.length(); i++){
+			std::string rijec, slovo;
+			slovo.resize(1);
+			int z=i, br=1;
+			while(((a[i]&gt;'A' &amp;&amp; a[i]&lt;'Z') || (a[i]&gt;'a' &amp;&amp; a[i]&lt;'z')) &amp;&amp; i&lt;a.length()){ // ovaj dio char string nijedobarrr
+				slovo[0]=a[i];
+				std::cout &lt;&lt; "slovo " &lt;&lt; slovo &lt;&lt; " __";
+				rijec.resize(br);
+				rijec[br-1]=slovo[0];
+				i++;
+				br++;
+			}
+			std::cout &lt;&lt; "kkk " &lt;&lt; rijec &lt;&lt; " kkk \n";
+			if(rijec.size()!=0){
+				std::string ObradjenaRijec(OvoPigNesto(rijec));
+				a.resize(a.length()+2);
+				for(int x=a.length()-1; x&gt;=z; x--){
+					a[x]=a[x-2];
+				}
+				for(int x=0; x&lt;ObradjenaRijec.length(); x++){
+					a[z+x]=ObradjenaRijec[x];
+				}
+			}
+			
+		}
+	} */
+	return a;
+} 
+
+int main(){
+	std::vector&lt;std::string&gt; a(0);
+	std::string recenica, rijeci;
+<a name="1"></a><font color="#00FF00"><a href="match516-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+	std::cout &lt;&lt; "Unesite recenicu: ";
+	std::getline(std::cin, recenica);
+	std::cout &lt;&lt; "Unesite fraze: ";
+	while(std::cin.peek()!='\n'){
+		std::getline(std::cin, rijeci);
+		a.push_back(rijeci);
+		//std::cout &lt;&lt; "Obrnutoo : " &lt;&lt; ObrniRijec(rijeci) &lt;&lt; "   \n";//
+		//std::cout &lt;&lt; "PigLatin: " &lt;&lt; OvoPigNesto(rijeci) &lt;&lt; "  \n";//
+	}
+
+	try{
+</font>	    std::string x(IzmijeniUPigLatin(recenica, a));
+	    std::cout &lt;&lt; "Recenica nakon PigLatin transformacije: ";
+	    std::cout &lt;&lt; x;
+	}
+	catch(std::domain_error izuzetak){
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+	}
+	
+	std::cout &lt;&lt; "\nRecenica nakon obrtanja fraza: ";
+	std::string y(ObrniFraze(recenica, a));
+	std::cout &lt;&lt; y;
+	return 0;
+}</pre>
+</body>
+</html>

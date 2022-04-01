@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student5244.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student6040.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 1
+//Autotestovi by Enil Pajic (epajic1@etf.unsa.ba)
+#include &lt;iostream&gt;
+#include &lt;functional&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+
+
+<a name="0"></a><font color="#FF0000"><a href="match80-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_97.gif"/></a>
+
+std::function&lt;double(double)&gt; BaricentricnaInterpolacija(std::vector&lt;std::pair&lt;double,double&gt;&gt; v, int d){
+    int n(v.size());
+    if(d&lt;0 || d&gt;=n) throw std::domain_error("Nedozvoljen red");
+    return [v,d,n](double x){
+        double f;
+        double nazivnik(0), brojnik(0);
+        for(int i=1;i&lt;=n;i++){
+            double w(0);
+            for(int j=std::max(1,i-d);j&lt;=std::min(i,n-d);j++){
+                double proizvod(1);
+                for(int h=j;h&lt;=j+d;h++){
+                    if(h!=i)
+                        proizvod*=(1/(v[i-1].first-v[h-1].first));
+                }
+                w+=pow(-1, j-1)*proizvod;
+            }
+            if(x==v[i-1].first){
+                return v[i-1].second;
+            }
+                brojnik+=w*v[i-1].second/(x-v[i-1].first);
+                nazivnik+=w/(x-v[i-1].first);
+            
+        }
+        f=brojnik/nazivnik;
+        return f;
+    };
+}
+
+std::function&lt;double(double)&gt; BaricentricnaInterpolacija(std::function&lt;double(double)&gt; f, double xmin, double xmax, double deltax, int d){
+         
+        std::vector&lt;std::pair&lt;double,double&gt;&gt; v;
+        for(double i=xmin;i&lt;=xmax;i+=deltax){
+            std::pair&lt;double,double&gt; par;
+            par.first=i;
+            par.second=f(par.first);
+            v.push_back(par);
+        }
+        if(d&lt;0 || d&gt;=v.size()) throw std::domain_error("Nedozvoljen red");
+        std::function&lt;double(double)&gt; fun(BaricentricnaInterpolacija(v, d));
+        return fun;
+    }
+
+int main ()
+{   try{
+        std::cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+        int izbor;
+        std::cin&gt;&gt;izbor;
+        if(izbor==1){
+            std::cout&lt;&lt;"Unesite broj cvorova: ";
+            int n;
+            std::cin&gt;&gt;n;
+            std::vector&lt;std::pair&lt;double,double&gt;&gt; v;
+            std::cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+            for(int i=0;i&lt;n;i++){
+                std::pair&lt;double,double&gt; par;
+                std::cin&gt;&gt;par.first;
+                std::cin&gt;&gt;par.second;
+                v.push_back(par);
+            }
+            for(int i=0;i&lt;n-1;i++){
+                for(int j=1;j&lt;n;j++){
+                    if(v[i].first==v[j].first &amp;&amp; i!=j){
+                        throw std::domain_error("Neispravni cvorovi");
+                    }
+                }
+            }
+            std::cout&lt;&lt;"Unesite red interpolacije: ";
+            int d;
+            std::cin&gt;&gt;d;
+            //if(d&lt;0 || d&gt;=n) throw std::domain_error("Nedozvoljen red");
+            for(;;){
+                double x;
+                std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+                std::cin&gt;&gt;x;
+                if(!std::cin) break;
+                std::function&lt;double(double)&gt; func(BaricentricnaInterpolacija(v,d));
+                std::cout&lt;&lt;"f("&lt;&lt;x&lt;&lt;") = "&lt;&lt;func(x)&lt;&lt;std::endl;
+            }
+        }
+        else if(izbor==2){
+            std::cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+            double max, min, korak;
+            std::cin&gt;&gt;min&gt;&gt;max&gt;&gt;korak;
+            if(min&gt;max || korak&lt;=0) throw std::domain_error("Nekorektni parametri");
+            std::cout&lt;&lt;"Unesite red interpolacije: ";
+            int d;
+            auto fija=[](double u)-&gt;double {return pow(u,2)+sin(u);};
+            std::cin&gt;&gt;d;
+            std::vector&lt;std::pair&lt;double,double&gt;&gt; pomocni;
+            for(double i=min;i&lt;=max;i+=korak){
+                std::pair&lt;double,double&gt; par;
+                par.first=i;
+                par.second=fija(par.first);
+                pomocni.push_back(par);
+            }
+            //if(d&lt;0 || d&gt;=pomocni.size()) throw std::domain_error("Nedozvoljen red");
+            for(;;){
+                double x;
+                std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+                std::cin&gt;&gt;x;
+                if(!std::cin) break;
+                std::function&lt;double(double)&gt; bar(BaricentricnaInterpolacija(fija,min,max,korak,d));
+                std::cout&lt;&lt;"f("&lt;&lt;x&lt;&lt;") = "&lt;&lt;fija(x)&lt;&lt;" fapprox("&lt;&lt;x&lt;&lt;") = "&lt;&lt;bar(x)&lt;&lt;std::endl;
+            }
+        }
+    }
+    catch(std::domain_error e){
+        std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

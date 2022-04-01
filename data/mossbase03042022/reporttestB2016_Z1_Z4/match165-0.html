@@ -1,0 +1,131 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student6995.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student6995.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match165-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+bool DaLiJeSlovo(char s){
+	return ((s &gt;= 'a' &amp;&amp; s &lt;= 'z') || (s &gt;= 'A' &amp;&amp; s &lt;= 'Z'));
+}
+bool ValidanSpisak(std::vector&lt;std::string&gt; s){
+	
+	for(auto x : s){
+		for(auto y : x){
+			if(!DaLiJeSlovo(y)) return false;
+		}
+	}
+	
+	return true;
+}
+std::string ObrniFraze(std::string recenica,std::vector&lt;std::string&gt; s){
+
+	for(auto fraza : s){
+		for(int i(0);i &lt; recenica.length();i++){
+			
+			if(fraza.length() &amp;&amp; i + fraza.length() &lt;= recenica.length() &amp;&amp; (recenica.substr(i,fraza.length()) == fraza)){
+				int tmp(i);
+				for(int j(fraza.length()-1);j &gt;= 0;j--){
+					recenica[i] = fraza[j];
+					i++;
+				}
+				i = tmp;
+				
+			}
+			
+		}
+	}
+
+	return recenica;
+}
+std::string IzmijeniUPigLatin(std::string recenica,std::vector&lt;std::string&gt; spisak_rijeci){
+	std::string piglatin;
+	int i(0);
+	if(!ValidanSpisak(spisak_rijeci)){
+		throw std::domain_error("Nekorektan izbor rijeci");
+	}
+	if(!spisak_rijeci.size() || (spisak_rijeci.size() == 1 &amp;&amp; !spisak_rijeci[0].size())){
+		while(i &lt; recenica.length()){
+			while(i &lt; recenica.length() &amp;&amp; !DaLiJeSlovo(recenica[i])){
+				piglatin.push_back(recenica[i]);
+				i++;
+			}
+			if(DaLiJeSlovo(recenica[i])){
+				int tmp(i);
+				i++;
+			
+				while(i &lt; recenica.length() &amp;&amp; DaLiJeSlovo(recenica[i])){
+				piglatin.push_back(recenica[i]);
+				i++;
+				}
+				piglatin.push_back(recenica[tmp]);
+				piglatin.push_back('a');
+				piglatin.push_back('y');
+			}else piglatin.push_back(recenica[i++]);
+		}
+		return piglatin;
+	}
+	while(i &lt; recenica.length()){
+		while(i &lt; recenica.length() &amp;&amp; !DaLiJeSlovo(recenica[i])){
+			piglatin.push_back(recenica[i]);
+			i++;
+		}
+		for(auto fraza : spisak_rijeci){
+			if(fraza.length() &amp;&amp; (i+fraza.length()==recenica.length() || (i+fraza.length() &lt; recenica.length() &amp;&amp; !DaLiJeSlovo(recenica[i+fraza.length()]))) &amp;&amp; fraza==recenica.substr(i,fraza.length())){
+			int tmp(i);
+			i++;
+			
+			while(i &lt; tmp + fraza.length()){
+				piglatin.push_back(recenica[i]);
+				i++;
+			}
+			piglatin.push_back(recenica[tmp]);
+			piglatin+="ay";
+			break;
+			}
+		
+		}
+		while(i &lt; recenica.length() &amp;&amp; DaLiJeSlovo(recenica[i])){
+			piglatin.push_back(recenica[i++]);
+		}
+	}
+		
+	
+	
+	
+	return piglatin;
+}
+int main ()
+{
+std::string s;
+std::string x;
+std::vector&lt;std::string&gt; vektor;
+std::cout &lt;&lt; "Unesite recenicu: ";
+std::getline(std::cin,s);
+std::cout &lt;&lt; "Unesite fraze: ";
+for(;;){
+	
+	std::getline(std::cin,x);
+	vektor.push_back(x);
+	if(std::cin.peek() == '\n') break;
+	
+}
+try{
+	auto s1(IzmijeniUPigLatin(s,vektor));
+	std::cout &lt;&lt; "Recenica nakon PigLatin transformacije: " &lt;&lt; s1;
+}
+catch(std::domain_error izuzetak){
+	std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+}
+	std::cout &lt;&lt; "\nRecenica nakon obrtanja fraza: " &lt;&lt; ObrniFraze(s,vektor);
+
+	return 0;
+</font>}</pre>
+</body>
+</html>

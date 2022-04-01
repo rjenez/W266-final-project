@@ -1,0 +1,263 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student1597.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student1597.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match54-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_45.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;utility&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+#include &lt;iterator&gt;
+#include &lt;algorithm&gt;
+
+enum class Boje {
+    Pik, Tref, Herc, Karo
+};
+
+std::vector&lt;std::string&gt; imena_boja{"Pik", "Tref", "Herc", "Karo"};
+std::vector&lt;std::string&gt; imena_karata{"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+
+bool KriterijZaProvjeru(std::pair&lt;Boje, std::string&gt; prvi, std::pair&lt;Boje, std::string&gt; drugi) {
+        return (prvi.first&lt;drugi.first 
+        || prvi.first==drugi.first &amp;&amp; std::find(imena_karata.begin(), imena_karata.end(), prvi.second)
+        &lt;std::find(imena_karata.begin(), imena_karata.end(), drugi.second));
+    }
+
+std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; KreirajSpil() {
+    std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; spil_karata;
+    for (int i=0; i&lt;4; i++) {
+        for (std::string ime_karte : imena_karata) {
+            spil_karata.push_back(std::make_pair(Boje(i), ime_karte));
+        }
+    }
+    return spil_karata;
+}
+
+void IzbaciKarte
+(std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; &amp;spil_karata, std::multimap&lt;Boje, std::string&gt; &amp;multi) {
+    if (spil_karata.size()&gt;52) throw std::logic_error("Neispravna lista!");
+    bool besmisleni(false);
+    for (auto it=spil_karata.begin(); it!=spil_karata.end(); it++) {
+        if ((it-&gt;first!=Boje::Pik &amp;&amp; it-&gt;first!=Boje::Tref &amp;&amp; it-&gt;first!=Boje::Herc &amp;&amp; it-&gt;first!=Boje::Karo) 
+        || (std::find(imena_karata.begin(), imena_karata.end(), it-&gt;second)==imena_karata.end())) {
+            besmisleni=true;
+            break;
+        }
+    }
+    if (besmisleni) throw std::logic_error("Neispravna lista!");
+    bool sortirana(true);
+    auto kraj=spil_karata.end();
+    kraj--;
+    for (auto it=spil_karata.begin(); it!=kraj; it++) {
+        it++;
+        auto sljedeci=it;
+        it--;
+        if (!KriterijZaProvjeru(*it, *sljedeci)) {
+            sortirana=false;
+            break;
+        }
+    }
+    if (!sortirana) throw std::logic_error("Neispravna lista!");
+    for (auto it=spil_karata.begin(); it!=spil_karata.end(); it++) {
+        bool u_oba_kontejnera(false);
+        std::multimap&lt;Boje, std::string&gt;::iterator it_map;
+        for (it_map=multi.begin(); it_map!=multi.end(); it_map++) {
+            if (*it==std::make_pair(it_map-&gt;first, it_map-&gt;second)) {
+                u_oba_kontejnera=true;
+                break;
+            }
+        }
+        if (u_oba_kontejnera) {
+            it_map=multi.erase(it_map);
+            it=spil_karata.erase(it);
+            it--;
+        }
+    }
+}
+
+std::queue&lt;std::pair&lt;std::string, std::string&gt;&gt; IzbaciKarteRazbrajanjem
+(std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; &amp;spil_karata, const short int &amp;korak_raz, const int &amp;cijeli) {
+    if (korak_raz&lt;1 || korak_raz&gt;52) throw std::logic_error("Neispravni elementi za izbacivanje!");
+    if (cijeli&lt;1) throw std::logic_error("Neispravni elementi za izbacivanje!");
+    if (spil_karata.size()&gt;52) throw std::logic_error("Neispravna lista!");
+    bool besmisleni(false);
+    for (auto it=spil_karata.begin(); it!=spil_karata.end(); it++) {
+        if ((it-&gt;first!=Boje::Pik &amp;&amp; it-&gt;first!=Boje::Tref &amp;&amp; it-&gt;first!=Boje::Herc &amp;&amp; it-&gt;first!=Boje::Karo) 
+        || (std::find(imena_karata.begin(), imena_karata.end(), it-&gt;second)==imena_karata.end())) {
+            besmisleni=true;
+            break;
+        }
+    }
+    if (besmisleni) throw std::logic_error("Neispravna lista!");
+    bool sortirana(true);
+    auto kraj=spil_karata.end();
+    kraj--;
+    for (auto it=spil_karata.begin(); it!=kraj; it++) {
+        it++;
+        auto sljedeci=it;
+        it--;
+        if (!KriterijZaProvjeru(*it, *sljedeci)) {
+            sortirana=false;
+            break;
+        }
+    }
+    if (!sortirana) throw std::logic_error("Neispravna lista!");
+    std::queue&lt;std::pair&lt;std::string, std::string&gt;&gt; red;
+    std::list&lt;std::pair&lt;Boje, std::string&gt;&gt;::iterator it;
+    it=spil_karata.begin();
+    int duzina(spil_karata.size());
+    short int mjesto(-1);
+    int broj_puta(0);
+    for (int i=0; i&lt;cijeli; i++) {
+        mjesto+=korak_raz;
+        if (mjesto&gt;=duzina) {
+            std::advance(it, korak_raz-1-duzina+broj_puta);
+            mjesto-=duzina;
+        }
+        else std::advance(it, korak_raz-1);
+        red.push(std::make_pair(imena_boja.at(int(it-&gt;first)), it-&gt;second));
+        it=spil_karata.erase(it);
+        broj_puta++;
+        if (spil_karata.size()==0) break;
+    }
+    return red;
+}
+
+void VratiPrvihNKarata
+(std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; &amp;spil_karata, std::queue&lt;std::pair&lt;std::string, std::string&gt;&gt; &amp;red, int n) {
+</font><a name="0"></a><font color="#FF0000"><a href="match54-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_50.gif"/></a>
+
+    if (n&lt;0) throw std::domain_error("Broj n je besmislen!");
+    if (n&gt;red.size()) throw std::range_error("Nedovoljno karata u redu!");
+    bool besmislene_karte(false);
+    for (int i=0; i&lt;red.size(); i++) {
+        if (std::find(imena_boja.begin(), imena_boja.end(), red.front().first)==imena_boja.end()) {
+            besmislene_karte=true;
+            break;
+        }
+        if (std::find(imena_karata.begin(), imena_karata.end(), red.front().second)==imena_karata.end()) {
+            besmislene_karte=true;
+            break;
+        }
+        red.push(red.front());
+        red.pop();
+    }
+    if (besmislene_karte) throw std::logic_error("Neispravne karte!");
+    if (spil_karata.size()&gt;52) throw std::logic_error("Neispravna lista!");
+    bool besmisleni(false);
+    for (auto it=spil_karata.begin(); it!=spil_karata.end(); it++) {
+        if ((it-&gt;first!=Boje::Pik &amp;&amp; it-&gt;first!=Boje::Tref &amp;&amp; it-&gt;first!=Boje::Herc &amp;&amp; it-&gt;first!=Boje::Karo) 
+        || (std::find(imena_karata.begin(), imena_karata.end(), it-&gt;second)==imena_karata.end())) {
+            besmisleni=true;
+            break;
+        }
+    }
+    if (besmisleni) throw std::logic_error("Neispravna lista!");
+    bool sortirana(true);
+    auto kraj=spil_karata.end();
+    kraj--;
+    for (auto it=spil_karata.begin(); it!=kraj; it++) {
+        it++;
+        auto sljedeci=it;
+        it--;
+        if (!KriterijZaProvjeru(*it, *sljedeci)) {
+            sortirana=false;
+            break;
+        }
+    }
+    if (!sortirana) throw std::logic_error("Neispravna lista!");
+    int redni_broj(0);
+    for (int i=0; i&lt;n; i++) {
+        for (int i=0; i&lt;imena_boja.size(); i++) {
+            if (red.front().first==imena_boja.at(i)) {
+                redni_broj=i;
+                break;
+            }
+        }
+        bool pronadjena(false);
+        for (auto it=spil_karata.begin(); it!=spil_karata.end(); it++) {
+            if (*it==std::make_pair(Boje(redni_broj), red.front().second)) {
+                pronadjena=true;
+                break;
+            }
+        }
+        if (pronadjena) red.pop();
+        else {
+            spil_karata.push_back(std::make_pair(Boje(redni_broj), red.front().second));
+            red.pop();
+        }
+    }
+    spil_karata.sort([imena_karata](std::pair&lt;Boje, std::string&gt; prvi, std::pair&lt;Boje, std::string&gt; drugi) {
+        return (prvi.first&lt;drugi.first 
+        || prvi.first==drugi.first &amp;&amp; std::find(imena_karata.begin(), imena_karata.end(), prvi.second)
+        &lt;std::find(imena_karata.begin(), imena_karata.end(), drugi.second));
+    });
+}
+
+int main ()
+{
+    try {
+        short int korak_razbrajanja;
+        int broj_za_izbaciti, trenutni(52), broj_za_vratiti;
+        std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; aktuelni_spil;
+        aktuelni_spil=KreirajSpil();
+        std::cout &lt;&lt; "Unesite korak razbrajanja: ";
+        std::cin &gt;&gt; korak_razbrajanja;
+        std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+        std::cin &gt;&gt; broj_za_izbaciti;
+        std::queue&lt;std::pair&lt;std::string, std::string&gt;&gt; red;
+        red=IzbaciKarteRazbrajanjem(aktuelni_spil, korak_razbrajanja, broj_za_izbaciti);
+        trenutni-=broj_za_izbaciti;
+        std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; trenutni &lt;&lt; " karata, i to:" &lt;&lt; std::endl;
+        std::list&lt;std::pair&lt;Boje, std::string&gt;&gt;::iterator it(aktuelni_spil.begin());
+        std::cout &lt;&lt; "Pik: ";
+        while ((it-&gt;first)==Boje::Pik) std::cout &lt;&lt; (it++)-&gt;second &lt;&lt; " ";
+        std::cout &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Tref: ";
+        while ((it-&gt;first)==Boje::Tref) std::cout &lt;&lt; (it++)-&gt;second &lt;&lt; " ";
+        std::cout &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Herc: ";
+        while ((it-&gt;first)==Boje::Herc) std::cout &lt;&lt; (it++)-&gt;second &lt;&lt; " ";
+        std::cout &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Karo: ";
+        while ((it-&gt;first)==Boje::Karo) std::cout &lt;&lt; (it++)-&gt;second &lt;&lt; " ";
+        std::cout &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Unesite broj karata koje zelite vratiti u spil: ";
+        std::cin &gt;&gt; broj_za_vratiti;
+        VratiPrvihNKarata(aktuelni_spil, red, broj_za_vratiti);
+        trenutni+=broj_za_vratiti;
+        std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; trenutni &lt;&lt; " karata, i to:" &lt;&lt; std::endl;
+        std::list&lt;std::pair&lt;Boje, std::string&gt;&gt;::iterator iterat(aktuelni_spil.begin());
+        std::cout &lt;&lt; "Pik: ";
+        while ((iterat-&gt;first)==Boje::Pik) std::cout &lt;&lt; (iterat++)-&gt;second &lt;&lt; " ";
+        std::cout &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Tref: ";
+        while ((iterat-&gt;first)==Boje::Tref) std::cout &lt;&lt; (iterat++)-&gt;second &lt;&lt; " ";
+        std::cout &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Herc: ";
+        while ((iterat-&gt;first)==Boje::Herc) std::cout &lt;&lt; (iterat++)-&gt;second &lt;&lt; " ";
+        std::cout &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Karo: ";
+        while ((iterat-&gt;first)==Boje::Karo) std::cout &lt;&lt; (iterat++)-&gt;second &lt;&lt; " ";
+    }
+    catch(std::logic_error greska) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; greska.what();
+    }
+    catch(std::range_error greska) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; greska.what();
+</font>    }
+    catch(std::domain_error greska) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; greska.what();
+    }
+	return 0;
+}
+</pre>
+</body>
+</html>

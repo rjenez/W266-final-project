@@ -1,0 +1,175 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student2664.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student2664.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match194-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt; //pair
+#include &lt;functional&gt;
+#include &lt;algorithm&gt;
+#include &lt;exception&gt;
+#include &lt;cstring&gt;
+#include &lt;cmath&gt; //??
+#include &lt;string&gt;
+
+using std::vector;
+using std::pair;
+using std::function;
+using std::sort;
+using std::domain_error;
+using std::range_error;
+using std::cout;
+using std::cin;
+using std::endl;
+using std::lower_bound;
+using std::upper_bound;
+using std::binary_search;
+using std::make_pair;
+using std::fabs; //??
+using std::sin; //??
+using std::string;
+
+typedef pair&lt;double, double&gt; Par;
+
+const double EPS(0.0001);
+
+bool PonavljaLiSePrvi(const vector&lt;Par&gt; &amp;vec, Par par){
+  int br(-1);
+  for(const Par &amp;x : vec) 
+    if(fabs(x.first - par.first) &lt; EPS) {
+      br++;
+      if(br&gt;0) return true;
+    }
+  return false;
+}
+
+bool FjaKriterija(Par par1, Par par2){
+  return par1.first &lt; par2.first;  
+}
+
+double fja(double x){ return x*x + sin(x);}
+
+template &lt;typename TipPrvog, typename TipDrugog&gt;
+  pair&lt;TipPrvog, TipDrugog&gt; NapraviPar(TipPrvog prvi, TipDrugog drugi){
+    return {prvi, drugi};
+  }
+
+function&lt;double(double)&gt; LinearnaInterpolacija(vector&lt;Par&gt; vec){
+  sort(vec.begin(), vec.end(), FjaKriterija);
+  for(Par par : vec)  if(PonavljaLiSePrvi(vec, par)) throw domain_error("Neispravni cvorovi");
+  
+  return [vec](double x){
+    if(x &lt; vec[0].first || x &gt; vec[vec.size()-1].first) throw range_error("Argument izvan opsega");
+    
+    Par tmp_par(NapraviPar(x,0));
+    if(binary_search(vec.begin(), vec.end(), tmp_par, FjaKriterija)) return lower_bound(vec.begin(), vec.end(), tmp_par, FjaKriterija) -&gt; second;
+    
+    auto it_manji = upper_bound(vec.begin(), vec.end(), tmp_par, FjaKriterija);
+    auto it_veci = lower_bound(vec.begin(), vec.end(), tmp_par, FjaKriterija);
+    if(it_manji == it_veci) it_manji--;
+    
+    double y(it_manji-&gt;second);
+    y += (x - it_manji-&gt;first)*(it_veci-&gt;second - it_manji-&gt;second)/(it_veci-&gt;first - it_manji-&gt;first);
+    return y;
+  };
+  
+}
+
+function&lt;double(double)&gt; LinearnaInterpolacija(function&lt;double(double)&gt; fun, double xmin, double xmax, double deltax){
+ if(xmin &gt; xmax || deltax &lt;= 0) throw domain_error("Nekorektni parametri"); 
+ 
+ vector&lt;Par&gt; vec;
+ double x(xmin);
+ while(x &lt; xmax) {
+   vec.push_back({x, fun(x)});
+   x += deltax;
+ }
+ 
+ return LinearnaInterpolacija(vec);
+}
+
+
+int main (){
+  int opcija(0), broj_cvorova(0);
+  
+  cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): "; 
+  cin &gt;&gt; opcija;
+  function&lt;double(double)&gt; f;
+  string approx("");
+  
+  if(opcija == 1){
+    vector&lt;Par&gt; vec;
+    cout &lt;&lt; "Unesite broj cvorova: ";
+    cin &gt;&gt; broj_cvorova;
+    cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+    for(int i=0; i&lt;broj_cvorova; i++){
+      double x, y;
+      cin &gt;&gt; x &gt;&gt; y;
+      vec.push_back({x, y});
+    }
+    try{
+      f = LinearnaInterpolacija(vec);
+    }
+    catch(range_error er){
+      cout &lt;&lt; er.what() &lt;&lt; endl;
+      return 0;
+    }
+    catch(domain_error er){
+      cout &lt;&lt; er.what() &lt;&lt; endl;
+      return 0;
+    }
+  }
+  else if(opcija == 2){
+    approx = "approx";
+    cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+    double minx, maxx, deltax;
+    cin &gt;&gt; minx &gt;&gt; maxx &gt;&gt; deltax;
+    try{
+      f = LinearnaInterpolacija(fja, minx, maxx, deltax);
+    }
+    catch(range_error er){ //??
+      cout &lt;&lt; er.what() &lt;&lt; endl;
+      return 0;
+    }
+    catch(domain_error er){
+      cout &lt;&lt; er.what() &lt;&lt; endl;
+      return 0;
+    }
+  } 
+  //else  //??
+  
+  do{
+    double argument;
+    cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+    cin &gt;&gt; argument;
+    if(!cin){
+      cin.ignore(10000, '\n');
+      break;
+    }
+    
+    try{
+      f(argument);
+    }
+    catch(range_error er){
+      cout &lt;&lt; er.what() &lt;&lt; endl;
+      continue;
+    }
+    catch(domain_error er){
+      cout &lt;&lt; er.what() &lt;&lt; endl;
+      continue;
+    }
+    if(opcija == 2) cout &lt;&lt; "f(" &lt;&lt; argument &lt;&lt; ") = " &lt;&lt; fja(argument) &lt;&lt; " ";
+    cout &lt;&lt; "f" &lt;&lt; approx &lt;&lt; "(" &lt;&lt; argument &lt;&lt; ") = " &lt;&lt; f(argument) &lt;&lt; endl;
+    }while(1);  
+  
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

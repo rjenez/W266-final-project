@@ -1,0 +1,83 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student9029.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student9029.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match185-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;utility&gt;
+#include &lt;stdexcept&gt;
+
+bool slovo(char c){ return ((c&gt;='a' &amp;&amp; c&lt;='z') || (c&gt;='A' &amp;&amp; c&lt;='Z'));}
+bool broj(char c){ return (c&gt;='0' &amp;&amp; c&lt;='9');}
+void Pretvori(std::string &amp;rijec){
+    for(int i=0;i&lt;rijec.size();i++)
+        if(rijec[i]&gt;='A' &amp;&amp; rijec[i]&lt;='Z')
+            rijec[i]-='A'-'a';
+}
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova (std::string recenica){
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; indeks_pojmova;
+    for(int i=0;i&lt;recenica.size();i++){
+        std::string rijec;
+        
+        while(i&lt;recenica.size() &amp;&amp; (slovo(recenica[i]) || broj(recenica[i]))){
+            rijec.push_back(recenica[i]);
+            i++;
+        }
+        if(rijec.size()!=0){
+            Pretvori(rijec);
+            indeks_pojmova[rijec].insert(i-rijec.size());
+            --i;
+        }
+    }
+    return indeks_pojmova;
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string rijec, std::map&lt;std::string, std::set&lt;int&gt;&gt; indeks_pojmova){
+    Pretvori(rijec);
+    if(indeks_pojmova.find(rijec)!= indeks_pojmova.end())
+        return indeks_pojmova[rijec];
+    else
+        throw std::logic_error("Pojam nije nadjen");
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;int&gt;&gt; indeks_pojmova){
+    for(auto it = indeks_pojmova.begin(); it!=indeks_pojmova.end();it++){
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        for(auto i=it-&gt;second.begin(); i!=--(it-&gt;second.end());i++)
+            std::cout&lt;&lt;*i&lt;&lt;",";
+        std::cout&lt;&lt;*--(it-&gt;second.end())&lt;&lt;std::endl;
+    }
+}
+
+int main ()
+{
+    std::cout&lt;&lt;"Unesite tekst: ";
+    std::string recenica;
+    std::getline(std::cin,recenica);
+    
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; indeks_pojmova = KreirajIndeksPojmova(recenica);
+    IspisiIndeksPojmova(indeks_pojmova);
+    while(1){
+        std::string rijec;
+        std::cout&lt;&lt;"Unesite rijec: ";
+        std::cin&gt;&gt;rijec;
+        if(rijec==".")
+            break;
+        try{
+            for(auto i : PretraziIndeksPojmova(rijec,indeks_pojmova))
+                std::cout&lt;&lt;i&lt;&lt;" ";
+            std::cout&lt;&lt;std::endl;
+        } catch(std::logic_error) {std::cout&lt;&lt;"Unesena rijec nije nadjena!\n";}
+    }
+	return 0;
+</font>}</pre>
+</body>
+</html>

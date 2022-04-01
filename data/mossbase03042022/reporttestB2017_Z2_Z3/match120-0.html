@@ -1,0 +1,203 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student2868.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student2868.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match120-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+template &lt;typename Tip&gt;
+int OdrediOsnovniPeriod(const std::vector&lt;Tip&gt; &amp;niz)
+{
+    int brojac(1);
+    for (int i = 1; i &lt; niz.size(); i++) {
+        if (niz.at(i)==niz.at(0)) {
+            int j(0);
+            for (; j+i &lt; niz.size(); j++) {
+                if (niz.at(i+j)!=niz.at(j))
+                    break;
+            }
+            if (i+j==niz.size())
+                return brojac;
+        }
+        brojac++;
+    }
+    return brojac;
+}
+
+template &lt;typename Tip&gt;
+int  Izmjenivektor(const std::vector&lt;Tip&gt; &amp;niz, int &amp;koliko_puta)
+{
+    int brojac(OdrediOsnovniPeriod(niz));
+    if (brojac==niz.size()) {
+        koliko_puta=2;
+        return brojac;
+    }
+
+    int vel(niz.size());
+    while(vel%brojac!=0)
+        vel++;
+    koliko_puta=vel/brojac;
+    return brojac;
+}
+
+template &lt;typename Tip&gt;
+Tip ** AlocirajFragmentirano(const std::vector&lt;Tip&gt; &amp;niz, int &amp;koliko_puta)
+{
+    if (niz.size()==0)
+        throw "Prazan vektor!";
+    int najduzi_red(0);
+    for (int i = 0; i &lt; niz.size(); i++) {
+        if (niz.at(i)&lt;=0)
+            throw std::domain_error("Neispravan vektor!");
+        if (niz.at(i)&gt;najduzi_red)
+            najduzi_red=niz.at(i);
+    }
+    Tip ** dinmatrica(nullptr);
+    int osnovniperiod(Izmjenivektor(niz, koliko_puta));
+
+    try {
+        dinmatrica = new Tip*[osnovniperiod*koliko_puta] {};
+    } catch (...) {
+        throw ;
+    }
+    try {
+        for (int i = 0; i &lt; niz.size(); i++)
+            dinmatrica[i]=new Tip[niz.at(i)];
+
+        for (int i = niz.size(); i &lt; osnovniperiod*koliko_puta; i++)
+            dinmatrica[i]=new Tip[niz.at(i%osnovniperiod)];
+    } catch (...) {
+        for (int i = 0; i &lt; osnovniperiod*koliko_puta; i++)
+            delete [] dinmatrica[i];
+        delete [] dinmatrica;
+        throw;
+    }
+
+    for (int i = 0; i &lt; osnovniperiod*koliko_puta; i++) {
+        int temp(najduzi_red);
+        int indeks(i);
+        if (i&gt;=niz.size())
+            indeks=i%osnovniperiod;
+        for (int j = 0; j &lt; niz.at(indeks); j++)
+            dinmatrica[i][j]=1-niz.at(indeks)+temp++;
+    }
+    return dinmatrica;
+}
+
+
+template &lt;typename Tip&gt;
+Tip ** AlocirajKontinualno(const std::vector&lt;Tip&gt; &amp;niz, int &amp;koliko_puta)
+{
+    if (niz.size()==0)
+        throw "Prazan vektor!";
+    for (int i = 0; i &lt; niz.size(); i++) {
+        if (niz.at(i)&lt;=0)
+            throw std::domain_error("Neispravan vektor!");
+    }
+    Tip ** dinmatrica(nullptr);
+    int osnovniperiod(Izmjenivektor(niz, koliko_puta));
+
+    try {
+        dinmatrica = new Tip*[osnovniperiod*koliko_puta] {};
+    } catch (...) {
+        throw ;
+    }
+
+    int ukupnaVel(0);
+    for (int i = 0; i &lt; niz.size(); i++)
+        ukupnaVel+=niz.at(i);
+    for (int i = niz.size(); i &lt; osnovniperiod*koliko_puta; i++)
+        ukupnaVel+=niz.at(i%osnovniperiod);
+    try {
+        dinmatrica[0]=new Tip[ukupnaVel];
+    } catch (...) {
+        delete [] dinmatrica;
+        throw;
+    }
+
+    for (int i = 1; i &lt; osnovniperiod*koliko_puta; i++) {
+        int indeks(i);
+        if (i&gt;niz.size())
+            indeks=i%osnovniperiod;
+        dinmatrica[i]=dinmatrica[i-1]+niz.at(indeks-1);
+    }
+
+
+    for (int i = 0; i &lt; osnovniperiod*koliko_puta; i++) {
+        int indeks(i);
+        if (i&gt;=niz.size())
+            indeks=i%osnovniperiod;
+        int temp(niz.at(indeks));
+        for (int j = 0; j &lt; niz.at(indeks); j++)
+            dinmatrica[i][j]=temp--;
+    }
+    return dinmatrica;
+}
+
+
+int main ()
+{
+    int vel;
+    int koliko_puta;
+    std::cout &lt;&lt; "Unesite broj elemenata vektora: ";
+    std::cin &gt;&gt; vel;
+    std::vector&lt;int&gt; niz;
+    try {
+        niz.resize(vel);
+    } catch (...) {
+        return -1;
+    }
+    std::cout &lt;&lt; "Unesite elemente vektora: ";
+    for (int i = 0; i &lt; vel; i++)
+        std::cin &gt;&gt; niz.at(i);
+
+    int tip;
+    std::cout &lt;&lt; "Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+    std::cin &gt;&gt; tip;
+    if (tip!=0 &amp;&amp; tip!=1)
+        return -1;
+
+    int **dinmatrica(nullptr);
+    try {
+        if (tip==1)
+            dinmatrica=AlocirajFragmentirano(niz, koliko_puta);
+        else
+            dinmatrica=AlocirajKontinualno(niz, koliko_puta);
+    } catch (const std::domain_error &amp;greska) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; greska.what();
+        return -1;
+    } catch (const char greska []) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; greska;
+        return -1;
+    } catch (...) {
+        return -1;
+    }
+    int broj_redova(OdrediOsnovniPeriod(niz)*koliko_puta);
+    std::cout &lt;&lt; "Dinamicki alocirana matrica:" &lt;&lt; std::endl;
+    for (int i = 0; i &lt; broj_redova; i++) {
+        int indeks(i);
+        if (i&gt;=niz.size())
+            indeks=i%(broj_redova/koliko_puta);
+        for (int j = 0; j &lt; niz.at(indeks); j++)
+            std::cout &lt;&lt; std::setw(3) &lt;&lt; std::left &lt;&lt; dinmatrica[i][j];
+        std::cout &lt;&lt; std::endl;
+    }
+
+    if (tip==1) {
+        for (int i = 0; i &lt; broj_redova; i++)
+            delete [] dinmatrica[i];
+    } else
+        delete [] dinmatrica[0];
+    delete [] dinmatrica;
+</font>
+    return 0;
+}</pre>
+</body>
+</html>

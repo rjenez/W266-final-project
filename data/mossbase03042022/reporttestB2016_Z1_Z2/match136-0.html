@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student7123.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student7123.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match136-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_98.gif"/></a>
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+
+Matrica KreirajMatricu(int m, int n) {
+	return Matrica(m, std::vector&lt;double&gt; (n));
+}
+
+
+Matrica UnesiMatricu(int br_redova, int br_kolona) {
+
+ auto m(KreirajMatricu(br_redova, br_kolona));
+ 
+ for(int i = 0; i &lt; br_redova; i++) {
+ for(int j = 0; j &lt; br_kolona; j++) {
+ std::cin &gt;&gt; m[i][j];
+ }
+}
+return m;
+}
+ 
+ // VERTIKALNO OGLEDALO 
+ Matrica Vertikalno( Matrica m) {
+ 	std::vector&lt;double&gt; pomocni;
+ 	for(int i=0; i&lt;m.size()/2; i++) {
+ 		pomocni = std::move(m[i]);
+ 		m[i] = std::move(m[m.size()-1-i]);
+ 		m[m.size()-1-i] = std::move(pomocni);
+ 	}
+ 	return m;
+ }
+ 
+ // HORIZONTALNO OGLEDALO
+  Matrica Horizontalno( Matrica m) {
+  	double tmp;
+  	for(int i=0; i&lt;m.size(); i++) {
+  		for(int j=0; j&lt;m[i].size()/2; j++) {
+  		tmp = m[i][j];
+  		m[i][j] = m[i][m[i].size() - 1-j];
+  		m[i][m[i].size() - 1-j] = tmp;
+  		
+  		}
+  	}
+  	return m;
+  }
+  
+  // KOMBINOVANO OGLEDALO
+  Matrica Kombinovano ( Matrica m ) {
+  	m = Horizontalno(m);
+  	m = Vertikalno(m);
+  	
+  	return m;
+  }
+  
+  // OGLEDALO MATRICA
+  Matrica OgledaloMatrica( Matrica m) {
+  	Matrica h (Horizontalno(m));
+  	Matrica v (Vertikalno(m));
+  	Matrica hv (Kombinovano(m));
+  	
+  	if(m.size() == 0 ) return m;
+  	
+  	for(int i=0; i&lt;m.size(); i++) {
+  		for(int j=0; j&lt;m[i].size(); j++) {
+  			if (m[i].size() != m[0].size()) throw std::domain_error("Matrica nije korektna");
+  		}
+   	}
+  	m = Matrica (3*m.size(), std::vector&lt;double&gt; (3*m[0].size()) );
+
+  	for(int i = 0; i&lt;hv.size(); i++) {
+  		for(int j=0; j&lt;hv[i].size(); j++) {
+  			m[i][j] = hv[i][j];
+  			m[i][hv[i].size()*2+j] = hv[i][j];
+  			m[i][hv[i].size()*2-1-j] = hv[i][j];
+  			
+  			// Sredina 
+   			m[hv.size()+i][j] = h[i][j];
+  			m[hv.size()+i][hv[i].size()*2+j] = h[i][j];
+  			m[hv.size()+i][hv[i].size()*2-1-j] = h[i][j];
+  			
+  			// Zadnji redovi
+  			m[hv.size()*2+i][j] = hv[i][j];
+  			m[hv.size()*2+i][hv[i].size()*2+j] = hv[i][j];
+  			m[hv.size()*2+i][hv[i].size()*2-1-j] = hv[i][j];
+  		}
+  	}
+  	return m;
+  }
+ 
+void IspisiMatricu(Matrica m) {
+	for(int i=0; i&lt;m.size(); i++) {
+		for(int j=0; j&lt;m[i].size(); j++) 
+		std::cout &lt;&lt; std::setw(4) &lt;&lt; m[i][j];
+		std::cout &lt;&lt; std::endl;
+	}
+}
+ 
+int main ()
+{
+	try 
+	{
+	int m, n;
+	std::cout &lt;&lt;"Unesite dimenzije matrice (m n): ";
+	std::cin &gt;&gt; m &gt;&gt; n;
+	
+	if(m&lt;0 || n&lt;0) {
+		std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!";
+		return 0;
+	}
+	
+	std::cout &lt;&lt;"Unesite elemente matrice: ";
+	auto m1 = (UnesiMatricu(m, n));
+
+	std::cout &lt;&lt;"\nRezultantna matrica: \n";
+	IspisiMatricu(OgledaloMatrica(m1));
+}
+catch (std::domain_error izuzetak) {
+std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl; 
+	
+}
+	return 0;
+</font>}</pre>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student3219.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student2941.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match49-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 4)
+//Autotestovi by Ivona Ivkovic (mail: iivkovic2@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;    
+#include &lt;type_traits&gt;
+#include &lt;iomanip&gt;
+
+using namespace std;
+
+template &lt;typename T&gt;
+class GMatrica {
+    int br_red=0, br_kol=0;
+    T mat[4][4];                                                   
+    public:
+    
+    GMatrica() {br_red=0; br_kol=0; };
+    GMatrica(int BrojRedova, int BrojKolona, T vrijednost=0);   
+    template&lt;typename T1&gt;
+    GMatrica(GMatrica&lt;T1&gt; &amp;mat1) { br_red=mat1.DajBrojRedova(); br_kol=mat1.DajBrojKolona(); for(int i(0);i&lt;mat1.DajBrojRedova();i++) for(int j(0);j&lt;mat1.DajBrojKolona();j++) mat[i][j]=mat1(i+1,j+1); }                                         
+    GMatrica(T niz[4][4]);                                           
+    GMatrica(vector&lt;vector&lt;T&gt; &gt; mat);                               
+    GMatrica(initializer_list&lt;initializer_list&lt;T&gt; &gt; i_lista);                           
+    int DajBrojRedova() const  { return br_red; };
+    int DajBrojKolona() const  { return br_kol; };
+    template &lt;typename T1,typename T2,typename T3&gt;
+    friend GMatrica&lt;T1&gt; operator +(const GMatrica&lt;T2&gt; &amp;mat1, const GMatrica&lt;T3&gt; &amp;mat2);
+    template &lt;typename T1,typename T2,typename T3&gt;
+    friend GMatrica&lt;T1&gt; operator -(const GMatrica&lt;T1&gt; &amp;mat1, const GMatrica&lt;T1&gt; &amp;mat2);
+    template &lt;typename T1,typename T2,typename T3&gt;
+    friend GMatrica&lt;T1&gt; operator *(const GMatrica&lt;T1&gt; &amp;mat1, const GMatrica&lt;T1&gt; &amp;mat2);
+    template &lt;typename T1,typename T2,typename T3&gt;
+    friend GMatrica&lt;T1&gt; operator *(const GMatrica&lt;T2&gt; &amp;mat1, T3 n);
+    template &lt;typename T1,typename T2,typename T3&gt;
+    friend GMatrica&lt;T1&gt; operator *(T2 n, const GMatrica&lt;T3&gt; &amp;mat1);
+    GMatrica &amp;operator +=(const GMatrica &amp;mat);
+    GMatrica &amp;operator -=(const GMatrica &amp;mat);
+    GMatrica &amp;operator *=(const GMatrica &amp;mat);
+    GMatrica &amp;operator *=(T broj);
+    bool operator ==(const GMatrica &amp;mat);
+    bool operator !=(const GMatrica &amp;mat);
+    T&amp; operator ()(int i, int j);
+    T* operator [](int i) { return mat[i]; };
+    template&lt;typename T1&gt;
+    friend ostream &amp;operator &lt;&lt;(ostream &amp;tok, const GMatrica&lt;T1&gt; &amp;m);
+    template&lt;typename T1&gt;
+    friend istream &amp;operator &gt;&gt;(istream &amp;tok, const GMatrica&lt;T1&gt; &amp;m);
+};
+
+    template &lt;typename T&gt;
+    GMatrica&lt;T&gt;::GMatrica(int BrojRedova, int BrojKolona, T vrijednost) {
+        if(BrojKolona&lt;0 || BrojKolona&gt;4 || BrojRedova&lt;0 || BrojRedova&gt;4) throw logic_error ("Ilegalan format matrice");
+        br_kol=BrojKolona;
+        br_red=BrojRedova;
+        for(int i(0);i&lt;BrojRedova;i++) {
+            for(int j(0);j&lt;BrojKolona;j++) {
+                mat[i][j]=vrijednost;
+            }
+        }
+    }
+    template &lt;typename T&gt;
+    GMatrica&lt;T&gt;::GMatrica(T niz[4][4]) {
+        br_kol=4;
+        br_red=4;
+        for(int i(0);i&lt;br_red;i++) 
+            for(int j(0);j&lt;br_kol;j++)
+                mat[i][j]=niz[i][j];
+    }
+    template &lt;typename T&gt;
+    GMatrica&lt;T&gt;::GMatrica(vector&lt;vector&lt;T&gt; &gt; mat1) {
+        if(mat1.size()&gt;4 || mat1[0].size()&gt;4) throw logic_error ("Ilegalan format matrice");
+        for(int i(1);i&lt;mat1.size();i++) if(mat1[0].size()!=mat1[i].size()) throw logic_error ("Ilegalan format matrice");
+        br_kol=mat1[0].size();
+        br_red=mat1.size();
+        for(int i(0);i&lt;mat1.size();i++) {
+            for(int j(0);j&lt;mat1[0].size();j++) {
+                mat[i][j]=mat1[i][j];
+            }
+        }
+    }
+    template &lt;typename T&gt;
+    GMatrica&lt;T&gt;::GMatrica(initializer_list&lt;initializer_list&lt;T&gt; &gt; i_lista) {
+        if(i_lista.size()&gt;4 || i_lista.begin()-&gt;size()&gt;4)  throw logic_error ("Ilegalan format matrice");
+        for(auto i=i_lista.begin();i&lt;i_lista.end();i++) if(i-&gt;size() != i_lista.begin()-&gt;size())  throw logic_error ("Ilegalan format matrice");
+        int k=0, l=0;
+        br_red=i_lista.size();
+        br_kol=i_lista.begin()-&gt;size();
+        for(auto i=i_lista.begin();i&lt;i_lista.end();i++) {
+            l=0;
+            for(auto j = i-&gt;begin() ; j&lt;i-&gt;end() ;j++) {
+                mat[k][l]=*j;
+                l++;
+            }
+            k++;
+        }
+    }
+    template &lt;typename T,typename T1&gt;
+    auto operator +(GMatrica&lt;T&gt; &amp;mat1, GMatrica&lt;T1&gt; &amp;mat2) -&gt; GMatrica&lt;decltype(mat1(1,1)+mat2(1,1)) &gt; {
+        if(mat1.DajBrojKolona()!=mat2.DajBrojKolona() || mat1.DajBrojRedova()!=mat2.DajBrojRedova()) throw domain_error ("Nedozvoljena operacija");
+        GMatrica&lt;decltype(mat1(1,1)+mat2(1,1)) &gt; m(mat1.DajBrojRedova(),mat1.DajBrojKolona());
+        for(int i(1);i&lt;=mat1.DajBrojRedova();i++) {
+            for(int j(1);j&lt;=mat1.DajBrojKolona();j++) {
+                m(i,j)=mat1(i,j)+mat2(i,j);
+            }
+        }
+        return m;
+    }
+    template &lt;typename T,typename T1&gt;
+    auto operator -(GMatrica&lt;T&gt; &amp;mat1, GMatrica&lt;T1&gt; &amp;mat2) -&gt; GMatrica&lt;decltype(mat1(1,1)-mat2(1,1)) &gt; {
+        if(mat1.DajBrojKolona()!=mat2.DajBrojKolona() || mat1.DajBrojRedova()!=mat2.DajBrojRedova()) throw domain_error ("Nedozvoljena operacija");
+        GMatrica&lt;decltype(mat1(1,1)+mat2(1,1))&gt; m(mat1.DajBrojRedova(),mat1.DajBrojKolona());
+        
+        for(int i(1);i&lt;=mat1.DajBrojRedova();i++) {
+            for(int j(1);j&lt;=mat1.DajBrojKolona();j++) {
+                m(i,j)=mat1(i,j)-mat2(i,j);
+            }
+        }
+        return m;
+    }
+    template &lt;typename T,typename T1&gt;
+    auto operator *(GMatrica&lt;T&gt; &amp;mat1, GMatrica&lt;T1&gt; &amp;mat2) -&gt; GMatrica&lt;decltype(mat1(1,1)*mat2(1,1)) &gt; {
+        if(mat1.DajBrojKolona()!= mat2.DajBrojRedova()) throw domain_error ("Nedozvoljena operacija");
+        GMatrica&lt;decltype(mat1.mat[0][0]*mat2.mat[0][0]) &gt; m(mat1.DajBrojRedova(),mat2.DajBrojKolona());
+        
+        decltype(mat1.mat[0][0]*mat2.mat[0][0]) suma=0;
+        for(int i(1);i&lt;=m.br_red;i++) {
+            for(int j(1);j&lt;=m.br_kol;j++) {
+                suma=0;
+                for(int k(1);k&lt;=mat1.DajBrojKolona();k++) {
+                    suma=suma + mat1(i-1,k-1)*mat2(k-1,j-1);
+                }
+                m(i,j)=suma;
+            }
+        }
+        return m;
+    }
+    template &lt;typename T,typename T1&gt;
+    auto operator *(GMatrica&lt;T&gt; &amp;mat1, T1 n) -&gt; GMatrica&lt;decltype(mat1(1,1)*n)&gt; {
+        GMatrica&lt;decltype(mat1(1,1)*n)&gt; m(mat1.DajBrojRedova(),mat1.DajBrojKolona());
+        for(int i(1);i&lt;=m.DajBrojRedova();i++) {
+            for(int j(1);j&lt;=m.DajBrojKolona();j++) {
+                m(i,j)=mat1(i,j)*n;
+            }
+        }
+        return m;
+    }
+    template &lt;typename T, typename T1&gt;
+    auto operator *(T1 n, GMatrica&lt;T&gt; &amp;mat1) -&gt; GMatrica&lt;decltype(mat1(1,1)*n)&gt; {
+        GMatrica&lt;decltype(mat1(1,1)*n)&gt; m(mat1.DajBrojRedova(),mat1.DajBrojKolona());
+        for(int i(1);i&lt;=m.DajBrojRedova();i++) {
+            for(int j(1);j&lt;=m.DajBrojKolona();j++) {
+                m(i,j)=mat1(i,j)*n;
+            }
+        }
+        return m;
+    }
+    template&lt;typename T&gt;
+    GMatrica&lt;T&gt; &amp;GMatrica&lt;T&gt;::operator +=(const GMatrica&lt;T&gt; &amp;mat1) {
+        if(br_kol!=mat1.DajBrojKolona() || br_red!=mat1.DajBrojRedova()) throw domain_error ("Nedozvoljena operacija");
+        for(int i(0);i&lt;br_red;i++) {
+            for(int j(0);j&lt;br_kol;j++) {
+                mat[i][j]=mat[i][j]+mat1.mat[i][j];
+            }
+        }
+        return *this;
+    }
+    template&lt;typename T&gt;
+    GMatrica&lt;T&gt; &amp;GMatrica&lt;T&gt;::operator -=(const GMatrica&lt;T&gt; &amp;mat1) {
+        if(br_kol!=mat1.DajBrojKolona() || br_red!=mat1.DajBrojRedova()) throw domain_error ("Nedozvoljena operacija");
+        for(int i(0);i&lt;br_red;i++) {
+            for(int j(0);j&lt;br_kol;j++) {
+                mat[i][j]=mat[i][j]-mat1.mat[i][j];
+            }
+        }
+        return *this;
+    }
+    template&lt;typename T&gt;
+    GMatrica&lt;T&gt; &amp;GMatrica&lt;T&gt;::operator *=(const GMatrica&lt;T&gt; &amp;mat1) {
+        if(mat1.DajBrojKolona()!= br_red) throw domain_error ("Nedozvoljena operacija");
+        GMatrica&lt;T&gt; m(*this);
+        m.br_red=br_kol;
+        m.br_kol=mat1.DajBrojRedova();
+        int suma=0;
+        for(int i(0);i&lt;m.br_red;i++) {
+            for(int j(0);j&lt;m.br_kol;j++) {
+                suma=0;
+                for(int k(0);k&lt;mat1.DajBrojKolona();k++) {
+                    suma+= m.mat[i][k]*mat1.mat[k][j];
+                }
+                m.mat[i][j]=suma;
+            }
+        }
+        *this=m;
+        return *this;
+    }
+    template&lt;typename T&gt;
+    GMatrica&lt;T&gt; &amp;GMatrica&lt;T&gt;::operator *=(T n) {
+        for(int i(0);i&lt;br_red;i++) {
+            for(int j(0);j&lt;br_kol;j++) {
+                mat[i][j]*=n;
+            }
+        }
+        return *this;
+    }
+    template&lt;typename T&gt;
+    bool GMatrica&lt;T&gt;::operator ==(const GMatrica&lt;T&gt; &amp;mat1) {
+        if(br_kol!=mat1.DajBrojKolona() || br_red!=mat1.DajBrojRedova()) return false;
+        for(int i(0);i&lt;br_red;i++) {
+            for(int j(0);j&lt;br_kol;j++) {
+                if(mat[i][j]!= mat1.mat[i][j]) return false;
+            }
+        }
+        return true;
+    }
+    template&lt;typename T&gt;
+    bool GMatrica&lt;T&gt;::operator !=(const GMatrica&lt;T&gt; &amp;mat1) {
+        if(br_kol!=mat1.DajBrojKolona() || br_red!=mat1.DajBrojRedova()) return true;
+        for(int i(0);i&lt;br_red;i++) {
+            for(int j(0);j&lt;br_kol;j++) {
+                if(mat[i][j]!= mat1.mat[i][j]) return true;
+            }
+        }
+        return false;
+    }
+    template&lt;typename T&gt;
+    T&amp; GMatrica&lt;T&gt;::operator ()(int i, int j) {
+        if(i&gt;br_red || i&lt;0 || j&lt;0 || j&gt;br_kol) throw range_error ("Nedozvoljen indeks");
+        return mat[i-1][j-1];
+    }
+    template&lt;typename T&gt;
+    ostream &amp;operator &lt;&lt;(ostream &amp;tok,const GMatrica&lt;T&gt; &amp;m) {
+        int n=6;
+        if(tok.width()&gt;6) n=tok.width();
+        for(int i(0);i&lt;m.br_red;i++) {
+            for(int j(0);j&lt;m.br_kol;j++) {
+                tok&lt;&lt;setw(n)&lt;&lt;m.mat[i][j];
+            }
+            tok&lt;&lt;endl;
+        }
+        return tok;
+    }
+    template&lt;typename T&gt;
+    istream &amp;operator &gt;&gt;(istream &amp;tok, GMatrica&lt;T&gt; &amp;m) {
+        char znak;
+        if(tok.peek()!= '[')  tok.setstate(std::ios::failbit);
+        tok&gt;&gt;std::ws;
+        tok&gt;&gt;znak;
+        T broj;
+        vector&lt;T&gt; pom;
+        vector&lt;vector&lt;T&gt; &gt; mat;
+        while(znak!=']') {
+            znak='*';
+            while((znak!=';' &amp;&amp; znak!=']') || znak==',') { tok&gt;&gt;broj; pom.push_back(broj); tok&gt;&gt;znak; if(znak!=';' &amp;&amp; znak!=']' &amp;&amp; znak!=',') tok.setstate(std::ios::failbit); }
+            mat.push_back(pom);
+            pom.resize(0);
+            
+        }
+        GMatrica&lt;T&gt; pommat(mat);
+        m=pommat;
+        return tok;
+        
+    }
+                                                                                            //[1,2;3,4]
+int main ()
+{
+   GMatrica&lt;double&gt; m1({{1, 2,3}, {3, 4,5}});
+   GMatrica&lt;int&gt; m2(m1);
+   m1+=m2;
+   std::cout &lt;&lt;setw(10)&lt;&lt; m1 &lt;&lt; std::endl;
+   GMatrica&lt;double&gt; m4({{1, 2}, {3, 4}});
+</font>   //auto m5 = m3-m4;
+   //std::cout &lt;&lt; m5 &lt;&lt; std::endl;
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student5162.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student5162.cpp<p></p><pre>
+<a name="2"></a><font color="#0000FF"><a href="match358-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+
+int DuzinaImena(std::string s)
+{
+    int brojac(0);
+    for(int i(0); i&lt;s.size(); i++) {
+</font>        while(i&lt;s.size() &amp;&amp; s[i]==' ') i++;
+        while(i&lt;s.size() &amp;&amp; s[i]!=' ') {
+            brojac++;
+            i++;
+        }
+
+    }
+    return brojac;
+}
+
+
+std::vector&lt;std::set&lt;std::string&gt;&gt;  Razvrstavanje(std::vector&lt;std::string&gt; v, int k)
+{
+<a name="0"></a><font color="#FF0000"><a href="match358-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_10.gif"/></a>
+
+    if(k&lt;1 || k&gt;v.size()) throw std::logic_error ("Razvrstavanje nemoguce");
+    std::list&lt;std::string&gt; lista;
+    for(int i(0); i&lt;v.size(); i++) {
+        lista.push_back(v[i]);
+    }
+
+    std::vector&lt;std::set&lt;std::string&gt;&gt; z(k);
+    int ostatak(0);
+</font>    int velicina(v.size()/k);
+    ostatak=v.size()%k;
+    int br_slova(0);
+    int brojac_mjesta_tima(0); //redni broj tima, govori nam da li tim treba da ima velicinu +1 ili ne
+    auto it(lista.begin()); //iterator kojim se krecemo kroz listu
+    
+    for(int i(0); i&lt;k; i++) {
+        if(brojac_mjesta_tima&lt;ostatak) {
+            while(z[i].size()&lt;velicina+1) {
+               for(int e(0); e&lt;br_slova; e++){
+                   it++;
+                   if(it==lista.end()) it=lista.begin();
+               }
+                z[i].insert(*it);
+                br_slova=DuzinaImena(*it);
+                lista.erase(it);
+            }
+            brojac_mjesta_tima++;
+        } else {
+            while(z[i].size()&lt;velicina) {
+                for(int e(0); e&lt;br_slova; e++){
+                    it++;
+                   if(it==lista.end()) it=lista.begin();
+               }
+                z[i].insert(*it);
+                br_slova=DuzinaImena(*it);
+                lista.erase(it);
+            }
+        }
+    }
+    
+    return z;
+
+}
+int main ()
+{
+    int n, k;
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    std::cin&gt;&gt;n;
+    std::cout&lt;&lt;"Unesite imena djece: ";
+    std::cin.ignore(1000, '\n');
+    std::cin.clear();
+    std::vector&lt;std::string&gt; v(n);
+    for(int i(0); i&lt;n; i++) {
+        std::string temp;
+        std::getline(std::cin, temp);
+        v[i]=temp;
+    }
+    std::cout&lt;&lt;"\nUnesite broj timova: ";
+<a name="1"></a><font color="#00FF00"><a href="match358-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_8.gif"/></a>
+
+    std::cin&gt;&gt;k;
+    try {
+        std::vector&lt;std::set&lt;std::string&gt;&gt; z(Razvrstavanje(v,k));
+        for(int i(0); i&lt;z.size(); i++) {
+            std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+</font>            auto it(z[i].begin());
+            for(int j(0); j&lt;z[i].size(); j++){
+                if(j+1==z[i].size()) std::cout&lt;&lt;*it&lt;&lt;std::endl;
+                else std::cout&lt;&lt;*it++&lt;&lt;", ";
+            }
+
+            
+        }
+    } catch(std::logic_error e) {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what()&lt;&lt;std::endl;
+    }
+    return 0;
+}
+</pre>
+</body>
+</html>

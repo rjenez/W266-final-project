@@ -1,0 +1,194 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student9188.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student9188.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 2
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;type_traits&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+
+<a name="1"></a><font color="#00FF00"><a href="match391-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+enum class SmjerKretanja
+{
+    NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo
+};
+template &lt;typename Tip1&gt;
+auto PjescaniSat(Tip1 kont, SmjerKretanja smjer)-&gt;typename std::remove_reference&lt;decltype(kont)&gt;::type {
+</font>	if(kont.size()%2==0) throw std::length_error("3D kontejner ne zadovoljava uvjet neparnosti");
+	for(int i=0; i&lt;kont.size(); i++) {
+		for(int j=0; j&lt;kont.at(i).size(); j++) {
+			//"LIJINJA ISPOD" &gt;&gt; PRVI USLOV PROVJERAVA DA LI SU MATRICE KVADRATNE A DRUGI PROVJERAVA DA LI JE BROJ PLOHA JEDNAK BROJ REDOVA SVAKE PLOHE
+			if(kont.at(i).at(j).size()!=kont.at(i).size() || kont.size()!=kont.at(i).at(j).size()) throw std::domain_error("3D matrica nema oblik kocke");
+		}
+	}
+	int a(-100);
+	if(kont.size()&gt;0 &amp;&amp; kont.at(0).size()&gt;0)  a = kont.at(0).size();
+	for(int i=0; i&lt;kont.size(); i++) if(kont.at(i).size()!=a) throw std::domain_error("3D matrica nema oblik kocke");
+	typename std::remove_reference&lt;decltype(kont)&gt;::type Sat;
+
+	if((int)smjer==2) {
+		for(int i=0;i&lt;kont.size();i++){
+			typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type satic;
+			for(int j=0;j&lt;kont.at(i).size();j++){
+				typename std::remove_reference&lt;decltype(kont.at(0).at(0))&gt;::type jos_manji_satic;
+				for(int k=0;k&lt;kont.at(i).size();k++){
+					if(j&gt;kont.at(i).size()/2 &amp;&amp; j&gt;=k &amp;&amp; j+k&gt;=kont.at(i).size()-1 &amp;&amp; j+k&lt;=2*kont.at(i).size()-2) jos_manji_satic.push_back(kont.at(i).at(j).at(k));
+					else if(j==kont.at(i).size()/2 &amp;&amp; j==k) jos_manji_satic.push_back(kont.at(i).at(j).at(k)); 
+					else if(j&lt;kont.at(i).size()/2 &amp;&amp; j&lt;=k &amp;&amp; k&gt;=0 &amp;&amp; j+k&lt;=kont.at(i).size()-1) jos_manji_satic.push_back(kont.at(i).at(j).at(k));
+				}
+				satic.push_back(jos_manji_satic);
+			}
+			Sat.push_back(satic);
+		}
+	} else if((int)smjer==3) {
+		for(int i=0; i&lt;kont.size(); i++) {
+			typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type satic;
+			for(int j=kont.at(i).size()-1; j&gt;=0; j--) {
+				typename std::remove_reference&lt;decltype(kont.at(0).at(0))&gt;::type jos_manji_satic;
+				for(int k=0; k&lt;kont.size(); k++) {
+					if(j&gt;kont.at(i).size()/2 &amp;&amp; j&gt;=k &amp;&amp; j+k&gt;=kont.at(i).size()-1 &amp;&amp; j+k&lt;=2*kont.at(i).size()-2) jos_manji_satic.push_back(kont.at(i).at(j).at(k));
+					else if(j==kont.at(i).size()/2 &amp;&amp; j==k) jos_manji_satic.push_back(kont.at(i).at(j).at(k));
+					else if(j&lt;kont.at(i).size()/2 &amp;&amp; j&lt;=k &amp;&amp; k&gt;=0 &amp;&amp; j+k&lt;=kont.at(i).size()-1) jos_manji_satic.push_back(kont.at(i).at(j).at(k));
+				}
+				satic.push_back(jos_manji_satic);
+			}
+			Sat.push_back(satic);
+		}
+	} else if((int)smjer==5) {
+		for(int i=0; i&lt;kont.size(); i++) {
+			typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type satic;
+			for(int j=kont.at(i).size()-1; j&gt;=0; j--) {
+				typename std::remove_reference&lt;decltype(kont.at(0).at(0))&gt;::type jos_manji_satic;
+				for(int k=0; k&lt;kont.at(i).at(j).size(); k++) {
+					if(j&lt;kont.size()/2 &amp;&amp; j&lt;=k &amp;&amp; k&gt;=0 &amp;&amp; j+k&lt;=kont.at(i).size()-1) jos_manji_satic.push_back(kont.at(i).at(k).at(j));
+					else if(j==kont.at(i).size()/2 &amp;&amp; k==j) jos_manji_satic.push_back(kont.at(i).at(k).at(j));
+					else if(j&gt;kont.at(i).size()/2 &amp;&amp; j&gt;=k &amp;&amp; k+j&gt;=kont.size()-1 &amp;&amp; j+k&lt;=2*kont.at(i).size()-2) jos_manji_satic.push_back(kont.at(i).at(k).at(j));
+				}
+				satic.push_back(jos_manji_satic);
+			}
+			Sat.push_back(satic);
+		}
+	} else if((int)smjer==4) {
+		for(int i=0; i&lt;kont.size(); i++) {
+			typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type satic;
+			for(int j=0; j&lt;kont.at(i).size(); j++) {
+				typename std::remove_reference&lt;decltype(kont.at(0).at(0))&gt;::type jos_manji_satic;
+				for(int k=0; k&lt;kont.at(i).size(); k++) {
+					if(j&gt;kont.at(i).size()/2 &amp;&amp; j&gt;=k &amp;&amp; k+j&gt;=kont.size()-1 &amp;&amp; j+k&lt;=2*kont.at(i).size()-2) jos_manji_satic.push_back(kont.at(i).at(k).at(j));
+					else if(j==kont.at(i).size()/2 &amp;&amp; k==j) jos_manji_satic.push_back(kont.at(i).at(k).at(j));
+					else if(j&lt;kont.size()/2 &amp;&amp; j&lt;=k &amp;&amp; k&gt;=0 &amp;&amp; j+k&lt;=kont.at(i).size()-1) jos_manji_satic.push_back(kont.at(i).at(k).at(j));
+				}
+				satic.push_back(jos_manji_satic);
+			}
+			Sat.push_back(satic);
+		}
+	} else if((int)smjer==0) {
+		for(int i=0;i&lt;kont.size();i++) {
+			typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type satic;
+			for(int j=0;j&lt;kont.at(i).size();j++) {
+				typename std::remove_reference&lt;decltype(kont.at(0).at(0))&gt;::type jos_manji_satic;
+				for(int k=0;k&lt;kont.at(i).at(j).size();k++) {
+					if(j&lt;kont.size()/2  &amp;&amp; j&lt;=k &amp;&amp; j+k&lt;=kont.size()-1) jos_manji_satic.push_back(kont.at(j).at(i).at(k));
+					else if(j==kont.size()/2 &amp;&amp; k==j) jos_manji_satic.push_back(kont.at(j).at(i).at(k));
+					else if(j&gt;kont.at(i).size()/2 &amp;&amp; j&gt;=k &amp;&amp; j+k&gt;=kont.at(i).size()-1 &amp;&amp; j+k&lt;=2*kont.at(i).size()-2) jos_manji_satic.push_back(kont.at(j).at(i).at(k));
+				}
+				satic.push_back(jos_manji_satic);
+			}
+			Sat.push_back(satic);
+		}
+	
+	}else if((int)smjer==1) {
+		for(int i=0;i&lt;kont.size();i++) {
+			typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type satic;
+			for(int j=kont.at(i).size()-1;j&gt;=0;j--){
+				typename std::remove_reference&lt;decltype(kont.at(0).at(0))&gt;::type jos_manji_satic;
+				for(int k=0;k&lt;kont.size();k++) {
+					if(j&lt;kont.size()/2 &amp;&amp; j&lt;=k &amp;&amp; j+k&lt;=kont.size()-1) jos_manji_satic.push_back(kont.at(j).at(i).at(k));
+					else if(j==kont.size()/2 &amp;&amp; k==j) jos_manji_satic.push_back(kont.at(j).at(i).at(k));
+					else if(j&gt;kont.at(i).size()/2 &amp;&amp; j&gt;=k &amp;&amp; j+k&gt;=kont.at(i).size()-1 &amp;&amp; j+k&lt;=2*kont.at(i).size()-2 ) jos_manji_satic.push_back(kont.at(j).at(i).at(k));
+				}
+				satic.push_back(jos_manji_satic);
+			}
+			Sat.push_back(satic);
+		}
+	}
+	return Sat;
+}
+
+int main ()
+{
+	try{
+		std::cout&lt;&lt;"Unesite dimenziju (x/y/z): ";
+		int n;
+		for(;;){
+			std::cin&gt;&gt;n;
+			if(n&lt;=0) std::cout&lt;&lt;"Dimenzija nije ispravna, unesite opet: ";
+			else break;
+		}
+<a name="0"></a><font color="#FF0000"><a href="match391-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+		std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt; Matrica;
+		std::cout&lt;&lt;"Unesite elemente kontejnera: ";
+		for(int i=0;i&lt;n;i++){
+			std::deque&lt;std::deque&lt;int&gt;&gt; pomocni2;
+			for(int j=0;j&lt;n;j++){
+				std::deque&lt;int&gt; pomocni1;
+				for(int k=0;k&lt;n;k++){
+					int p;
+					std::cin&gt;&gt;p;
+					pomocni1.push_back(p);
+				}
+				pomocni2.push_back(pomocni1);
+			}
+			Matrica.push_back(pomocni2);
+		}
+		std::cout&lt;&lt;"Unesite smjer kretanja [0 - 5]: ";
+</font>		int f;
+		for(;;){
+			std::cin&gt;&gt;f;
+			if(f&lt;0 || f&gt;5) std::cout&lt;&lt;"Smjer nije ispravan, unesite opet: ";
+			else break;
+		}
+		auto Pjescani(PjescaniSat(Matrica,SmjerKretanja(f)));
+		std::cout&lt;&lt;std::endl&lt;&lt;"Pjescani sat unesene matrice je:"&lt;&lt;std::endl;
+		for(int i=0;i&lt;Pjescani.size();i++){
+			int brojac(1);
+			for(int j=0;j&lt;Pjescani.at(i).size();j++){
+				for(int k=0;k&lt;Pjescani.at(i).at(j).size();k++){
+					if(k==0)std::cout&lt;&lt;std::setw(4*brojac)&lt;&lt;Pjescani.at(i).at(j).at(k);
+					else std::cout&lt;&lt;std::setw(4)&lt;&lt;Pjescani.at(i).at(j).at(k);
+				}
+				if(j&lt;Pjescani.size()/2)brojac++;
+				else if(j&gt;Pjescani.size()/2) brojac--;
+				else brojac--;
+<a name="2"></a><font color="#0000FF"><a href="match391-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+				std::cout&lt;&lt;std::endl;
+			}std::cout&lt;&lt;std::endl;
+		}
+		
+	}catch(std::length_error izuzetak){
+		std::cout&lt;&lt;std::endl&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+</font>	}
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,1233 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z4/student7597.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z4/student7001.cpp<p></p><pre>
+/B 2016/2017, Zadaća 4, Zadatak 4
+//Napomena: testovi ce biti dostupni dan pred rok!
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;iomanip&gt;
+#include &lt;initializer_list&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+
+class Datum {
+<a name="3"></a><font color="#00FFFF"><a href="match124-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+    int dan,mjesec,godina;
+public:
+    Datum(int dan, int mjesec, int godina) { Postavi(dan,mjesec,godina); }
+    void Postavi(int dan, int mjesec, int godina);
+    int DajDan() const { return dan; }
+    int DajMjesec() const { return mjesec; }
+    int DajGodinu() const { return godina; }
+    void Ispisi() const {
+        std::cout &lt;&lt; DajDan() &lt;&lt; "/" &lt;&lt; DajMjesec() &lt;&lt; "/" &lt;&lt; DajGodinu();
+    }
+};
+
+void Datum::Postavi(int dan, int mjesec, int godina) {
+</font>    int broj_dana[12]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if ((godina%4==0 &amp;&amp; godina%100!=0) || godina%400==0) broj_dana[1]++;
+    if (godina&lt;1 || dan&lt;1 || mjesec&lt;1 || mjesec&gt;12 || dan&gt;broj_dana[mjesec-1])
+        throw std::domain_error("Neispravan datum");
+    this-&gt;dan=dan; this-&gt;mjesec=mjesec; this-&gt;godina=godina;
+}
+
+<a name="0"></a><font color="#FF0000"><a href="match124-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+class Kupac {
+    std::string ime_i_prezime;
+    Datum datum_rodjenja;
+public:
+    Kupac(const std::string &amp;ime_i_prezime, const Datum &amp;datum_rodjenja) : datum_rodjenja(datum_rodjenja.DajDan(),datum_rodjenja.DajMjesec(),datum_rodjenja.DajGodinu()) { 
+        Postavi(ime_i_prezime,datum_rodjenja); }
+    void Postavi(const std::string &amp;ime_i_prezime, const Datum &amp;datum_rodjenja);
+    std::string DajImePrezime() const { return ime_i_prezime; }
+    Datum DajDatumRodjenja() const { return datum_rodjenja; }
+    void Ispisi() const {
+        std::cout &lt;&lt; DajImePrezime() &lt;&lt; " ("; datum_rodjenja.Ispisi(); std::cout &lt;&lt; ")";
+    }
+};
+
+void Kupac::Postavi(const std::string &amp;ime_i_prezime, const Datum &amp;datum_rodjenja) {
+    for (int i=0; i&lt;ime_i_prezime.size(); i++)
+</font>        if (!((ime_i_prezime[i]&gt;='a' &amp;&amp; ime_i_prezime[i]&lt;='z') || (ime_i_prezime[i]&gt;='A' &amp;&amp; ime_i_prezime[i]&lt;='Z') ||
+        (ime_i_prezime[i]&gt;='0' &amp;&amp; ime_i_prezime[i]&lt;='9') || ime_i_prezime[i]=='-' || ime_i_prezime[i]==' ' || ime_i_prezime[i]==39))
+            throw std::domain_error("Neispravno ime i prezime");
+    this-&gt;ime_i_prezime=ime_i_prezime; this-&gt;datum_rodjenja=Datum(datum_rodjenja.DajDan(),datum_rodjenja.DajMjesec(),datum_rodjenja.DajGodinu());
+}
+
+class Stan {
+<a name="1"></a><font color="#00FF00"><a href="match124-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+    std::string adresa;
+    int sprat, broj_soba;
+    bool namjesten;
+    double kvadratura;
+public:
+    Stan(const std::string &amp;adresa, int sprat, int broj_soba, bool namjesten, double kvadratura) { Postavi(adresa,sprat,broj_soba,namjesten,kvadratura); }
+    void Postavi(const std::string &amp;adresa, int sprat, int broj_soba, bool namjesten, double kvadratura);
+    std::string DajAdresu() const { return adresa; }
+    int DajSprat() const { return sprat; }
+    int DajBrojSoba() const { return broj_soba; }
+    bool DajNamjesten() const { return namjesten; }
+    double DajKvadraturu() const { return kvadratura; }
+</font>    void Ispisi() const;
+};
+
+void Stan::Ispisi() const {
+    std::cout &lt;&lt; "Stan se nalazi na adresi " &lt;&lt; DajAdresu() &lt;&lt; " na " &lt;&lt; DajSprat() &lt;&lt; ". spratu i ima " &lt;&lt; DajBrojSoba();
+    if ((DajBrojSoba()/10)%10==1) std::cout &lt;&lt; " soba. ";
+    else {
+        if (DajBrojSoba()%10==1) std::cout &lt;&lt; " sobu. ";
+        else if (DajBrojSoba()%10==2 || DajBrojSoba()%10==3 || DajBrojSoba()%10==4) std::cout &lt;&lt; " sobe. ";
+        else std::cout &lt;&lt; " soba. ";
+    }
+    std::cout &lt;&lt; "Kvadratura stana je " &lt;&lt; DajKvadraturu() &lt;&lt; " (m^2) i stan ";
+    if (DajNamjesten()) std::cout &lt;&lt; "je ";
+    else std::cout &lt;&lt; "nije ";
+<a name="11"></a><font color="#00FF00"><a href="match124-0.html#11" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+    std::cout &lt;&lt; "namjesten." &lt;&lt; std::endl;
+}
+
+void Stan::Postavi(const std::string &amp;adresa, int sprat, int broj_soba, bool namjesten, double kvadratura) {
+    if (sprat&lt;0 || broj_soba&lt;0 || kvadratura&lt;0)
+</font>        throw std::domain_error("Neispravan unos podataka");
+<a name="16"></a><font color="#00FF00"><a href="match124-0.html#16" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+    this-&gt;adresa=adresa; this-&gt;sprat=sprat; this-&gt;broj_soba=broj_soba; this-&gt;namjesten=namjesten; this-&gt;kvadratura=kvadratura;
+}
+
+class Prodaja {
+    std::string ime_agenta_prodaje;
+    double cijena_stana;
+    Datum datum_prodaje;
+    Kupac kupac_stana;
+    Stan kupljeni_stan;
+public:
+    Prodaja(const std::string &amp;ime_agenta_prodaje, double cijena_stana, const Datum &amp;datum_prodaje, const Kupac &amp;kupac_stana, 
+</font>        const Stan &amp;kupljeni_stan) : datum_prodaje(datum_prodaje.DajDan(),datum_prodaje.DajMjesec(),datum_prodaje.DajGodinu()), 
+            kupac_stana(kupac_stana.DajImePrezime(),kupac_stana.DajDatumRodjenja()),
+            kupljeni_stan(kupljeni_stan.DajAdresu(),kupljeni_stan.DajSprat(),kupljeni_stan.DajBrojSoba(),kupljeni_stan.DajNamjesten(),kupljeni_stan.DajKvadraturu()) {
+                for (int i=0; i&lt;ime_agenta_prodaje.size(); i++) {
+                    if (!((ime_agenta_prodaje[i]&gt;='a' &amp;&amp; ime_agenta_prodaje[i]&lt;='z') || (ime_agenta_prodaje[i]&gt;='A' &amp;&amp; ime_agenta_prodaje[i]&lt;='Z') ||
+                    (ime_agenta_prodaje[i]&gt;='0' &amp;&amp; ime_agenta_prodaje[i]&lt;='9') || ime_agenta_prodaje[i]=='-' || ime_agenta_prodaje[i]==' ' || ime_agenta_prodaje[i]==39))
+                        throw std::domain_error("Neispravno ime i prezime");
+                }
+                if (cijena_stana&lt;0) throw std::domain_error("Neispravan unos podataka");
+                Prodaja::ime_agenta_prodaje=ime_agenta_prodaje; Prodaja::cijena_stana=cijena_stana;
+            }
+    Prodaja(const std::string &amp;ime_agenta_prodaje, double cijena_stana, int dan_prodaje, int mjesec_prodaje, int godina_prodaje,
+        const std::string &amp;ime_kupca, const Datum &amp;datum_rodjenja_kupca, const std::string &amp;adresa_stana, int sprat_stana,
+        int broj_soba, bool namjesten_stan, double broj_kvadrata) : datum_prodaje(dan_prodaje,mjesec_prodaje,godina_prodaje), kupac_stana(ime_kupca,datum_rodjenja_kupca),
+            kupljeni_stan(adresa_stana,sprat_stana,broj_soba,namjesten_stan,broj_kvadrata) {
+                for (int i=0; i&lt;ime_agenta_prodaje.size(); i++) {
+                    if (!((ime_agenta_prodaje[i]&gt;='a' &amp;&amp; ime_agenta_prodaje[i]&lt;='z') || (ime_agenta_prodaje[i]&gt;='A' &amp;&amp; ime_agenta_prodaje[i]&lt;='Z') ||
+                    (ime_agenta_prodaje[i]&gt;='0' &amp;&amp; ime_agenta_prodaje[i]&lt;='9') || ime_agenta_prodaje[i]=='-' || ime_agenta_prodaje[i]==' ' || ime_agenta_prodaje[i]==39))
+                        throw std::domain_error("Neispravno ime i prezime");
+                }
+                if (cijena_stana&lt;0) throw std::domain_error("Neispravan unos podataka");
+                Prodaja::ime_agenta_prodaje=ime_agenta_prodaje; Prodaja::cijena_stana=cijena_stana;
+            }
+    void PromijeniAgentaProdaje(const std::string &amp;ime_agenta) {
+        for (int i=0; i&lt;ime_agenta.size(); i++)
+            if (!((ime_agenta[i]&gt;='a' &amp;&amp; ime_agenta[i]&lt;='z') || (ime_agenta[i]&gt;='A' &amp;&amp; ime_agenta[i]&lt;='Z') ||
+            (ime_agenta[i]&gt;='0' &amp;&amp; ime_agenta[i]&lt;='9') || ime_agenta[i]==' ' || ime_agenta[i]=='-' || ime_agenta[i]==39))
+                throw std::domain_error("Neispravno ime i prezime");
+        ime_agenta_prodaje=ime_agenta;
+    }
+    void PromijeniKupca(const Kupac &amp;novi_kupac) {
+        kupac_stana.Postavi(novi_kupac.DajImePrezime(),novi_kupac.DajDatumRodjenja());
+    }
+    void PromijeniStan(const Stan &amp;novi_stan) {
+        kupljeni_stan.Postavi(novi_stan.DajAdresu(),novi_stan.DajSprat(),novi_stan.DajBrojSoba(),novi_stan.DajNamjesten(),novi_stan.DajKvadraturu());
+    }
+    void PromijeniDatumKupovine(const Datum &amp;novi_datum) {
+        datum_prodaje.Postavi(novi_datum.DajDan(),novi_datum.DajMjesec(),novi_datum.DajGodinu());
+    }
+    void PromijeniCijenuProdaje(const double &amp;nova_cijena) { cijena_stana=nova_cijena; }
+    void PomjeriDanUnaprijed();
+    void PomjeriDanUnazad();
+    std::string DajImeAgenta() const { return ime_agenta_prodaje; }
+    std::string DajImeKupca() const { return kupac_stana.DajImePrezime(); }
+    Datum DajDatumProdaje() const { return datum_prodaje; }
+    double DajCijenuStana() const { return cijena_stana; }
+    friend bool ProdatPrije(const Prodaja &amp;p1, const Prodaja &amp;p2);
+    friend bool SkupljiStan(const Prodaja &amp;p1, const Prodaja &amp;p2);
+    void Ispisi() const;
+};
+
+void Prodaja::PomjeriDanUnaprijed() {
+    int broj_dana[12]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if ((datum_prodaje.DajGodinu()%4==0 &amp;&amp; datum_prodaje.DajGodinu()%100!=0) || datum_prodaje.DajGodinu()%400==0) broj_dana[1]++;
+    bool zadnji_dan_u_mjesecu=false;
+    for (int i=0; i&lt;12; i++) {
+        if (datum_prodaje.DajDan()==broj_dana[i]) {
+            zadnji_dan_u_mjesecu=true;
+            if (datum_prodaje.DajMjesec()==12) datum_prodaje.Postavi(1,1,datum_prodaje.DajGodinu()+1);
+            else datum_prodaje.Postavi(1,datum_prodaje.DajMjesec()+1,datum_prodaje.DajGodinu());
+            break;
+        }
+    }
+    if (!zadnji_dan_u_mjesecu) datum_prodaje.Postavi(datum_prodaje.DajDan()+1,datum_prodaje.DajMjesec(),datum_prodaje.DajGodinu());
+}
+
+void Prodaja::PomjeriDanUnazad() {
+    int broj_dana[12]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if ((datum_prodaje.DajGodinu()%4==0 &amp;&amp; datum_prodaje.DajGodinu()%100!=0) || datum_prodaje.DajGodinu()%400==0) broj_dana[1]++;
+    bool prvi_dan_u_mjesecu=false;
+    int tmp=0;
+    for (int i=11; i&gt;=0; i--) {
+        if (datum_prodaje.DajMjesec()==i+1) {
+            if (i+1!=1 &amp;&amp; datum_prodaje.DajDan()==1) {
+                datum_prodaje.Postavi(broj_dana[i-1],datum_prodaje.DajMjesec()-1,datum_prodaje.DajGodinu());
+                prvi_dan_u_mjesecu=true;
+                break;
+            }
+            else if (i+1==1 &amp;&amp; datum_prodaje.DajDan()==1) {
+                datum_prodaje.Postavi(broj_dana[tmp],tmp+1,datum_prodaje.DajGodinu()-1);
+                prvi_dan_u_mjesecu=true;
+                break;
+            }
+        }
+        tmp++;
+    }
+    if (!prvi_dan_u_mjesecu) datum_prodaje.Postavi(datum_prodaje.DajDan()-1,datum_prodaje.DajMjesec(),datum_prodaje.DajGodinu());
+}
+
+bool ProdatPrije(const Prodaja &amp;p1, const Prodaja &amp;p2) {
+    if (p1.DajDatumProdaje().DajGodinu()!=p2.DajDatumProdaje().DajGodinu()) return p1.DajDatumProdaje().DajGodinu()&lt;p2.DajDatumProdaje().DajGodinu();
+    else if (p1.DajDatumProdaje().DajMjesec()!=p2.DajDatumProdaje().DajMjesec()) return p1.DajDatumProdaje().DajMjesec()&lt;p2.DajDatumProdaje().DajMjesec();
+<a name="17"></a><font color="#0000FF"><a href="match124-0.html#17" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+    return p1.DajDatumProdaje().DajDan()&lt;p2.DajDatumProdaje().DajDan();
+}
+
+bool SkupljiStan(const Prodaja &amp;p1, const Prodaja &amp;p2) {
+    return p1.DajCijenuStana()&lt;p2.DajCijenuStana();
+}
+
+void Prodaja::Ispisi() const {
+    std::cout &lt;&lt; std::setw(32) &lt;&lt; std::left &lt;&lt; "Ime agenta:" &lt;&lt; std::right &lt;&lt; DajImeAgenta() &lt;&lt; std::endl;
+</font>    std::cout &lt;&lt; std::setw(32) &lt;&lt; std::left &lt;&lt; "Ime kupca:"; kupac_stana.Ispisi();
+    std::cout &lt;&lt; std::endl &lt;&lt; std::setw(32) &lt;&lt; std::left &lt;&lt; "Zakazani datum prodaje:"; DajDatumProdaje().Ispisi();
+    std::cout &lt;&lt; std::endl &lt;&lt; std::setw(32) &lt;&lt; std::left &lt;&lt; "Cijena stana:" &lt;&lt; std::right &lt;&lt; DajCijenuStana();
+<a name="13"></a><font color="#00FFFF"><a href="match124-0.html#13" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+    std::cout &lt;&lt; std::endl &lt;&lt; std::setw(32) &lt;&lt; std::left &lt;&lt; "Informacije o stanu:" &lt;&lt; std::endl;
+    kupljeni_stan.Ispisi();
+}
+
+class Prodaje {
+    std::vector&lt;std::shared_ptr&lt;Prodaja&gt;&gt; vektor_prodaje;
+public:
+    explicit Prodaje()=default;
+</font>    Prodaje(std::initializer_list&lt;Prodaja&gt; spisak_prodaja);
+    ~Prodaje();
+    Prodaje(const Prodaje &amp;prodaje);
+    Prodaje(Prodaje &amp;&amp;prodaje);
+    Prodaje &amp;operator =(const Prodaje &amp;prodaje);
+    Prodaje &amp;operator =(Prodaje &amp;&amp;prodaje);
+    void RegistrirajProdaju(const std::string &amp;ime_agenta_prodaje, double cijena_stana, const Datum &amp;datum_prodaje, const Kupac &amp;kupac_stana, const Stan &amp;kupljeni_stan);
+    void RegistrirajProdaju(const std::string &amp;ime_agenta_prodaje, double cijena_stana, int dan_prodaje, int mjesec_prodaje, int godina_prodaje,
+<a name="12"></a><font color="#0000FF"><a href="match124-0.html#12" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+        std::string &amp;ime_kupca, const Datum &amp;datum_rodjenja_kupca, const std::string &amp;adresa_stana, int sprat_stana, int broj_soba,
+        bool namjesten_stan, double broj_kvadrata);
+    void RegistrirajProdaju(std::shared_ptr&lt;Prodaja&gt; prodaja);
+</font>    Prodaja &amp;DajProdaju(int indeks);
+    int DajBrojProdaja() const { return vektor_prodaje.size(); }
+    int DajBrojProdajaNaDatum(const Datum &amp;datum) const;
+    int DajBrojProdajaOdAgenta(const std::string &amp;ime_agenta) const;
+    Prodaja &amp;DajNajranijuProdaju();
+    Prodaja DajNajranijuProdaju() const;
+    Prodaja &amp;DajNajskupljuProdaju();
+    Prodaja DajNajskupljuProdaju() const;
+    void IsprazniKolekciju();
+    void ObrisiNajranijuProdaju();
+    void ObrisiProdajeAgenta(const std::string &amp;ime_agenta);
+    void ObrisiProdajeNaDatum(const Datum &amp;datum);
+    void IspisiProdajeNaDatum(const Datum &amp;datum) const;
+    void IspisiSveProdaje() const;
+};
+
+Prodaje::Prodaje(std::initializer_list&lt;Prodaja&gt; spisak_prodaja) {
+    for (auto it=spisak_prodaja.begin(); it!=spisak_prodaja.end(); it++) {
+        try {
+            std::shared_ptr&lt;Prodaja&gt; p(new Prodaja(*it));
+            vektor_prodaje.push_back(p);
+        }
+        catch(std::bad_alloc) {
+            for (int i=0; i&lt;spisak_prodaja.size(); i++)
+                vektor_prodaje[i]=nullptr;
+            throw;
+        }
+    }
+}
+
+Prodaje::~Prodaje() {
+    for (int i=0; i&lt;vektor_prodaje.size(); i++)
+        vektor_prodaje[i]=nullptr;
+}
+
+Prodaje::Prodaje(const Prodaje &amp;prodaje) {
+    try {
+        vektor_prodaje.resize(prodaje.vektor_prodaje.size());
+        for (int i=0; i&lt;prodaje.vektor_prodaje.size(); i++) {
+            std::shared_ptr&lt;Prodaja&gt; p(new Prodaja(*prodaje.vektor_prodaje[i]));
+            vektor_prodaje[i]=p;
+        }
+    }
+    catch(std::bad_alloc) {
+        for (int i=0; i&lt;prodaje.vektor_prodaje.size(); i++)
+            vektor_prodaje[i]=nullptr;
+        throw;
+    }
+}
+
+Prodaje::Prodaje(Prodaje &amp;&amp;prodaje) {
+    vektor_prodaje=std::move(prodaje.vektor_prodaje);
+}
+
+Prodaje &amp;Prodaje::operator =(const Prodaje &amp;prodaje) {
+    int stara_duzina=vektor_prodaje.size();
+    if (prodaje.vektor_prodaje.size()&gt;vektor_prodaje.size()) {
+        try {
+            for (int i=vektor_prodaje.size(); i&lt;prodaje.vektor_prodaje.size(); i++) {
+                std::shared_ptr&lt;Prodaja&gt; p(new Prodaja(*prodaje.vektor_prodaje[i]));
+                vektor_prodaje.push_back(p);
+            }
+        }
+        catch(std::bad_alloc) {
+            for (int i=vektor_prodaje.size(); i&lt;prodaje.vektor_prodaje.size(); i++)
+                vektor_prodaje[i]=nullptr;
+            vektor_prodaje.resize(stara_duzina);
+            throw;
+        }
+    }
+    vektor_prodaje.resize(prodaje.vektor_prodaje.size());
+    for (int i=0; i&lt;vektor_prodaje.size(); i++)
+        *vektor_prodaje[i]=*prodaje.vektor_prodaje[i];
+    return *this;
+}
+
+Prodaje &amp;Prodaje::operator =(Prodaje &amp;&amp;prodaje) {
+    vektor_prodaje=std::move(prodaje.vektor_prodaje);
+    return *this;
+}
+
+void Prodaje::RegistrirajProdaju(const std::string &amp;ime_agenta_prodaje, double cijena_stana, const Datum &amp;datum_prodaje, 
+    const Kupac &amp;kupac_stana, const Stan &amp;kupljeni_stan) {
+    std::shared_ptr&lt;Prodaja&gt; p(new Prodaja(ime_agenta_prodaje,cijena_stana,datum_prodaje,kupac_stana,kupljeni_stan));
+    vektor_prodaje.push_back(p);
+}
+
+void Prodaje::RegistrirajProdaju(const std::string &amp;ime_agenta_prodaje, double cijena_stana, int dan_prodaje, int mjesec_prodaje, int godina_prodaje, std::string &amp;ime_kupca,
+        const Datum &amp;datum_rodjenja_kupca, const std::string &amp;adresa_stana, int sprat_stana, int broj_soba, bool namjesten_stan, double broj_kvadrata) {
+    std::shared_ptr&lt;Prodaja&gt; p(new Prodaja(ime_agenta_prodaje,cijena_stana,dan_prodaje,mjesec_prodaje,godina_prodaje,ime_kupca,
+        datum_rodjenja_kupca,adresa_stana,sprat_stana,broj_soba,namjesten_stan,broj_kvadrata));
+    vektor_prodaje.push_back(p);
+}
+
+void Prodaje::RegistrirajProdaju(std::shared_ptr&lt;Prodaja&gt; prodaja) {
+    vektor_prodaje.push_back(prodaja);
+}
+
+Prodaja &amp;Prodaje::DajProdaju(int indeks) {
+    if (indeks&lt;0 || indeks&gt;=vektor_prodaje.size()) throw std::range_error("Neispravan indeks");
+    return *vektor_prodaje[indeks];
+}
+
+int Prodaje::DajBrojProdajaNaDatum(const Datum &amp;datum) const {
+    int broj_prodaja_na_datum=0;
+    for (int i=0; i&lt;vektor_prodaje.size(); i++)
+        if (vektor_prodaje[i]-&gt;DajDatumProdaje().DajDan()==datum.DajDan() &amp;&amp; vektor_prodaje[i]-&gt;DajDatumProdaje().DajMjesec()==datum.DajMjesec() &amp;&amp;
+            vektor_prodaje[i]-&gt;DajDatumProdaje().DajGodinu()==datum.DajGodinu()) broj_prodaja_na_datum++;
+    return broj_prodaja_na_datum;
+}
+
+int Prodaje::DajBrojProdajaOdAgenta(const std::string &amp;ime_agenta) const {
+    int broj_prodaja_od_agenta=0;
+    for (int i=0; i&lt;vektor_prodaje.size(); i++)
+        if (vektor_prodaje[i]-&gt;DajImeAgenta()==ime_agenta) broj_prodaja_od_agenta++;
+    return broj_prodaja_od_agenta;
+}
+
+Prodaja &amp;Prodaje::DajNajranijuProdaju() {
+    if (vektor_prodaje.size()==0) throw std::domain_error("Nema registriranih podataka");
+    auto najranija_prodaja=vektor_prodaje[0];
+    for (int i=0; i&lt;vektor_prodaje.size(); i++) 
+        if (ProdatPrije(*vektor_prodaje[i],*najranija_prodaja)) najranija_prodaja=vektor_prodaje[i];
+    return *najranija_prodaja;
+}
+
+Prodaja Prodaje::DajNajranijuProdaju() const {
+    if (vektor_prodaje.size()==0) throw std::domain_error("Nema registriranih podataka");
+    auto najranija_prodaja=vektor_prodaje[0];
+    for (int i=1; i&lt;vektor_prodaje.size(); i++)
+        if (ProdatPrije(*vektor_prodaje[i],*najranija_prodaja)) najranija_prodaja=vektor_prodaje[i];
+    return *najranija_prodaja;
+}
+
+Prodaja &amp;Prodaje::DajNajskupljuProdaju() {
+    if (vektor_prodaje.size()==0) throw std::domain_error("Nema registriranih podataka");
+    auto najskuplja_prodaja=vektor_prodaje[0];
+    for (int i=1; i&lt;vektor_prodaje.size(); i++)
+        if (SkupljiStan(*najskuplja_prodaja,*vektor_prodaje[i])) najskuplja_prodaja=vektor_prodaje[i];
+    return *najskuplja_prodaja;
+}
+
+Prodaja Prodaje::DajNajskupljuProdaju() const {
+    if (vektor_prodaje.size()==0) throw std::domain_error("Nema registriranih podataka");
+    auto najskuplja_prodaja=vektor_prodaje[0];
+    for (int i=1; i&lt;vektor_prodaje.size(); i++)
+        if (SkupljiStan(*najskuplja_prodaja,*vektor_prodaje[i])) najskuplja_prodaja=vektor_prodaje[i];
+    return *najskuplja_prodaja;
+}
+
+void Prodaje::IsprazniKolekciju() {
+    for (int i=0; i&lt;vektor_prodaje.size(); i++)
+        vektor_prodaje[i]=nullptr;
+}
+
+void Prodaje::ObrisiNajranijuProdaju() {
+    if (vektor_prodaje.size()==0) throw std::range_error("Prazna kolekcija");
+    ObrisiProdajeNaDatum(DajNajranijuProdaju().DajDatumProdaje());
+}
+
+void Prodaje::ObrisiProdajeNaDatum(const Datum &amp;datum) {
+    if (vektor_prodaje.size()==0) throw std::range_error("Prazna kolekcija");
+    for (int i=0; i&lt;vektor_prodaje.size(); i++) 
+        if (vektor_prodaje[i]-&gt;DajDatumProdaje().DajDan()==datum.DajDan() &amp;&amp;
+            vektor_prodaje[i]-&gt;DajDatumProdaje().DajMjesec()==datum.DajMjesec() &amp;&amp;
+            vektor_prodaje[i]-&gt;DajDatumProdaje().DajGodinu()==datum.DajGodinu()) vektor_prodaje[i]=nullptr;
+    std::vector&lt;std::shared_ptr&lt;Prodaja&gt;&gt; novi_vektor_prodaje;
+    for (int i=0; i&lt;vektor_prodaje.size(); i++)
+        if (vektor_prodaje[i]!=nullptr) {
+            novi_vektor_prodaje.push_back(vektor_prodaje[i]);
+            vektor_prodaje[i]=nullptr;
+        }
+    vektor_prodaje.resize(novi_vektor_prodaje.size());
+    for (int i=0; i&lt;novi_vektor_prodaje.size(); i++) {
+        vektor_prodaje[i]=novi_vektor_prodaje[i];
+        novi_vektor_prodaje[i]=nullptr;
+    }
+}
+
+void Prodaje::ObrisiProdajeAgenta(const std::string &amp;ime_agenta) {
+    if (vektor_prodaje.size()==0) throw std::range_error("Prazna kolekcija");
+    for (int i=0; i&lt;vektor_prodaje.size(); i++)
+        if (vektor_prodaje[i]-&gt;DajImeAgenta()==ime_agenta) vektor_prodaje[i]=nullptr;
+    std::vector&lt;std::shared_ptr&lt;Prodaja&gt;&gt; novi_vektor_prodaje;
+    for (int i=0; i&lt;vektor_prodaje.size(); i++)
+        if (vektor_prodaje[i]!=nullptr) {
+            novi_vektor_prodaje.push_back(vektor_prodaje[i]);
+            vektor_prodaje[i]=nullptr;
+        }
+    vektor_prodaje.resize(novi_vektor_prodaje.size());
+    for (int i=0; i&lt;novi_vektor_prodaje.size(); i++) {
+        vektor_prodaje[i]=novi_vektor_prodaje[i];
+        novi_vektor_prodaje[i]=nullptr;
+    }
+}
+
+void Prodaje::IspisiProdajeNaDatum(const Datum &amp;datum) const {
+    if (vektor_prodaje.size()==0) throw std::range_error("Prazna kolekcija");
+    int broj_prodaja_na_datum=DajBrojProdajaNaDatum(datum);
+    if (broj_prodaja_na_datum==0) return;
+    std::vector&lt;Prodaja&gt; vektor_prodaje2;
+    for (int i=0; i&lt;vektor_prodaje.size(); i++) {
+        if (vektor_prodaje[i]-&gt;DajDatumProdaje().DajDan()==datum.DajDan() &amp;&amp;
+            vektor_prodaje[i]-&gt;DajDatumProdaje().DajMjesec()==datum.DajMjesec() &amp;&amp;
+            vektor_prodaje[i]-&gt;DajDatumProdaje().DajGodinu()==datum.DajGodinu()) vektor_prodaje2.push_back(*vektor_prodaje[i]);
+    }
+    std::sort(vektor_prodaje2.begin(),vektor_prodaje2.end(),[](Prodaja p1,Prodaja p2){ return p1.DajImeKupca()&lt;p2.DajImeKupca(); });
+<a name="19"></a><font color="#FF00FF"><a href="match124-0.html#19" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+    for (int i=0; i&lt;vektor_prodaje2.size(); i++) {
+        vektor_prodaje2[i].Ispisi();
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+void Prodaje::IspisiSveProdaje() const {
+</font>    if (vektor_prodaje.size()==0) throw std::range_error("Prazna kolekcija");
+    std::vector&lt;Prodaja&gt; vektor_prodaje2;
+    for (int i=0; i&lt;vektor_prodaje.size(); i++)
+<a name="18"></a><font color="#00FFFF"><a href="match124-0.html#18" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+        if (vektor_prodaje[i]!=nullptr) vektor_prodaje2.push_back(*vektor_prodaje[i]);
+    std::sort(vektor_prodaje2.begin(),vektor_prodaje2.end(),[](Prodaja p1,Prodaja p2){
+        if (p1.DajDatumProdaje().DajDan()==p2.DajDatumProdaje().DajDan() &amp;&amp; p1.DajDatumProdaje().DajMjesec()==p2.DajDatumProdaje().DajMjesec() &amp;&amp;
+</font>            p1.DajDatumProdaje().DajGodinu()==p2.DajDatumProdaje().DajGodinu()) return p1.DajImeKupca()&lt;p2.DajImeKupca();
+        return ProdatPrije(p1,p2); });
+    for (int i=0; i&lt;vektor_prodaje2.size(); i++) {
+        vektor_prodaje2[i].Ispisi();
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+int main() {
+    std::cout &lt;&lt; "Dobrodosli!" &lt;&lt; std::endl &lt;&lt; std::endl &lt;&lt; std::endl;
+    std::vector&lt;Stan&gt; vektor_stanova;
+    std::vector&lt;Kupac&gt; vektor_kupaca;
+    Prodaje prodaje;
+    int opcija1;
+    do {
+        std::cout &lt;&lt; "Izaberite opciju:" &lt;&lt; std::endl
+        &lt;&lt; " 0 - kraj" &lt;&lt; std::endl &lt;&lt; " 1 - uredjivanje stanova" &lt;&lt; std::endl
+        &lt;&lt; " 2 - uredjivanje kupaca" &lt;&lt; std::endl &lt;&lt; " 3 - uredjivanje prodaja" &lt;&lt; std::endl;
+        std::cin &gt;&gt; opcija1;
+        if (opcija1==1) {
+            int opcija2;
+            do {
+                std::cout &lt;&lt; "Izaberite opciju:" &lt;&lt; std::endl
+                &lt;&lt; " 0 - nazad" &lt;&lt; std::endl &lt;&lt; " 1 - dodavanje stana" &lt;&lt; std::endl
+                &lt;&lt; " 2 - uredjivanje stanova" &lt;&lt; std::endl &lt;&lt; " 3 - ispis svih stanova"
+                &lt;&lt; std::endl &lt;&lt; " 4 - kraj" &lt;&lt; std::endl;
+                std::cin &gt;&gt; opcija2;
+                if (opcija2==0) break;
+                else if (opcija2==1) {
+                    std::string adresa;
+                    int sprat, broj_soba, namjesten;
+                    bool da_li_je_kraj_unosa(false);
+                    double kvadratura;
+                    do {
+<a name="2"></a><font color="#0000FF"><a href="match124-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+                        std::cin.ignore(10000,'\n');
+                        std::cout &lt;&lt; "Unesite adresu: ";
+                        std::getline(std::cin,adresa);
+                        std::cout &lt;&lt; "Unesite sprat: ";
+                        std::cin &gt;&gt; sprat;
+                        std::cout &lt;&lt; "Unesite broj soba: ";
+                        std::cin &gt;&gt; broj_soba;
+                        std::cout &lt;&lt; "Da li je stan namjesten (1 - da, 0 - ne): ";
+                        std::cin &gt;&gt; namjesten;
+                        std::cout &lt;&lt; "Unesite kvadraturu: ";
+                        std::cin &gt;&gt; kvadratura;
+                        try {
+                            if (namjesten!=1 &amp;&amp; namjesten!=0) throw std::domain_error("Neispravan unos podataka");
+</font>                            Stan s(adresa,sprat,broj_soba,namjesten,kvadratura);
+                            vektor_stanova.push_back(s);
+                            da_li_je_kraj_unosa=true;
+                            std::cout &lt;&lt; "Stan je uspjesno dodan!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                        }
+                        catch(std::domain_error izuzetak) {
+                            std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                        }
+                    } while(!da_li_je_kraj_unosa);
+                }
+<a name="7"></a><font color="#0000FF"><a href="match124-0.html#7" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+                else if (opcija2==2) {
+                    std::cout &lt;&lt; "Odaberite stan. Dostupni stanovi su:" &lt;&lt; std::endl;
+                    for (int i=0; i&lt;vektor_stanova.size(); i++) {
+                        std::cout &lt;&lt; " " &lt;&lt; i+1 &lt;&lt; " - ";
+</font>                        vektor_stanova[i].Ispisi();
+                    }
+                    int dodatna_opcija1, dodatna_opcija2;
+                    std::cin &gt;&gt; dodatna_opcija1;
+                    std::cout &lt;&lt; std::endl &lt;&lt; "Odaberite polje koje zelite urediti:" &lt;&lt; std::endl
+                    &lt;&lt; " 0 - nazad" &lt;&lt; std::endl &lt;&lt; " 1 - adresa" &lt;&lt; std::endl 
+                    &lt;&lt; " 2 - sprat" &lt;&lt; std::endl &lt;&lt; " 3 - broj soba" &lt;&lt; std::endl
+                    &lt;&lt; " 4 - da li je stan namjesten" &lt;&lt; std::endl &lt;&lt; " 5 - kvadratura"
+                    &lt;&lt; std::endl &lt;&lt; " 6 - sve" &lt;&lt; std::endl;
+                    std::cin &gt;&gt; dodatna_opcija2;
+                    if (dodatna_opcija2==1) {
+                        std::cin.ignore(10000,'\n');
+                        std::string nova_adresa;
+                        std::cout &lt;&lt; "Unesite adresu: ";
+                        std::getline(std::cin,nova_adresa);
+                        vektor_stanova[dodatna_opcija1-1].Postavi(nova_adresa,vektor_stanova[dodatna_opcija1-1].DajSprat(),
+                            vektor_stanova[dodatna_opcija1-1].DajBrojSoba(),vektor_stanova[dodatna_opcija1-1].DajNamjesten(),
+                            vektor_stanova[dodatna_opcija1-1].DajKvadraturu());
+                        std::cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                    }
+                    else if (dodatna_opcija2==2) {
+                        bool da_li_je_kraj_unosa1=false;
+                        do {
+                            int novi_sprat;
+                            std::cout &lt;&lt; "Unesite sprat: ";
+                            std::cin &gt;&gt; novi_sprat;
+                            try {
+                                vektor_stanova[dodatna_opcija1-1].Postavi(vektor_stanova[dodatna_opcija1-1].DajAdresu(),novi_sprat,
+                                    vektor_stanova[dodatna_opcija1-1].DajBrojSoba(),vektor_stanova[dodatna_opcija1-1].DajNamjesten(),
+                                    vektor_stanova[dodatna_opcija1-1].DajKvadraturu());
+                                da_li_je_kraj_unosa1=true;
+                                std::cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                            catch(std::domain_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                        } while(!da_li_je_kraj_unosa1);
+                    }
+                    else if (dodatna_opcija2==3) {
+                        bool da_li_je_kraj_unosa1=false;
+                        do {
+                            int novi_broj_soba;
+                            std::cout &lt;&lt; "Unesite broj soba: ";
+                            std::cin &gt;&gt; novi_broj_soba;
+                            try {
+                                vektor_stanova[dodatna_opcija1-1].Postavi(vektor_stanova[dodatna_opcija1-1].DajAdresu(),vektor_stanova[dodatna_opcija1-1].DajSprat(),
+                                    novi_broj_soba,vektor_stanova[dodatna_opcija1-1].DajNamjesten(),vektor_stanova[dodatna_opcija1-1].DajKvadraturu());
+                                da_li_je_kraj_unosa1=true;
+                                std::cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                            catch(std::domain_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                        } while(!da_li_je_kraj_unosa1);
+                    }
+                    else if (dodatna_opcija2==4) {
+                        bool da_li_je_kraj_unosa1=false;
+                        do {
+                            int novi_namjesten;
+<a name="9"></a><font color="#FF00FF"><a href="match124-0.html#9" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+                            std::cout &lt;&lt; "Da li je stan namjesten (1 - da, 0 - ne): ";
+                            std::cin &gt;&gt; novi_namjesten;
+                            try {
+                                if (novi_namjesten!=1 &amp;&amp; novi_namjesten!=0) throw std::domain_error("Neispravan unos podataka");
+                                vektor_stanova[dodatna_opcija1-1].Postavi(vektor_stanova[dodatna_opcija1-1].DajAdresu(),vektor_stanova[dodatna_opcija1-1].DajSprat(),
+</font>                                    vektor_stanova[dodatna_opcija1-1].DajBrojSoba(),novi_namjesten,vektor_stanova[dodatna_opcija1-1].DajKvadraturu());
+                                da_li_je_kraj_unosa1=true;
+                                std::cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                            catch(std::domain_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                        } while (!da_li_je_kraj_unosa1);
+                    }
+                    else if (dodatna_opcija2==5) {
+                        bool da_li_je_kraj_unosa1=false;
+                        do {
+                            double nova_kvadratura;
+                            std::cout &lt;&lt; "Unesite kvadraturu: ";
+                            std::cin &gt;&gt; nova_kvadratura;
+                            try {
+                                vektor_stanova[dodatna_opcija1-1].Postavi(vektor_stanova[dodatna_opcija1-1].DajAdresu(),vektor_stanova[dodatna_opcija1-1].DajSprat(),
+                                    vektor_stanova[dodatna_opcija1-1].DajBrojSoba(),vektor_stanova[dodatna_opcija1-1].DajNamjesten(),nova_kvadratura);
+                                da_li_je_kraj_unosa1=true;
+                                std::cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                            catch(std::domain_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                        } while (!da_li_je_kraj_unosa1);
+                    }
+                    else if (dodatna_opcija2==6) {
+                        bool da_li_je_kraj_unosa1=false;
+                        do {
+                            std::string nova_adresa;
+                            int novi_sprat, novi_broj_soba, novi_namjesten;
+                            double nova_kvadratura;
+<a name="20"></a><font color="#FF0000"><a href="match124-0.html#20" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+                            std::cin.ignore(10000,'\n');
+                            std::cout &lt;&lt; "Unesite adresu: ";
+                            std::getline(std::cin,nova_adresa);
+                            std::cout &lt;&lt; "Unesite sprat: ";
+</font>                            std::cin &gt;&gt; novi_sprat;
+                            std::cout &lt;&lt; "Unesite broj soba: ";
+                            std::cin &gt;&gt; novi_broj_soba;
+                            std::cout &lt;&lt; "Da li je stan namjesten (1 - da, 0 - ne): ";
+                            std::cin &gt;&gt; novi_namjesten;
+                            std::cout &lt;&lt; "Unesite kvadraturu: ";
+                            std::cin &gt;&gt; nova_kvadratura;
+                            try {
+                                if (novi_namjesten!=0 &amp;&amp; novi_namjesten!=1) throw std::domain_error("Neispravan unos podataka");
+                                vektor_stanova[dodatna_opcija1-1].Postavi(nova_adresa,novi_sprat,novi_broj_soba,novi_namjesten,nova_kvadratura);
+                                da_li_je_kraj_unosa1=true;
+                                std::cout &lt;&lt; "Stan je uspjesno izmijenjen!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                            catch(std::domain_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                        } while (!da_li_je_kraj_unosa1);
+                    }
+                    else if (dodatna_opcija2==0) std::cout &lt;&lt; std::endl;
+                }
+<a name="5"></a><font color="#FF0000"><a href="match124-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+                else if (opcija2==3) {
+                    for (int i=0; i&lt;vektor_stanova.size(); i++) {
+                        std::cout &lt;&lt; i+1 &lt;&lt; ". ";
+                        vektor_stanova[i].Ispisi();
+                    }
+                    std::cout &lt;&lt; std::endl;
+</font>                }
+                else if (opcija2==4) {
+                    std::cout &lt;&lt; std::endl &lt;&lt; std::endl &lt;&lt; "Dovidjenja!";
+                    return 0;
+                }
+            } while (opcija2!=0);
+        } 
+        else if (opcija1==2) {
+            int opcija2;
+            do {
+                std::cout &lt;&lt; "Izaberite opciju:" &lt;&lt; std::endl
+                &lt;&lt; " 0 - nazad" &lt;&lt; std::endl &lt;&lt; " 1 - dodavanje kupca" &lt;&lt; std::endl
+                &lt;&lt; " 2 - uredjivanje kupaca" &lt;&lt; std::endl &lt;&lt; " 3 - ispis svih kupaca"
+                &lt;&lt; std::endl &lt;&lt; " 4 - kraj" &lt;&lt; std::endl;
+                std::cin &gt;&gt; opcija2;
+                if (opcija2==0) break;
+                else if (opcija2==1) {
+                    bool da_li_je_kraj_unosa1=false;
+                    do {
+                        std::cin.ignore(10000,'\n');
+                        std::string ime_i_prezime;
+                        std::cout &lt;&lt; "Unesite ime i prezime kupca: ";
+                        std::getline(std::cin,ime_i_prezime);
+                        std::cout &lt;&lt; "Unesite datum rodjenja (formata d/m/g): ";
+                        char znak;
+                        int dan,mjesec,godina;
+                        std::cin &gt;&gt; dan &gt;&gt; znak &gt;&gt; mjesec &gt;&gt; znak &gt;&gt; godina;
+                        try {
+                            Datum datum(dan,mjesec,godina);
+                            Kupac kupac(ime_i_prezime,datum);
+                            vektor_kupaca.push_back(kupac);
+                            da_li_je_kraj_unosa1=true;
+                            std::cout &lt;&lt; "Kupac je uspjesno dodan!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                        }
+                        catch(std::domain_error izuzetak) {
+                            std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                        }
+                    } while(!da_li_je_kraj_unosa1);
+                }
+<a name="8"></a><font color="#00FFFF"><a href="match124-0.html#8" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+                else if (opcija2==2) {
+                    std::cout &lt;&lt; "Odaberite kupca kojeg zelite urediti. Dostupni kupci su:" &lt;&lt; std::endl;
+                    for (int i=0; i&lt;vektor_kupaca.size(); i++) {
+                        std::cout &lt;&lt; " " &lt;&lt; i+1 &lt;&lt; " - ";
+</font>                        vektor_kupaca[i].Ispisi();
+                        std::cout &lt;&lt; std::endl;
+                    }
+                    int dodatna_opcija1;
+                    std::cin &gt;&gt; dodatna_opcija1;
+                    bool da_li_je_kraj_unosa2=false;
+                    do {
+                        std::cin.ignore(10000,'\n');
+                        std::string novo_ime_i_prezime_kupca;
+                        std::cout &lt;&lt; "Unesite ime i prezime kupca: ";
+                        std::getline(std::cin,novo_ime_i_prezime_kupca);
+                        std::cout &lt;&lt; "Unesite datum rodjenja (formata d/m/g): ";
+                        char znak;
+                        int dan,mjesec,godina;
+                        std::cin &gt;&gt; dan &gt;&gt; znak &gt;&gt; mjesec &gt;&gt; znak &gt;&gt; godina;
+                        try {
+                            Datum novi_datum(dan,mjesec,godina);
+                            vektor_kupaca[dodatna_opcija1-1].Postavi(novo_ime_i_prezime_kupca,novi_datum);
+                            da_li_je_kraj_unosa2=true;
+                            std::cout &lt;&lt; "Kupac je uspjesno izmijenjen!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                        }
+                        catch(std::domain_error izuzetak) {
+                            std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                        }
+                    } while (!da_li_je_kraj_unosa2);
+                }
+<a name="10"></a><font color="#FF0000"><a href="match124-0.html#10" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+                else if (opcija2==3) {
+                    for (int i=0; i&lt;vektor_kupaca.size(); i++) {
+                        vektor_kupaca[i].Ispisi();
+                        std::cout &lt;&lt; std::endl;
+                    }
+                    std::cout &lt;&lt; std::endl;
+</font>                }
+                else if (opcija2==4) {
+                    std::cout &lt;&lt; std::endl &lt;&lt; std::endl &lt;&lt; "Dovidjenja!";
+                    return 0;
+                }
+            } while (opcija2!=0);
+        } 
+        else if (opcija1==3) {
+            int opcija2;
+            do {
+                std::cout &lt;&lt; "Izaberite opciju:" &lt;&lt; std::endl
+                &lt;&lt; " 0 - nazad" &lt;&lt; std::endl &lt;&lt; " 1 - dodavanje prodaje" &lt;&lt; std::endl
+                &lt;&lt; " 2 - uredjivanje prodaje" &lt;&lt; std::endl &lt;&lt; " 3 - ispis prodaja" &lt;&lt; std::endl
+                &lt;&lt; " 4 - brisanje prodaja" &lt;&lt; std::endl &lt;&lt; " 5 - kraj" &lt;&lt; std::endl;
+                std::cin &gt;&gt; opcija2;
+                if (opcija2==0) break;
+                else if (opcija2==1) {
+                    int opcija3;
+                    do {
+                        std::cout &lt;&lt; "Izaberite opciju:" &lt;&lt; std::endl
+                        &lt;&lt; " 0 - nazad" &lt;&lt; std::endl &lt;&lt; " 1 - dodavanje potpuno nove prodaje"
+                        &lt;&lt; std::endl &lt;&lt; " 2 - dodavanje nove prodaje na osnovu arhive" &lt;&lt; std::endl
+                        &lt;&lt; " 3 - kraj" &lt;&lt; std::endl;
+                        std::cin &gt;&gt; opcija3;
+                        if (opcija3==0) break;
+                        else if (opcija3==1) {
+                            bool da_li_je_kraj_unosa2=false;
+                            do {
+                                std::cin.ignore(10000,'\n');
+                                std::cout &lt;&lt; "Unesite ime i prezime agenta prodaje: ";
+                                std::string ime_i_prezime_agenta_prodaje;
+                                std::getline(std::cin,ime_i_prezime_agenta_prodaje);
+                                std::cout &lt;&lt; "Unesite datum prodaje (formata d/m/g): ";
+                                char znak1;
+                                int dan1,mjesec1,godina1;
+                                std::cin &gt;&gt; dan1 &gt;&gt; znak1 &gt;&gt; mjesec1 &gt;&gt; znak1 &gt;&gt; godina1;
+                                int cijena_stana;
+                                std::cout &lt;&lt; "Unesite cijenu stana: ";
+                                std::cin &gt;&gt; cijena_stana;
+                                std::cin.ignore(10000,'\n');
+                                std::cout &lt;&lt; "Unesite ime kupca: ";
+                                std::string ime_kupca;
+                                std::getline(std::cin,ime_kupca);
+                                char znak2;
+                                int dan2,mjesec2,godina2;
+                                std::cout &lt;&lt; "Unesite datum rodjenja kupca (formata d/m/g): ";
+                                std::cin &gt;&gt; dan2 &gt;&gt; znak2 &gt;&gt; mjesec2 &gt;&gt; znak2 &gt;&gt; godina2;
+                                std::string adresa;
+                                std::cin.ignore(10000,'\n');
+                                std::cout &lt;&lt; "Unesite adresu: ";
+                                std::getline(std::cin,adresa);
+                                int sprat;
+                                std::cout &lt;&lt; "Unesite sprat: ";
+                                std::cin &gt;&gt; sprat;
+                                int broj_soba;
+                                std::cout &lt;&lt; "Unesite broj soba: ";
+                                std::cin &gt;&gt; broj_soba;
+                                int namjesten;
+                                std::cout &lt;&lt; "Da li je stan namjesten (1 - da, 0 - ne): ";
+<a name="21"></a><font color="#00FF00"><a href="match124-0.html#21" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+                                std::cin &gt;&gt; namjesten;
+                                double kvadratura;
+                                std::cout &lt;&lt; "Unesite kvadraturu: ";
+                                std::cin &gt;&gt; kvadratura;
+                                try {
+                                    if (namjesten!=0 &amp;&amp; namjesten!=1) throw std::domain_error("Neispravan unos podataka");
+</font>                                    Datum datum1(dan1,mjesec1,godina1);
+                                    Datum datum2(dan2,mjesec2,godina2);
+                                    Kupac kupac(ime_kupca,datum2);
+                                    vektor_kupaca.push_back(kupac);
+                                    Stan stan(adresa,sprat,broj_soba,namjesten,kvadratura);
+                                    vektor_stanova.push_back(stan);
+                                    prodaje.RegistrirajProdaju(ime_i_prezime_agenta_prodaje,cijena_stana,datum1,kupac,stan);
+                                    da_li_je_kraj_unosa2=true;
+                                    std::cout &lt;&lt; "Prodaja uspjesno dodana!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                                }
+                                catch(std::domain_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                                }
+                            } while(!da_li_je_kraj_unosa2);
+                        }
+                        else if (opcija3==2) {
+                            bool da_li_je_kraj_unosa2=false;
+                            do {
+                                std::cin.ignore(10000,'\n');
+                                std::string ime_i_prezime_agenta_prodaje;
+                                std::cout &lt;&lt; "Unesite ime i prezime agenta prodaje: ";
+                                std::getline(std::cin,ime_i_prezime_agenta_prodaje);
+                                char znak;
+                                int dan,mjesec,godina;
+                                std::cout &lt;&lt; "Unesite datum prodaje (formata d/m/g): ";
+                                std::cin &gt;&gt; dan &gt;&gt; znak &gt;&gt; mjesec &gt;&gt; znak &gt;&gt; godina;
+                                int cijena_stana;
+                                std::cout &lt;&lt; "Unesite cijenu stana: ";
+<a name="6"></a><font color="#00FF00"><a href="match124-0.html#6" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+                                std::cin &gt;&gt; cijena_stana;
+                                std::cout &lt;&lt; "Odaberite kupca. Dostupni kupci su:" &lt;&lt; std::endl;
+                                for (int i=0; i&lt;vektor_kupaca.size(); i++) {
+                                    std::cout &lt;&lt; " " &lt;&lt; i+1 &lt;&lt; " - ";
+</font>                                    vektor_kupaca[i].Ispisi();
+                                    std::cout &lt;&lt; std::endl;
+                                }
+                                int dodatna_opcija1;
+                                std::cin &gt;&gt; dodatna_opcija1;
+<a name="4"></a><font color="#FF00FF"><a href="match124-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+                                std::cout &lt;&lt; "Odaberite stan. Dostupni stanovi su:" &lt;&lt; std::endl;
+                                for (int i=0; i&lt;vektor_stanova.size(); i++) {
+                                    std::cout &lt;&lt; " " &lt;&lt; i+1 &lt;&lt; " - ";
+                                    vektor_stanova[i].Ispisi();
+                                }
+                                int dodatna_opcija2;
+                                std::cin &gt;&gt; dodatna_opcija2;
+                                try {
+                                    Datum datum(dan,mjesec,godina);
+</font>                                    prodaje.RegistrirajProdaju(ime_i_prezime_agenta_prodaje,cijena_stana,datum,
+                                        vektor_kupaca[dodatna_opcija1-1],vektor_stanova[dodatna_opcija2-1]);
+                                    da_li_je_kraj_unosa2=true;
+                                    std::cout &lt;&lt; "Prodaja uspjesno dodana!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                                }
+                                catch(std::domain_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                                }
+                            } while(!da_li_je_kraj_unosa2);
+                        }
+                        else if (opcija3==3) {
+                            std::cout &lt;&lt; std::endl &lt;&lt; std::endl &lt;&lt; "Dovidjenja!";
+                            return 0;
+                        }
+                    } while (opcija3!=0);
+                }
+                else if (opcija2==2) {
+                    std::cout &lt;&lt; "Odaberite prodaju koju zelite urediti. Dostupne prodaje su:" &lt;&lt; std::endl;
+                    for (int i=0; i&lt;prodaje.DajBrojProdaja(); i++) {
+                        std::cout &lt;&lt; i+1 &lt;&lt; "." &lt;&lt; std::endl;
+                        prodaje.DajProdaju(i).Ispisi();
+                        if (i!=prodaje.DajBrojProdaja()-1) 
+                            std::cout &lt;&lt; std::endl;
+                    }
+                    int dodatna_opcija1;
+                    std::cin &gt;&gt; dodatna_opcija1;
+                    std::cout &lt;&lt; "Izaberite opciju:" &lt;&lt; std::endl &lt;&lt; " 0 - nazad" &lt;&lt; std::endl
+                    &lt;&lt; " 1 - izmjena agenta" &lt;&lt; std::endl &lt;&lt; " 2 - izmjena datuma prodaje"
+                    &lt;&lt; std::endl &lt;&lt; " 3 - izmjena kupca" &lt;&lt; std::endl &lt;&lt; " 4 - izmjena stana"
+                    &lt;&lt; std::endl &lt;&lt; " 5 - izmjena cijene stana" &lt;&lt; std::endl;
+                    int dodatna_opcija2;
+                    std::cin &gt;&gt; dodatna_opcija2;
+                    if (dodatna_opcija2==0) break;
+                    else if (dodatna_opcija2==1) {
+                        bool da_li_je_kraj_unosa2=false;
+                        do {
+                            std::cin.ignore(10000,'\n');
+                            std::string novo_ime_agenta;
+                            std::cout &lt;&lt; "Unesite ime i prezime agenta prodaje: ";
+                            std::getline(std::cin,novo_ime_agenta);
+                            try {
+                                prodaje.DajProdaju(dodatna_opcija1-1).PromijeniAgentaProdaje(novo_ime_agenta);
+                                da_li_je_kraj_unosa2=true;
+                                std::cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+<a name="22"></a><font color="#0000FF"><a href="match124-0.html#22" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+                            catch(std::range_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                            catch(std::domain_error izuzetak) {
+</font>                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                        } while (!da_li_je_kraj_unosa2);
+                    }
+                    else if (dodatna_opcija2==2) {
+                        bool da_li_je_kraj_unosa2=false;
+                        do {
+                            char znak;
+                            int dan,mjesec,godina;
+                            std::cout &lt;&lt; "Unesite datum prodaje (formata d/m/g): ";
+                            std::cin &gt;&gt; dan &gt;&gt; znak &gt;&gt; mjesec &gt;&gt; znak &gt;&gt; godina;
+                            try {
+                                Datum novi_datum(dan,mjesec,godina);
+                                prodaje.DajProdaju(dodatna_opcija1-1).PromijeniDatumKupovine(novi_datum);
+                                da_li_je_kraj_unosa2=true;
+                                std::cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; std::endl &lt;&lt; std::endl; 
+                            }
+                            catch(std::range_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                            catch(std::domain_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                        } while (!da_li_je_kraj_unosa2);
+                    }
+                    else if (dodatna_opcija2==3) {
+                        std::cout &lt;&lt; "Izaberite opciju:" &lt;&lt; std::endl &lt;&lt; " 0 - nazad" &lt;&lt; std::endl
+                        &lt;&lt; " 1 - odabir postojeceg kupca" &lt;&lt; std::endl &lt;&lt; " 2 - dodavanje novog kupca" &lt;&lt; std::endl;
+                        int dodatna_opcija3;
+                        std::cin &gt;&gt; dodatna_opcija3;
+                        if (dodatna_opcija3==0) break;
+                        else if (dodatna_opcija3==1) {
+<a name="14"></a><font color="#FF00FF"><a href="match124-0.html#14" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+                            std::cout &lt;&lt; "Odaberite kupca. Dostupni kupci su:" &lt;&lt; std::endl;
+                            for (int i=0; i&lt;vektor_kupaca.size(); i++) {
+                                std::cout &lt;&lt; " " &lt;&lt; i+1 &lt;&lt; " - ";
+</font>                                vektor_kupaca[i].Ispisi();
+                                if(i!=vektor_kupaca.size()-1) std::cout &lt;&lt; std::endl;
+                            }
+                            int dodatna_opcija4;
+                            std::cin &gt;&gt; dodatna_opcija4;
+                            try {
+                                prodaje.DajProdaju(dodatna_opcija1-1).PromijeniKupca(vektor_kupaca[dodatna_opcija4-1]);
+                                std::cout &lt;&lt; std::endl &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                            catch(std::range_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                        }
+                        else if (dodatna_opcija3==2) {
+                            bool da_li_je_kraj_unosa3=false;
+                            do {
+                                std::cin.ignore(10000,'\n');
+                                std::string novo_ime_kupca;
+                                std::cout &lt;&lt; "Unesite ime i prezime kupca: ";
+                                std::getline(std::cin,novo_ime_kupca);
+                                char znak;
+                                int dan,mjesec,godina;
+                                std::cout &lt;&lt; "Unesite datum rodjenja (formata d/m/g): ";
+                                std::cin &gt;&gt; dan &gt;&gt; znak &gt;&gt; mjesec &gt;&gt; znak &gt;&gt; godina;
+                                try {
+                                    Datum novi_datum(dan,mjesec,godina);
+                                    Kupac novi_kupac(novo_ime_kupca,novi_datum);
+                                    prodaje.DajProdaju(dodatna_opcija1-1).PromijeniKupca(novi_kupac);
+                                    da_li_je_kraj_unosa3=true;
+                                    std::cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                                }
+                                catch(std::range_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                                }
+                                catch(std::domain_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                                }
+                            } while(!da_li_je_kraj_unosa3);
+                        }
+                    }
+                    else if (dodatna_opcija2==4) {
+                        std::cout &lt;&lt; "Izaberite opciju:" &lt;&lt; std::endl &lt;&lt; " 0 - nazad" &lt;&lt; std::endl
+                        &lt;&lt; " 1 - odabir postojeceg stana" &lt;&lt; std::endl &lt;&lt; " 2 - dodavanje novog stana" &lt;&lt; std::endl;
+                        int dodatna_opcija3;
+                        std::cin &gt;&gt; dodatna_opcija3;
+                        if (dodatna_opcija3==0) break;
+                        else if (dodatna_opcija3==1) {
+                            std::cout &lt;&lt; "Odaberite stan. Dostupni stanovi su:" &lt;&lt; std::endl;
+                            for (int i=0; i&lt;vektor_stanova.size(); i++) {
+                                std::cout &lt;&lt; " " &lt;&lt; i+1 &lt;&lt; " - ";
+                                vektor_stanova[i].Ispisi();
+                            }
+                            int dodatna_opcija4;
+                            std::cin &gt;&gt; dodatna_opcija4;
+                            try {
+<a name="15"></a><font color="#FF0000"><a href="match124-0.html#15" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+                                prodaje.DajProdaju(dodatna_opcija4-1).PromijeniStan(vektor_stanova[dodatna_opcija4-1]);
+                                std::cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; std::endl &lt;&lt; std::endl;
+</font>                            }
+                            catch(std::range_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                        }
+                        else if (dodatna_opcija3==2) {
+                            bool da_li_je_kraj_unosa3=false;
+                            do {
+                                std::cin.ignore(10000,'\n');
+                                std::string nova_adresa;
+                                std::cout &lt;&lt; "Unesite adresu: ";
+                                std::getline(std::cin,nova_adresa);
+                                int novi_sprat;
+                                std::cout &lt;&lt; "Unesite sprat: ";
+                                std::cin &gt;&gt; novi_sprat;
+                                int novi_broj_soba;
+                                std::cout &lt;&lt; "Unesite broj soba: ";
+                                std::cin &gt;&gt; novi_broj_soba;
+                                int novi_namjesten;
+                                std::cout &lt;&lt; "Da li je namjesten (1 - da, 0 - ne): ";
+                                std::cin &gt;&gt; novi_namjesten;
+                                double nova_kvadratura;
+                                std::cout &lt;&lt; "Unesite kvadraturu: ";
+                                std::cin &gt;&gt; nova_kvadratura;
+                                try {
+                                    if (novi_namjesten!=0 &amp;&amp; novi_namjesten!=1) throw std::domain_error("Neispravan unos podataka");
+                                    Stan novi_stan(nova_adresa,novi_sprat,novi_broj_soba,novi_namjesten,nova_kvadratura);
+                                    prodaje.DajProdaju(dodatna_opcija1-1).PromijeniStan(novi_stan);
+                                    da_li_je_kraj_unosa3=true;
+                                    std::cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; std::endl;
+                                }
+                                catch(std::range_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                                }
+                                catch(std::domain_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                                }
+                            } while (!da_li_je_kraj_unosa3);
+                        }
+                    }
+                    else if (dodatna_opcija2==5) {
+                        bool da_li_je_kraj_unosa3=false;
+                        do {
+                            int nova_cijena;
+                            std::cout &lt;&lt; "Unesite cijenu stana: ";
+                            std::cin &gt;&gt; nova_cijena;
+                            try {
+                                if (nova_cijena&lt;0) throw std::domain_error("Neispravan unos podataka");
+                                prodaje.DajProdaju(dodatna_opcija1-1).PromijeniCijenuProdaje(nova_cijena);
+                                da_li_je_kraj_unosa3=true;
+                                std::cout &lt;&lt; "Prodaja je uspjesno izmijenjena!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                            catch(std::range_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                            }
+                            catch (std::domain_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl; 
+                            }
+                        } while (!da_li_je_kraj_unosa3);
+                    }
+                }
+                else if (opcija2==3) {
+                    int opcija3;
+                    do {
+                        std::cout &lt;&lt; "Izaberite opciju:" &lt;&lt; std::endl &lt;&lt; " 0 - nazad"
+                        &lt;&lt; std::endl &lt;&lt; " 1 - ispis svih prodaja" &lt;&lt; std::endl &lt;&lt; " 2 - ispis prodaja na datum" &lt;&lt; std::endl
+                        &lt;&lt; " 3 - ispis najranije prodaje" &lt;&lt; std::endl &lt;&lt; " 4 - ispis najskuplje prodaje" &lt;&lt; std::endl
+                        &lt;&lt; " 5 - ispis broja prodaja" &lt;&lt; std::endl &lt;&lt; " 6 - ispis broja prodaja po datumu" &lt;&lt; std::endl
+                        &lt;&lt; " 7 - ispis broja prodaja po agentu" &lt;&lt; std::endl &lt;&lt; " 8 - kraj" &lt;&lt; std::endl;
+                        std::cin &gt;&gt; opcija3;
+                        if (opcija3==0) break;
+                        else if (opcija3==1) {
+                            try {
+                                prodaje.IspisiSveProdaje();
+                            }
+                            catch(std::range_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                            }
+                        }
+                        else if (opcija3==2) {
+                            bool da_li_je_kraj_unosa4=false;
+                            do {
+                                char znak;
+                                int dan,mjesec,godina;
+                                std::cout &lt;&lt; "Unesite datum (d/m/g): ";
+                                std::cin &gt;&gt; dan &gt;&gt; znak &gt;&gt; mjesec &gt;&gt; znak &gt;&gt; godina;
+                                try {
+                                    Datum datum(dan,mjesec,godina);
+                                    da_li_je_kraj_unosa4=true;
+                                    std::cout &lt;&lt; "Prodaje na datum "; datum.Ispisi();
+                                    std::cout &lt;&lt; " su:" &lt;&lt; std::endl;
+                                    prodaje.IspisiProdajeNaDatum(datum);
+                                }
+                                catch(std::range_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                                }
+                                catch(std::domain_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                                }
+                            } while(!da_li_je_kraj_unosa4);
+                        }
+                        else if (opcija3==3) {
+                            try {
+                                prodaje.DajNajranijuProdaju().Ispisi();
+                                std::cout &lt;&lt; std::endl;
+                            }
+                            catch(std::domain_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                            }
+                        }
+                        else if (opcija3==4) {
+                            try {
+                                prodaje.DajNajskupljuProdaju().Ispisi();
+                                std::cout &lt;&lt; std::endl;
+                            }
+                            catch(std::domain_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                            }
+                        }
+                        else if (opcija3==5) {
+                            std::cout &lt;&lt; "Broj prodaja: " &lt;&lt; prodaje.DajBrojProdaja() 
+                            &lt;&lt; std::endl &lt;&lt; std::endl;
+                        }
+                        else if (opcija3==6) {
+                            bool da_li_je_kraj_unosa4=false;
+                            do {
+                                char znak;
+                                int dan,mjesec,godina;
+                                std::cout &lt;&lt; "Unesite datum (d/m/g): ";
+                                std::cin &gt;&gt; dan &gt;&gt; znak &gt;&gt; mjesec &gt;&gt; znak &gt;&gt; godina;
+                                try {
+                                    Datum datum(dan,mjesec,godina);
+                                    da_li_je_kraj_unosa4=true;
+                                    std::cout &lt;&lt; "Broj prodaja na uneseni datum: "
+                                    &lt;&lt; prodaje.DajBrojProdajaNaDatum(datum) &lt;&lt; std::endl &lt;&lt; std::endl;
+                                }
+                                catch(std::domain_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                                }
+                            } while (!da_li_je_kraj_unosa4);
+                        }
+                        else if (opcija3==7) {
+                            std::cin.ignore(10000,'\n');
+                            std::string ime_agenta;
+                            std::cout &lt;&lt; "Unesite ime agenta: ";
+                            std::getline(std::cin,ime_agenta);
+                            std::cout &lt;&lt; "Broj prodaja unesenog agenta: " &lt;&lt; prodaje.DajBrojProdajaOdAgenta(ime_agenta) 
+                            &lt;&lt; std::endl &lt;&lt; std::endl;
+                        }
+                        else if (opcija3==8) {
+                            std::cout &lt;&lt; std::endl &lt;&lt; std::endl &lt;&lt; "Dovidjenja!";
+                            return 0;
+                        }
+                    } while (opcija3!=0);
+                }
+                else if (opcija2==4) {
+                    int opcija3;
+                    do {
+                        std::cout &lt;&lt; "Izaberite opciju:" &lt;&lt; std::endl
+                        &lt;&lt; " 0 - nazad" &lt;&lt; std::endl &lt;&lt; " 1 - brisanje najranije prodaje" &lt;&lt; std::endl
+                        &lt;&lt; " 2 - brisanje prodaje agenta" &lt;&lt; std::endl &lt;&lt; " 3 - brisanje prodaja po datumu"
+                        &lt;&lt; std::endl &lt;&lt; " 4 - brisanje svih prodaja" &lt;&lt; std::endl;
+                        std::cin &gt;&gt; opcija3;
+                        if (opcija3==0) break;
+                        else if (opcija3==1) {
+                            try {
+                                prodaje.ObrisiNajranijuProdaju();
+                                std::cout &lt;&lt; "Najranija prodaja je obrisana!" &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                            catch(std::range_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                        }
+                        else if (opcija3==2) {
+                            std::cin.ignore(10000,'\n');
+                            std::string ime_agenta;
+                            std::cout &lt;&lt; "Unesite ime agenta: ";
+                            std::getline(std::cin,ime_agenta);
+                            try {
+                                prodaje.ObrisiProdajeAgenta(ime_agenta);
+                                std::cout &lt;&lt; "Sve prodaje tog agenta su obrisane." &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                            catch(std::range_error izuzetak) {
+                                std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl &lt;&lt; std::endl;
+                            }
+                        }
+                        else if (opcija3==3) {
+                            bool da_li_je_kraj_unosa4=false;
+                            do {
+                                char znak;
+                                int dan,mjesec,godina;
+                                std::cout &lt;&lt; "Unesite datum: ";
+                                std::cin &gt;&gt; dan &gt;&gt; znak &gt;&gt; mjesec &gt;&gt; znak &gt;&gt; godina;
+                                try {
+                                    Datum datum(dan,mjesec,godina);
+                                    da_li_je_kraj_unosa4=true;
+                                    prodaje.ObrisiProdajeNaDatum(datum);
+                                    std::cout &lt;&lt; "Sve prodaje na taj datum su obrisane." &lt;&lt; std::endl &lt;&lt; std::endl;
+                                }
+                                catch(std::range_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl &lt;&lt; std::endl;
+                                }
+                                catch(std::domain_error izuzetak) {
+                                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; ". Molimo unesite opet." &lt;&lt; std::endl;
+                                }
+                            } while(!da_li_je_kraj_unosa4);
+                        }
+                        else if (opcija3==4) {
+                            prodaje.IsprazniKolekciju();
+                            std::cout &lt;&lt; "Sve prodaje su obrisane." &lt;&lt; std::endl &lt;&lt; std::endl;
+                        }
+                    } while(opcija3!=0);
+                }
+                else if (opcija2==5) {
+                    std::cout &lt;&lt; std::endl &lt;&lt; std::endl &lt;&lt; "Dovidjenja!";
+                    return 0;
+                }
+            } while (opcija2!=0);
+        } 
+        else if (opcija1==0) std::cout &lt;&lt; std::endl &lt;&lt; std::endl &lt;&lt; "Dovidjenja!";
+    } while(opcija1!=0);
+    return 0;
+}</pre>
+</body>
+</html>

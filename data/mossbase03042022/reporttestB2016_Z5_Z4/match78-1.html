@@ -1,0 +1,353 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student4639.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student2547.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;sstream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+
+
+<a name="0"></a><font color="#FF0000"><a href="match78-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+template &lt;class T&gt;
+class GMatrica {
+
+private:
+    T mat[4][4];
+    int kol;
+    int red;
+
+public:
+    GMatrica();
+    GMatrica(int kol, int red, T vrijednost = 0);
+
+
+    template &lt;class Y&gt;
+    GMatrica(Y mat);
+    GMatrica(T mat[4][4]);
+    GMatrica(vector&lt;vector&lt;T&gt;&gt; mat);
+
+    int DajBrojRedova()const;
+    int DajBrojKolona()const;
+    T VratiMatricu();
+
+    GMatrica&lt;T&gt; operator+(const GMatrica&amp; b);
+    GMatrica&lt;T&gt; operator-(const GMatrica&amp; b);
+    GMatrica&lt;T&gt; operator*(const GMatrica&amp; b);
+    GMatrica&amp; operator+=(const GMatrica&amp; b);
+    GMatrica&amp; operator-=(const GMatrica&amp; b);
+    GMatrica&amp; operator*=(const GMatrica&amp; b);
+    bool operator==(const GMatrica&amp; b);
+    bool operator!=(const GMatrica&amp; b);
+    T&amp; operator()(const int a, const int b);
+    T&amp; operator[](const int a);
+
+    template &lt;class S&gt;
+    friend ostream&amp; operator&lt;&lt;(ostream&amp; os, const GMatrica&lt;S&gt;&amp; b);
+    template &lt;class S&gt;
+    friend istream&amp; operator&gt;&gt;(istream &amp;is, GMatrica&lt;S&gt;&amp; b);
+
+};
+template&lt;class T&gt;
+int GMatrica&lt;T&gt;::DajBrojRedova() const {
+    return this-&gt;red;
+}
+template&lt;class T&gt;
+int GMatrica&lt;T&gt;::DajBrojKolona() const {
+    return this-&gt;kol;
+}
+
+template&lt;class T&gt;
+GMatrica&lt;T&gt;::GMatrica() {
+    this-&gt;kol = 0;
+    this-&gt;red = 0;
+}
+template&lt;class T&gt;
+GMatrica&lt;T&gt;::GMatrica(int kol, int red, T vrijednost) {
+    this-&gt;kol = kol;
+    this-&gt;red = red;
+    for(int i(0); i&lt;red; i++) {
+        for(int j(0); j&lt;kol; j++) {
+            this-&gt;mat[i][j] = vrijednost;
+        }
+    }
+
+}
+
+
+template&lt;class T&gt;
+template&lt;class Y&gt;
+GMatrica&lt;T&gt;::GMatrica(Y mat) {
+    for(int i(0); i&lt;mat-&gt;DajBrojRedova(); i++) {
+        for(int j(0); j&lt;mat-&gt;DajBrojKolona(); j++) {
+            this-&gt;mat[i][j] = mat-&gt;mat[i][j];
+        }
+    }
+}
+template&lt;class T&gt;
+GMatrica&lt;T&gt;::GMatrica(T mat[4][4]) {
+    for(int i(0); i&lt;4; i++) {
+        for(int j(0); j&lt;4; j++) {
+            this-&gt;mat[i][j] = mat[i][j];
+        }
+    }
+}
+template&lt;class T&gt;
+GMatrica&lt;T&gt;::GMatrica(vector&lt;vector&lt;T&gt;&gt; mat) {
+    if(mat.size() &gt; 4 ) return;
+    for(int i(0); i&lt;mat.size(); i++) {
+        if(mat.at(i).size() &gt; 4) return;
+        for(int j(0); j&lt;mat.at(i).size(); j++) {
+            this-&gt;mat[i][j] = mat[i][j];
+        }
+    }
+}
+
+template&lt;class T&gt;
+GMatrica&lt;T&gt; GMatrica&lt;T&gt;::operator+(const GMatrica&amp; b) {
+
+    GMatrica a = *this;
+    for(int i(0); i&lt;b.DajBrojRedova(); i++) {
+        for(int j(0); j&lt;b.DajBrojKolona(); j++) {
+            a.mat[i][j] += b.mat[i][j];
+        }
+    }
+    return a;
+}
+template&lt;class T&gt;
+T GMatrica&lt;T&gt;::VratiMatricu() {
+    return this-&gt;mat;
+}
+template&lt;class T&gt;
+GMatrica&lt;T&gt; GMatrica&lt;T&gt;::operator-(const GMatrica&amp; b) {
+
+    GMatrica a = *this;
+    for(int i(0); i&lt;b.DajBrojRedova(); i++) {
+        for(int j(0); j&lt;b.DajBrojKolona(); j++) {
+            a.mat[i][j] -= b.mat[i][j];
+        }
+    }
+    return a;
+}
+
+template&lt;class T&gt;
+GMatrica&lt;T&gt; GMatrica&lt;T&gt;::operator*(const GMatrica&amp; b) {
+
+    GMatrica a = *this;
+
+    for(int i (0); i &lt; a.DajBrojRedova(); ++i)
+        for(int j(0); j &lt; b.DajBrojKolona(); ++j)
+            for(int k(0); k &lt; a.DajBrojKolona(); ++k)
+            {
+                a.mat[i][j] += this-&gt;mat[i][k] * b.mat[k][j];
+            }
+
+    return a;
+}
+
+template&lt;class T&gt;
+GMatrica&lt;T&gt;&amp; GMatrica&lt;T&gt;::operator+=(const GMatrica&amp; b) {
+
+    for(int i(0); i&lt;b.DajBrojRedova(); i++) {
+        for(int j(0); j&lt;b.DajBrojKolona(); j++) {
+            this-&gt;mat[i][j] += b.mat[i][j];
+        }
+    }
+    return *this;
+}
+
+template&lt;class T&gt;
+GMatrica&lt;T&gt;&amp; GMatrica&lt;T&gt;::operator-=(const GMatrica&amp; b) {
+
+    for(int i(0); i&lt;b.DajBrojRedova(); i++) {
+        for(int j(0); j&lt;b.DajBrojKolona(); j++) {
+            this-&gt;mat[i][j] -= b.mat[i][j];
+        }
+    }
+    return *this;
+}
+
+template&lt;class T&gt;
+GMatrica&lt;T&gt;&amp; GMatrica&lt;T&gt;::operator*=(const GMatrica&amp; b) {
+
+    for(int i (0); i &lt; this-&gt;DajBrojRedova(); ++i)
+        for(int j(0); j &lt; b.DajBrojKolona(); ++j)
+            for(int k(0); k &lt; this-&gt;DajBrojKolona(); ++k)
+            {
+                this-&gt;mat[i][j] += this-&gt;mat[i][k] * b.mat[k][j];
+            }
+
+    return *this;
+}
+
+template&lt;class T&gt;
+bool GMatrica&lt;T&gt;::operator==(const GMatrica&amp; b) {
+
+    for(int i(0); i&lt;b.DajBrojRedova(); i++) {
+        for(int j(0); j&lt;b.DajBrojKolona(); j++) {
+            if(this-&gt;mat[i][j] != b.mat[i][j])
+                return false;
+        }
+    }
+
+    return true;
+}
+
+template&lt;class T&gt;
+bool GMatrica&lt;T&gt;::operator!=(const GMatrica&amp; b) {
+
+    for(int i(0); i&lt;b.DajBrojRedova(); i++) {
+        for(int j(0); j&lt;b.DajBrojKolona(); j++) {
+            if(this-&gt;mat[i][j] != b.mat[i][j])
+                return false;
+        }
+    }
+    return false;
+}
+template&lt;class T&gt;
+T&amp; GMatrica&lt;T&gt;::operator()(const int a, const int b) {
+    if(a &gt; this-&gt;red || b &gt; this-&gt;kol || a &lt; 0 || b &lt; 0)
+        throw range_error("Nedozvoljen indeks");
+    return this-&gt;mat[a][b];
+}
+
+template&lt;class T&gt;
+T&amp; GMatrica&lt;T&gt;::operator[](const int a) {
+    return this-&gt;mat[a];
+}
+template&lt;class T&gt;
+ostream&amp; operator&lt;&lt;(ostream&amp; os, const GMatrica&lt;T&gt;&amp; b) {
+
+    int w = os.width();
+    if(w &lt; 6) w = 6;
+    for (int i(0); i &lt; b.red; i++)
+    {
+        os &lt;&lt; b.mat[i][0];
+        for (int j(1); j &lt; b.kol; j++)
+        {
+            os &lt;&lt; setw(w) &lt;&lt; b.mat[i][j];
+        }
+        os &lt;&lt; endl;
+    }
+
+    return os;
+}
+
+template&lt;class T&gt;
+istream&amp; operator&gt;&gt;(istream &amp;is, GMatrica&lt;T&gt;&amp; b) {
+
+    string in;
+    is &gt;&gt; in;
+    if (!is)
+        return is;
+
+    if( in[0] != '[') return is;
+    if( in[in.length()-1] != ']') return is;
+
+    int old_len = in.length();
+    in.erase(0, 1);
+    in[old_len-1] = '\0';
+    stringstream ss(in);
+    T broj;
+
+    int i=0;
+    int j=0;
+    int r = 0;
+
+    while (ss &gt;&gt; broj) {
+
+        b.mat[i][j] = broj;
+
+        if (ss.peek() == ',') {
+            ss.ignore();
+            j++;
+            r++;
+        }
+        if(ss.peek() == ';') {
+            i++;
+            j=0;
+            ss.ignore();
+        }
+    }
+
+    b.kol = j+1;
+    b.red = i+1;
+
+    return is;
+}
+
+
+int main() {
+
+    cout &lt;&lt; "Unesite matricu: \n";
+
+    GMatrica&lt;double&gt; i(2, 3, 4);
+
+    cin &gt;&gt; i;
+
+    cout &lt;&lt; i;
+
+    cout &lt;&lt; "Unesite matricu: \n";
+
+    GMatrica&lt;double&gt; j(2, 3, 4);
+
+    cin &gt;&gt; j;
+
+    cout &lt;&lt; j;
+
+    cout &lt;&lt; "Sabiranje: \n";
+
+    cout &lt;&lt; "I+J" &lt;&lt; endl;
+    GMatrica&lt;double&gt; a;
+    a = i+j;
+    cout &lt;&lt; a;
+
+    cout &lt;&lt; "I+=J " &lt;&lt; endl;
+    a = i;
+    a+=j;
+    cout &lt;&lt; a;
+
+    cout &lt;&lt; "Oduzimanje: \n";
+    cout &lt;&lt; "I-J" &lt;&lt; endl;
+    GMatrica&lt;double&gt; b;
+    b = i-j;
+    cout &lt;&lt; i-j;
+
+    cout &lt;&lt; "I-=J" &lt;&lt; endl;
+    b = i;
+    b-=j;
+    cout &lt;&lt; b;
+
+    cout &lt;&lt; "Mnozenje: \n";
+    cout &lt;&lt; "I*J" &lt;&lt; endl;
+    GMatrica&lt;double&gt; c;
+    c = i*j;
+    cout &lt;&lt; i*j;
+
+    cout &lt;&lt; "I*=J" &lt;&lt; endl;
+    c = i;
+    c*=j;
+    cout &lt;&lt; c;
+
+    cout &lt;&lt; "Poredjenje: \n";
+
+    cout &lt;&lt; (i == j) &lt;&lt; " | " &lt;&lt; (i != j);
+
+    cout &lt;&lt; "Pristup elementima: " &lt;&lt; endl;
+
+    cout &lt;&lt; "I(1,1)=" &lt;&lt; i(1,1) &lt;&lt; endl;
+
+    cout &lt;&lt; "J(0,1)=" &lt;&lt; j(0,1) &lt;&lt; endl;
+</font>
+    return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student6822.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student4878.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match60-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+vector&lt;vector&lt;double&gt;&gt; HorizontalnoOgledalo(vector&lt;vector&lt;double&gt;&gt; A)
+{
+	for(int i = 0 ; i &lt; A.size() ; i++) {
+		for(int j = 0 ; j &lt; A[0].size(); j++) {
+			if(j&lt;A[0].size()/2) {
+				double temp=0;
+				temp=A[i][j];
+				A[i][j]=A[i][A[0].size()-1-j];
+				A[i][A[0].size()-1-j]=temp;
+			}
+		}
+	}
+	return A;
+}
+vector&lt;vector&lt;double&gt;&gt; VertikalnoOgledalo(vector&lt;vector&lt;double&gt;&gt; A)
+{
+	for(int i = 0 ; i &lt; A.size() ; i++) {
+		for(int j = 0 ; j &lt; A[0].size(); j++) {
+			if(i&lt;A.size()/2) {
+				double temp=0;
+				temp=A[i][j];
+				A[i][j]=A[A.size()-1-i][j];
+				A[A.size()-1-i][j]=temp;
+			}
+		}
+	}
+	return A;
+}
+vector&lt;vector&lt;double&gt;&gt; OgledaloMatrica(vector&lt;vector&lt;double&gt;&gt; A)
+{
+	for(int i = 0 ; i &lt; A.size() ; i++)
+		if(A[0].size() != A[i].size())
+			throw domain_error("Grbava matrica!");
+	if(A.size()==0 || A[0].size()==0) return vector&lt;vector&lt;double&gt;&gt;(A.size(), vector&lt;double&gt; (A[0].size()));
+	else {
+		vector&lt;vector&lt;double&gt;&gt; Mat(3*A.size(), vector&lt;double&gt;(3*A[0].size()));
+		int a=Mat.size();
+		int b=Mat[0].size();
+		vector&lt;vector&lt;double&gt;&gt; Hor=HorizontalnoOgledalo(A);
+		vector&lt;vector&lt;double&gt;&gt; Ver=VertikalnoOgledalo(A);
+		vector&lt;vector&lt;double&gt;&gt; Miks=HorizontalnoOgledalo(A);
+		Miks=VertikalnoOgledalo(Miks);
+		for(int i = 0 ; i &lt; a ; i++) {
+			for(int j = 0 ; j &lt; b ; j++) {
+				if((i &gt;= A.size() &amp;&amp; i &lt;= (2*A.size()-1)) &amp;&amp; ((j &gt;= 0 &amp;&amp; j &lt;= (A[0].size()-1)) || (j &gt;= 2*A[0].size() &amp;&amp; j &lt;= b))) {
+					Mat[i][j]=Hor[i%A.size()][j%A[0].size()];
+				}
+				if((j &gt;= A[0].size() &amp;&amp; j &lt;= (2*A[0].size()-1)) &amp;&amp; ((i &gt;= 0 &amp;&amp; i &lt;= (A.size()-1)) || (i &gt;= 2*A.size() &amp;&amp; i &lt;= a))) {
+					Mat[i][j]=Ver[i%A.size()][j%A[0].size()];
+				}
+				if((i &gt;= A.size() &amp;&amp; i &lt;= (2*A.size()-1)) &amp;&amp; (j &gt;= A[0].size() &amp;&amp; j &lt;= (2*A[0].size()-1))) {
+					Mat[i][j]=A[i%A.size()][j%A[0].size()];
+				}
+				if((i &gt;= 0 &amp;&amp; i &lt; A.size() &amp;&amp; j &gt;= 0 &amp;&amp; j &lt; A[0].size()) || (i &gt;= 0 &amp;&amp; i &lt; A.size() &amp;&amp; j &gt;= 2*A[0].size() &amp;&amp; j &lt; b) || (i &gt;= 2*A.size() &amp;&amp; i &lt;= a &amp;&amp; j &gt;= 0 &amp;&amp; j &lt;A[0].size()) || (i &gt;= 2*A.size() &amp;&amp; i &lt;= a &amp;&amp; j &gt;= 2*A[0].size() &amp;&amp; j &lt; b)) {
+					Mat[i][j]=Miks[i%A.size()][j%A[0].size()];
+				}
+			}
+		}
+		return Mat;
+	}
+}
+int main()
+{
+	cout&lt;&lt;"Unesite dimenzije matrice (m n): ";
+	int m,n;
+	cin&gt;&gt;m&gt;&gt;n;
+	if(m&lt;0 || n&lt;0) cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+	else {
+		vector&lt;vector&lt;double&gt;&gt; mat(m, vector&lt;double&gt; (n));
+		cout&lt;&lt;"Unesite elemente matrice: "&lt;&lt;endl;
+		for(int i = 0 ; i &lt; m ; i++)
+			for(int j = 0 ; j &lt; n ; j++)
+				cin&gt;&gt;mat[i][j];
+		cout&lt;&lt;"Rezultantna matrica:"&lt;&lt;endl;
+		if(m==0 &amp;&amp; n==0) {
+			cout&lt;&lt;endl;
+		} else {
+			try {
+				vector&lt;vector&lt;double&gt;&gt; Ogl=OgledaloMatrica(mat);
+				for(int i = 0 ; i &lt; Ogl.size() ; i++) {
+					for(int j = 0 ; j &lt; Ogl[0].size() ; j++) {
+						cout&lt;&lt;setw(4)&lt;&lt;Ogl[i][j];
+					}
+					cout&lt;&lt;endl;
+				}
+			}
+			catch(domain_error izuzetak) {
+ cout &lt;&lt; izuzetak.what() &lt;&lt; endl;
+</font>		}
+	}
+	}
+	return 0;
+}</pre>
+</body>
+</html>

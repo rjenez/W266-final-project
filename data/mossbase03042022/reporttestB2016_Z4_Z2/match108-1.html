@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student1329.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student9238.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+<a name="1"></a><font color="#00FF00"><a href="match108-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_8.gif"/></a>
+
+class GradjaninBiH {
+    std::string ime_i_prezime, jmbg;
+    static std::string PretvoriUString(long long int jmbg);
+    static GradjaninBiH *zadnji_lik;
+    static long long int Stepen(int baza, int stepen);
+    static long long int PretvoriUBroj(std::string s);
+    static int BrojDana(int mjesec, int godina);
+    static bool Jednaki(int kontrolna_cifra, std::string jmbg);
+public:
+    enum Pol {Musko, Zensko};
+    GradjaninBiH(std::string ime_i_prezime, long long int jmbg);
+    GradjaninBiH(std::string ime_i_prezime, int dan_rodjenja, int mjesec_rodjenja,
+</font>    int godina_rodjenja, int sifra_regije, Pol pol);
+    std::string DajImeIPrezime() const;
+<a name="2"></a><font color="#0000FF"><a href="match108-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_7.gif"/></a>
+
+    long long int DajJMBG() const;
+    int DajDanRodjenja() const;
+    int DajMjesecRodjenja() const;
+    int DajGodinuRodjenja() const;
+    int DajSifruRegije() const;
+    Pol DajPol() const;
+    void PromijeniImeIPrezime(std::string novo_ime);
+};
+
+GradjaninBiH* GradjaninBiH::zadnji_lik(nullptr);
+
+bool GradjaninBiH::Jednaki(int kontrolna_cifra, std::string jmbg) {
+    int broj(0);
+    
+    broj += 11 - (7 * (jmbg[0] + jmbg[6]) + 6 * (jmbg[1] + jmbg[7]) + 5 * (jmbg[2] + jmbg[8]) + 4 * (jmbg[3] + jmbg[9]) + 3 * (jmbg[4] + jmbg[10]) + 2 * (jmbg[5] + jmbg[11])) % 11;
+</font><a name="0"></a><font color="#FF0000"><a href="match108-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_76.gif"/></a>
+
+    
+    if(kontrolna_cifra == broj) return true;
+    return false;
+}
+
+std::string GradjaninBiH::PretvoriUString(long long int jmbg) {
+    std::string s;
+    while(jmbg != 0) {
+        s.insert(s.begin(), (jmbg % 10) + '0'); jmbg /= 10;
+    }
+    if(s.size() &lt; 13) s.insert(s.begin(), '0');
+    if(s[12] == 11) s[12] = '0';
+    return s;
+}
+
+long long int GradjaninBiH::Stepen (int baza, int stepen) {
+    long long int proizvod(1);
+    for(int i = 0; i &lt; abs(stepen); i++) proizvod *= baza;
+    return proizvod;
+}
+
+long long int GradjaninBiH::PretvoriUBroj(std::string s) {
+    long long int broj(0);
+    int stepen(0);
+    
+    for(int i = s.size() - 1; i &gt;= 0; i--, stepen++)
+        broj += (s[i] - '0') * Stepen(10, stepen);
+    
+    return broj;
+}
+
+int GradjaninBiH::BrojDana(int mjesec, int godina) {
+    int broj_dana[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if((godina % 4 == 0 &amp;&amp; godina % 100 != 0) || godina % 400 == 0)
+        broj_dana[1]++;
+    return broj_dana[mjesec - 1];
+}
+
+GradjaninBiH::GradjaninBiH(std::string ime_i_prezime, long long int jmbg) {
+    std::string s(PretvoriUString(jmbg));
+    int mjesec(PretvoriUBroj(s.substr(2, 2))), godina(PretvoriUBroj(s.substr(4, 3))), dan(PretvoriUBroj(s.substr(0, 2)));
+    if(mjesec &lt; 1 || mjesec &gt; 12 || dan &lt; 1 || dan &gt; BrojDana(mjesec, godina) || godina &gt; 2017 || godina &lt; 1 || s.size() != 13) throw std::logic_error("JMBG nije validan");
+    int sifra_regiona(PretvoriUBroj(s.substr(7, 2))), pol_osobe(PretvoriUBroj(s.substr(9, 3)));
+    if(sifra_regiona &lt; 0 || sifra_regiona &gt; 99 || pol_osobe &lt; 0 || pol_osobe &gt; 999) throw std::logic_error("JMBG nije validan");
+    int kontrolna_cifra(PretvoriUBroj(s.substr(12, 1)));
+    if(!GradjaninBiH::Jednaki(kontrolna_cifra, s) &amp;&amp; kontrolna_cifra == 10) throw std::logic_error("JMBG nije validan");
+    //if(GradjaninBiH::DaLiPostoji(s)) throw std::logic_error("Vec postoji gradjanin sa istim JMBG");
+    zadnji_lik = ;
+    GradjaninBiH::ime_i_prezime = ime_i_prezime; GradjaninBiH::jmbg = PretvoriUString(jmbg);
+}
+
+inline GradjaninBiH::GradjaninBiH(std::string ime_i_prezime, int dan_rodjenja, int mjesec_rodjenja, int godina_rodjenja, int sifra_regije, Pol pol) {
+    //if(mjesec_rodjenja &lt; 1 || mjesec_rodjenja &gt; 12 || dan_rodjenja &lt; 1 || dan_rodjenja &gt; BrojDana(mjesec, godina) || godina_rodjenja &gt; 2017 || godina_rodjenja &lt; 1) throw std::logic_error("Neispravni podaci");
+    if(sifra_regije &lt; 0 || sifra_regije &gt; 99) throw std::logic_error("Neispravni podaci");
+    
+    
+}
+
+inline std::string GradjaninBiH::DajImeIPrezime() const { return ime_i_prezime; }
+inline long long int GradjaninBiH::DajJMBG() const { return PretvoriUBroj(jmbg); }
+inline int GradjaninBiH::DajDanRodjenja() const { return PretvoriUBroj(jmbg.substr(0, 2)); }
+inline int GradjaninBiH::DajMjesecRodjenja() const { return PretvoriUBroj(jmbg.substr(2, 2)); }
+inline int GradjaninBiH::DajGodinuRodjenja() const {
+    std::string s(jmbg.substr(4, 3));
+    if(s[0] == 0) s.insert(s.begin(), '2');
+    else s.insert(s.begin(), '1');
+    return PretvoriUBroj(s);
+}
+inline int GradjaninBiH::DajSifruRegije() const { return PretvoriUBroj(jmbg.substr(7, 2)); }
+inline GradjaninBiH::Pol GradjaninBiH::DajPol() const { 
+    if(PretvoriUBroj(jmbg.substr(9, 3)) &lt;= 499) return Pol::Musko;
+    return Pol::Zensko;
+}
+inline void GradjaninBiH::PromijeniImeIPrezime(std::string novo_ime) { ime_i_prezime = novo_ime; }
+
+int main() {
+    
+    GradjaninBiH g1("Rambo Sulejmanovic", 3004956174255);
+    std::cout &lt;&lt; g1.DajImeIPrezime() &lt;&lt; std::endl &lt;&lt; g1.DajJMBG() &lt;&lt; std::endl &lt;&lt; g1.DajDanRodjenja() &lt;&lt; std::endl &lt;&lt; g1.DajMjesecRodjenja() &lt;&lt; std::endl;
+    std::cout &lt;&lt; g1.DajGodinuRodjenja() &lt;&lt; std::endl &lt;&lt; g1.DajSifruRegije() &lt;&lt; std::endl;
+    g1.PromijeniImeIPrezime("Hamo Hasic Sikira"); std::cout &lt;&lt; g1.DajImeIPrezime() &lt;&lt; std::endl;
+</font>    
+    return 0;
+}</pre>
+</body>
+</html>

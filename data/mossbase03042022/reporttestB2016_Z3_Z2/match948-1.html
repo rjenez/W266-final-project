@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student2886.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4163.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;map&gt;
+#include&lt;set&gt;
+#include&lt;iomanip&gt;
+#include&lt;iterator&gt;
+#include&lt;vector&gt;
+#include&lt;stdexcept&gt;
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt;KreirajIndeksPojmova(std::string s){
+    std::map&lt;std::string, std::set&lt;int&gt;&gt;mapa;
+    int i=0;
+    int kraj=0;
+    for(int i=0;i&lt;s.size();i++){
+        s[i]=tolower(s[i]);
+    }
+    while(i&lt;s.size()){
+        while(!(s[i]&gt;='a' &amp;&amp; s[i]&lt;='z' || s[i]&gt;='0' &amp;&amp; s[i]&lt;='9') &amp;&amp; i&lt;s.size())
+        i++;
+        kraj=i;
+        while((s[kraj]&gt;='a' &amp;&amp; s[kraj]&lt;='z' || s[kraj]&gt;='0' &amp;&amp; s[kraj]&lt;='9') &amp;&amp; kraj&lt;s.size())
+        kraj++;
+        
+        std::string pojam=s.substr(i,kraj-i);
+        //std::cout &lt;&lt; pojam &lt;&lt; std::endl;
+        std::set&lt;int&gt;skup;
+        for(int j=0;j&lt;=s.size()-pojam.size();j++){
+            
+            if(s.substr(j,pojam.size())==pojam)
+            {
+                if(j==0 &amp;&amp; !(s[pojam.size()]&gt;='a' &amp;&amp; s[pojam.size()]&lt;='z' || s[pojam.size()]&gt;='0' &amp;&amp; s[i]&lt;='9')) skup.insert(j);
+                else if(j!=0 &amp;&amp; j!=s.size()-pojam.size() &amp;&amp; !(s[j-1]&gt;='a' &amp;&amp; s[j-1]&lt;='z' || s[j-1]&gt;='0' &amp;&amp; s[j-1]&lt;='9') &amp;&amp; !(s[j+pojam.size()]&gt;='a' &amp;&amp; s[j+pojam.size()]&lt;='z' || s[j+pojam.size()]&gt;='0' &amp;&amp; s[j+pojam.size()]&lt;='9')) skup.insert(j);
+                else if(j!=0 &amp;&amp; j==s.size()-pojam.size() &amp;&amp; !(s[j-1]&gt;='a' &amp;&amp; s[j-1]&lt;='z' || s[j-1]&gt;='0' &amp;&amp; s[j-1]&lt;='9'))  skup.insert(j);
+            }
+        }
+       
+        mapa.insert(std::make_pair(pojam,skup));
+<a name="2"></a><font color="#0000FF"><a href="match948-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+        i=kraj;
+    }
+    
+    
+    return mapa;
+}
+
+std::set&lt;int&gt;PretraziIndeksPojmova(std::string rijec, std::map&lt;std::string,std::set&lt;int&gt;&gt;mapa){
+</font>    
+    int ima=0;
+    for(auto it=mapa.begin();it!=mapa.end();it++){
+       if((it-&gt;first)==rijec) {
+       ima++;
+        return it-&gt;second;
+    }
+ }
+    if(ima==0) throw std::logic_error ("Unesena rijec nije nadjena!");
+    
+}
+
+<a name="0"></a><font color="#FF0000"><a href="match948-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;int&gt;&gt;mapa){
+    
+    for(auto it=mapa.begin();it!=mapa.end();it++){
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+       int br=0;
+        for(int x: it-&gt;second){
+</font>            if(br&lt;it-&gt;second.size()-1)
+           std::cout&lt;&lt;x&lt;&lt;",";
+           else std::cout&lt;&lt;x;
+           br++;
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+}
+
+
+int main ()
+{
+    std::string s;
+    std::cout&lt;&lt;"Unesite tekst: ";
+    std::cin&gt;&gt;std::ws;
+<a name="1"></a><font color="#00FF00"><a href="match948-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+    std::getline(std::cin,s);
+    std::map&lt;std::string,std::set&lt;int&gt;&gt;a(KreirajIndeksPojmova(s));
+    
+    /*for(auto it=a.begin();it!=a.end();it++){
+    std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+    for(int x: it-&gt;second) std::cout&lt;&lt;x&lt;&lt;" ";
+    std::cout&lt;&lt;std::endl;
+    
+    }*/
+    IspisiIndeksPojmova(a);
+    std::string rijec;
+</font>    std::string znak;
+    do{
+    std::cout&lt;&lt;"Unesite rijec: ";
+    std::cin&gt;&gt;std::ws;
+    std::getline(std::cin,rijec);
+    if(rijec==".") break;
+    try{
+        std::set&lt;int&gt;b(PretraziIndeksPojmova(rijec,a));
+        for(int x: b) std::cout&lt;&lt;x&lt;&lt;" ";
+        std::cout&lt;&lt;std::endl;
+    }catch(std::logic_error izuzetak){
+        std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+    }
+    }while(rijec!=".");
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student9451.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student9451.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;vector&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+int BrojSlovaImena(std::string Ime){
+    int a(Ime.size());
+    for(int i=0;i&lt;Ime.size();i++){
+        if(Ime[i]&lt;'0' || (Ime[i]&gt;'9' &amp;&amp; Ime[i]&lt;'A') ||  (Ime[i]&gt;'Z' &amp;&amp; Ime[i]&lt;'a') ||  Ime[i]&gt;'z' ) a--;
+    }
+    return a;
+}
+<a name="0"></a><font color="#FF0000"><a href="match810-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_10.gif"/></a>
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje (std::vector&lt;std::string&gt; Imena, int broj)
+{
+    int n=Imena.size();
+    if(broj&lt;1 || broj&gt;n) throw std::logic_error("Razvrstavanje nemoguce");
+    std::list&lt;std::string&gt; Lista;
+    for(int i=0; i&lt;n; i++) {
+        Lista.push_back(Imena[i]);
+</font>    }
+    int brojac=0;
+    int vecegrupe=n%broj;
+    std::vector&lt;std::set&lt;std::string&gt;&gt; finalni(broj);
+
+    int pomjeranje=0;
+    std::string rijecliste;
+    std::list&lt;std::string&gt;::iterator it(Lista.begin());
+    while(Lista.size()!=0) {
+        if(Lista.size()==0) break;
+        rijecliste=*it;
+        pomjeranje=BrojSlovaImena(rijecliste);
+        it=Lista.erase(it);
+        if(it==Lista.end()) it=Lista.begin();
+        if(brojac&lt;vecegrupe &amp;&amp; finalni[brojac].size()&lt;(n/broj+1)) {
+            finalni[brojac].insert(rijecliste);
+        } else if(brojac&lt;vecegrupe &amp;&amp; finalni[brojac].size()==(n/broj+1)) {
+            brojac++;
+            finalni[brojac].insert(rijecliste);
+        } else if(brojac&gt;=vecegrupe &amp;&amp; finalni[brojac].size()&lt;(n/broj) &amp;&amp;brojac&lt;broj) {
+            finalni[brojac].insert(rijecliste);
+        } else if(brojac&gt;=vecegrupe &amp;&amp; finalni[brojac].size()==(n/broj) &amp;&amp; brojac&lt;broj) {
+            brojac++;
+            finalni[brojac].insert(rijecliste);
+        }
+        for(int i=1; i&lt;pomjeranje; i++) {
+            if(it==Lista.end()) it=Lista.begin();
+            it++;
+        }
+        if(it==Lista.end()) it=Lista.begin();
+    }
+    return finalni;
+}
+int main ()
+{   
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    int broj;
+    std::cin&gt;&gt;broj;
+    std::cout&lt;&lt;"Unesite imena djece: \n";
+    std::vector&lt;std::string&gt; VektorImena;
+    std::string Ime;
+    std::cin.ignore(10000, '\n');
+    while(VektorImena.size()&lt;broj) {
+
+<a name="1"></a><font color="#00FF00"><a href="match810-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+        std::getline(std::cin, Ime);
+        VektorImena.push_back(Ime);
+    }
+    std::cout&lt;&lt;"Unesite broj timova: ";
+    int n;
+    std::cin&gt;&gt;n;
+    try {
+        std::vector&lt;std::set&lt;std::string&gt;&gt; Konacni;
+</font>        Konacni=Razvrstavanje(VektorImena, n);
+        std::set&lt;std::string&gt;::iterator it;
+        for(int i=0; i&lt;Konacni.size(); i++) {
+            std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+            it=Konacni[i].begin();
+            for(int j=0; j&lt;Konacni[i].size(); j++) {
+               if(j!=Konacni[i].size()-1) std::cout&lt;&lt;(*it)&lt;&lt;", ";
+               else std::cout&lt;&lt;(*it);
+                it++;
+            }
+            std::cout&lt;&lt;"\n";
+        }
+    } catch(std::logic_error izuzetak) {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+    }
+    return 0;
+}</pre>
+</body>
+</html>

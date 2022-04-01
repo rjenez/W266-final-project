@@ -1,0 +1,362 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student1468.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student1468.cpp<p></p><pre>
+/B16/17 (Zadaća 5, Zadatak 5)
+//Autotestovi by Berina Cocalic (mail: bcocalic1@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iterator&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+
+
+class Temperature
+{
+    std::list&lt;int&gt; minimalne_temperature;
+    std::list&lt;int&gt; maximalne_temperature;
+    int minimalna__dozvoljena_temperatura;
+    int maximalna_dozvoljena_temperatura;
+    
+public:
+    Temperature (int min, int max) 
+    {
+   
+    minimalna__dozvoljena_temperatura=min;
+    maximalna_dozvoljena_temperatura=max;
+    if (min&gt;max) throw std::range_error ("Nekorektne temperature");
+
+    }
+    void RegistrirajTemperature (std::pair &lt;int,int&gt; temperature);
+    void BrisiSve ();
+    int DajBrojRegistriranihTemperatura() const ;
+    int  DajMinimalnuTemperaturu () const ;
+    int  DajMaximalnuTemperaturu () const ;
+    int  DajBrojTemperaturaVecihod (int temperatura) const ;
+    int DajBrojTemperaturaManjihOd(int temperatura) const ;
+    void BrisiTemperature (std::pair&lt;int,int&gt; temperature);
+
+ bool operator ! () const 
+{
+    return (minimalne_temperature.empty());
+}
+
+Temperature &amp;operator ++ ()
+{
+    std::transform(minimalne_temperature.begin(),minimalne_temperature.end(),minimalne_temperature.begin(),std::bind (std::plus&lt;int&gt;(),1,std::placeholders::_1));
+    if(!std::equal(minimalne_temperature.begin(),minimalne_temperature.end(),maximalne_temperature.begin(),std::less_equal&lt;int&gt;()))
+    {
+        std::transform (minimalne_temperature.begin(),minimalne_temperature.end(),minimalne_temperature.begin(),std::bind(std::minus&lt;int&gt;(),std::placeholders::_1,1));
+        throw std::logic_error("Ilegalna operacija");
+    }
+    return *this;
+ 
+}
+// sve minimalne dnevne temperature
+// logic_error
+
+
+Temperature  &amp;operator -- ()
+{
+    std::transform (maximalne_temperature.begin(),maximalne_temperature.end(),maximalne_temperature.begin(),std::bind(std::minus&lt;int&gt;(),std::placeholders::_1,1));
+    if(!std::equal(maximalne_temperature.begin(),maximalne_temperature.end(),minimalne_temperature.begin(),std::greater_equal&lt;int&gt;()))
+    {
+        std::transform (maximalne_temperature.begin(),maximalne_temperature.end(),maximalne_temperature.begin(),std::bind(std::plus&lt;int&gt;(),std::placeholders::_1,1));
+        throw std::logic_error("Ilegalna operacija");
+    }
+    return *this;
+}
+// logic_error
+
+Temperature operator ++ (int)
+{
+    Temperature t (*this);
+    std::transform (minimalne_temperature.begin(),minimalne_temperature.end(),minimalne_temperature.begin(),std::bind(std::plus&lt;int&gt;(),1,std::placeholders::_1));
+    //kopirano iz operator++()
+    if(!std::equal(minimalne_temperature.begin(),minimalne_temperature.end(),maximalne_temperature.begin(),std::less_equal&lt;int&gt;()))
+    {
+        std::transform (minimalne_temperature.begin(),minimalne_temperature.end(),minimalne_temperature.begin(),std::bind(std::minus&lt;int&gt;(),std::placeholders::_1,1));
+        throw std::logic_error("Ilegalna operacija");
+    }
+    return t;
+}
+// postfiksni
+// logic_error
+
+Temperature operator -- (int)
+{
+    Temperature t (*this);
+    std::transform (maximalne_temperature.begin(),maximalne_temperature.end(),maximalne_temperature.begin(),std::bind(std::minus&lt;int&gt;(),std::placeholders::_1,1));
+    //kopirano iz Temperature &amp;operator --()
+    if(!std::equal(maximalne_temperature.begin(),maximalne_temperature.end(),minimalne_temperature.begin(),std::greater_equal&lt;int&gt;()))
+    {
+        std::transform (maximalne_temperature.begin(),maximalne_temperature.end(),maximalne_temperature.begin(),std::bind(std::plus&lt;int&gt;(),std::placeholders::_1,1));
+        throw std::logic_error("Ilegalna operacija");
+    }
+    return t;
+}
+// postfiksni
+// logic_error
+Temperature &amp;operator +=(int Y)
+{
+    *this = *this + Y;
+    return *this;
+}
+
+Temperature &amp;operator -=(int Y)
+{
+    *this = *this + Y;
+    return *this;
+}
+
+std::pair&lt;int, int&gt; operator [](int i);
+
+friend std::vector&lt;int&gt; operator *(Temperature X);
+friend std::vector&lt;int&gt; operator +(Temperature X);
+friend std::vector&lt;int&gt; operator -(Temperature X);
+friend Temperature operator +(Temperature X, int Y);
+friend Temperature operator +(int Y, Temperature X);
+friend Temperature operator -(Temperature X, int Y);
+friend Temperature operator -(int Y, Temperature X);
+friend bool operator ==(Temperature X, Temperature Y);
+friend bool operator !=(Temperature X, Temperature Y);
+friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, Temperature X);
+
+};
+
+std::vector&lt;int&gt; operator *(Temperature X)
+{
+    std::vector&lt;int&gt; razlika(X.minimalne_temperature.size());
+    std::vector&lt;int&gt;::iterator razlike(razlika.begin());
+    std::transform (X.maximalne_temperature.begin(), X.maximalne_temperature.end(), X.minimalne_temperature.begin(),razlike,std::minus&lt;int&gt;());
+    return razlika;
+    
+}
+
+
+std::vector&lt;int&gt; operator + (Temperature X)
+{
+    std::vector&lt;int&gt; v(X.minimalne_temperature.size());
+    std::vector&lt;int&gt;::iterator razlike (v.begin());
+<a name="5"></a><font color="#FF0000"><a href="match660-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+    std::transform(X.maximalne_temperature.begin(), X.maximalne_temperature.end(),razlike,std::bind(std::minus&lt;int&gt;(), X.maximalna_dozvoljena_temperatura,std::placeholders::_1));
+    return v;
+}
+
+
+std::vector&lt;int&gt; operator - (Temperature X)
+</font>{
+    std::vector&lt;int&gt; v(X.minimalne_temperature.size());
+    std::vector&lt;int&gt;::iterator razlike(v.begin());
+<a name="3"></a><font color="#00FFFF"><a href="match660-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+    std::transform(X.minimalne_temperature.begin(), X.minimalne_temperature.end(),razlike,std::bind(std::minus&lt;int&gt;(),std::placeholders::_1, X.minimalna__dozvoljena_temperatura));
+    return v;
+}
+
+std::pair&lt;int,int&gt; Temperature::operator [] (int i)
+</font>{
+
+    // range_error
+    if(i &lt; 1 || i &gt; DajBrojRegistriranihTemperatura())
+        throw std::range_error("Neispravan indeks");
+    std::pair&lt;int,int&gt; temp;
+    auto it (minimalne_temperature.begin());
+    std::advance(it,i-1);
+    auto it1(maximalne_temperature.begin());
+    std::advance(it1,i-1);
+    temp.second=*it1;
+    temp.first=*it;
+    // omogućava da numeracija ide od 1
+    return temp;
+} 
+
+// ne može se koristiti sa lijeve strane jednakosti
+
+Temperature operator + (Temperature X, int Y)
+{
+<a name="1"></a><font color="#00FF00"><a href="match660-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+    std::transform (X.minimalne_temperature.begin(),X.minimalne_temperature.end(),X.minimalne_temperature.begin(),std::bind(std::plus&lt;int&gt;(),Y,std::placeholders::_1));
+    std::transform (X.maximalne_temperature.begin(),X.maximalne_temperature.end(),X.maximalne_temperature.begin(),std::bind(std::plus&lt;int&gt;(),Y,std::placeholders::_1));
+</font><a name="4"></a><font color="#FF00FF"><a href="match660-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+    if(std::count_if(X.minimalne_temperature.begin(), X.minimalne_temperature.end(), std::bind(std::less_equal&lt;int&gt;(), std::placeholders::_1, X.minimalna__dozvoljena_temperatura)) || std::count_if(X.maximalne_temperature.begin(), X.maximalne_temperature.end(), std::bind(std::greater_equal&lt;int&gt;(), std::placeholders::_1, X.maximalna_dozvoljena_temperatura)))
+</font><a name="6"></a><font color="#00FF00"><a href="match660-1.html#6" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+        throw std::logic_error("Prekoracen dozvoljeni opseg temperatura");
+</font>    return X;
+}
+
+Temperature operator +(int Y, Temperature X)
+{
+    return X + Y;
+}
+// logic_error
+
+
+Temperature operator -(Temperature X, int Y)
+{
+    std::transform (X.minimalne_temperature.begin(),X.minimalne_temperature.end(),X.minimalne_temperature.begin(),std::bind (std::minus&lt;int&gt;(),std::placeholders::_1,Y));
+    std::transform (X.maximalne_temperature.begin(),X.maximalne_temperature.end(),X.minimalne_temperature.begin(),std::bind (std::minus&lt;int&gt;(),std::placeholders::_1,Y));
+<a name="7"></a><font color="#0000FF"><a href="match660-1.html#7" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+    if(std::count_if(X.minimalne_temperature.begin(), X.minimalne_temperature.end(), std::bind(std::less_equal&lt;int&gt;(), std::placeholders::_1, X.minimalna__dozvoljena_temperatura)) || std::count_if(X.maximalne_temperature.begin(), X.maximalne_temperature.end(), std::bind(std::greater_equal&lt;int&gt;(), std::placeholders::_1, X.maximalna_dozvoljena_temperatura)))
+</font>        throw std::logic_error("Prekoracen dozvoljeni opseg temperatura");
+    return X;
+}
+
+Temperature operator -(int Y, Temperature X)
+{
+<a name="2"></a><font color="#0000FF"><a href="match660-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+    std::transform(X.minimalne_temperature.begin(), X.minimalne_temperature.end(), X.minimalne_temperature.begin(), std::bind(std::minus&lt;int&gt;(),Y,std::placeholders::_1));
+    std::transform(X.maximalne_temperature.begin(), X.maximalne_temperature.end(), X.minimalne_temperature.begin(), std::bind(std::minus&lt;int&gt;(),Y,std::placeholders::_1));
+</font>    std::list&lt;int&gt; temp(X.minimalne_temperature);
+    X.minimalne_temperature = X.maximalne_temperature;
+    X.maximalne_temperature = temp;
+<a name="8"></a><font color="#00FFFF"><a href="match660-1.html#8" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+    if(std::count_if(X.minimalne_temperature.begin(), X.minimalne_temperature.end(), std::bind(std::less_equal&lt;int&gt;(), std::placeholders::_1, X.minimalna__dozvoljena_temperatura)) || std::count_if(X.maximalne_temperature.begin(), X.maximalne_temperature.end(), std::bind(std::greater_equal&lt;int&gt;(), std::placeholders::_1, X.maximalna_dozvoljena_temperatura)))
+</font>        throw std::logic_error("Prekoracen dozvoljeni opseg temperatura");
+    return X;
+}
+// logic error
+
+bool operator == (Temperature X,Temperature Y)
+{
+   if (X.minimalne_temperature.size()!=Y.minimalne_temperature.size() || X.minimalna__dozvoljena_temperatura!=Y.minimalna__dozvoljena_temperatura  ||  X.maximalna_dozvoljena_temperatura!=Y.maximalna_dozvoljena_temperatura) return false;
+    bool jednake_minimalne_temperature;
+    jednake_minimalne_temperature = std::equal(X.minimalne_temperature.begin(), X.minimalne_temperature.end(), Y.minimalne_temperature.begin());
+    bool jednake_maximalne_temperature;
+    jednake_maximalne_temperature = std::equal(X.maximalne_temperature.begin(), X.maximalne_temperature.end(), Y.maximalne_temperature.begin());
+    if(jednake_maximalne_temperature &amp;&amp; jednake_minimalne_temperature)
+        return true;
+    return false;
+}
+
+bool operator !=(Temperature X, Temperature Y)
+{
+    return !(X == Y);
+}
+
+
+std::ostream &amp;operator &lt;&lt; (std::ostream &amp;tok,Temperature T)
+{ 
+    std::ostream_iterator&lt;int&gt; t(tok," ");
+    std::copy (T.minimalne_temperature.begin(),T.minimalne_temperature.end(),t);
+    tok&lt;&lt;std::endl;  // ostream iterator
+    std::copy (T.maximalne_temperature.begin(),T.maximalne_temperature.end(),t);
+    return tok;
+}
+
+// min i max temp koja se može registrirati
+
+
+void Temperature::RegistrirajTemperature (std::pair &lt;int,int&gt; temperature ) //  min i max dnevnu temperaturu
+{
+    if (temperature.first&lt;minimalna__dozvoljena_temperatura
+    || temperature.second&lt;minimalna__dozvoljena_temperatura || temperature.first&gt;maximalna_dozvoljena_temperatura || temperature.second&gt;maximalna_dozvoljena_temperatura ) throw std::range_error ("jdfkf");
+
+    minimalne_temperature.push_back(temperature.first);
+    maximalne_temperature.push_back (temperature.second);
+
+}
+
+void Temperature:: BrisiSve ()
+{
+    minimalne_temperature.resize(0);
+    maximalne_temperature.resize(0);
+}
+
+void Temperature::BrisiTemperature (std::pair&lt;int,int&gt; temperature)
+{
+    auto it1(std::find(std::begin(minimalne_temperature),std::end(minimalne_temperature),temperature.first));
+    auto it2(std::find(std::begin(maximalne_temperature),std::end(minimalne_temperature),temperature.second));
+
+
+    if (it1!= std::end(minimalne_temperature)) {
+        minimalne_temperature.erase(it1);
+
+    } else {
+        throw std::logic_error ("Takve temperature nisu registrirane");
+    }
+
+
+
+    if (it2!=maximalne_temperature.end()) maximalne_temperature.erase(it2);
+    else {
+        throw std::logic_error ("Takve temperature nisu registrirane");
+    }
+}
+
+int Temperature::DajBrojRegistriranihTemperatura() const
+{
+    return minimalne_temperature.size();
+}
+int Temperature::DajMinimalnuTemperaturu () const 
+{
+    return *(std::min_element(minimalne_temperature.begin(),minimalne_temperature.end()));   // izuzetak
+}
+int Temperature:: DajMaximalnuTemperaturu () const 
+{
+    return *(std::max_element(maximalne_temperature.begin(),maximalne_temperature.end()));   // izuzetak
+}
+
+int Temperature::DajBrojTemperaturaVecihod (int temperatura) const 
+{
+    return std::count_if (maximalne_temperature.begin(),maximalne_temperature.end(),std::bind(std::greater&lt;int&gt;(),std::placeholders::_1,temperatura));
+}
+
+
+// izuzetak
+int Temperature::DajBrojTemperaturaManjihOd (int temperatura) const 
+{
+    return std::count_if(minimalne_temperature.begin(),minimalne_temperature.end(),std::bind(std::less&lt;int&gt;(),std::placeholders::_1,temperatura));
+}
+// izuzetak
+
+
+int main ()
+{
+    Temperature temp(-20, 40);
+<a name="0"></a><font color="#FF0000"><a href="match660-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+    temp.RegistrirajTemperature(std::pair&lt;int,int&gt;(5,34));
+    temp.RegistrirajTemperature(std::pair&lt;int,int&gt;(20,30));
+    temp.RegistrirajTemperature(std::pair&lt;int,int&gt;(0,25));
+</font>    temp.RegistrirajTemperature(std::pair&lt;int,int&gt;(-5,16));
+    temp.RegistrirajTemperature(std::pair&lt;int,int&gt;(-10,39));
+    std::cout &lt;&lt; "Registrovano je " &lt;&lt; temp.DajBrojRegistriranihTemperatura() &lt;&lt; " temperatura." &lt;&lt; std::endl;
+    --temp;
+    temp++;
+    temp--;
+    ++temp;
+    std::cout &lt;&lt; temp &lt;&lt; std::endl;
+    std::cout &lt;&lt; temp - 3 &lt;&lt; std::endl;
+    std::cout &lt;&lt; temp + 1 &lt;&lt; std::endl;
+    std::cout &lt;&lt; 30 - temp &lt;&lt; std::endl;
+    std::vector&lt;int&gt; rez1(*temp), rez2(+temp), rez3(-temp);
+    for(int element : rez1)
+        std::cout &lt;&lt; element &lt;&lt; " ";
+    std::cout &lt;&lt; std::endl;
+    for(int element : rez2)
+        std::cout &lt;&lt; element &lt;&lt; " ";
+    std::cout &lt;&lt; std::endl;
+    for(int element : rez3)
+        std::cout &lt;&lt; element &lt;&lt; " ";
+    std::cout &lt;&lt; std::endl;
+    std::cout &lt;&lt; temp.DajBrojTemperaturaManjihOd(15) &lt;&lt; " " &lt;&lt; temp.DajBrojTemperaturaVecihod(15) &lt;&lt; std::endl;
+    return 0;
+}</pre>
+</body>
+</html>

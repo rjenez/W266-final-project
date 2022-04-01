@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student5263.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student5129.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match930-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 4
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+
+using std::cin;
+using std::cout;
+using std::string;
+using std::vector;
+using std::set;
+using std::list;
+</font><a name="2"></a><font color="#0000FF"><a href="match930-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+
+int PrebrojiIme(string s){
+    int duzina(0);
+    for(int i=0; i&lt;s.length(); i++) if((s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') || (s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')) duzina++;
+</font>    return duzina-1;
+}
+
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector&lt;string&gt; imena, int br_timova){
+    if(br_timova&gt;imena.size() || br_timova&lt;1) throw std::logic_error("Razvrstavanje nemoguce");
+    
+    // Formiranje liste u koju prekopiramo sva imena
+    list&lt;string&gt; spisak;
+    for(auto &amp;ime : imena) spisak.push_back(ime);
+    
+    // Gledamo koji tim ima koliko clanova
+    int veci, manji(spisak.size() / br_timova), brvecih(spisak.size()%br_timova);
+    // Ako nisu svi iste velicine
+    if(spisak.size()%br_timova){
+        veci = (spisak.size() / br_timova) + 1;
+        manji = (spisak.size() / br_timova);
+    }
+    
+    // Vektor koji sadrzi broj clanova svih timova
+    vector&lt;int&gt; clanovi(br_timova);
+    for(int i=0; i&lt;br_timova; i++){
+        while(brvecih){
+            clanovi[i]=veci;
+            i++;
+            brvecih--;
+        }
+        clanovi[i]=manji;
+    }
+    
+    vector&lt;set&lt;string&gt;&gt; timovi(br_timova);
+    // Brojimo koliko prvi clan ima slova
+    int brojac(PrebrojiIme(*(spisak.begin())));
+    // Ubacujemo prvog u prvi clan skupa (tj. prvi tim) i izbacujemo iz liste
+    timovi[0].insert(*(spisak.begin()));
+    spisak.erase(spisak.begin());
+    
+    // Tim u koji trenutno ubacujemo
+    int i(0);
+    // Krecemo se u krug dok ne razvrstamo svu djecu
+    auto it1(spisak.begin());
+    auto it2(it1);
+    while(spisak.size()){
+        // Kruzenje
+        auto prvi(spisak.begin());
+        auto zadnji(spisak.end());
+        while(brojac){
+            it1++;
+            // Ako sko dosli iza kraja, trebamo onda biti na pocetku ponovo
+            if(it1==zadnji) it1=prvi;
+            brojac--;
+        }
+        
+        // Broji koliko slova ima clan koji se izbacuje
+        brojac=PrebrojiIme(*it1);
+        
+        // Dodaje ime u skup ako tim nije pun
+        if(timovi[i].size()&lt;clanovi[i]) timovi[i].insert(*it1);
+        // Ako je tim popunjen, dodaje ali u sljedeci tim
+        else{
+            i++;
+            timovi[i].insert(*it1);
+        }
+        it2=it1;
+        // Brise clan iz liste
+        it1=spisak.erase(it2);
+<a name="1"></a><font color="#00FF00"><a href="match930-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+        if(it1==spisak.end()) it1=spisak.begin();
+    }
+    
+    return timovi;
+}
+
+int main (){
+    cout &lt;&lt; "Unesite broj djece: ";
+    int br_djece;
+    cin &gt;&gt; br_djece;
+    
+    cin.ignore(10000, '\n');
+    
+    cout &lt;&lt; "Unesite imena djece: ";
+</font>    vector&lt;string&gt; imena;
+    for(int i=0; i&lt;br_djece; i++){
+        string ime;
+        getline(cin, ime);
+        imena.push_back(ime);
+    }
+    
+    cout &lt;&lt; std::endl;
+    
+    cout &lt;&lt; "Unesite broj timova: ";
+    int br_timova;
+    cin &gt;&gt; br_timova;
+    
+    vector&lt;set&lt;string&gt;&gt; razvrstani;
+    try{
+        razvrstani = Razvrstavanje(imena, br_timova);
+    } catch(std::logic_error greska){
+        cout &lt;&lt; "Izuzetak: " &lt;&lt; greska.what();
+        return 0;
+    }
+    
+    for(int i=0; i&lt;br_timova; i++){
+        cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+        auto j(razvrstani[i].begin());
+        auto kraj(razvrstani[i].end()--);
+        kraj--;
+        while(j!=kraj){
+            cout &lt;&lt; *j &lt;&lt; ", ";
+            j++;
+        }
+        cout &lt;&lt; *j &lt;&lt; std::endl;;
+    }
+    
+	return 0;
+}</pre>
+</body>
+</html>

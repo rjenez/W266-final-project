@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student2539.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student2539.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+double SumaKvadrata(std::vector&lt;std::vector&lt;double&gt;&gt; matrica, int m, int n,int x){
+	double suma = 0;
+	for(int i = 0; i &lt; matrica.size(); i++){
+		for(int j = 0; j &lt; matrica.at(0).size(); j++){
+			if(i == m - x &amp;&amp; j &gt;= n - x &amp;&amp; j &lt;= n + x) suma += matrica.at(i).at(j);
+			else if(i == m + x &amp;&amp; j &gt;= n - x &amp;&amp; j &lt;= n + x) suma += matrica.at(i).at(j);
+			else if(j == n - x &amp;&amp; i &gt;= m - x &amp;&amp; i &lt;= m + x) suma += matrica.at(i).at(j);
+			else if(j == n + x &amp;&amp; i &gt;= m - x &amp;&amp; i &lt;= m + x) suma += matrica.at(i).at(j);
+		}
+	}
+	return suma;
+}
+
+std::vector&lt;std::vector&lt;double&gt;&gt; NajvecaPlaninaMatrice(std::vector&lt;std::vector&lt;double&gt;&gt; matrica){
+	int br_kv, br;
+	int m = matrica.size();
+	int n = matrica.at(0).size();
+	for(int i = 0; i &lt; m; i++){
+		if(matrica.at(i).size() != n) throw std::domain_error("Matrica nije korektna");
+	}
+	std::vector&lt;double&gt; sume;
+	std::vector&lt;std::vector&lt;double&gt;&gt; rezultat;
+	int max = 0, max_i = 0, max_j = 0;
+	for(int i = 1; i &lt; m - 1; i++){
+		for(int j = 1; j &lt; n - 1; j++){
+			if(matrica.at(i).at(j) &gt; SumaKvadrata(matrica,i,j,1)){
+				sume.push_back(matrica.at(i).at(j));
+				br_kv = 0;
+				while(i - br_kv &gt; 0 &amp;&amp; i + br_kv &lt; m - 1 &amp;&amp; j - br_kv &gt; 0 &amp;&amp; j + br_kv &lt; n - 1) br_kv++;
+				for(int k = 0; k &lt; br_kv; k++){
+					sume.push_back(SumaKvadrata(matrica,i,j,k+1));
+				}
+				br = 1;
+				for(int k = 0; k &lt; sume.size() - 1; k++){
+					if(sume.at(k) &gt; sume.at(k+1)) br++;
+				}
+				if(br == sume.size()){
+					if(br &gt; max){
+						 max = br;
+						 max_i = i;
+						 max_j = j;
+					}
+					else if(br == max){
+						if(matrica.at(i).at(j) &gt; matrica.at(max_i).at(max_j)){
+							max = br;
+							max_i = i;
+							max_j = j;
+						}
+						else if(matrica.at(i).at(j) == matrica.at(max_i).at(max_j)){
+							if(i &lt; max_i){
+								max = br;
+								max_i = i;
+								max_j = j;
+							}
+							else if(i == max_i){
+								if(j &lt; max_j){
+									max = br;
+									max_i = i;
+									max_j = j;
+								}
+							}
+						}
+					}
+				}
+				sume.resize(0);
+			}
+		}
+	}
+	if(max != 0){
+		int vel = 2 * max - 1;
+		rezultat.resize(vel);
+		for(int i = 0; i &lt; vel; i++) rezultat.at(i).resize(vel);
+		for(int i = 0; i &lt; vel; i++){
+			for(int j = 0; j &lt; vel; j++){
+				rezultat.at(i).at(j) = matrica.at(max_i - max + 1 + i).at(max_j - max + 1 + j);
+			}
+		}
+	}
+	else{
+		rezultat.resize(1);
+		rezultat.at(0).resize(1);
+<a name="1"></a><font color="#00FF00"><a href="match568-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+		int najveci = matrica.at(0).at(0);
+		for(int i = 0; i &lt; m; i++){
+			for(int j = 0; j &lt; n; j++){
+				if(matrica.at(i).at(j) &gt; najveci) najveci = matrica.at(i).at(j);
+			}
+		}
+		rezultat.at(0).at(0) = najveci;
+</font>	}
+	return rezultat;
+}
+
+
+int main ()
+{
+	try{
+		int m,n;
+		std::vector&lt;std::vector&lt;double&gt;&gt; matrica;
+		std::vector&lt;std::vector&lt;double&gt;&gt; rezultat;
+		std::cout &lt;&lt; "Unesite dimenzije matrice (m i n): ";
+		std::cin &gt;&gt; m &gt;&gt; n;
+		if(m &lt; 0 || n &lt; 0) std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!";
+		else{
+			matrica.resize(m);
+			for(int i = 0; i &lt; m; i++) matrica.at(i).resize(n);
+<a name="2"></a><font color="#0000FF"><a href="match568-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+			std::cout &lt;&lt; "Unesite elemente matrice:" &lt;&lt; std::endl;
+			for(int i = 0; i &lt; m; i++){
+				for(int j = 0; j &lt; n; j++){
+					std::cin &gt;&gt; matrica.at(i).at(j);
+</font>				}
+			}
+<a name="0"></a><font color="#FF0000"><a href="match568-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+			rezultat = NajvecaPlaninaMatrice(matrica);
+			std::cout &lt;&lt; "Najveca planina unesene matrice je:" &lt;&lt; std::endl;
+			for(int i = 0; i &lt; rezultat.size(); i++){
+				for(int j = 0; j &lt; rezultat.at(0).size(); j++){
+					std::cout &lt;&lt; std::setw(6) &lt;&lt; rezultat.at(i).at(j);
+</font>				}
+				std::cout &lt;&lt; std::endl;
+			}
+		}
+	}
+	catch(const std::domain_error &amp;e){
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; std::endl;
+	}
+	return 0;
+}</pre>
+</body>
+</html>

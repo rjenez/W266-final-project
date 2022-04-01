@@ -1,0 +1,285 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z5/Z2/student2701.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z5/Z2/student8863.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+#include &lt;stdlib.h&gt;
+
+#define EPS 0.001
+
+<a name="0"></a><font color="#FF0000"><a href="match30-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+struct Tacka {
+	float x, y;	
+};
+struct Trougao {
+	struct Tacka vrh1, vrh2, vrh3;
+};
+struct Kruznica {
+	struct Tacka centar;
+	float radijus;
+};
+struct Pravougaonik {
+	struct Tacka dole_lijevo;
+	float sirina, visina;
+};
+typedef enum TipOblika {TACKA, KRUZNICA, PRAVOUGAONIK, TROUGAO} TipOblika;
+
+int tut(struct Tacka t1, struct Tacka t2) {
+	return t1.x == t2.x &amp;&amp; t1.y == t2.y;
+} //tacka u tacci
+float skalarno(struct Tacka a, struct Tacka b, struct Tacka c, struct Tacka d) {
+	return ((b.x-a.x)*(d.x-c.x) + (b.y-a.y)*(d.y-c.y));
+} //skalarni proizvod vektora(za trougao)
+int tutr(struct Tacka t, struct Trougao tr) {
+	float u, v, sk1, sk2, sk3, sk4, sk5;
+	if (tut(tr.vrh1,tr.vrh2) &amp;&amp; tut(tr.vrh2,tr.vrh3)) return tut(tr.vrh1,t);
+	sk1 = skalarno(tr.vrh1,tr.vrh3,tr.vrh1,tr.vrh3);
+	sk2 = skalarno(tr.vrh1,tr.vrh3,tr.vrh1,tr.vrh2);
+	sk3 = skalarno(tr.vrh1,tr.vrh3,tr.vrh1,t);
+	sk4 = skalarno(tr.vrh1,tr.vrh2,tr.vrh1,tr.vrh2);
+	sk5 = skalarno(tr.vrh1,tr.vrh2,tr.vrh1,t);
+	u = (sk4*sk3 - sk2*sk5)/(sk1*sk4 - sk2*sk2);
+	v = (sk1*sk5 - sk2*sk3)/(sk1*sk4 - sk2*sk2);
+	return (u &gt;= 0 &amp;&amp; v &gt;= 0 &amp;&amp; u+v &lt;= 1);
+} // tacka u trouglu
+int tuk(struct Tacka p, struct Kruznica k) {
+	float d = (p.x-k.centar.x)*(p.x-k.centar.x) + (p.y-k.centar.y)*(p.y-k.centar.y);
+	return (d &lt;= k.radijus*k.radijus);
+} // tacka u kruznici
+int kutr(struct Kruznica k, struct Trougao tr) {
+	float rcos = k.radijus * (float)cos(45);
+	int a, b, c, d, e, f, g, h, i, j, l, m;
+	struct Tacka centar;
+	centar.x = k.centar.x; centar.y = k.centar.y+k.radijus;
+	a = tutr(centar,tr);
+	centar.y = k.centar.y-k.radijus;
+	b = tutr(centar,tr);
+	centar.x = k.centar.x-k.radijus; centar.y = k.centar.y;
+	c = tutr(centar,tr);
+	centar.x = k.centar.x+k.radijus;
+	d = tutr(centar,tr);
+	centar.x = k.centar.x+rcos; centar.y = k.centar.y+rcos;
+	e = tutr(centar,tr);
+	centar.y = k.centar.y-rcos;
+	f = tutr(centar,tr);
+	centar.x = k.centar.x-rcos;
+	g = tutr(centar,tr);
+	centar.y = k.centar.y+rcos;
+	h = tutr(centar,tr);
+	centar.x = k.centar.x-k.radijus*cos(15.25); centar.y = k.centar.y+k.radijus*sin(15.25);
+	i = tutr(centar,tr);
+	centar.x = k.centar.x+k.radijus*cos(15.25);
+	j = tutr(centar,tr);
+	centar.y = k.centar.y-k.radijus*sin(15.25);
+	l = tutr(centar,tr);
+	centar.x = k.centar.x-k.radijus*cos(15.25);
+	m = tutr(centar,tr);
+	return (tutr(k.centar,tr) &amp;&amp; a &amp;&amp; b &amp;&amp; c &amp;&amp; d &amp;&amp; e &amp;&amp; f &amp;&amp; g &amp;&amp; h &amp;&amp; i &amp;&amp; j &amp;&amp; l &amp;&amp; m);
+} // kruznica u trouglu
+int tupr(struct Tacka t, struct Pravougaonik p) {
+	return t.x &gt;= p.dole_lijevo.x &amp;&amp; t.x &lt;= p.dole_lijevo.x+p.sirina &amp;&amp; t.y &gt;= p.dole_lijevo.y &amp;&amp; t.y &lt;= p.dole_lijevo.y+p.visina;
+} // tacka u pravougaoniku
+int prukr(struct Pravougaonik pr, struct Kruznica kr) {
+	struct Tacka gore_lijevo = {pr.dole_lijevo.x,pr.dole_lijevo.y+pr.visina};
+	struct Tacka dole_desno = {pr.dole_lijevo.x+pr.sirina, pr.dole_lijevo.y};
+	struct Tacka gore_desno = {dole_desno.x,gore_lijevo.y};
+	return tuk(pr.dole_lijevo, kr) &amp;&amp; tuk(dole_desno, kr) &amp;&amp; tuk(gore_lijevo, kr) &amp;&amp; tuk(gore_desno, kr);
+} // pravougaonik u kruznici
+int prupr(struct Pravougaonik pr1, struct Pravougaonik pr2) {
+	return tupr(pr1.dole_lijevo,pr2) &amp;&amp; pr1.sirina-pr1.dole_lijevo.x &lt;= pr2.sirina-pr1.dole_lijevo.x &amp;&amp; pr1.visina-pr1.dole_lijevo.y &lt;= pr2.visina - pr1.dole_lijevo.y;
+} // pravougaonik u pravougaoniku
+int krupr(struct Kruznica k, struct Pravougaonik pr) {
+	float rcos = k.radijus * (float)cos(45);
+	int a, b, c, d, e, f, g, h, i, j, l, m;
+	struct Tacka centar;
+	centar.x = k.centar.x; centar.y = k.centar.y+k.radijus;
+	a = tupr(centar,pr);
+	centar.y = k.centar.y-k.radijus;
+	b = tupr(centar,pr);
+	centar.x = k.centar.x-k.radijus; centar.y = k.centar.y;
+	c = tupr(centar,pr);
+	centar.x = k.centar.x+k.radijus;
+	d = tupr(centar,pr);
+	centar.x = k.centar.x+rcos; centar.y = k.centar.y+rcos;
+	e = tupr(centar,pr);
+	centar.y = k.centar.y-rcos;
+	f = tupr(centar,pr);
+	centar.x = k.centar.x-rcos;
+	g = tupr(centar,pr);
+	centar.y = k.centar.y+rcos;
+	h = tupr(centar,pr);
+	centar.x = k.centar.x-k.radijus*cos(15.25); centar.y = k.centar.y+k.radijus*sin(15.25);
+	i = tupr(centar,pr);
+	centar.x = k.centar.x+k.radijus*cos(15.25);
+	j = tupr(centar,pr);
+	centar.y = k.centar.y-k.radijus*sin(15.25);
+	l = tupr(centar,pr);
+	centar.x = k.centar.x-k.radijus*cos(15.25);
+	m = tupr(centar,pr);
+	return (tupr(k.centar,pr) &amp;&amp; a &amp;&amp; b &amp;&amp; c &amp;&amp; d &amp;&amp; e &amp;&amp; f &amp;&amp; g &amp;&amp; h &amp;&amp; i &amp;&amp; j &amp;&amp; l &amp;&amp; m);
+} // kruznica u pravougaoniku
+
+int obuhvata(void* oblik1, TipOblika to1, void* oblik2, enum TipOblika to2) {
+	struct Trougao *tr1 = NULL,*tr2 = NULL;
+	struct Kruznica *kr1 = NULL,*kr2 = NULL;
+	struct Pravougaonik *pr1 = NULL,*pr2 = NULL;
+	struct Tacka *t1 = NULL, *t2 = NULL;
+	switch(to1) {
+		case TROUGAO:
+			tr1 = (struct Trougao*) oblik1;
+			switch(to2) {
+				case TROUGAO:
+					tr2 = (struct Trougao*) oblik2;
+					return tutr(tr2-&gt;vrh1,*tr1) &amp;&amp; tutr(tr2-&gt;vrh2,*tr1) &amp;&amp; tutr(tr2-&gt;vrh3,*tr1);
+				case KRUZNICA:
+					kr2= (struct Kruznica*) oblik2;
+					return kutr(*kr2,*tr1);
+				case PRAVOUGAONIK:
+					pr2 = (struct Pravougaonik*) oblik2;
+				case TACKA:
+					t2 = (struct Tacka*) oblik2;
+					return tutr(*t2,*tr1);
+			}
+		case KRUZNICA:
+			kr1 = (struct Kruznica*) oblik1;
+			switch(to2) {
+				case TROUGAO:
+					tr2 = (struct Trougao*) oblik2;
+					return tuk(tr2-&gt;vrh1,*kr1) &amp;&amp; tuk(tr2-&gt;vrh2,*kr1) &amp;&amp; tuk(tr2-&gt;vrh3,*kr1);
+				case KRUZNICA:
+					kr2 = (struct Kruznica*) oblik2;
+					return tuk(kr2-&gt;centar,*kr1) &amp;&amp; (kr2-&gt;centar.x-kr1-&gt;centar.x)*(kr2-&gt;centar.x-kr1-&gt;centar.x)+(kr2-&gt;centar.y-kr1-&gt;centar.y)*(kr2-&gt;centar.y-kr1-&gt;centar.y)+kr2-&gt;radijus*kr2-&gt;radijus &lt;= kr1-&gt;radijus*kr1-&gt;radijus;
+				case PRAVOUGAONIK:
+					pr2 = (struct Pravougaonik*) oblik2;
+					return prukr(*pr2,*kr1);
+				case TACKA:
+					t2 = (struct Tacka*) oblik2;
+					return tuk(*t2,*kr1);
+			}
+		case PRAVOUGAONIK:
+			pr1 = (struct Pravougaonik*) oblik1;
+			switch(to2) {
+				case TROUGAO: 
+					tr2 = (struct Trougao*) oblik2;
+					return tupr(tr2-&gt;vrh1,*pr1) &amp;&amp; tupr(tr2-&gt;vrh2,*pr1) &amp;&amp; tupr(tr2-&gt;vrh3,*pr1); 
+				case KRUZNICA:
+					kr2 = (struct Kruznica*) oblik2;
+					return krupr(*kr2,*pr1);
+				case PRAVOUGAONIK:
+					pr2 = (struct Pravougaonik*) oblik2;
+					return prupr(*pr2,*pr1);
+				case TACKA:
+					t2 = (struct Tacka*) oblik2;
+					return tupr(*t2,*pr1);
+			}
+		case TACKA:
+			t1 = (struct Tacka*) oblik1;
+			switch(to2) {
+				case TROUGAO: 
+					tr2 = (struct Trougao*) oblik2;
+					return tut(*t1,tr2-&gt;vrh1) &amp;&amp; tut(*t1,tr2-&gt;vrh2) &amp;&amp; tut(*t1,tr2-&gt;vrh3);
+				case KRUZNICA:
+					kr2 = (struct Kruznica*) oblik2;
+					return tut(*t1,kr2-&gt;centar) &amp;&amp; kr2-&gt;radijus &lt;= (float)EPS;
+				case PRAVOUGAONIK:
+					pr2 = (struct Pravougaonik*) oblik2;
+					return tut(*t1,pr2-&gt;dole_lijevo) &amp;&amp; pr2-&gt;visina &lt;= (float)EPS &amp;&amp; pr2-&gt;sirina &lt;=(float)EPS;
+				case TACKA:
+					t2 = (struct Tacka*) oblik2;
+					return tut(*t1,*t2);
+			}
+	}
+	return 0;
+}
+
+void unesiTacku( struct Tacka *t) {
+	printf("Unesite tacku: ");
+	printf("koordinate x,y: ");
+	scanf("%f,%f", &amp;t-&gt;x, &amp;t-&gt;y);
+}
+void unesiKruznicu(struct Kruznica *k) {
+	printf("Unesite centar kruznice: ");
+	printf("koordinate x,y: ");
+	scanf("%f,%f", &amp;k-&gt;centar.x, &amp;k-&gt;centar.y);
+	printf("Unesite poluprecnik kruznice: ");
+	scanf("%f", &amp;k-&gt;radijus);
+}
+void unesiPravougaonik(struct Pravougaonik *p) {
+	printf("Unesite donji lijevi ugao: ");
+	printf("koordinate x,y: ");
+	scanf("%f,%f", &amp;p-&gt;dole_lijevo.x, &amp;p-&gt;dole_lijevo.y);
+	printf("Unesite sirinu: ");
+	scanf("%f", &amp;p-&gt;sirina);
+	printf("Unesite visinu: ");
+	scanf("%f", &amp;p-&gt;visina);
+}
+void unesiTrougao(struct Trougao *t) {
+	printf("Unesite prvi vrh: ");
+	printf("koordinate x,y: ");
+	scanf("%f,%f", &amp;t-&gt;vrh1.x, &amp;t-&gt;vrh1.y);
+	printf("Unesite drugi vrh: ");
+	printf("koordinate x,y: ");
+	scanf("%f,%f", &amp;t-&gt;vrh2.x, &amp;t-&gt;vrh2.y);
+	printf("Unesite treci vrh: ");
+	printf("koordinate x,y: ");
+	scanf("%f,%f", &amp;t-&gt;vrh3.x, &amp;t-&gt;vrh3.y);
+}
+
+int main() {
+	void* oblici[50] = {NULL};
+	struct Tacka tacke[50];
+	struct Kruznica kruznice[50];
+	struct Pravougaonik pravougaonici[50];
+	struct Trougao trouglovi[50];
+	int vel, i, j;
+	int a = 0 ,b = 0, c = 0, d = 0;
+	TipOblika tip[50];
+	do {
+		printf("Unesite broj oblika: ");
+		scanf("%d", &amp;vel);
+	} while (vel &lt; 0 || vel &gt; 50);
+	for(i = 0; i &lt; vel; i++) {
+		do {
+			printf("Odaberite tip %d. oblika (1 - tacka, 2 - kruznica, 3 - pravougaonik, 4 - trougao): ", i+1);
+			scanf("%d", &amp;tip[i]);
+			if (tip[i] &lt; TACKA+1 || tip[i] &gt; TROUGAO+1) printf("Nepoznat tip oblika %d!\n", tip[i]);
+		}while (tip[i] &lt; TACKA+1 || tip[i] &gt; TROUGAO+1);
+		if(tip[i] == TACKA+1) {
+			unesiTacku(&amp;(tacke[a]));
+			oblici[i] = &amp;(tacke[a]);
+			a++;
+		}
+		else if(tip[i] == KRUZNICA+1) {
+			unesiKruznicu(&amp;(kruznice[b]));
+			oblici[i] = &amp;(kruznice[b]);
+			b++;
+		}
+		else if(tip[i] == PRAVOUGAONIK+1) {
+			unesiPravougaonik(&amp;(pravougaonici[c]));
+			oblici[i] = &amp;pravougaonici[c];
+			c++;
+		}
+		else {
+			unesiTrougao(&amp;(trouglovi[d]));
+			oblici[i] = &amp;trouglovi[d];
+			d++;
+		}
+	}
+	for (i = 0; i &lt; vel; i++) {
+		for (j = 0; j &lt; vel; j++) {
+			if (i != j &amp;&amp; obuhvata(oblici[i], tip[i]-1, oblici[j], tip[j]-1) == 1)
+				printf("\nOblik %d obuhvata oblik %d.", i+1, j+1);
+		}
+	}
+	
+	return 0;
+</font>}
+
+</pre>
+</body>
+</html>

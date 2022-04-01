@@ -1,0 +1,249 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student4495.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student4495.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+
+class GradjaninBiH{
+    std::string i_i_p;
+    int niz[13];
+    GradjaninBiH *prije=nullptr;
+    static GradjaninBiH *kraj;
+    static int Validacija(int dan, int mjesec, int godina){
+        int broj_dana[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+<a name="4"></a><font color="#FF00FF"><a href="match218-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+        if(godina % 4 == 0 &amp;&amp; (godina % 100 != 0 || godina % 400 == 0))
+            broj_dana[1]++;
+        if(mjesec &lt; 1 || mjesec &gt; 12 || dan &lt; 1 || dan &gt; broj_dana[mjesec-1]) return 0; 
+</font>        return 1;
+    }    
+    static bool ima12(long long int l){
+        int br(0);
+        while (l!=0) {
+            l/=10;
+            br++;
+        }
+        if(br==12) return true; return false;
+    }
+public:
+ enum Pol {Musko, Zensko};
+ GradjaninBiH(std::string ime_i_prezime, long long int jmbg){
+    int i=0;
+    int niz2[13];
+    int p[13];
+    if(ima12(jmbg))
+    {
+        i=1;
+        niz2[0]=0;
+    }
+    while(jmbg!=0)
+    {
+        niz2[i]=jmbg%10;
+        jmbg/=10;
+        i++;
+    }
+    
+    for(; i&gt;=0;i--) 
+        p[12-i]=niz2[i];
+    
+<a name="1"></a><font color="#00FF00"><a href="match218-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+    int mjesec=p[2]*10+p[3];
+    int dan=p[0]*10+p[1];
+    int godina=p[4]*100+p[5]*10+p[6];
+</font>    int a=11-(7*(p[0]+p[6])+6*(p[1]+p[7])+5*(p[2]+p[8])+4*(p[3]+p[9])+3*(p[4]+p[10])+2*(p[5]+p[11]))%11; 
+    if(a==11) 
+        a=0;
+    if(Validacija(dan,mjesec,godina)==0 || jmbg&lt;0 || a==10 || a!=p[12]) throw std::domain_error("JMBG nije validan");
+    for(auto x(kraj); x!=nullptr;x=x-&gt;prije){
+        bool isti(true);
+        for(int i=0; i&lt;13; i++){
+            if(p[i]!=x-&gt;niz[i])
+                isti=false;
+        }
+        if(isti) throw std::logic_error("Vec postoji gradjanin sa istim JMBG");
+    }
+    for(int i=0; i&lt;13;i++)
+        niz[i]=p[i];
+    i_i_p=ime_i_prezime;
+    if(kraj==nullptr)
+        kraj=this;
+    else{
+        prije=kraj;
+        kraj=this;
+    }     
+    
+ }  
+ GradjaninBiH(std::string ime_i_prezime, int dan_rodjenja, int mjesec_rodjenja,  int godina_rodjenja, int sifra_regije, Pol pol);
+ std::string DajImeIPrezime() const{
+     return i_i_p;
+ };  
+ long long int DajJMBG() const{
+    long long int suma=0;
+    int k=10;
+    for(int i=0; i&lt;13; i++){
+        suma=suma*k+niz[i];
+    }
+    return suma;
+ } 
+ int DajDanRodjenja() const{
+    return niz[0]*10+niz[1];
+ }  
+ int DajMjesecRodjenja() const{
+     return niz[2]*10+niz[3];
+ }  
+ int DajGodinuRodjenja() const{
+     if(niz[4]==0) return 2000+niz[4]*100+niz[5]*10+niz[6];
+     return 1000+niz[4]*100+niz[5]*10+niz[6];
+ }  
+ int DajSifruRegije() const{
+     return niz[7]*10+niz[8];
+ }  
+ Pol DajPol() const{
+     int rez(niz[9]*100+niz[10]*10+niz[11]);
+     if(rez&gt;=500) return Pol::Zensko;
+     return Pol::Musko;
+ }
+ void PromijeniImeIPrezime(std::string novo_ime){
+     i_i_p=novo_ime;
+ }
+ ~GradjaninBiH(){
+     if(this==kraj)
+        kraj=kraj-&gt;prije;
+     else {
+         auto x(kraj);
+         for(auto y(kraj-&gt;prije);y!=this;y=y-&gt;prije) x=x-&gt;prije;
+         if(this-&gt;prije==nullptr) 
+            x-&gt;prije=nullptr;
+         else    
+            x-&gt;prije=this-&gt;prije;
+     }      
+ }
+};
+GradjaninBiH::GradjaninBiH(std::string ime_i_prezime, int dan, int mjesec,  int godina, int sifra_regije, Pol pol){
+    if(Validacija(dan,mjesec,godina)==0 || sifra_regije&lt;0 || sifra_regije&gt;99) throw std::logic_error("Neispravni podaci");
+    int p[]{0,0,0};
+    if(pol==Pol::Zensko) p[0]=5;
+    niz[0]=dan/10;
+    niz[1]=dan%10;
+    niz[2]=mjesec/10;
+    niz[3]=mjesec%10;
+    niz[4]=(godina%1000)/100;
+    niz[5]=(godina%100)/10;
+    niz[6]=godina%10;
+    niz[7]=sifra_regije/10;
+    niz[8]=sifra_regije%10;
+    while (true) {
+        bool ima=false;
+        for(auto x(kraj); x!=nullptr;x=x-&gt;prije){
+            if((pol==Pol::Musko &amp;&amp; x-&gt;niz[9]&lt;5) || (pol==Pol::Zensko &amp;&amp; x-&gt;niz[9]&gt;=5)){
+                if(x-&gt;niz[9]==p[0] &amp;&amp; x-&gt;niz[10]==p[1] &amp;&amp; x-&gt;niz[11]==p[2] &amp;&amp; x-&gt;niz[11]==p[2] &amp;&amp; x-&gt;DajSifruRegije()==sifra_regije &amp;&amp; x-&gt;DajDanRodjenja()==dan&amp;&amp;x-&gt;DajMjesecRodjenja()==mjesec&amp;&amp;x-&gt;DajGodinuRodjenja()==godina){
+                    ima=true;
+                }
+            }
+        }
+        if(ima || 11-(7*(niz[0]+niz[6])+6*(niz[1]+niz[7])+5*(niz[2]+niz[8])+4*(niz[3]+p[0])+3*(niz[4]+p[1])+2*(niz[5]+p[2]))%11==10){
+            p[2]++;
+            if(p[2]==10){
+                p[2]=0;
+                p[1]++;
+                if(p[1]==10){
+                   p[1]=0;
+                   p[0]++;
+               }
+            }
+        }
+        
+        else 
+            break;
+    }    
+    niz[9]=p[0];
+    niz[10]=p[1];
+    niz[11]=p[2];
+<a name="5"></a><font color="#FF0000"><a href="match218-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+    niz[12]=11-(7*(niz[0]+niz[6])+6*(niz[1]+niz[7])+5*(niz[2]+niz[8])+4*(niz[3]+niz[9])+3*(niz[4]+niz[10])+2*(niz[5]+niz[11]))%11;
+</font>    if(niz[12]==11) niz[12]=0;
+    i_i_p=ime_i_prezime;
+    if(kraj==nullptr)
+        kraj=this;
+    else{
+        prije=kraj;
+        kraj=this;
+    }   
+}
+GradjaninBiH *GradjaninBiH::kraj=nullptr;
+
+<a name="2"></a><font color="#0000FF"><a href="match218-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+int main ()
+{
+    GradjaninBiH* niz[100]{};
+    std::cout &lt;&lt; "Koliko gradjana zelite unijeti po JMBG? " &lt;&lt; std::endl;
+    int n; std::cin &gt;&gt; n;
+    for(int i=0; i&lt;n; i++){
+        std::cout &lt;&lt; "Unesite ime i prezime (u istom redu): " &lt;&lt; std::endl;
+</font>        std::string ime;
+        std::cin.ignore(10000,'\n');
+<a name="0"></a><font color="#FF0000"><a href="match218-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+        std::getline(std::cin, ime);
+        std::cout &lt;&lt; "Unesite JMBG: " &lt;&lt; std::endl;
+        long long int jmbg;
+        std::cin &gt;&gt; jmbg;
+        try {
+            niz[i]=new GradjaninBiH(ime,jmbg);
+            std::cout &lt;&lt; "Unijeli ste gradjanina "&lt;&lt;niz[i]-&gt;DajImeIPrezime()&lt;&lt;" rodjenog "&lt;&lt;niz[i]-&gt;DajDanRodjenja()&lt;&lt;"."&lt;&lt;niz[i]-&gt;DajMjesecRodjenja()&lt;&lt;"."&lt;&lt;niz[i]-&gt;DajGodinuRodjenja()&lt;&lt;" u regiji "&lt;&lt;niz[i]-&gt;DajSifruRegije()&lt;&lt;", ";
+</font><a name="3"></a><font color="#00FFFF"><a href="match218-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+            if(niz[i]-&gt;DajPol()==GradjaninBiH::Pol::Musko) std::cout &lt;&lt; "musko";
+</font>            else std::cout &lt;&lt; "zensko";
+<a name="6"></a><font color="#00FF00"><a href="match218-1.html#6" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+            std::cout &lt;&lt;"." &lt;&lt; std::endl;
+        }
+        catch (std::domain_error error) {
+            std::cout &lt;&lt; error.what() &lt;&lt; std::endl;
+</font>            i--;
+        }
+    }
+    std::cout &lt;&lt; "Koliko gradjana zelite unijeti po datumu rodjenja, regiji i polu? " &lt;&lt; std::endl;
+    int m; std::cin &gt;&gt; m;
+    for(int i =0; i&lt;m; i++){
+        std::cout &lt;&lt; "Unesite ime i prezime (u istom redu): " &lt;&lt; std::endl;
+        std::string ime;
+        std::cin.ignore(10000,'\n');
+        std::getline(std::cin, ime);
+        std::cout &lt;&lt; "Unesite datum rodjenja (format dd/mm/gggg): " &lt;&lt; std::endl;
+        char znak;
+        int dan, mjesec,godina;
+        std::cin &gt;&gt; dan&gt;&gt;znak&gt;&gt;mjesec&gt;&gt;znak&gt;&gt;godina;
+        std::cout &lt;&lt; "Unesite sifru regije: " &lt;&lt; std::endl;
+        int sifra_regije; std::cin &gt;&gt; sifra_regije;
+        std::cout &lt;&lt; "Unesite M za musko, Z za zensko: " &lt;&lt; std::endl;
+        char znakk; std::cin &gt;&gt; znakk; GradjaninBiH::Pol pol;
+        if(znakk=='M') pol=GradjaninBiH::Pol::Musko; else pol=GradjaninBiH::Pol::Zensko;
+        try {
+            niz[i+n]=new GradjaninBiH(ime, dan, mjesec,godina,sifra_regije,pol);
+<a name="7"></a><font color="#0000FF"><a href="match218-1.html#7" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+            std::cout &lt;&lt; "Unijeli ste gradjanina "&lt;&lt; niz[i+n]-&gt;DajImeIPrezime()&lt;&lt;" JMBG: "&lt;&lt;niz[i+n]-&gt;DajJMBG()&lt;&lt;"." &lt;&lt; std::endl;
+        }
+        catch (std::logic_error error) {
+            std::cout &lt;&lt; error.what() &lt;&lt; std::endl;
+</font>            i--;
+        }
+        
+    }
+    for(int i=0; i&lt;100;i++) delete niz[i];
+    
+ 
+	return 0;
+}</pre>
+</body>
+</html>

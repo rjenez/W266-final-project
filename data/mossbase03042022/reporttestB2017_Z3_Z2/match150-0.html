@@ -1,0 +1,161 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student3442.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student3442.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;tuple&gt;
+#include &lt;cctype&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iterator&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match150-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_97.gif"/></a>
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+
+typedef std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; SetTuplovaT;
+
+typedef std::map&lt;std::string, SetTuplovaT&gt; IndeksPojmovaT;
+
+
+bool is_alnum(char z)
+{
+    z = std::tolower(z);
+    return ('a' &lt;= z &amp;&amp; z &lt;= 'z') || ('A' &lt;= z &amp;&amp; z &lt;= 'Z') || ('0' &lt;= z &amp;&amp; z &lt;= '9');
+}
+
+IndeksPojmovaT KreirajIndeksPojmova(const Knjiga&amp; knjiga)
+{
+    IndeksPojmovaT ip;
+    for(const auto&amp; p : knjiga){
+        for(std::size_t k = 0; k &lt; p.second.size(); ++k){
+            const auto&amp; tekst = p.second[k];
+            for(std::size_t i = 0; i &lt; tekst.size(); ++i){
+                bool razmak = true;
+                if(!is_alnum(tekst[i])){
+                    razmak = true;
+                }
+                else if (razmak){
+                    razmak = false;
+                    auto pocetak = i;
+                    while(i &lt; tekst.size() &amp;&amp; is_alnum(tekst[i])){
+                        ++i;
+                    }
+                    auto rijec = tekst.substr(pocetak, i - pocetak);
+                    for(char&amp; e : rijec){
+                        e = std::tolower(e);
+                    }
+                    
+                    auto it = ip.find(rijec);
+                    if(it == ip.end()){
+                        ip[rijec] = SetTuplovaT{std::tuple&lt;std::string, int, int&gt;{p.first, k + 1, pocetak} };
+                    }
+                    else{
+                        it-&gt;second.insert(std::make_tuple(p.first, k + 1, pocetak));
+                    }
+                }
+                
+            }
+        }
+    }
+    return ip;
+}
+
+
+SetTuplovaT PretraziIndeksPojmova(std::string rijec, const IndeksPojmovaT&amp; ip)
+{
+    for(char&amp; e : rijec){
+        e = std::tolower(e);
+    }
+    const auto p = ip.find(rijec);
+    if(p == ip.end()){
+        throw std::logic_error("Pojam nije nadjen");
+    }
+    return p-&gt;second;
+}
+
+void IspisiIndeksPojmova(const IndeksPojmovaT&amp; ip)
+{
+    for(const auto&amp; e : ip){
+        std::cout &lt;&lt; e.first &lt;&lt; ": ";
+        const auto kraj = e.second.end();
+        const auto prije_kraja = std::prev(kraj);
+        
+        for(auto it = e.second.begin(); it != kraj; ++it){
+            if(it == prije_kraja){
+                std::cout &lt;&lt; std::get&lt;0&gt;(*it) &lt;&lt; '/' &lt;&lt; std::get&lt;1&gt;(*it) &lt;&lt; '/' &lt;&lt; std::get&lt;2&gt;(*it);
+            }
+            else{
+                std::cout &lt;&lt; std::get&lt;0&gt;(*it) &lt;&lt; '/' &lt;&lt; std::get&lt;1&gt;(*it) &lt;&lt; '/' &lt;&lt; std::get&lt;2&gt;(*it) &lt;&lt; ", ";
+            }
+        }
+        std::cout &lt;&lt; '\n';
+    }
+}
+
+
+int main ()
+{
+    std::cout &lt;&lt; "Unesite naziv poglavlja: ";
+    std::string ime_poglavlja;
+    std::getline(std::cin, ime_poglavlja);
+    Knjiga k;
+    std::vector&lt;std::string&gt; str;
+    if(ime_poglavlja != "."){
+        for(int i = 1; ; ++i){
+            std::cout &lt;&lt; "Unesite sadrzaj stranice " &lt;&lt; i &lt;&lt; ": ";
+            std::string stranica;
+            std::getline(std::cin, stranica);        
+            if(stranica == "."){
+                i = 0;
+                k.emplace(std::move(ime_poglavlja), std::move(str));
+                str.clear();
+                std::cout &lt;&lt; "Unesite naziv poglavlja: ";            
+                std::getline(std::cin, ime_poglavlja);
+                if(ime_poglavlja == "."){
+                    break;
+                }
+            }
+            else{
+                str.push_back(std::move(stranica));
+            }
+        }
+    }
+    
+    std::cout &lt;&lt; "\nKreirani indeks pojmova:\n";
+    const auto ip = KreirajIndeksPojmova(k);
+    IspisiIndeksPojmova(ip);
+    std::cout &lt;&lt; '\n';
+    
+    for(;;){
+        std::cout &lt;&lt; "Unesite rijec: ";
+        std::string rijec;
+        std::getline(std::cin, rijec);        
+        if(rijec == "."){
+            break;
+        }
+        try {
+            const SetTuplovaT set = PretraziIndeksPojmova(rijec, ip);
+            for(const auto&amp; e : set){
+                std::cout &lt;&lt; std::get&lt;0&gt;(e) &lt;&lt; '/' &lt;&lt; std::get&lt;1&gt;(e) &lt;&lt; '/' &lt;&lt; std::get&lt;2&gt;(e) &lt;&lt; ' ';
+            }
+        }
+        catch (std::logic_error e) {
+            std::cout &lt;&lt; "Unesena rijec nije nadjena!";
+        }
+        std::cout &lt;&lt; '\n';
+    }
+    
+    
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student7834.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student7834.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;tuple&gt;
+#include &lt;stdexcept&gt;
+typedef std::map&lt;std::string,std::vector&lt;std::string&gt;&gt; Knjiga;
+typedef std::map&lt;std::string,std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt;&gt; IndexPojmova;
+
+bool Ponavljanje(IndexPojmova cijeli, std::string trazim)
+{
+ for(auto it(cijeli.begin());it!=cijeli.end();it++)
+ {
+  if(it-&gt;first==trazim) return true;
+ }
+ return false;
+}
+
+IndexPojmova KreirajIndeksPojmova(Knjiga objekat)
+{
+ IndexPojmova vrati;
+ for(auto it(objekat.begin());it!=objekat.end();it++)
+ {
+  auto pomocni=it-&gt;first;
+  auto vek=it-&gt;second;
+  for(auto i(0);i&lt;vek.size();i++)
+  {
+   auto s=vek[i];
+   for(int j(0);j&lt;s.length();j++)
+   {
+<a name="2"></a><font color="#0000FF"><a href="match978-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+    for(int k(0);k&lt;s.length();k++)
+    {
+     if(s[k]&gt;='A' &amp;&amp; s[k]&lt;='Z') s[k]=std::tolower(s[k]);
+</font>    }
+    if(s[j]!=' ')
+    {
+     int pozicija(0);
+     auto pomocni_brojac=j;
+     while(pomocni_brojac&lt;s.length() &amp;&amp; s[pomocni_brojac]!=' ') pomocni_brojac++;
+     pozicija+=j;
+     auto pom=s.substr(j,pomocni_brojac-j);
+     if(!Ponavljanje(vrati,pom))
+     {
+      int stranica=i+1;
+      std::tuple&lt;std::string,int,int&gt; pomocni_tuple=std::make_tuple(pomocni,stranica,pozicija);
+      std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt; pomocni_set;
+      pomocni_set.insert(pomocni_tuple);
+      vrati.insert(std::make_pair(pom,pomocni_set));
+     }
+     else
+     {
+      auto pom_it(vrati.find(pom));
+      auto str=i+1;
+      auto tapl=std::make_tuple(pomocni,str,pozicija);
+      pom_it-&gt;second.insert(tapl);
+     }
+     j=pomocni_brojac;
+    }
+   }
+  }
+ }
+ return vrati;
+}
+
+void IspisiSkup(std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt; s)
+{ 
+ for(auto it(s.begin());it!=s.end();it++)
+ {
+  auto prije_kraja=s.end();
+  if (it==(--prije_kraja)) std::cout &lt;&lt; std::get&lt;0&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(*it);
+  else std::cout &lt;&lt; std::get&lt;0&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*it) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(*it) &lt;&lt; ", ";
+ }
+}
+
+void IspisiIndeksPojmova(IndexPojmova index)
+{
+ for(auto it(index.begin());it!=index.end();it++)
+ {
+  if(it!=index.begin()) std::cout &lt;&lt; std::endl;
+  std::cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+  auto skup=it-&gt;second;
+  IspisiSkup(skup);
+ }
+}
+
+std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt; PretraziIndeksPojmova(std::string rijec, IndexPojmova pojam)
+{
+ int brojac(0);
+ for(auto it(pojam.begin());it!=pojam.end();it++)
+ {
+  if(it-&gt;first==rijec) brojac++;
+ }
+ if(brojac&lt;1) throw std::logic_error("Pojam nije nadjen");
+ auto nadji(pojam.find(rijec));
+ if(nadji==pojam.end()) throw std::logic_error("Unesena rijec nije nadjena!");
+ return nadji-&gt;second;
+}
+
+int main ()
+{
+ Knjiga mapa;
+ while(1)
+ {
+  std::string naziv;
+  std::cout &lt;&lt; "Unesite naziv poglavlja: ";
+  std::getline(std::cin,naziv);
+  int i(1);
+  if(naziv==".") break;
+  std::vector&lt;std::string&gt; vektor;
+  while(1)
+  {
+   std::string sadrzaj;
+   std::cout &lt;&lt; "Unesite sadrzaj stranice " &lt;&lt; i &lt;&lt; ": ";
+   std::getline(std::cin,sadrzaj);
+   if(sadrzaj==".") break;
+<a name="0"></a><font color="#FF0000"><a href="match978-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+   vektor.push_back(sadrzaj);
+   i++;
+  }
+  mapa.insert(std::make_pair(naziv,vektor));
+ }
+ std::cout &lt;&lt; std::endl;
+ std::cout &lt;&lt; "Kreirani indeks pojmova:" &lt;&lt; std::endl;
+ auto indeks_pojmova=KreirajIndeksPojmova(mapa);
+ IspisiIndeksPojmova(indeks_pojmova);
+ std::cout &lt;&lt; std::endl;
+ while(1)
+ {
+  try
+  {
+   std::string rijec;
+</font>   std::cout &lt;&lt; "Unesite rijec: ";
+   std::getline(std::cin,rijec);
+   if(rijec==".") break;
+   auto mapa2=PretraziIndeksPojmova(rijec,indeks_pojmova);
+   for(auto x(mapa2.begin());x!=mapa2.end();x++) 
+   {
+    auto test(mapa2.end());
+    if(x==(--test)) std::cout &lt;&lt; std::get&lt;0&gt;(*x) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*x) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(*x);
+<a name="1"></a><font color="#00FF00"><a href="match978-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+    else std::cout &lt;&lt; std::get&lt;0&gt;(*x) &lt;&lt; "/" &lt;&lt; std::get&lt;1&gt;(*x) &lt;&lt; "/" &lt;&lt; std::get&lt;2&gt;(*x) &lt;&lt; " ";
+   }
+   std::cout &lt;&lt; std::endl;
+  }
+  catch(std::logic_error e)
+  {
+   std::cout &lt;&lt; "Unesena rijec nije nadjena!" &lt;&lt; std::endl;
+</font>  }
+ }
+ return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student2675.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student2526.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+int PotencijalniKrivci(char **&amp; nizovi,std::vector&lt;std::string&gt; imena){
+    int brojac=0;
+    nizovi=nullptr;
+    try{
+    nizovi=new char *[imena.size()];
+    for(int i=0;i&lt;imena.size();i++) nizovi[i]=nullptr;
+    }
+    catch(...){
+        delete[]nizovi;
+        nizovi=nullptr;
+        throw std::bad_alloc();
+    }
+    try{
+    for(int i=0;i&lt;imena.size();i++){
+
+        nizovi[i]=new char[imena[i].size()+1];
+         brojac++;
+        strcpy(nizovi[i],imena[i].c_str());
+    }
+    }
+    catch(...){
+        for(int i=0;i&lt;brojac;i++) delete[] nizovi[i];
+        delete[]nizovi;
+        nizovi=nullptr;
+        throw std::bad_alloc();
+    }
+<a name="3"></a><font color="#00FFFF"><a href="match793-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+    return imena.size();
+}
+int OdbaciOptuzbu(char **&amp; nizovi,int vel,std::string ime){
+    bool izbrisan=false;
+    for(int i=0;i&lt;vel;i++){
+        if(nizovi[i]!=nullptr &amp;&amp;strcmp(nizovi[i],ime.c_str())==0){
+</font><a name="0"></a><font color="#FF0000"><a href="match793-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+            delete[] nizovi[i];
+            nizovi[i]=nullptr;
+            izbrisan=true;
+        }
+    }
+    if(!izbrisan){
+          throw std::domain_error("Osoba sa imenom "+ime+" nije bila optuzena");
+    }
+    int brojacnulla=0,brojac=0;
+</font>    for(int i=0;i&lt;vel;i++){
+        if(nizovi[i]==nullptr) brojacnulla++;
+        else brojac++;
+    }
+    if(brojacnulla&gt;=10){
+        char **novi=nullptr;
+        bool greska=false;int z{};
+        try{
+        novi=new char *[brojac];
+        for(int i=0;i&lt;brojac;i++) novi[i]=nullptr;
+        for(int i=0;i&lt;vel;i++){
+            if(nizovi[i]!=nullptr){
+               novi[z++]=nizovi[i];
+            }
+        }
+        }
+        catch(...){
+            delete[] novi;
+            greska=true;
+        }
+        if(!greska){
+        delete[]nizovi;
+        nizovi=novi;
+        novi=nullptr;
+<a name="2"></a><font color="#0000FF"><a href="match793-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+        vel=z;
+        }
+    }
+    return vel;
+}
+int DodajOptuzbu(char **&amp; nizovi,int vel,std::string ime){
+    char *papak=nullptr;
+    try{
+    papak=new char[ime.length()+1];
+</font>    }
+    catch(...){
+        delete[] papak;
+        throw std::bad_alloc();
+    }
+    strcpy(papak,ime.c_str());
+    bool ubacio=false;
+    for(int i=0;i&lt;vel;i++){
+        if(nizovi[i]==nullptr){
+            ubacio=true;
+            nizovi[i]=papak;
+            papak=nullptr;
+            break;
+        }
+    }
+    if(!ubacio){
+<a name="1"></a><font color="#00FF00"><a href="match793-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+        bool uspjelo=false;
+        char **novi=nullptr;
+        try{
+        novi=new char *[vel+1];
+        for(int i=0;i&lt;vel+1;i++) novi[i]=nullptr;
+</font>        uspjelo=true;
+        }
+        catch(...){
+            delete[] novi;
+            throw;
+        }
+        if(uspjelo){
+        for(int i=0;i&lt;vel;i++) novi[i]=nizovi[i];
+        delete[] nizovi;
+        novi[vel]=papak;
+        nizovi=novi;
+        vel+=1;
+        }
+    }
+    return vel;
+}
+void IzlistajOptuzbu(char **niz,int vel){
+    for(int i=0;i&lt;vel;i++){
+        if(niz[i]!=nullptr) std::cout&lt;&lt;niz[i]&lt;&lt;std::endl;
+    }
+}
+int main ()
+{
+    std::cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? "&lt;&lt;std::endl;
+    int n; 
+    std::cin&gt;&gt;n;
+    std::vector&lt;std::string&gt; imena(n);
+    std::cout&lt;&lt;"Unesite potencijalne krivce: "&lt;&lt;std::endl;
+     std::cin.ignore(10000,'\n');
+    for(int i=0;i&lt;n;i++){
+        std::cin.clear();
+        std::getline(std::cin,imena[i]);
+    }
+    char **p=nullptr;
+    int br=0;
+    try{
+         br=PotencijalniKrivci(p,imena);
+    }catch(std::bad_alloc){
+         std::cout &lt;&lt; "Neuspjela alokacija" &lt;&lt; std::endl;
+    }
+    for(;;){
+        std::cout&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: "&lt;&lt;std::endl;
+        int f;
+        std::cin&gt;&gt;f;
+        if(f==0) break;
+        if(f==1){
+            std::cout&lt;&lt;"Unesite ime novog optuzenog: "&lt;&lt;std::endl;
+            std::string ime;
+            std::cin.ignore(10000,'\n');
+            std::getline(std::cin,ime);
+            try{
+            br=DodajOptuzbu(p,br,ime);}
+            catch(std::bad_alloc){
+            std::cout &lt;&lt; "Neuspjela alokacija" &lt;&lt; std::endl;
+            }
+        }
+        if(f==2){
+            std::cout&lt;&lt;"Unesite ime koje zelite izbaciti: "&lt;&lt;std::endl;
+            std::string ime;
+            std::cin.ignore(10000,'\n');
+            std::getline(std::cin,ime);
+            try{
+            br=OdbaciOptuzbu(p,br,ime);
+            }catch(std::domain_error izuzetak){
+                std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+            }
+        }
+        if(f==3){
+            IzlistajOptuzbu(p,br);
+        }
+    }
+    for(int i=0;i&lt;br;i++) delete[] p[i];
+    delete[] p;
+	return 0;
+}</pre>
+</body>
+</html>

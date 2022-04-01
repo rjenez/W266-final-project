@@ -1,0 +1,160 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student1551.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student6455.cpp<p></p><pre>
+
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+bool Slovo(std::string s, int pozicija){
+		bool slovo=false;
+	for(int i=0;i&lt;s.length();i++){
+		if((s.at(pozicija)&gt;='a' &amp;&amp; s.at(pozicija)&lt;='z' )||(s.at(pozicija)&gt;='A' &amp;&amp;s.at(pozicija)&lt;='Z') ){
+		slovo=true;
+		break;}
+	}
+	return slovo;
+}
+int BrojRijeci(std::string s){
+
+bool razmak=true;
+    int broj_rijeci=0;
+    int i(0);
+        while(i&lt;s.length()){
+        if(s.at(i)==' ')
+         razmak=true;
+         else if(razmak){
+             razmak=false;
+             broj_rijeci++;
+         }
+            i++;
+        }
+	return broj_rijeci;
+}
+std::string ObrniRijec(std::string s){
+	std::string pomocni;
+<a name="1"></a><font color="#00FF00"><a href="match802-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+	for(int i=s.length()-1;i&gt;=0;i--){
+		pomocni.push_back(s.at(i));
+	}
+	return pomocni;
+} 
+std::string ObrniOdredjenuRijec (std::string s, std::vector&lt;std::string&gt; V, int j){
+</font>	int i(0), pozicija(0);
+  std::string pomocni=V.at(j);
+	while(i&lt;s.length() &amp;&amp; j&lt;V.size() &amp;&amp; pozicija!=-1){
+	
+	 	pozicija=s.find(V.at(j), i);
+		
+		while(i&lt;s.length() &amp;&amp; i!=pozicija+V.at(j).size()){ 
+			i++;
+		}
+if(pozicija!=-1 &amp;&amp; ((pozicija!=0 &amp;&amp; pozicija!=s.length()-V.at(j).size() &amp;&amp;  (Slovo(s, pozicija-1)==false || s.at(pozicija-1)==' ') &amp;&amp; (Slovo(s, pozicija+V.at(j).size())==false || s.at(pozicija+V.at(j).size())==' ')) || (pozicija==0 &amp;&amp; BrojRijeci(s)!=1 &amp;&amp; (( s.at( pozicija+V.at(j).size()))==' ' || Slovo(s, pozicija+V.at(j).size())==false)) || (pozicija==s.length()-V.at(j).size() &amp;&amp; (Slovo(s, pozicija-1)==false || s.at(pozicija-1)==' ') ) || (pozicija==0  &amp;&amp; s.length()==V.at(j).size())))
+
+        s.insert(i,ObrniRijec(V.at(j))); 
+
+		
+	}
+	return s;
+	
+}
+std::string NapraviPalindrom(std::string s, std::vector&lt;std::string&gt; V){
+if(V.size()==0) throw "Nisu unesene fraze";
+	for(int j=0;j&lt;V.size();j++){
+		s=ObrniOdredjenuRijec(s,V,j);
+	}
+	
+	return s;}
+std::string ObrniDioRijeci(std::string rijec){
+<a name="0"></a><font color="#FF0000"><a href="match802-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+	std::string pomocni;
+	if(rijec.length()%2!=0){
+	for(int i=rijec.length()/2;i&gt;=0;i--){
+		pomocni.push_back(rijec.at(i));
+	}}
+	else{
+		for(int i=rijec.length()/2-1;i&gt;=0;i--){
+		pomocni.push_back(rijec.at(i));
+	}
+		
+	}
+	return pomocni;
+}
+std::string ObrniPolaRijeci(std::string s, std::vector&lt;std::string&gt; V, int j){
+</font>		int i(0), pozicija(0);
+
+	while(i&lt;s.length() &amp;&amp; j&lt;V.size() &amp;&amp; pozicija!=-1){
+	
+	 	pozicija=s.find(V.at(j), i);
+		
+		while(i&lt;s.length() &amp;&amp; i!=pozicija+V.at(j).size()/2){ 
+			i++;
+		}
+				if(pozicija!=-1 &amp;&amp; ((pozicija!=0 &amp;&amp; pozicija!=s.length()-V.at(j).size() &amp;&amp;  (Slovo(s, pozicija-1)==false || s.at(pozicija-1)==' ') &amp;&amp; (Slovo(s, pozicija+V.at(j).size())==false || s.at(pozicija+V.at(j).size())==' ')) || (pozicija==0 &amp;&amp; (Slovo(s, pozicija+V.at(j).size())==false || s.at( pozicija+V.at(j).size())==' ')) || (pozicija==s.length()-V.at(j).size() &amp;&amp; (Slovo(s, pozicija-1)==false || s.at(pozicija-1)==' ') )))
+
+
+		
+{s.erase(s.begin() +i, s.begin()+i +V.at(j).size()/2 +V.at(j).size()%2);
+        s.insert(i,ObrniDioRijeci(V.at(j)));}
+	}
+	
+	      
+	
+	return s;
+}
+
+std::string NapraviPoluPalindrom(std::string s, std::vector&lt;std::string&gt; V){
+	if(V.size()==0) throw "Nisu unesene fraze";
+	for(int j=0;j&lt;V.size();j++){
+		s=ObrniPolaRijeci(s,V,j);
+	}
+	return s;
+}
+int main ()
+{
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	std::string s;
+	std::getline(std::cin, s, '\n');
+	std::cout&lt;&lt;"Unesite fraze: ";
+	std::vector&lt;std::string&gt; V;
+	do {
+		std::string pomocni;
+		std::getline(std::cin, pomocni, '\n');
+	
+		V.push_back(pomocni);
+	} while(std::cin.peek()!='\n'); 
+	if(V.size()==1 &amp;&amp; (!(V.at(0)&gt;="A" &amp;&amp; V.at(0)&lt;="Z")) &amp;&amp; (!(V.at(0)&gt;="a" &amp;&amp; V.at(0)&lt;="z" )) )
+	V.resize(0);
+		
+	std::cout&lt;&lt;"Recenica nakon Palindrom transformacije: ";
+    try{
+	std::string palindrom=NapraviPalindrom(s,V);
+	std::cout&lt;&lt;palindrom&lt;&lt;std::endl;
+	
+    }catch(...){
+    	std::cout&lt;&lt;s;
+    }
+	
+			std::cout&lt;&lt;"Recenica nakon PoluPalindrom transformacije: ";
+	
+	try{std::string polupalindrom=NapraviPoluPalindrom(s,V);
+	std::cout&lt;&lt;polupalindrom;}
+	catch(...){
+		std::cout&lt;&lt;s;
+	}
+	
+
+		
+	
+	
+
+return 0;
+}
+</pre>
+</body>
+</html>

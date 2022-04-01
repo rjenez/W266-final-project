@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z4/student4559.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z4/student4559.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;type_traits&gt;
+
+// PROTOTIPI
+// Pomocne funckije
+<a name="0"></a><font color="#FF0000"><a href="match181-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+bool isPrime(int);
+unsigned int numOfPrimeFactors(int);
+void inputVector(std::vector&lt;int&gt;&amp;, int);
+
+template &lt;typename IterType1, typename IterType2, typename IterType3, typename Func, typename Criteria&gt;
+void SortirajPodrucjeVrijednosti(IterType1, IterType1, IterType2, IterType3, Func, Criteria);
+
+int main ()
+{
+	int n;
+	std::cout &lt;&lt; "Unesite broj elemenata: ";
+	std::cin &gt;&gt; n;
+	
+	std::vector&lt;int&gt; x, y, z;
+	
+	std::cout &lt;&lt; "Unesite elemente prvog vektora: ";
+	inputVector(x, n);
+	
+	std::cout &lt;&lt; "Unesite elemente drugog vektora: ";
+	inputVector(y, n);
+	
+	std::cout &lt;&lt; "Unesite elemente treceg vektora: ";
+	inputVector(z, n);
+	
+	std::cout &lt;&lt; std::endl;
+	
+	try {
+		SortirajPodrucjeVrijednosti(x.begin(), x.end(), y.begin(), z.begin(),
+				[](int x, int y) { return -2 * x + y; },
+				[](int x, int y) {
+					unsigned int numX{numOfPrimeFactors(x)}, numY{numOfPrimeFactors(y)};
+					return numX &gt; numY || (numX == numY &amp;&amp; x &gt; y);
+				}
+		);
+	}
+	catch (std::logic_error le) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; le.what() &lt;&lt; std::endl;
+		
+		return 0;
+	}
+	
+	std::cout &lt;&lt; "Nakon sortiranja podrucja vrijednosti imamo sljedece trojke:" &lt;&lt; std::endl;
+	for (int i{0}; i &lt; n; i++)
+		std::cout &lt;&lt; "f(" &lt;&lt; x[i] &lt;&lt; ", " &lt;&lt; y[i] &lt;&lt; ") = " &lt;&lt; z[i] &lt;&lt; std::endl;
+	
+	return 0;
+}
+
+template &lt;typename IterType1, typename IterType2, typename IterType3, typename Func, typename Criteria&gt;
+void SortirajPodrucjeVrijednosti(IterType1 p1, IterType1 p2, IterType2 p3, IterType3 p4, Func F, Criteria crit)
+{
+	// Prvo moramo pronaci kraj drugog i treceg bloka
+	auto p3_end(p3);
+	auto p4_end(p4);
+	for (auto it(p1); it != p2; it++, p3_end++, p4_end++);
+	
+	// Sortiranje prva dva bloka
+	try {
+		std::sort(p1, p2, crit);
+		std::sort(p3, p3_end, crit);
+	}
+	catch(...) {
+		throw std::logic_error("Funkcija kriterija nije valjana");
+	}
+	
+	for (auto it(p4); p1 != p2; p1++, p3++, it++)
+	{
+		auto pos(std::find(p4, p4_end, F(*p1, *p3)));
+		
+		if (pos == p4_end)
+			throw std::logic_error("Vrijednost koja odgovara nekom od parova nije nadjena");
+			
+		std::swap(*it, *pos);
+	}
+}
+
+void inputVector(std::vector&lt;int&gt; &amp;v, int n)
+{
+	for (int i = 0; i &lt; n; i++)
+	{
+		int tmp;
+		std::cin &gt;&gt; tmp;
+		
+		if (find(v.begin(), v.end(), tmp) != v.end())
+		{
+			i--;
+			continue;
+		}
+		
+		v.push_back(tmp);
+	}
+}
+
+unsigned int numOfPrimeFactors(int n)
+{
+	if (n == 1)
+		return 0;
+	
+	int res{0};
+	for (int i = 2; i &lt;= n / 2; i++)
+		if (n % i == 0)
+			return 1 + numOfPrimeFactors(n / i);
+</font>			
+	return res;
+}</pre>
+</body>
+</html>

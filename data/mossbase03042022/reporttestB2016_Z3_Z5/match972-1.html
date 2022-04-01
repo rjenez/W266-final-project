@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student5468.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student4167.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iterator&gt;
+
+struct Dijete {
+  std::string ime;
+  Dijete *sljedeci;
+};
+
+<a name="1"></a><font color="#00FF00"><a href="match972-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; vs, int n) {
+    if(n&lt;1 or n&gt;vs.size()) throw std::logic_error("Razvrstavanje nemoguce");
+</font>    int temp1(vs.size()%n), temp2(vs.size()/n);
+    int x((vs.size()-temp1*(temp2+1))/temp2);
+    std::vector&lt;std::set&lt;std::string&gt;&gt; vss(temp1+x);
+    /*std::list&lt;std::string&gt; ls;
+    for(int i(0); i&lt;vs.size(); i++) ls.push_back(vs[i]);
+    std::list&lt;std::string&gt;::iterator it(ls.begin());*/
+    Dijete *pocetak(nullptr), *prethodni;
+    for(int i(0); i&lt;vs.size(); i++) {
+        Dijete *novi(nullptr);
+        try {
+        novi = new Dijete;
+        }
+        catch(std::bad_alloc) {
+            throw;
+        }
+        novi-&gt;ime = vs[i]; novi-&gt;sljedeci =nullptr;
+        if(!pocetak) pocetak=novi;
+            else prethodni-&gt;sljedeci=novi;
+        prethodni=novi;
+    }
+    prethodni-&gt;sljedeci = pocetak;
+    auto it(pocetak);
+    int i(0), broj_djece(0);
+    while(1) {
+        //if(it==ls.end()) it = ls.begin();
+        int broj_pomjeranja(0);
+        if(broj_djece&lt;temp2+1 and i&lt;temp1) {
+            vss[i].insert(it-&gt;ime);
+            broj_djece++;
+        } else if(broj_djece==temp2+1 and i&lt;temp1){
+            broj_djece=0;
+            i++;
+            vss[i].insert(it-&gt;ime);
+            broj_djece++;
+        } else if(i&gt;=temp1) {
+            if(broj_djece&lt;temp2) {
+                vss[i].insert(it-&gt;ime);
+                broj_djece++;
+            } else if(broj_djece==temp2) {
+                broj_djece=0;
+                i++;
+                vss[i].insert(it-&gt;ime);
+                broj_djece++;
+            }
+        }
+        for(int j(0); j&lt;(it-&gt;ime).length(); j++)
+            if(!((it-&gt;ime)[j]&lt;'0' or ((it-&gt;ime)[j]&gt;'9' and (it-&gt;ime)[j]&lt;'A') or ((it-&gt;ime)[j]&gt;'Z' and (it-&gt;ime)[j]&lt;'a') or (it-&gt;ime)[j]&gt;'z'))
+                broj_pomjeranja++;
+        broj_pomjeranja-=1;
+        //it=ls.erase(it);
+        auto novi(it);
+        prethodni-&gt;sljedeci = it-&gt;sljedeci;
+        it=it-&gt;sljedeci;
+        delete novi;
+        int rasporedjeni(0);
+        for(auto x : vss) rasporedjeni+=x.size();
+        if(rasporedjeni==vs.size()) break;
+        while(broj_pomjeranja) {
+            //if(it==ls.end()) it = ls.begin();
+            it=it-&gt;sljedeci;
+            prethodni = prethodni-&gt;sljedeci;
+            broj_pomjeranja--;
+        }
+    }
+    return vss;
+}
+
+int main ()
+{
+    int n;
+    std::cout &lt;&lt; "Unesite broj djece: ";
+    std::cin &gt;&gt; n;
+    std::vector&lt;std::string&gt; vs(n);
+    std::cout &lt;&lt; "Unesite imena djece:" &lt;&lt; std::endl;
+    std::cin.ignore(1000, '\n');
+    for(int i(0); i&lt;n; i++)
+        std::getline(std::cin, vs[i]);
+    int m;
+    std::cout &lt;&lt; "Unesite broj timova: ";
+    std::cin &gt;&gt; m;
+    try {
+        std::vector&lt;std::set&lt;std::string&gt;&gt; vss = Razvrstavanje(vs, m);
+<a name="0"></a><font color="#FF0000"><a href="match972-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+        for(int i(0); i&lt;vss.size(); i++) {
+            std::cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+            for(auto it(vss[i].begin()); it!=vss[i].end(); it++) {
+</font>                if(*it==*(vss[i].rbegin())) {
+                    std::cout &lt;&lt; *it;
+                    break;
+                }
+<a name="2"></a><font color="#0000FF"><a href="match972-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+                std::cout &lt;&lt; *it &lt;&lt; ", ";
+            }
+            std::cout &lt;&lt; std::endl;
+        }
+    }
+    catch(std::logic_error a) {
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; a.what() &lt;&lt; std::endl;
+</font>    }
+	return 0;
+}</pre>
+</body>
+</html>

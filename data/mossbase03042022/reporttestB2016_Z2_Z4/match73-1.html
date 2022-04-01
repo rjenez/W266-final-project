@@ -1,0 +1,217 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8886.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student5015.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;new&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match73-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cout;
+using std::endl;
+using std::cin;
+using std::string;
+using std::vector;
+
+int PotencijalniKrivci(char **&amp;pok, vector&lt;string&gt; imena)
+{
+	int brojac(0);
+	try
+	{
+		pok=new char*[imena.size()];
+		for (int i(0); i&lt;imena.size(); i++)
+			pok[i]=nullptr;
+		for (int i(0); i&lt;imena.size(); i++)
+		{
+			pok[i]=new char[imena[i].length()+1];
+			std::strcpy(pok[i], imena[i].c_str());
+			brojac++;
+		}
+		return brojac;
+	}
+	catch(std::bad_alloc)
+	{
+		for (int i(0); i&lt;imena.size(); i++) 
+			delete[] pok[i];
+		delete[] pok;
+		return brojac;
+	}
+}
+
+int OdbaciOptuzbu(char **&amp;pok, int vel, string nevin)
+{
+	bool isti=false;
+	int brojac(0);
+	for (int i(0); i&lt;vel; i++)
+	{
+		if (pok[i]!=nullptr and std::strcmp(pok[i], nevin.c_str())==0) 
+		{
+			isti=true;
+			delete[] pok[i];
+			pok[i]=nullptr;
+		}
+	}
+	if (!isti) throw std::domain_error("Osoba sa imenom " + nevin + " nije bila optuzena");
+	for (int i(0); i&lt;vel; i++)
+		if (pok[i]==nullptr) brojac++;
+	if (brojac&gt;10)
+	{
+		vel-=brojac;
+		char **novi=nullptr;
+		try
+		{
+			novi=new char*[vel];
+			for (int i=0; i&lt;vel; i++)
+				novi[i]=nullptr;
+			for (int i=0; i&lt;vel; i++)
+			{
+				if (pok[i]!=nullptr) 
+				{
+					char *p=pok[i];
+					novi[i]=new char[strlen(p)+1];
+					strcpy(novi[i], pok[i]);
+				}
+			}
+			char **pomocni=pok;
+			pok=novi;
+			for (int i(0); i&lt;vel+brojac; i++)
+				delete[] pomocni[i];
+			delete[] pomocni;
+		}
+		catch(std::bad_alloc)
+		{
+			for (int i=0; i&lt;vel; i++)
+				delete[] novi[i];
+			delete[] novi;
+			return vel+brojac;
+		}
+	} 
+	return vel;
+}
+
+int DodajOptuzbu(char **&amp;pok, int vel, string krivac)
+{
+	bool upisan(false);
+	char **pomocni;
+	char *niz=nullptr;
+	char **novi=nullptr;
+	try
+	{
+		niz=new char[krivac.length()+1];
+		strcpy(niz, krivac.c_str());
+		for (int i(0); i&lt;vel; i++)
+		{
+			if (pok[i]==nullptr) 
+			{
+				pok[i]=niz;
+				upisan=true;
+				delete[] niz;
+				break;
+			}
+		}
+		if (!upisan) 
+		{
+			vel+=1;
+			novi=new char*[vel];
+			for (int i(0); i&lt;vel; i++)
+				novi[i]=nullptr;
+			for (int i(0); i&lt;vel-1; i++)
+			{
+				char *p=pok[i];
+				novi[i]=new char[strlen(p)+1];
+			}
+			novi[vel-1]=new char[strlen(niz)+1];
+			for (int i(0); i&lt;vel-1; i++)
+				strcpy(novi[i], pok[i]);
+			strcpy(novi[vel-1], krivac.c_str());
+			pomocni=pok;
+			pok=novi;
+			for (int i(0); i&lt;vel-1; i++)
+				delete[] pomocni[i];
+			delete[] pomocni;
+			delete[] niz;
+		}
+	}
+	catch(std::bad_alloc)
+	{
+		delete[] novi;
+		delete[] niz;
+		throw;
+	}
+	return vel;
+}
+
+void IzlistajOptuzbu(char **pok, int vel)
+{
+	for (int i(0); i&lt;vel; i++)
+	{
+		if (pok[i]!=nullptr) cout &lt;&lt; pok[i] &lt;&lt; endl;
+	}
+}
+
+int main()
+{
+	int n;
+	cout &lt;&lt; "Koliko potencijalnih krivaca zelite unijeti? " &lt;&lt; endl;
+	cin &gt;&gt; n;
+	cin.ignore(10000, '\n');
+	vector&lt;string&gt; imena;
+	string ime;
+	char **pok=nullptr;
+	cout &lt;&lt; "Unesite potencijalne krivce: " &lt;&lt; endl;
+	while (imena.size()!=n)
+	{
+		std::getline(cin, ime);
+		imena.push_back(ime);
+	}
+	int x;
+	int vel=PotencijalniKrivci(pok, imena);
+	do
+	{
+		cout &lt;&lt; "Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: " &lt;&lt; endl;
+		cin &gt;&gt; x;
+		string s;
+		switch(x)
+		{
+			case 0: for (int i=0; i&lt;vel; i++)
+						delete[] pok[i];
+					delete[] pok;
+					return 0;
+			case 1: cin.ignore(10000, '\n');
+					cout &lt;&lt; "Unesite ime novog optuzenog: " &lt;&lt; endl;
+					std::getline(cin, s);
+					vel=DodajOptuzbu(pok, vel, s);
+					break;
+			case 2: cin.ignore(10000, '\n');
+					cout &lt;&lt; "Unesite ime koje zelite izbaciti: " &lt;&lt; endl;
+					std::getline(cin, s);
+					try
+					{
+						vel=OdbaciOptuzbu(pok, vel, s);
+					}
+					catch(std::domain_error izuzetak)
+					{
+						cout &lt;&lt; izuzetak.what() &lt;&lt; endl;
+					}
+					break;
+			case 3: IzlistajOptuzbu(pok, vel);
+					break;
+		}
+	} while(1);
+</font>}</pre>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z2/student1597.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z2/student6049.cpp<p></p><pre>
+/B2017/2018: Zadaća 5, Zadatak 2
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;vector&gt;
+#include&lt;stdexcept&gt;
+#include&lt;map&gt;
+#include&lt;utility&gt;
+#include&lt;algorithm&gt;
+#include&lt;memory&gt;
+class Student {
+    int broj_indeksa;
+    std::string godina_studija, imeprezime, adresa, broj_telefona;
+    bool ProvjeraIndeksa(int broj);
+    bool ProvjeraGodineStudija(std::string god);
+    std::string StringBezRazmaka(std::string s);
+    bool ProvjeraBrojaTelefona(std::string brojtel);
+    public:
+    Student(int broj_indeksa, std::string godina_studija, std::string imeprezime, std::string adresa, std::string broj_telefona) {
+        if(!ProvjeraIndeksa(broj_indeksa) || !ProvjeraGodineStudija(godina_studija) || !ProvjeraBrojaTelefona(broj_telefona)) throw std::domain_error("Neispravni parametri");
+        this-&gt;broj_indeksa=broj_indeksa;
+        this-&gt;godina_studija=godina_studija;
+        this-&gt;imeprezime=StringBezRazmaka(imeprezime);
+        this-&gt;adresa=StringBezRazmaka(adresa);
+        this-&gt;broj_telefona=broj_telefona;
+    }
+    int DajIndeks() const { return broj_indeksa; }
+    std::string DajGodinuStudija() const { 
+        if(godina_studija=="1" || godina_studija=="2" || godina_studija=="3") return godina_studija+"/B";
+        return godina_studija;
+    }
+<a name="2"></a><font color="#0000FF"><a href="match213-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+    std::string DajImePrezime() const { return imeprezime; }
+    std::string DajAdresu() const { return adresa; }
+    std::string DajTelefon() const { return broj_telefona; }
+    void Ispisi() const { std::cout&lt;&lt;"Broj indeksa: "&lt;&lt;DajIndeks()&lt;&lt;std::endl&lt;&lt;"Godina studija: "&lt;&lt;DajGodinuStudija()&lt;&lt;std::endl&lt;&lt;"Ime i prezime: "&lt;&lt;DajImePrezime()&lt;&lt;std::endl&lt;&lt;"Adresa: "&lt;&lt;DajAdresu()&lt;&lt;std::endl&lt;&lt;"Telefon: "&lt;&lt;DajTelefon()&lt;&lt;std::endl; }
+</font>};
+bool Student::ProvjeraIndeksa(int broj) {
+    int br(0);
+    while (broj!=0) {
+        broj/=10;
+        br++;
+    }
+    if(br!=5) return false;
+    return true;
+}
+bool Student::ProvjeraGodineStudija(std::string god) {
+<a name="7"></a><font color="#0000FF"><a href="match213-0.html#7" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+    std::vector&lt;std::string&gt; godine{"1","2","3","1/B","2/B","3/B","1/M","2/M","1/D","2/D","3/D"};
+</font>    for(auto g: godine) {
+        if(g==god) return true;
+    }
+    return false;
+}
+std::string Student::StringBezRazmaka(std::string s) {
+    std::string bezrazmaka;
+    for(int i=0; i&lt;s.size(); i++) {
+        if(s[i]==' ') {
+            while(s[i]==' ' &amp;&amp; i&lt;s.size()) i++;
+        }
+        if(i==s.size()) break;
+        if(s[i]!=' ') {
+            while(s[i]!=' ' &amp;&amp; i&lt;s.size()) {
+                bezrazmaka.push_back(s[i]);
+                i++;
+            }
+            bezrazmaka.push_back(' ');
+        }
+        if(i==s.size()) break;
+    }
+    bezrazmaka.erase(bezrazmaka.begin()+bezrazmaka.size()-1);
+    return bezrazmaka;
+}
+bool Student::ProvjeraBrojaTelefona(std::string brojtel) {
+    for(int i=0; i&lt;brojtel.size(); i++) {
+        if(brojtel[i]&gt;='0' &amp;&amp; brojtel[i]&lt;='9') {
+            while(brojtel[i]&gt;='0' &amp;&amp; brojtel[i]&lt;='9' &amp;&amp; i&lt;brojtel.size()) i++;
+            if(brojtel[i]=='/') {
+                i++;
+                while(brojtel[i]&gt;='0' &amp;&amp; brojtel[i]&lt;='9' &amp;&amp; i&lt;brojtel.size()) i++;
+                if(i==brojtel.size()) return false;
+                if(brojtel[i]=='-') {
+                    i++;
+                    while(brojtel[i]&gt;='0' &amp;&amp; brojtel[i]&lt;='9' &amp;&amp; i&lt;brojtel.size()) i++;
+                    if(i==brojtel.size()) return true;
+                }
+            }
+        }
+        return false;
+    }
+    return false;
+}
+<a name="8"></a><font color="#00FFFF"><a href="match213-0.html#8" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+class Laptop {
+    int ev_broj;
+    std::string naziv;
+    std::string karakteristike;
+    Student *kod_koga_je;
+    public:
+    Laptop(int ev_broj, std::string naziv, std::string karakteristike) {
+</font>        if(ev_broj&lt;0) throw std::domain_error("Neispravni parametri");
+        this-&gt;ev_broj=ev_broj;
+        this-&gt;naziv=naziv;
+        this-&gt;karakteristike=karakteristike;
+        kod_koga_je=nullptr;
+    }
+    int DajEvidencijskiBroj() const { return ev_broj; }
+    std::string DajNaziv() const { return naziv; }
+    std::string DajKarakteristike() const { return karakteristike; }
+    bool DaLiJeZaduzen() const {
+        if(!kod_koga_je) return false;
+        return true;
+    }
+    void Zaduzi(Student &amp;student) { 
+        if(kod_koga_je) throw std::domain_error("Laptop vec zaduzen");
+        kod_koga_je=&amp;student;
+    }
+    void Razduzi() {
+        if(!kod_koga_je) return;
+        delete kod_koga_je;
+        kod_koga_je=nullptr;
+    }
+    Student &amp;DajKodKogaJe() {
+<a name="5"></a><font color="#FF0000"><a href="match213-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+        if(!kod_koga_je) throw std::domain_error("Laptop nije zaduzen");
+        return *kod_koga_je;
+    }
+    Student *DajPokKodKogaJe() const { return kod_koga_je; }
+    void Ispisi() const { std::cout&lt;&lt;"Evidencijski broj: "&lt;&lt;DajEvidencijskiBroj()&lt;&lt;std::endl&lt;&lt;"Naziv: "&lt;&lt;DajNaziv()&lt;&lt;std::endl&lt;&lt;"Karakteristike: "&lt;&lt;DajKarakteristike()&lt;&lt;std::endl; }
+</font><a name="1"></a><font color="#00FF00"><a href="match213-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+};
+class Administracija {
+    std::map&lt;int,std::shared_ptr&lt;Student&gt;&gt; studenti;
+    std::map&lt;int,std::shared_ptr&lt;Laptop&gt;&gt; laptopi;
+    public:
+    Administracija()=default;
+    Administracija(const Administracija &amp;a);
+    Administracija(Administracija &amp;&amp;a);
+    Administracija &amp;operator=(const Administracija &amp;a);
+    Administracija &amp;operator=(Administracija &amp;&amp;a);
+</font><a name="0"></a><font color="#FF0000"><a href="match213-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+    void RegistrirajNovogStudenta(int brojindeksa, std::string godina, std::string imeiprez, std::string adress, std::string brojtel);
+    void RegistrirajNoviLaptop(int evidencijskibroj, std::string nazivl, std::string karakt);
+    Student &amp;NadjiStudenta(int brojindeksa);
+    Student NadjiStudenta(int brojindeksa) const;
+    Laptop &amp;NadjiLaptop(int evidencijskibroj);
+    Laptop NadjiLaptop(int evidencijskibroj) const;
+    void IzlistajStudente() const;
+    void IzlistajLaptope() const;
+    void ZaduziLaptop(int brojindeksa, int evidencijskibroj);
+</font>    void PrikaziZaduzenja() const;
+    int NadjiSlobodanLaptop() const;
+    void RazduziLaptop(int evidencijskibroj);
+};
+Administracija::Administracija(const Administracija &amp;a) {
+    for(auto it=a.studenti.begin(); it!=a.studenti.end(); it++) {
+        std::shared_ptr&lt;Student&gt; pok=std::make_shared&lt;Student&gt;(it-&gt;second-&gt;DajIndeks(),it-&gt;second-&gt;DajGodinuStudija(),it-&gt;second-&gt;DajImePrezime(),it-&gt;second-&gt;DajAdresu(),it-&gt;second-&gt;DajTelefon());
+        this-&gt;studenti.insert(std::make_pair(it-&gt;first,pok));
+        pok=nullptr;
+    }
+    for(auto it=a.laptopi.begin(); it!=a.laptopi.end(); it++) {
+        std::shared_ptr&lt;Laptop&gt; pok=std::make_shared&lt;Laptop&gt;(it-&gt;second-&gt;DajEvidencijskiBroj(),it-&gt;second-&gt;DajNaziv(),it-&gt;second-&gt;DajKarakteristike());
+        Student kodk(*(it-&gt;second-&gt;DajPokKodKogaJe()));
+        pok-&gt;Zaduzi(kodk);
+        this-&gt;laptopi.insert(std::make_pair(it-&gt;first,pok));
+        pok=nullptr;
+    }   
+}
+Administracija::Administracija(Administracija &amp;&amp;a) {
+    this-&gt;laptopi=a.laptopi;
+    for(auto it=a.laptopi.begin(); it!=a.laptopi.end(); it++) it-&gt;second=nullptr;
+    this-&gt;studenti=a.studenti;
+    for(auto it=a.studenti.begin(); it!=a.studenti.end(); it++) it-&gt;second=nullptr;
+}
+Administracija &amp;Administracija::operator=(const Administracija &amp;a) {
+    for(auto it=this-&gt;laptopi.begin(); it!=this-&gt;laptopi.end(); it++) if(it-&gt;second) it-&gt;second=nullptr;
+    for(auto it=this-&gt;studenti.begin(); it!=this-&gt;studenti.end(); it++) if(it-&gt;second) it-&gt;second=nullptr;
+    for(auto it=a.studenti.begin(); it!=a.studenti.end(); it++) {
+        std::shared_ptr&lt;Student&gt;pok=std::make_shared&lt;Student&gt;(it-&gt;second-&gt;DajIndeks(),it-&gt;second-&gt;DajGodinuStudija(),it-&gt;second-&gt;DajImePrezime(),it-&gt;second-&gt;DajAdresu(),it-&gt;second-&gt;DajTelefon());
+        this-&gt;studenti.insert(std::make_pair(it-&gt;first,pok));
+        pok=nullptr;
+    }
+    for(auto it=a.laptopi.begin(); it!=a.laptopi.end(); it++) {
+        std::shared_ptr&lt;Laptop&gt; pok=std::make_shared&lt;Laptop&gt;(it-&gt;second-&gt;DajEvidencijskiBroj(),it-&gt;second-&gt;DajNaziv(),it-&gt;second-&gt;DajKarakteristike());
+        Student kodk(*(it-&gt;second-&gt;DajPokKodKogaJe()));
+        pok-&gt;Zaduzi(kodk);
+        this-&gt;laptopi.insert(std::make_pair(it-&gt;first,pok));
+        pok=nullptr;
+    }
+    return *this;
+}
+Administracija &amp;Administracija::operator=(Administracija &amp;&amp;a) {
+    for(auto it=this-&gt;studenti.begin(); it!=this-&gt;studenti.end(); it++) it-&gt;second=nullptr;
+    for(auto it=this-&gt;laptopi.begin(); it!=this-&gt;laptopi.end(); it++) it-&gt;second=nullptr;
+    this-&gt;studenti=a.studenti;
+    this-&gt;laptopi=a.laptopi;
+    return *this;
+}
+void Administracija::RegistrirajNovogStudenta(int brojindeksa, std::string godina, std::string imeiprez, std::string adress, std::string brojtel) {
+    auto ima(studenti.find(brojindeksa));
+    if(ima!=studenti.end()) throw std::domain_error("Student s tim indeksom vec postoji");
+    std::shared_ptr&lt;Student&gt;pok=std::make_shared&lt;Student&gt;(brojindeksa,godina,imeiprez,adress,brojtel);
+    studenti.insert(std::make_pair(brojindeksa,pok));
+    pok=nullptr;
+}
+void Administracija::RegistrirajNoviLaptop(int evidencijskibroj, std::string nazivl, std::string karakt) {
+    auto ima(laptopi.find(evidencijskibroj));
+    if(ima!=laptopi.end()) throw std::domain_error("Laptop s tim evidencijskim brojem vec postoji");
+    std::shared_ptr&lt;Laptop&gt;pok=std::make_shared&lt;Laptop&gt;(evidencijskibroj,nazivl,karakt);
+    laptopi.insert(std::make_pair(evidencijskibroj,pok));
+    pok=nullptr;
+}
+Student &amp;Administracija::NadjiStudenta(int brojindeksa) {
+    auto nadji(studenti.find(brojindeksa));
+    if(nadji==studenti.end()) throw std::domain_error("Student nije nadjen");
+    return *nadji-&gt;second;
+}
+Student Administracija::NadjiStudenta(int brojindeksa) const {
+    auto nadji(studenti.find(brojindeksa));
+    if(nadji==studenti.end()) throw std::domain_error("Student nije nadjen");
+    return *nadji-&gt;second;
+}
+Laptop &amp;Administracija::NadjiLaptop(int evidencijskibroj) {
+    auto nadji(laptopi.find(evidencijskibroj));
+    if(nadji==laptopi.end()) throw std::domain_error("Laptop nije nadjen");
+    return *nadji-&gt;second;
+}
+Laptop Administracija::NadjiLaptop(int evidencijskibroj) const {
+    auto nadji(laptopi.find(evidencijskibroj));
+    if(nadji==laptopi.end()) throw std::domain_error("Laptop nije nadjen");
+<a name="6"></a><font color="#00FF00"><a href="match213-0.html#6" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+    return *nadji-&gt;second;
+}
+void Administracija::IzlistajStudente() const {
+    for(auto it=studenti.begin(); it!=studenti.end(); it++) {
+        it-&gt;second-&gt;Student::Ispisi();
+</font><a name="3"></a><font color="#00FFFF"><a href="match213-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+        std::cout&lt;&lt;std::endl;
+    }
+}
+void Administracija::IzlistajLaptope() const {
+    for(auto it=laptopi.begin(); it!=laptopi.end(); it++) {
+        it-&gt;second-&gt;Laptop::Ispisi();
+</font>        auto kodk(it-&gt;second-&gt;DajPokKodKogaJe());
+        if(kodk) std::cout&lt;&lt;"Zaduzio(la): "&lt;&lt;kodk-&gt;DajImePrezime()&lt;&lt;" ("&lt;&lt;kodk-&gt;DajIndeks()&lt;&lt;")"&lt;&lt;std::endl;
+        std::cout&lt;&lt;std::endl;
+    }
+}
+void Administracija::ZaduziLaptop(int brojindeksa, int evidencijskibroj) {
+    auto nadjistudenta(studenti.find(brojindeksa));
+    auto nadjilaptop(laptopi.find(evidencijskibroj));
+    if(nadjistudenta==studenti.end()) throw std::domain_error("Student nije nadjen");
+<a name="4"></a><font color="#FF00FF"><a href="match213-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+    if(nadjilaptop==laptopi.end()) throw std::domain_error("Laptop nije nadjen");
+    if(nadjilaptop-&gt;second-&gt;DajPokKodKogaJe()) throw std::domain_error("Laptop vec zaduzen");
+    for(auto i=laptopi.begin(); i!=laptopi.end(); i++) {
+</font>        auto kkj(i-&gt;second-&gt;DajPokKodKogaJe());
+        if(kkj) {
+            if(kkj-&gt;DajIndeks()==brojindeksa) throw std::domain_error("Student vec zaduzio laptop");
+        }
+    }
+    nadjilaptop-&gt;second-&gt;Zaduzi(*nadjistudenta-&gt;second);
+}
+void Administracija::PrikaziZaduzenja() const {
+    if(laptopi.size()==0) std::cout&lt;&lt;"Nema zaduzenja"&lt;&lt;std::endl;
+    for(auto it=laptopi.begin(); it!=laptopi.end(); it++) {
+        if(it-&gt;second-&gt;DaLiJeZaduzen()) std::cout&lt;&lt;"Student "&lt;&lt;it-&gt;second-&gt;DajKodKogaJe().DajImePrezime()&lt;&lt;" ("&lt;&lt;it-&gt;second-&gt;DajKodKogaJe().DajIndeks()&lt;&lt;") zaduzio/la laptop broj "&lt;&lt;it-&gt;second-&gt;DajEvidencijskiBroj()&lt;&lt;std::endl;
+    }
+}
+int Administracija::NadjiSlobodanLaptop() const {
+    auto slobodni(std::find_if(laptopi.begin(),laptopi.end(),[](std::pair&lt;int,std::shared_ptr&lt;Laptop&gt;&gt; p) { if(!p.second-&gt;DaLiJeZaduzen()) return true; else return false;}));
+    if(slobodni==laptopi.end()) throw std::domain_error("Nema slobodnih laptopa");
+    return slobodni-&gt;first;
+}
+void Administracija::RazduziLaptop(int evidencijskibroj) {
+    auto razduzi(laptopi.find(evidencijskibroj));
+    if(razduzi==laptopi.end()) throw std::domain_error("Laptop nije nadjen");
+    else if(razduzi-&gt;second-&gt;DaLiJeZaduzen()) throw std::domain_error("Laptop nije zaduzen");
+    razduzi-&gt;second-&gt;Razduzi();
+}
+int main () {
+    try {
+ 
+    /* Administracija etf;
+
+    etf.RegistrirajNoviLaptop(123, "Dell", "CPU 3.0 GHz, 4 GB RAM");
+    etf.RegistrirajNoviLaptop(331, "ASUS", "CPU 3.5 GHz, 2 GB RAM");
+    etf.RegistrirajNoviLaptop(122, "Dell 2", "CPU 3.2 GHz, 6 GB RAM");
+
+
+    etf.RegistrirajNovogStudenta(14212, "1","Benjamin", "Francuska revolucija 23", "12/34-56");
+    etf.RegistrirajNovogStudenta(17528, "2","Ivan", "Trg vjecnih studenata 12", "048/597-585");
+    etf.RegistrirajNovogStudenta(17525, "3", "Ante" ,"Trg vjecnih studenata 11", "062/582-757");
+
+    etf.ZaduziLaptop(14212, 122);
+    etf.ZaduziLaptop(17525,331);
+    etf.IzlistajLaptope();*/
+    
+    Administracija etf ;
+
+    etf.RegistrirajNoviLaptop(123, "Dell", "CPU 3.0 GHz, 4 GB RAM");
+    etf.RegistrirajNoviLaptop(331, "ASUS", "CPU 3.5 GHz, 2 GB RAM");
+    etf.RegistrirajNoviLaptop(122, "Dell 2", "CPU 3.2 GHz, 6 GB RAM");
+    etf.RegistrirajNovogStudenta(14212, "1", "Benjamin", "Francuska revolucija 23", "12/34-56");
+    etf.RegistrirajNovogStudenta(17528, "2","Ivan", "Trg vjecnih studenata 12", "048/597-585");
+    
+    etf.ZaduziLaptop(14212, 123);
+    etf.ZaduziLaptop(17528, 331);
+    int ima (etf.NadjiSlobodanLaptop());
+    etf.PrikaziZaduzenja();
+    std::cout&lt;&lt;ima;
+    }
+    catch(std::domain_error izuz) {
+        std::cout&lt;&lt;izuz.what();
+    }
+	return 0;
+}
+</pre>
+</body>
+</html>

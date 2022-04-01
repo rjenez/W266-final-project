@@ -1,0 +1,168 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4011.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4011.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match125-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;tuple&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+
+
+using namespace std;
+
+
+bool VratiChar(char c)
+{
+    
+    return (tolower(c)&gt;='a' &amp;&amp; tolower(c)&lt;='z')|| (c&gt;='0' &amp;&amp; c&lt;='z');
+}
+
+string DownCase(string s)
+{
+    for(auto &amp;a:s)
+        a=tolower(a);
+    return s;
+}
+
+map&lt;string,set&lt;tuple&lt;string,int,int&gt;&gt;&gt;KreirajIndeksPojmova(map&lt;string,vector&lt;string&gt;&gt; knjiga)
+{
+    map&lt;string,set&lt;tuple&lt;string,int,int&gt;&gt;&gt; indeks;
+    
+        for(auto a:knjiga)
+        {   int brojac=1;
+            for(auto b:a.second)
+            {   
+                
+                for(int i=0;i&lt;b.size();i++)
+                {   
+                   set&lt;tuple&lt;string,int,int&gt;&gt; s;
+                   int j=i;
+                   for(;VratiChar(b[j]);j++);
+                   string rijec=b.substr(i,j-i);
+                   //cout&lt;&lt;rijec&lt;&lt;endl;
+                   rijec=DownCase(rijec);
+                   auto it=find_if(indeks.begin(),indeks.end(),[rijec](pair&lt;string,set&lt;tuple&lt;string,int,int&gt;&gt;&gt; s){return rijec==s.first;});
+                    int duz=j-i;
+                    if(it==indeks.end()) 
+                    {
+                        s.insert(make_tuple(a.first,brojac,i));
+                        for(int br=j;br&lt;=b.size();br++)
+                        {    
+                            if(rijec==DownCase(b.substr(br-duz,duz))){
+                                s.insert(make_tuple(a.first,brojac,br-duz));
+                               
+                                
+                            }
+                        }
+                        
+                       indeks[rijec]=s;
+                    }
+                    else 
+                    {
+                        for(int br=j;br&lt;=b.size();br++)
+                        {    
+                            if(rijec==DownCase(b.substr(br-duz,duz))){
+                                indeks[rijec].insert(make_tuple(a.first,brojac,br-duz));
+                               
+                                
+                            }
+                        }
+                    }
+                    i+=duz;
+                  
+                }
+                brojac++;
+            }
+        }
+    return indeks;
+}
+
+set&lt;tuple&lt;string,int,int&gt;&gt; PretraziIndeksPojmova(string rijec,map&lt;string,set&lt;tuple&lt;string,int,int&gt;&gt;&gt; i)
+{
+    auto it=find_if(i.begin(),i.end(),[rijec](pair&lt;string,set&lt;tuple&lt;string,int,int&gt;&gt;&gt; s){return rijec==s.first;});
+    if(it==i.end()) throw logic_error("Unesena rijec nije nadjena!");
+    return it-&gt;second;
+                    
+}
+
+void IspisiIndeksPojmova(map&lt;string,set&lt;tuple&lt;string,int,int&gt;&gt;&gt; i)
+{
+    for(auto a:i)
+    {
+        cout&lt;&lt;a.first&lt;&lt;": ";int br=0;
+        for(auto b:a.second)
+        {   
+            if(br&lt;a.second.size()-1)
+                cout&lt;&lt;get&lt;0&gt;(b)&lt;&lt;"/"&lt;&lt;get&lt;1&gt;(b)&lt;&lt;"/"&lt;&lt;get&lt;2&gt;(b)&lt;&lt;", ";
+            else 
+                cout&lt;&lt;get&lt;0&gt;(b)&lt;&lt;"/"&lt;&lt;get&lt;1&gt;(b)&lt;&lt;"/"&lt;&lt;get&lt;2&gt;(b);
+          br++;  
+        }
+        cout&lt;&lt;endl;
+    }
+}
+int main ()
+{   
+    map&lt;string,vector&lt;string&gt;&gt;  k;
+    while(1)
+    {
+        cout&lt;&lt;"Unesite naziv poglavlja: ";
+        string s;int br=1; vector&lt;string&gt;v;
+        getline(cin,s);
+        if(s.size()==1 &amp;&amp; s[0]=='.') break;
+        string stranica;
+        while(1)
+        {
+            cout&lt;&lt;"Unesite sadrzaj stranice "&lt;&lt;br&lt;&lt;": ";
+            getline(cin,stranica);
+            if(stranica.size()==1 &amp;&amp; stranica[0]=='.') break;
+            v.push_back(stranica);
+            br++;
+        }
+        k.insert(make_pair(s,v));
+        
+    }
+    cout&lt;&lt;endl;
+    map&lt;string,set&lt;tuple&lt;string,int,int&gt;&gt;&gt; i=KreirajIndeksPojmova(k);
+    cout&lt;&lt;"Kreirani indeks pojmova:"&lt;&lt;endl;
+    IspisiIndeksPojmova(i);
+    
+    while(1)
+    {
+        string s;
+        cout&lt;&lt;"Unesite rijec: ";
+        getline(cin,s);
+        if(s.size()==1 &amp;&amp; s[0]=='.') break;
+        
+        try
+        {
+        set&lt;tuple&lt;string,int,int&gt;&gt; skup=PretraziIndeksPojmova(s,i);
+        for(auto b:skup)
+        {
+            cout&lt;&lt;get&lt;0&gt;(b)&lt;&lt;"/"&lt;&lt;get&lt;1&gt;(b)&lt;&lt;"/"&lt;&lt;get&lt;2&gt;(b)&lt;&lt;" ";
+        }
+        cout&lt;&lt;endl;
+            
+        }
+        catch(logic_error e)
+        {
+            cout&lt;&lt;e.what()&lt;&lt;endl;
+        }
+        
+    }
+    
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

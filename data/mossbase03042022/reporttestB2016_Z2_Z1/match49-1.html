@@ -1,0 +1,632 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z1/student1608.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z1/student7443.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 1
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+	
+*/	
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+
+enum class Polje {
+	Prazno, Posjeceno, Mina, BlokiranoPrazno, BlokiranoPosjeceno, BlokiranoMina
+};
+enum class Smjerovi {
+	GoreLijevo, Gore, GoreDesno, Desno, DoljeDesno, Dolje, DoljeLijevo, Lijevo
+};
+enum class Status {
+	NijeKraj, KrajPoraz, KrajPobjeda
+};
+enum class KodoviGresaka {
+	PogresnaKomanda, NedostajeParametar, SuvisanParametar, NeispravanParametar
+};
+enum class Komande {
+	PomjeriJednoMjesto, PomjeriDalje, Blokiraj, Deblokiraj, PrikaziOkolinu, ZavrsiIgru, KreirajIgru
+};
+typedef std::vector&lt;std::vector&lt;Polje&gt;&gt; Tabla;
+<a name="1"></a><font color="#00FF00"><a href="match49-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_14.gif"/></a>
+
+Tabla KreirajIgru(int n, const std::vector&lt;std::vector&lt;int&gt;&gt; &amp;mine) {
+	Tabla igra(n, std::vector&lt;Polje&gt; (n, Polje::Prazno));
+	for (int i = 0; i &lt; mine.size(); i++) {
+		if (mine[i].size() != 2) throw (std::domain_error("Ilegalan format zadavanja mina"));
+		if (mine[i][0] &gt;= n or mine[i][0] &lt; 0 or mine[i][1] &gt;= n or mine[i][1] &lt; 0) throw (std::domain_error("Ilegalne pozicije mina"));
+		igra[mine[i][0]][mine[i][1]] = Polje::Mina;
+	}
+	return igra;
+}
+
+int okolinaOkoline(const Tabla &amp;polja, int x, int y) {
+	int mine(0);
+	for (int i = x - 1; i &lt; x + 2; i++) {
+		if (i &lt; 0) 
+			continue;
+		if (i &gt;= polja.size()) 
+			break;
+		for (int j = y - 1; j &lt; y + 2; j++) {
+			if (j &lt; 0) 
+				continue;
+			if (j &gt;= polja[i].size()) 
+				break;
+			if (polja[i][j] == Polje::Mina or polja[i][j] == Polje::BlokiranoMina)
+				mine++;
+		}
+	}
+	if (x &lt; 0 or x &gt;= polja.size() or y &lt; 0 or y &gt;= polja.size()) 
+		return mine;
+	if (polja[x][y] == Polje::Mina or polja[x][y] == Polje::BlokiranoMina) 
+		mine--;
+	return mine;
+}		
+
+std::vector&lt;std::vector&lt;int&gt;&gt; PrikaziOkolinu(const Tabla &amp;polja, int x, int y) {
+	if (x &lt; 0 or y &lt; 0 or x &gt;= polja.size() or y &gt;= polja.size()) 
+		throw(std::domain_error ("Polje (" + std::to_string(x) + "," + std::to_string(y) + ") ne postoji\n"));
+	std::vector&lt;std::vector&lt;int&gt;&gt; matricaMina(3, std::vector&lt;int&gt; (3, 0));
+	for (int i = 0; i &lt; 3; i++) {
+		int elementI(0);
+		if (i == 0) 
+			elementI--;
+		else if (i == 2) 
+			elementI++;
+		for (int j = 0; j &lt; 3; j++) {
+			int elementJ(0);
+			if (j == 0) 
+				elementJ--;
+			else if (j == 2) 
+				elementJ++;
+			matricaMina[i][j] = okolinaOkoline(polja, x + elementI, y + elementJ);
+		}
+	}
+	return matricaMina;
+}
+
+void BlokirajPolje(Tabla &amp;polja, int x, int y) {
+	if (x &lt; 0 or y &lt; 0 or x &gt;= polja.size() or y &gt;= polja.size()) 
+		throw (std::domain_error("Polje (" + std::to_string(x) + "," + std::to_string(y) + ") ne postoji\n"));
+	if (polja[x][y] == Polje::Prazno) polja[x][y] = Polje::BlokiranoPrazno;
+</font>	else if (polja[x][y] == Polje::Mina) polja[x][y] = Polje::BlokiranoMina;
+<a name="2"></a><font color="#0000FF"><a href="match49-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+	else if (polja[x][y] == Polje::Posjeceno) polja[x][y] = Polje::BlokiranoPosjeceno;
+}
+void DeblokirajPolje(Tabla &amp;polja, int x, int y) {
+	if (x &lt; 0 or y &lt; 0 or x &gt;= polja.size() or y &gt;= polja.size()) 
+		throw (std::domain_error("Polje (" + std::to_string(x) + "," + std::to_string(y) + ") ne postoji\n"));
+	if (polja[x][y] == Polje::BlokiranoPrazno) polja[x][y] = Polje::Prazno;
+</font>	else if (polja[x][y] == Polje::BlokiranoMina) polja[x][y] = Polje::Mina;
+<a name="0"></a><font color="#FF0000"><a href="match49-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_76.gif"/></a>
+
+	else if (polja[x][y] == Polje::BlokiranoPosjeceno) polja[x][y] = Polje::Posjeceno;
+}
+
+Status Idi(Tabla &amp;polja, int &amp;x, int &amp;y, int novi_x, int novi_y) {
+	if (novi_x &lt; 0 or novi_x &gt;= polja.size() or novi_y &lt; 0 or novi_y &gt;= polja.size()) throw (std::out_of_range("Izlazak van igrace table\n"));
+	if (polja[novi_x][novi_y] == Polje::BlokiranoPosjeceno) throw (std::logic_error("Blokirano polje\n"));
+	else if (polja[novi_x][novi_y] == Polje::BlokiranoPrazno) throw (std::logic_error("Blokirano polje\n"));
+	else if (polja[novi_x][novi_y] == Polje::BlokiranoMina) throw (std::logic_error("Blokirano polje\n"));
+	if (x &lt; 0 or  x &gt;= polja.size() or y &lt; 0 or y &gt;= polja.size()) throw (std::out_of_range("Izlazak van igrace table\n"));
+	polja.at(x).at(y) = Polje::Posjeceno;
+	if (polja[novi_x][novi_y] == Polje::Mina) { 
+		std::vector&lt;std::vector&lt;int&gt;&gt; tmp;
+		polja = KreirajIgru(polja.size(), tmp);
+		return Status::KrajPoraz;
+	}
+	bool pobjeda(true);
+	for (int i = 0; i &lt; polja.size(); i++)
+		for (int j = 0; j &lt; polja.size(); j++)
+			if (polja[i][j] == Polje::Prazno or polja[i][j] == Polje::BlokiranoPrazno) pobjeda = false;
+	if (pobjeda) return Status::KrajPobjeda;
+	x = novi_x;
+	y = novi_y;
+	return Status::NijeKraj;
+}
+
+Status Idi(Tabla &amp;polja, int &amp;x, int &amp;y, Smjerovi smjer) {
+	int novi_x(0), novi_y(0);
+	if (smjer == Smjerovi::GoreLijevo) { novi_x--; novi_y--; }
+	else if (smjer == Smjerovi::Gore) novi_x--;
+	else if (smjer == Smjerovi::GoreDesno) { novi_x--; novi_y++; }
+	else if (smjer == Smjerovi::Desno) novi_y++;
+	else if (smjer == Smjerovi::DoljeDesno) { novi_x++; novi_y++; }
+	else if (smjer == Smjerovi::Dolje) novi_x++;
+	else if (smjer == Smjerovi::DoljeLijevo) { novi_x++; novi_y--; }
+	else if (smjer == Smjerovi::Lijevo) novi_y--;
+	return Idi(polja, x, y, x + novi_x, y + novi_y);
+}
+
+void PrijaviGresku(KodoviGresaka kod) {
+	if (kod == KodoviGresaka::PogresnaKomanda) std::cout &lt;&lt; "Nerazumljiva komanda!\n";
+	else if (kod == KodoviGresaka::NedostajeParametar) std::cout &lt;&lt; "Komanda trazi parametar koji nije naveden!\n";
+	else if (kod == KodoviGresaka::NeispravanParametar) std::cout &lt;&lt; "Parametar komande nije ispravan!\n";
+	else if (kod == KodoviGresaka::SuvisanParametar) std::cout &lt;&lt; "Zadan je suvisan parametar nakon komande!\n";
+}
+
+int vratiBroj(const std::string &amp;s, int poc, int kraj) {
+	int suma(0);
+	int inkrement(1);
+	while (poc &lt;= kraj) {
+		if (!(s[kraj] &gt;= '0' and s[kraj] &lt;= '9')) {
+			kraj --;
+			continue;
+		}
+		suma += (s[kraj] - '0') * inkrement;
+		inkrement *= 10;
+		kraj--;
+	}
+	return suma;
+}
+
+bool UnosKomande(Komande &amp;komanda, Smjerovi &amp;smjer, int &amp;x, int &amp;y, KodoviGresaka &amp;greska) {
+	std::string s;
+	std::getline(std::cin, s);
+	int i;
+	for (i = 0; i &lt; s.length(); i++)
+		if (s[i] != ' ') break;
+	if (s.length() == 0) {
+		greska = KodoviGresaka::PogresnaKomanda;
+		return false;
+	}
+	if (s[i] == 'P' and s[i + 1] == '1') {
+		i += 2;
+		while (s[i] == ' ') i++;
+		
+		if (s[i] == 'G') { // provjeravam samo g
+			if (s[i + 1] == '\0') {
+				smjer = Smjerovi::Gore;
+				komanda = Komande::PomjeriJednoMjesto;
+				return true;
+			}
+			if (s[i + 1] == ' ') {
+				while (s[i + 1] == ' ') i++;
+				if (s[i + 1] == '\0') {
+					smjer = Smjerovi::Gore;
+					komanda = Komande::PomjeriJednoMjesto;
+					return true;
+				}
+				else {
+					greska = KodoviGresaka::SuvisanParametar;
+					return false;
+				}
+			}
+			if (s[i + 1] == 'L') { // provjeravam g sa l "GL"
+				if (s[i + 2] == '\0') {
+					smjer = Smjerovi::GoreLijevo;
+					komanda = Komande::PomjeriJednoMjesto;
+					return true;
+				}
+				if (s[i + 2] == ' ') {
+					while (s[i + 2] == ' ') i++;
+					if (s[i + 2] == '\0') {
+						smjer = Smjerovi::GoreLijevo;
+						komanda = Komande::PomjeriJednoMjesto;
+						return true;
+					}
+					else {
+						greska = KodoviGresaka::SuvisanParametar;
+						return false;
+					}
+				}
+			}
+			if (s[i + 1] == 'D') { // Provjeravam G sa D ili "GD"
+				if (s[i + 2] == '\0') {
+					smjer = Smjerovi::GoreDesno;
+					komanda = Komande::PomjeriJednoMjesto;
+					return true;
+				}
+				if (s[i + 2] == ' ') {
+					while (s[i + 2] == ' ') i++;
+					if (s[i + 2] == '\0') {
+						smjer = Smjerovi::GoreDesno;
+						komanda = Komande::PomjeriJednoMjesto;
+						return true;
+					}
+					else {
+						greska = KodoviGresaka::SuvisanParametar;
+						return false;
+					}
+				}
+			}
+			greska = KodoviGresaka::SuvisanParametar;
+			return false;
+		}
+		else if (s[i] == 'D') { // Provjeravam D
+			if (s[i + 1] == '\0') {
+				smjer = Smjerovi::Desno;
+				komanda = Komande::PomjeriJednoMjesto;
+				return true;
+			}
+			if (s[i + 1] == ' ') {
+				while (s[i + 1] == ' ') i++;
+				if (s[i + 1] == '\0') {
+					smjer = Smjerovi::Desno;
+					komanda = Komande::PomjeriJednoMjesto;
+					return true;
+				}
+				else {
+					greska = KodoviGresaka::SuvisanParametar;
+					return false;
+				}
+			}
+			if (s[i + 1] == 'o') { // Provejravam D sa o "Do"
+				if (s[i + 2] == '\0') {
+					smjer = Smjerovi::Dolje;
+					komanda = Komande::PomjeriJednoMjesto;
+					return true;
+				}
+				if (s[i + 2] == ' ') {
+					while (s[i + 2] == ' ') i++;
+					if (s[i + 2] == '\0') {
+						smjer = Smjerovi::Dolje;
+						komanda = Komande::PomjeriJednoMjesto;
+						return true;
+					}
+					else {
+						greska = KodoviGresaka::SuvisanParametar;
+						return false;
+					}
+				}
+				if (s[i + 2] == 'D') { // Provejravam D sa o sa ili "DoD"
+					if (s[i + 3] == '\0') {
+						smjer = Smjerovi::DoljeDesno;
+						komanda = Komande::PomjeriJednoMjesto;
+						return true;
+					}
+					if (s[i + 3] == ' ') {
+						while (s[i + 3] == ' ') i++;
+						if (s[i + 3] == '\0') {
+							smjer = Smjerovi::DoljeDesno;
+							komanda = Komande::PomjeriJednoMjesto;
+							return true;
+						}
+						else {
+							greska = KodoviGresaka::SuvisanParametar;
+							return false;
+						}
+					}
+				}
+				if (s[i + 2] == 'L') { // Provejravam D sa o sa L ili "DoL"
+					if (s[i + 3] == '\0') {
+						smjer = Smjerovi::DoljeLijevo;
+						komanda = Komande::PomjeriJednoMjesto;
+						return true;
+					}
+					if (s[i + 3] == ' ') {
+						while (s[i + 3] == ' ') i++;
+						if (s[i + 3] == '\0') {
+							smjer = Smjerovi::DoljeLijevo;
+							komanda = Komande::PomjeriJednoMjesto;
+							return true;
+						}
+						else {
+							greska = KodoviGresaka::SuvisanParametar;
+							return false;
+						}
+					}
+				}
+				greska = KodoviGresaka::SuvisanParametar;
+				return false;
+			}
+		}
+		else if (s[i] == 'L') { // Provjeravam L
+			if (s[i + 1] == '\0') {
+				smjer = Smjerovi::Lijevo;
+				komanda = Komande::PomjeriJednoMjesto;
+				return true;
+			}
+			if (s[i + 1] == ' ') {
+				while (s[i + 1] == ' ') i++;
+				if (s[i + 1] == '\0') {
+					smjer = Smjerovi::Lijevo;
+					komanda = Komande::PomjeriJednoMjesto;
+					return true;
+				}
+				else {
+					greska = KodoviGresaka::SuvisanParametar;
+					return false;
+				}
+			}
+			greska = KodoviGresaka::NeispravanParametar;
+			return false;
+		}
+		greska = KodoviGresaka::NedostajeParametar;
+		return false;
+	}
+	else if ( (s[i] == 'P' and s[i + 1] == '&gt;') or (s[i] == 'B') or (s[i] == 'D') ) { // Pomjeri se za zadano polje
+		char tmp(s[i]);
+		if (s[i] == 'P')
+			i += 2;
+		else i++;
+		while (s[i] == ' ') i++; // Bjezimo od razmaka
+		int cifre(0);
+		if (s[i] &gt;= '0' and s[i] &lt;= '9') {
+			cifre++;
+			i++;
+			while (s[i] &gt;= '0' and s[i] &lt;= '9') { i++; cifre++; };
+			int novi_x, novi_y;
+			novi_x = vratiBroj(s, i - cifre, i);
+			while (s[i] == ' ') i++;
+			if (s[i] == '\0') {
+				greska = KodoviGresaka::NedostajeParametar; // Poslije unosa prvog parametra nije unio drugi
+				return false;
+			}
+			if (s[i] &gt;= '0' and s[i] &lt;= '9') {
+				cifre = 1;
+				while(s[i] &gt;= '0' and s[i] &lt;= '9') { i++; cifre++; }
+				novi_y = vratiBroj(s, i - cifre, i);
+				while (s[i] == ' ') i++;
+				if (s[i] == '\0') {
+					if (tmp == 'P') {
+						komanda = Komande::PomjeriDalje;
+						x = novi_x;
+						y = novi_y;
+						return true;
+					}
+					if (tmp == 'B') {
+						komanda = Komande::Blokiraj;
+						x = novi_x;
+						y = novi_y;
+						return true;
+					}
+					if (tmp == 'D') {
+						komanda = Komande::Deblokiraj;
+						x = novi_x;
+						y = novi_y;
+						return true;
+					}
+				}
+				else {
+					greska = KodoviGresaka::SuvisanParametar; // Nakon zadnjeg parametra nasao nesto
+					return false;
+				}
+			}
+			else {
+				greska = KodoviGresaka::NeispravanParametar; // U sredini nasao nesto sto nije razmak
+				return false; 
+			}
+		}
+		else {
+			greska = KodoviGresaka::NeispravanParametar; // Prvo na sta je naletio poslije razmaka nije broj
+			return false;
+		}
+	}
+	else if (s[i] == 'P' and s[i + 1] == 'O') { // Prikazi okolinu
+		while (s[i + 2] == ' ') i++;
+		if (s[i + 2] == '\0') {
+			komanda = Komande::PrikaziOkolinu;
+			return true;
+		}
+		else {
+			greska = KodoviGresaka::SuvisanParametar;
+			return false;
+		}
+	}
+	else if (s[i] == 'Z') { // Zavrsi igru
+		while (s[i + 1] == ' ') i++;
+		if (s[i + 1] == '\0') {
+			komanda = Komande::ZavrsiIgru;
+			return true;
+		}
+		else {
+			greska = KodoviGresaka::PogresnaKomanda;
+			return false;
+		}
+	}
+	else if (s[i] == 'K') { // Kreiraj igru
+		while (s[i + 1] == ' ') i++;
+		if (s[i + 1] == '\0') {
+			komanda = Komande::KreirajIgru;
+			return true;
+		}
+		else {
+			greska = KodoviGresaka::PogresnaKomanda;
+			return false;
+		}
+	}
+	greska = KodoviGresaka::PogresnaKomanda;
+	return false;
+}
+
+void IzvrsiKomandu(Komande komanda, Tabla &amp;polja, int &amp;x, int &amp;y, Smjerovi p_smjer = Smjerovi::Gore, int p_x = 0, int p_y = 0) {
+	switch (komanda) {
+		case Komande::PomjeriJednoMjesto: {
+			try {
+				Status stanje(Idi(polja, x, y, p_smjer));
+				std::cout &lt;&lt; "Tekuca pozicija igraca je (" &lt;&lt; x &lt;&lt; "," &lt;&lt; y &lt;&lt; ")\n";
+				if (stanje == Status::NijeKraj) break;
+				if (stanje == Status::KrajPobjeda) {
+					std::cout &lt;&lt; "Bravo, obisli ste sva sigurna polja\n";
+					std::vector&lt;std::vector&lt;int&gt;&gt; tmp;
+					polja = KreirajIgru(polja.size(), tmp);
+					throw std::runtime_error("Igra zavrsena\n");
+				}
+				if (stanje == Status::KrajPoraz) {
+					std::cout &lt;&lt; "Nagazili ste na minu\n";
+					std::vector&lt;std::vector&lt;int&gt;&gt; tmp;
+					polja = KreirajIgru(polja.size(), tmp);
+					throw std::runtime_error("Igra zavrsena\n");
+				}
+			}
+			catch (...) {
+				throw;
+				}
+			}
+			break;	
+			
+		
+		case Komande::PomjeriDalje: {
+			try {
+				Status stanje(Idi(polja, x, y, p_x, p_y));
+				std::cout &lt;&lt; "Tekuca pozicija igraca je (" &lt;&lt; x &lt;&lt; "," &lt;&lt; y &lt;&lt; ")\n";
+				if (stanje == Status::NijeKraj) break;
+				if (stanje == Status::KrajPobjeda) {
+					std::cout &lt;&lt; "Bravo, obisli ste sva sigurna polja\n";
+					std::vector&lt;std::vector&lt;int &gt;&gt; tmp;
+					polja = KreirajIgru(polja.size(), tmp);
+					throw std::runtime_error("Igra zavrsena\n");
+				}
+				if (stanje == Status::KrajPoraz) {
+					std::cout &lt;&lt; "Nagazili ste na minu\n";
+					std::vector&lt;std::vector&lt;int&gt;&gt; tmp;
+					polja = KreirajIgru(polja.size(), tmp);
+					throw std::runtime_error("Igra zavrsena\n");
+				}
+			}
+			catch (...) {
+				throw;
+			}
+			break;
+		}
+		case Komande::Blokiraj: {
+			try {
+				BlokirajPolje(polja, p_x, p_y);
+			}
+			
+			catch (std::domain_error e) {
+				std::cout &lt;&lt; e.what();
+			}
+			break;
+		}
+		case Komande::Deblokiraj: {
+			try {
+				DeblokirajPolje(polja, p_x, p_y);
+			}
+			catch (std::domain_error e) {
+				std::cout &lt;&lt; e.what();
+			}
+			break;
+		}
+		case Komande::PrikaziOkolinu: {
+			std::vector&lt;std::vector&lt;int&gt;&gt; mat;
+			try {
+				mat = PrikaziOkolinu(polja, x, y);
+			}
+			catch (std::domain_error e) {
+				std::cout &lt;&lt; e.what();
+				break;
+			}
+			for (std::vector&lt;int&gt; x : mat) {
+				for (int y : x) {
+					std::cout &lt;&lt; y &lt;&lt; " ";
+				} 
+				std::cout &lt;&lt; "\n";
+			}
+			break;
+		}
+		case Komande::ZavrsiIgru: {
+			std::vector&lt;std::vector&lt;int&gt;&gt; tmp;
+			polja = KreirajIgru(polja.size(), tmp);
+			throw std::runtime_error("Dovidjenja!\n");
+			break;
+		}
+		case Komande::KreirajIgru: {
+			int n;
+			std::string s;
+			std::cout &lt;&lt; "Unesite broj polja: ";
+			std::cin &gt;&gt; n;
+			std::cin.ignore(10000, '\n');
+			std::vector&lt;std::vector&lt;int&gt;&gt; min;
+			std::cout &lt;&lt; "Unesite pozicije mina: ";
+			for (;;) {
+				std::string s;
+				std::getline(std::cin, s);
+				if (s[0] == '.') break;
+				if (s[0] != '(') {
+					std::cout &lt;&lt; "Greska, unesite ponovo!\n";
+					continue;
+				}
+				if ( !(s[1] &gt;= '0' and s[1] &lt;= '9')) {
+					std::cout &lt;&lt; "Greska, unesite ponovo!\n";
+					continue;
+				}
+				int i(1), cifre(0);
+				while (s[i] &gt;= '0' and s[i] &lt;= '9') {
+					i++; cifre++;
+				}
+				int prviX(vratiBroj(s, i - cifre, i - 1));
+				if (prviX &lt; 0 or prviX &gt;= n) {
+					std::cout &lt;&lt; "Greska, unesite ponovo!\n";
+					continue;
+				}
+				if (s[i] != ',') {
+					std::cout &lt;&lt; "Greska, unesite ponovo!\n";
+					continue;
+				}
+				i++;
+				if (!(s[i] &gt;= '0' and s[i] &lt;= '9')) {
+					std::cout &lt;&lt; "Greska, unesite ponovo!\n";
+					continue;
+				}
+				cifre = 0;
+				while (s[i] &gt;= '0' and s[i] &lt;= '9') {
+					i++; cifre++;
+				}
+				int drugiY(vratiBroj(s, i - cifre, i - 1));
+				if (drugiY&lt; 0 or drugiY &gt;= n) {
+					std::cout &lt;&lt; "Greska, unesite ponovo!\n";
+					continue;
+				}
+				if (s[i] != ')') {
+					std::cout &lt;&lt; "Greska, unesite ponovo!\n";
+					continue;
+				}
+				i++;
+				if (s[i] != '\0') {
+					std::cout &lt;&lt; "Greska, unesite ponovo!\n";
+					continue;
+				}
+				min.resize(min.size() + 1);
+				min[min.size() - 1].push_back(prviX);
+				min[min.size() - 1].push_back(drugiY);
+			}
+			polja = KreirajIgru(n, min);
+		}
+	}
+}
+
+int main () {
+	Status stanje(Status::NijeKraj);
+	Komande komanda;
+	Tabla igra;
+	int x(0), noviX(0);
+	int y(0), noviY(0);
+	KodoviGresaka greska;
+	Smjerovi smjer;
+	while (stanje != Status::KrajPoraz or stanje != Status::KrajPobjeda) {
+		std::cout &lt;&lt; "Unesite komandu: ";
+		if (UnosKomande(komanda, smjer, noviX, noviY, greska)) {
+			try {
+				IzvrsiKomandu(komanda, igra, x, y, smjer, noviX, noviY);
+			}
+			catch (std::domain_error e) {
+				std::cout &lt;&lt; e.what();
+			}
+			catch (std::out_of_range e) {
+				std::cout &lt;&lt; e.what();
+			}
+			catch (std::logic_error e) {
+				std::cout &lt;&lt; e.what();
+			}
+			catch (std::runtime_error e) {
+				std::cout &lt;&lt; e.what();
+				break;
+			}
+		}
+		else {
+			PrijaviGresku(greska);
+</font>		}
+	}
+	return 0;
+}</pre>
+</body>
+</html>

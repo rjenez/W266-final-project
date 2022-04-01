@@ -1,0 +1,161 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z4/student8118.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z4/student8118.cpp<p></p><pre>
+/B2017/2018: Zadaća 5, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;vector&gt;
+#include &lt;initializer_list&gt;
+#include &lt;functional&gt;
+#include &lt;utility&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+
+class FourierovRed {
+	static constexpr double PI = 4*std::atan(1.);
+	double period;
+	double* nizAk;
+	double* nizBk;
+	int stepen;
+<a name="0"></a><font color="#FF0000"><a href="match738-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+public:
+	FourierovRed(double t, std::initializer_list&lt;double&gt; ak, std::initializer_list&lt;double&gt; bk);
+	FourierovRed(int n, double t, std::function&lt;double(int)&gt; f1, std::function&lt;double(int)&gt; f2);
+	FourierovRed(int n, double p, double q, std::function&lt;double(double)&gt; f, int m);
+</font>	double operator()(double x) const;
+	std::pair&lt;double&amp;, double&amp;&gt; operator [](int k);
+	std::pair&lt;double, double&gt; operator [](int k) const;
+	~FourierovRed();
+	FourierovRed(const FourierovRed &amp;fr);
+	FourierovRed(FourierovRed &amp;&amp;fr);
+	FourierovRed &amp;operator =(const FourierovRed &amp;fr);
+	FourierovRed &amp;operator =(FourierovRed &amp;&amp;fr);
+};
+int main()
+{
+	FourierovRed f(2 * 3.14159, { 2,3,4,5 }, { 3,4,5,6,7,8 });
+	FourierovRed f2(f);
+	FourierovRed f3(10, -3.14159, 3.14159, [](double x) { return x*x; }, 50);
+	std::cout &lt;&lt; f3(2);
+    return 0;
+}
+
+// IMPLEMENTACIJA
+	// FourierovRed::public
+
+FourierovRed::~FourierovRed() {
+	delete[] nizAk; delete[] nizBk;
+}
+FourierovRed::FourierovRed(const FourierovRed &amp;fr) : period(fr.period), stepen(fr.stepen), nizAk(new double[fr.stepen+1]), nizBk(new double[fr.stepen+1]){
+	for (int i = 0; i &lt;= stepen; i++) {
+		nizAk[i] = fr.nizAk[i];
+		nizBk[i] = fr.nizBk[i];
+	}
+}
+FourierovRed::FourierovRed(FourierovRed &amp;&amp;fr) : period(fr.period), stepen(fr.stepen), nizAk(fr.nizAk), nizBk(fr.nizBk) {
+	fr.nizAk = nullptr; fr.nizBk = nullptr;
+}
+FourierovRed&amp; FourierovRed::operator =(const FourierovRed &amp;fr) {
+	if (&amp;fr != this) {
+		delete[] nizAk; delete[] nizBk;
+		try {
+			nizAk = new double[fr.stepen + 1]; nizBk = new double[fr.stepen + 1];
+		}
+		catch (...) {
+			delete[] nizAk; throw;
+		}
+		for (int i = 0; i &lt;= fr.stepen; i++) {
+			nizAk[i] = fr.nizAk[i];
+			nizBk[i] = fr.nizAk[i];
+		}
+		period=fr.period; stepen=fr.stepen;
+	}
+	return *this;
+}
+FourierovRed&amp; FourierovRed::operator =(FourierovRed &amp;&amp;fr) {
+	std::swap(nizAk, fr.nizAk); std::swap(nizBk, fr.nizBk);
+	std::swap(period, fr.period); std::swap(stepen, fr.stepen);
+	return *this;
+}
+FourierovRed::FourierovRed(double t, std::initializer_list&lt;double&gt; ak, std::initializer_list&lt;double&gt; bk) {
+	stepen = ak.size()+1 &gt; bk.size() ? ak.size() - 1 : bk.size();
+	period = t;
+	try {
+		nizAk = new double[stepen + 1]; nizBk = new double[stepen + 1];
+		auto it(ak.begin()), it2(bk.begin());
+		for (int i = 0; i &lt;= stepen; i++) {
+			if (i &lt; int(ak.size())) nizAk[i] = *it;
+			else nizAk[i] = 0;
+			it++;
+		}
+		for (int i = 0; i &lt;= stepen; i++) {
+			if (i != 0 &amp;&amp; i &lt;= int(bk.size())) nizBk[i] = *it2++;
+			else nizBk[i] = 0;
+		}
+	}
+	catch (...) {
+		delete[] nizAk; throw;
+	}
+}
+FourierovRed::FourierovRed(int n, double t, std::function&lt;double(int)&gt; f1, std::function&lt;double(int)&gt; f2) {
+	if (n &lt;= 0) throw std::domain_error("Stepen mora biti pozitivan");
+	try {
+		stepen = n;
+		period = t;
+		nizAk = new double[stepen + 1]; nizBk = new double[stepen + 1];
+		for (int i = 0; i &lt;= stepen; i++) {
+			nizAk[i] = f1(i);
+			if (i != 0) nizBk[i] = f2(i);
+			else nizBk[i] = 0;
+		}
+	}
+	catch (...) {
+		delete[] nizAk; throw;
+	}
+}
+FourierovRed::FourierovRed(int n, double p, double q, std::function&lt;double(double)&gt; f, int m) {
+	if (n &lt; 0) throw std::domain_error("Stepen mora biti pozitivan");
+	if (m &lt;= 0) throw std::domain_error("Broj podintervala mora biti pozitivan");
+	if (p &gt;= q) throw std::range_error("Neispravan interval");
+	stepen = n; period = q - p;
+	try {
+		nizAk = new double[stepen + 1]; nizBk = new double[stepen + 1];
+		for (int i = 0; i &lt;= stepen; i++) {
+			double suma1(0), suma2(0);
+			for (int j = 1; j &lt;= m - 1; j++) {
+				suma1 += f(p + j*period / m)*std::cos(2 * i*PI*((p / period) + double(j / m)));
+				suma2 += f(p + j*period / m)*std::sin(2 * i*PI*((p / period) + double(j / m)));
+			}
+			nizAk[i] = (f(p) + f(q))*std::cos(2 * i*PI*p / period) / m + 2 * suma1 / m;
+			nizBk[i] = (f(p) + f(q))*std::sin(2 * i*PI*p / period) / m + 2 * suma2 / m;
+		}
+	}
+	catch (...) {
+		delete[] nizAk; throw;
+	}
+}
+double FourierovRed::operator()(double x) const {
+	double sumakosinusa(0), sumasinusa(0);
+	for (int i = 1; i &lt;= stepen; i++) {
+		sumakosinusa += nizAk[i] * std::cos(2 * PI*i*x / period);
+		sumasinusa += nizBk[i] * std::sin(2 * PI*i*x / period);
+	}
+	return (nizAk[0] / 2.) + sumakosinusa + sumasinusa;
+}
+std::pair&lt;double&amp;, double&amp;&gt; FourierovRed::operator [](int k) {
+	if (k&lt;0 || k&gt;stepen) throw std::range_error("Neispravan indeks");
+	return std::make_pair(std::ref(nizAk[k]), std::ref(nizBk[k]));
+}
+std::pair&lt;double, double&gt; FourierovRed::operator [](int k) const {
+	if (k&lt;0 || k&gt;stepen) throw std::range_error("Neispravan indeks");
+	return std::make_pair(nizAk[k], nizBk[k]);
+}
+
+</pre>
+</body>
+</html>

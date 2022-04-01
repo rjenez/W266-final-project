@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z5/Z1/student8705.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z5/Z1/student8705.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#define min(a,b) ((a) &lt; (b) ? (a) : (b))
+
+<a name="0"></a><font color="#FF0000"><a href="match284-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+struct Datum {
+	int dan, mjesec, godina;
+};
+struct Uposlenik {
+	char ime_prezime[50];
+	struct Datum datum_rodjenja;
+};
+int dana_u_god(int g)
+{
+	return (g % 4 == 0 &amp;&amp; g % 100) || g % 400 == 0 ? 366 : 365;
+}
+int dana_u_mj(int m, int g)
+{
+	int i[12] = {31,0,31,30,31,30,31,31,30,31,30,31};
+	return m == 2 ? 28 + ((g % 4 == 0 &amp;&amp; g % 100) || g % 400 == 0) : i[m-1];
+}
+int razlika(struct Datum a, struct Datum b)
+{
+	int g = min(a.godina, b.godina), i, rel1 = a.dan, rel2 = b.dan;
+	for (i = g; i &lt; a.godina; i++) rel1 += dana_u_god(i);
+	for (i = g; i &lt; b.godina; i++) rel2 += dana_u_god(i);
+	for (i = 1; i &lt; a.mjesec; i++) rel1 += dana_u_mj(i, a.godina);
+	for (i = 1; i &lt; b.mjesec; i++) rel2 += dana_u_mj(i, b.godina);
+	return rel2 - rel1;
+}
+//Pohranjuje prezimena iz a (koji sadrzi ime i prezimena) u niz p
+void prezime(char *a, char **p)
+{
+	while (*a &amp;&amp; *a != '-') a++;
+	*p = a;
+	while (**p == ' ') (*p)--;
+	while (*--(*p) != ' ');
+	(*p)++;
+	p[1] = !*a ? 0 : a+1;
+}
+//Provjerava da li su dva prezimena ista (prezime se zavrsava znakom ' ' ili '-')
+int streq(char *a, char *b)
+{
+	if (!a || !b) return 0;
+	while (*a &amp;&amp; *a != '-' &amp;&amp; *b &amp;&amp; *b != '-')
+		if (*a++ != *b++) return 0;
+	return (!*a || *a == '-') &amp;&amp; (!*b || *b == '-');
+}
+//Provjerava da li su bilo koja dva prezimena ista
+int isto_prezime(char *a, char *b)
+{
+	char *a1[2], *b1[2];
+	prezime(a, a1);
+	prezime(b, b1);
+	return streq(*a1, *b1) || streq(a1[1], b1[1]) || streq(*a1, b1[1]) || streq(a1[1], *b1);
+}
+int suzi_listu(struct Uposlenik *kandidati, int vel, struct Uposlenik direktor, int broj_dana)
+{
+	int i, j;
+	for (i = 0; i &lt; vel; i++) {
+		int stariji = -razlika(direktor.datum_rodjenja, kandidati[i].datum_rodjenja);
+		if (!isto_prezime(kandidati[i].ime_prezime, direktor.ime_prezime) &amp;&amp; ((broj_dana &gt; 0 &amp;&amp; stariji &gt; broj_dana) || (broj_dana &lt; 0 &amp;&amp; -stariji &lt; -broj_dana))) {
+			vel--;
+			//Pomjeranje clanova ulijevo
+			for (j = i; j &lt; vel; j++)
+				kandidati[j] = kandidati[j+1];
+			i--;
+		}
+	}
+	return vel;
+}
+int main()
+</font>{
+	return 0;
+}</pre>
+</body>
+</html>

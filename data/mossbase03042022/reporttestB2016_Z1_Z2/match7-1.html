@@ -1,0 +1,188 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student1793.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student7980.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match7-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+vector&lt;vector&lt;int&gt;&gt; OgledaloMatrica (vector&lt;vector&lt;int&gt;&gt; M)
+{
+	if (M.empty()) return M;
+	if (M.size() == 0 &amp;&amp; M[0].size() == 0) return M;
+	vector&lt;vector&lt;int&gt;&gt; Matrica (3 * M.size(), vector&lt;int&gt; (M[0].size() * 3));
+	vector&lt;vector&lt;int&gt;&gt; hv (M.size(), vector&lt;int&gt; (M[0].size()));
+	vector&lt;vector&lt;int&gt;&gt; v  (M.size(), vector&lt;int&gt; (M[0].size()));
+	vector&lt;vector&lt;int&gt;&gt; h  (M.size(), vector&lt;int&gt; (M[0].size()));
+	for (int i = 0; i &lt; M.size(); i++)
+		for (int j = 0; j &lt; M[i].size(); j++)
+			{
+				v[i][j] = M[i][j];				// kopirnaje jer mi javlja
+			}									// naku gresku pa se slomih 
+	for (int i = 0; i &lt; M.size(); i++)			// pokusavajuci
+		for (int j = 0; j &lt; M[i].size(); j++)	// rijesiti
+			{
+				h[i][j] = M[i][j];
+			}
+	int pomocna;
+	// h kolone naopako
+	// v redovi
+	// hv kombinacija :D
+	// idemo obrtati prvo kolone i pravimo matricu h, let the game begin!
+	for (int i = 0; i &lt; h.size(); i++)
+		for (int j = 0; j &lt; h[0].size() / 2; j++)
+			{
+				pomocna = h[i][j];
+				h[i][j] = h[i][h[0].size() - 1 - j];
+				h[i][h[0].size() - 1 - j] = pomocna;
+			}
+	// okrenuli smo kolone, idemo dalje za iste pare
+	// marka i sedamdeset tri KM po litru dizela poyy
+	// obrcemo redove i pravimo matricu v
+	int a = v.size();
+	for (int i = 0; i &lt; v.size() / 2; i++)
+		for (int j = 0; j &lt; v[i].size(); j++)
+			{
+				pomocna = v[i][j];
+				v[i][j] = v[a - 1 - i][j];
+				v[a - 1 - i][j] = pomocna;
+			}
+	// gotovo i ovo
+	// idemo sad i redove i kolone obrtati
+	for (int i = 0; i &lt; v.size(); i++)
+		for (int j = 0; j &lt; v[i].size(); j++)
+			{
+				hv[i][j] = v[i][j];				// kopiranje
+			}
+	int b = hv[0].size();
+	for (int i = 0; i &lt; h.size(); i++)
+		for (int j = 0; j &lt; h[i].size() / 2; j++)
+			{
+				pomocna = hv[i][j];
+				hv[i][j] = hv[i][b - 1 - j]; // e jadna majko moja 
+				hv[i][b - 1 - j] = pomocna;
+			}
+	// zavrsili smo i ovu vratolomiju nad matricom
+	// prvi red
+	for (int i = 0; i &lt; hv.size(); i++)
+		for (int j = 0; j &lt; hv[0].size(); j++)
+			Matrica[i][j] = hv[i][j];
+	for (int i = 0; i &lt; v.size(); i++)
+		for (int j = 0; j &lt; v[0].size(); j++)
+			Matrica[i][ hv[0].size() + j] = v[i][j];
+	for (int i = 0; i &lt; v.size(); i++)
+		for (int j = 0; j &lt; v[0].size(); j++)
+			Matrica[i][hv[0].size() +v[0].size() + j] = hv[i][j];
+	// drugi red
+	for (int i = 0; i &lt; h.size(); i++)
+		for (int j = 0; j &lt; h[0].size(); j++)
+			Matrica[hv.size() + i][j] = h[i][j];
+	for (int i = 0; i &lt; M.size(); i++)
+		for (int j = 0; j &lt; M[0].size(); j++)
+			Matrica[hv.size() + i][h[0].size() + j] = M[i][j];
+	for (int i = 0; i &lt; h.size(); i++)
+		for (int j = 0; j &lt; h[0].size(); j++)
+			Matrica[hv.size() + i][h[0].size() + M[0].size() + j] = h[i][j];
+	// treci red
+	for (int i = 0; i &lt; hv.size(); i++)
+		for (int j = 0; j &lt; hv[0].size(); j++)
+			Matrica[hv.size() + h.size() + i][j] = hv[i][j];
+			
+	for (int i = 0; i &lt; v.size(); i++)
+		for (int j = 0; j &lt; v[0].size(); j++)
+			Matrica[hv.size() + h.size() + i][hv[0].size() + j] = v[i][j];
+			
+	for (int i = 0; i &lt; hv.size(); i++)
+		for (int j = 0; j &lt; hv[0].size(); j++)
+			Matrica[hv.size() + h.size() + i][hv[0].size() + v[0].size() + j] = hv[i][j];
+			
+	return Matrica;
+}
+int main ()
+{
+	int o, p;
+    cout &lt;&lt; "Unesite dimenzije matrice (m n): ";
+    cin &gt;&gt; o &gt;&gt; p;
+    cin.ignore(10000, '\n');
+    if (o &lt; 0 || p &lt; 0) 
+    {
+    	cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne! ";
+    	return 0;
+    }
+    if (p == 0 &amp;&amp; o != 0)
+    {
+    	cout &lt;&lt; "Unesite elemente matrice: " &lt;&lt; endl &lt;&lt; "Rezultantna matrica: ";
+    	for (int i = 0; i &lt; o * 3; i++)
+    		cout &lt;&lt; endl;
+    	cout &lt;&lt; endl;
+    }
+    else
+    {
+    	vector&lt;vector&lt;int&gt;&gt; c(o, vector&lt;int&gt; (p)), k(3 * o, vector&lt;int&gt; (3 * p));
+    	cout &lt;&lt; "Unesite elemente matrice: ";
+		for(int i = 0; i &lt; o; i++)
+			for(int j = 0; j &lt; p; j++) 
+				cin &gt;&gt; c[i][j];
+			cout &lt;&lt; endl;
+			k = OgledaloMatrica(c);
+			cout &lt;&lt; "Rezultantna matrica: " &lt;&lt; endl;
+		for(int x = 0; x &lt; k.size(); x++)
+			{
+			for(int y = 0; y &lt; k[0].size(); y++)
+			     cout &lt;&lt; setw(4) &lt;&lt; k[x][y];
+			   cout &lt;&lt; endl;;
+			}	
+    	
+    }	
+	return 0;
+</font>}
+
+
+
+/*for (int i = 0; i &lt; Matrica.size(); i++)\
+		for (int j = 0; j &lt; Matrica[i].size(); j++)
+			{
+				if (i &lt; hv.size() &amp;&amp; j &lt; hv[0].size())
+					Matrica[i][j] = hv[i][j];
+				else if (j &gt; hv.size() &amp;&amp; j &lt; Matrica.size() - hv.size() &amp;&amp;
+				i &lt; Matrica.size() - M.size() - v.size())
+					Matrica[i][j] = v[i][j];
+				else if (i &lt; Matrica.size() - h.size() - hv.size() &amp;&amp;
+				j &gt; Matrica[0].size() - hv[0].size() - v[0].size())
+					Matrica[i][j] = hv[i][j];
+				else if (i &gt; hv.size() &amp;&amp; j &lt; h[0].size())
+					Matrica[i][j] = h[i][j];
+				else if (i &gt; v.size() &amp;&amp; i &lt; v.size() + M.size() &amp;&amp;
+				j &gt; h[0].size() - 1 &amp;&amp; j &lt; hv[0].size() + M[0].size())
+					Matrica[i][j] = M[i][j];
+				else if (i &gt; hv.size() &amp;&amp; i &lt; h.size() + hv.size() &amp;&amp;
+				j &gt; hv[0].size() + v[0].size() - 1)
+					Matrica[i][j] = hv[i][j];
+				else if (i &gt; hv.size() + h.size() - 1 &amp;&amp; j &lt; hv[0].size())
+					Matrica[i][j] = hv[i][j];
+				else if (i &gt; v.size() + M.size() - 1 &amp;&amp; j &gt; hv[0].size() - 1 &amp;&amp;
+				j &lt; Matrica[0].size() - hv[0].size())
+					Matrica[i][j] = v[i][j];
+				else if (i &gt; hv.size() + h.size() - 1 &amp;&amp; j &gt; hv[0].size() + v[0].size() - 1)
+					Matrica[i][j] = hv[i][j];
+			}*/</pre>
+</body>
+</html>

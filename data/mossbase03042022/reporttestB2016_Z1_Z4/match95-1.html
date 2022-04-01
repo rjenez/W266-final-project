@@ -1,0 +1,136 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student6776.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student7823.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match95-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_96.gif"/></a>
+
+void dodaj_rijeci(std::vector&lt;std::string&gt; &amp;vs, std::string s){
+    bool ima=false;
+      for (int j=0; j&lt;vs.size(); j++) if (s==vs[j]) ima=false;
+       if (ima==false)vs.push_back(s); 
+}
+std::string IzmijeniUPigLatin(std::string recenica, std::vector&lt;std::string&gt; fraze){
+	for(int l=0;l&lt;fraze.size();l++){	//Ispituje da li se nalaze nekorektna slova, ili razmak
+		for(int c=0;c&lt;fraze[l].size();c++){
+			if(fraze[l][c]&lt;'A' || fraze[l][c]&gt;'z' || (fraze[l][c]&gt;'Z' &amp;&amp; fraze[l][c]&lt;'a')) throw std::domain_error("Nekorektan izbor rijeci");
+		}
+	}
+	if(fraze.size()==0){
+		for(int i=0;i&lt;recenica.size();i++){
+			std::string prazan{recenica};
+			if(recenica[i]==' ') continue;
+			else{
+				int poc{i};
+				for(int j=i;j&lt;recenica.size();j++){
+					if(!(recenica[j]&lt;'A' || recenica[j]&gt;'z' || (recenica[j]&gt;'Z' &amp;&amp; recenica[j]&lt;'a') || !((j+1)!=recenica.size()))) continue;
+					else{
+						if(j+1==recenica.size())j++;
+						std::string pomocni{recenica.substr(poc, j-poc)};
+						recenica.erase(poc, j);
+						std::string prvo_slovo{pomocni.substr(0,1)};
+						pomocni+=prvo_slovo+"ay";
+						pomocni.erase(0, 1);
+						recenica.insert(poc, pomocni);
+						i=j+1;
+						break;
+					}
+				}
+			}
+		}
+		return recenica;
+	}	//ako je spisak fraza prazan
+	for(int i=0;i&lt;recenica.size();i++){
+		if(recenica[i]==' ') continue;
+		else{
+			int poc=i;
+			for(int j=i;j&lt;recenica.size();j++){
+				if(!((recenica[j]&lt;'A' || (recenica[j]&gt;'Z' &amp;&amp; recenica[j]&lt;'a') || recenica[j]&gt;'z' || !((j+1)!=recenica.size())))) continue;
+				else{
+					if (j==0) j=1; //ako je prvo slovo
+					if(j+1==recenica.size()) j++;	//ako je kraj stringa
+					std::string pomocni{recenica.substr(poc,j-poc)};
+					for(int k=0;k&lt;fraze.size();k++){
+						if(pomocni==fraze[k]){
+							recenica.erase(poc,j-poc);
+							std::string prvo_slovo{pomocni.substr(0,1)};
+							pomocni+=prvo_slovo+"ay";
+							pomocni.erase(0, 1);
+							recenica.insert(poc, pomocni);
+							i=j+1;
+							break;
+						}
+					}
+				i=j;
+				break;
+				}
+			}
+		}
+	}
+	return recenica;
+}
+std::string ObrniFraze(std::string recenica, std::vector&lt;std::string&gt; fraze){
+	for(int i=0;i&lt;fraze.size();i++){
+		for(int j=0;j&lt;recenica.length();j++){
+			if(recenica[j]==fraze[i][0]){ //da li se moze uzeti prvo slovo recenice i porediti se?
+				std::string pomocni{recenica.substr(j,fraze[i].size())};
+				if(pomocni==fraze[i]){
+					std::string izdvojen{};
+					for(int k=pomocni.length()-1;k&gt;=0;k--){
+						izdvojen+=pomocni[k];
+					}
+					recenica.erase(j,fraze[i].length());
+					recenica.insert(j,izdvojen);
+				}
+			}
+		}
+	}
+	return recenica;
+}
+int main (){
+   std::cout&lt;&lt;"Unesite recenicu: ";
+   std::string prva_rec{};
+   std::getline(std::cin, prva_rec);
+   
+/*   std::cout&lt;&lt;"Koliko zelite unijeti rijeci: ";
+   int n;
+   std::cin&gt;&gt;n;
+   std::cin.ignore(10000, '\n');
+*/   
+   std::string s;
+   std::vector&lt;std::string&gt; recenica;
+   std::cout&lt;&lt;"Unesite fraze: ";
+   while((std::getline(std::cin, s)), s!=""){
+   		dodaj_rijeci(recenica,s);
+   }
+   /*
+   std::cout&lt;&lt;"Unesite rijeci: ";
+   for(int i=0;i&lt;n;i++){
+      std::cin&gt;&gt;s;
+      dodaj_rijeci(recenica,s);
+   }
+   */
+   /*std::cout&lt;&lt;"vase rijeci glase: "&lt;&lt;std::endl;
+   for(int i=0;i&lt;n;i++){
+      std::cout&lt;&lt;recenica[i]&lt;&lt;std::endl;
+   
+   }*/
+	try{
+			std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: "&lt;&lt;IzmijeniUPigLatin(prva_rec,recenica)&lt;&lt;std::endl;
+	}catch(std::domain_error izuzetak){
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+</font>	}
+	
+	std::cout&lt;&lt;"Recenica nakon obrtanja fraza: "&lt;&lt;ObrniFraze(prva_rec,recenica);
+	
+	return 0;
+}</pre>
+</body>
+</html>

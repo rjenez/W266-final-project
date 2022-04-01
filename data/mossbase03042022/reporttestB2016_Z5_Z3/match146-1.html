@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student8665.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student9821.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iterator&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;limits&gt;
+#include &lt;
+
+<a name="0"></a><font color="#FF0000"><a href="match146-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+class Razlomak
+{
+    long long int brojnik,nazivnik;
+    static int NZD(long long int brojnik_1,long long int nazivnik_1) {
+        if( brojnik_1%nazivnik_1 == 0 ) return nazivnik_1;
+        return NZD( nazivnik_1, brojnik_1%nazivnik_1 );
+    }
+    static long long int Saberi(long long int x,long long int y) {
+        if((y&gt;0 &amp;&amp; std::numeric_limits&lt;long long int&gt;::max() - y &lt; x) || (y&lt;0 &amp;&amp; std::numeric_limits&lt;long long int&gt;::lowest() - y &gt; x))
+            throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+        return x+y;
+    }
+    static long long int Oduzmi(long long int x,long long int y) {
+        if((y&gt;0 &amp;&amp; std::numeric_limits&lt;long long int&gt;::max() + y &lt; x) || (y&lt;0 &amp;&amp; std::numeric_limits&lt;long long int&gt;::lowest() + y &gt; x))
+            throw std::overflow_error("Nemoguce dobiti tacan rezultat"); //provjeriti oduzimanje
+        return x-y;
+    }
+    static long long int Pomnozi(long long int x,long long int y) {
+        if((y&gt;0 &amp;&amp; std::numeric_limits&lt;long long int&gt;::lowest()/y &gt; x) || (y&lt;0 &amp;&amp; std::numeric_limits&lt;long long int&gt;::lowest()==x) || (y&lt;0 &amp;&amp; (-x)&gt;std::numeric_limits&lt;long long int&gt;::max()/(-y)) ||(y&lt;0 &amp;&amp; (-x) &lt; std::numeric_limits&lt;long long int&gt;::lowest()/(-y)))
+            throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+        return x*y;
+    }
+    //nisam sigurna za to
+public:
+    Razlomak(long long int vrijednost_brojnika=0, long long int vrijednost_nazivnika=1) { //podrazumijevane parametre??
+        if(vrijednost_nazivnika==0) throw std::logic_error("Nekorektan razlomak");
+        if((vrijednost_brojnika&gt;0 &amp;&amp; vrijednost_nazivnika&gt;0)) {
+            int k;
+            k=NZD(vrijednost_brojnika,vrijednost_nazivnika);
+            brojnik=vrijednost_brojnika/k;
+            nazivnik=vrijednost_nazivnika/k;
+        } else if(vrijednost_brojnika&lt;0 &amp;&amp; vrijednost_nazivnika&lt;0) {
+            int k;
+            k=NZD(vrijednost_brojnika,vrijednost_nazivnika);
+            brojnik=(-1)*(vrijednost_brojnika/k);
+            nazivnik=(-1)*(vrijednost_nazivnika/k);
+        } else if(vrijednost_nazivnika&lt;0 || vrijednost_brojnika&lt;0) {
+            int k;
+            k=NZD(vrijednost_brojnika,vrijednost_nazivnika);
+            brojnik=(-1)*(vrijednost_brojnika/k);
+            nazivnik=vrijednost_nazivnika/k;
+        }
+    }
+    Razlomak(std::initializer_list&lt;Razlomak&gt;) {}
+    long long int DajBrojnik() const {
+        return brojnik;
+    }
+    long long int DajNazivnik() const {
+        return nazivnik;
+    }
+    Razlomak operator +(Razlomak drugi);//prvi je *this
+    Razlomak operator -(Razlomak drugi);
+    Razlomak operator *(Razlomak drugi);
+    Razlomak operator /(Razlomak drugi);
+    Razlomak operator +() {
+        return *this;
+    }
+    Razlomak operator -() { //izuzeak
+        return Razlomak(-this-&gt;brojnik,this-&gt;nazivnik);
+    }
+    Razlomak operator +=(Razlomak drugi) {
+        return *this=*this+drugi;
+    }
+    Razlomak operator -=(Razlomak drugi) {
+        return *this=*this-drugi;
+    }
+    Razlomak operator *=(Razlomak drugi) {
+        return *this= (*this)*drugi;
+    }
+    Razlomak operator /=(Razlomak drugi) {
+        return *this = (*this)/drugi;
+    }
+
+    Razlomak operator ++() {
+        return Razlomak(this-&gt;brojnik+1,this-&gt;nazivnik+1);   // je li to uredu??
+    }
+    Razlomak &amp;operator ++(Razlomak &amp;x) {
+        return Razlomak(x.brojnik+1,x.nazivnik+1);
+    }
+};
+Razlomak Razlomak::operator+(Razlomak drugi)
+{
+    Razlomak zbir;
+    int r;
+    r=Razlomak::NZD(this-&gt;nazivnik,drugi.nazivnik);
+    zbir=Razlomak::Pomnozi(Razlomak::Saberi(Razlomak::Pomnozi(this-&gt;brojnik,Razlomak::Pomnozi(drugi.nazivnik,1/r)),Razlomak::Pomnozi(drugi.brojnik,Razlomak::Pomnozi(this-&gt;nazivnik,1/r))),1/(Razlomak::Pomnozi(this-&gt;nazivnik,Razlomak::Pomnozi(drugi.nazivnik,1/r))));
+    return zbir; //možda je greska pri množenju!
+}
+Razlomak Razlomak::operator -(Razlomak drugi)
+{
+    Razlomak razlika;
+    int r;
+    r=Razlomak::NZD(this-&gt;nazivnik,drugi.nazivnik);
+    razlika=Razlomak::Pomnozi(Razlomak::Oduzmi(Razlomak::Pomnozi(this-&gt;brojnik,Razlomak::Pomnozi(drugi.nazivnik,1/r)),Razlomak::Pomnozi(drugi.brojnik,Razlomak::Pomnozi(this-&gt;nazivnik,1/r))),1/(Razlomak::Pomnozi(this-&gt;nazivnik,Razlomak::Pomnozi(drugi.nazivnik,1/r))));
+    return razlika; //možda je greska pri množenju!
+}
+Razlomak Razlomak::operator *(Razlomak drugi)
+{
+    int s,t;
+    Razlomak mnozenje;
+    s=Razlomak::NZD(this-&gt;brojnik,drugi.nazivnik);
+    t=Razlomak::NZD(drugi.brojnik,this-&gt;nazivnik);
+    mnozenje=Razlomak::Pomnozi(Razlomak::Pomnozi(Razlomak::Pomnozi(this-&gt;brojnik,1/s),Razlomak::Pomnozi(drugi.brojnik,1/t)),1/(Razlomak::Pomnozi(Razlomak::Pomnozi(this-&gt;nazivnik,1/t),Razlomak::Pomnozi(drugi.nazivnik,1/s))));
+    return mnozenje; //proveriti formule
+}
+Razlomak Razlomak::operator /(Razlomak drugi)
+{
+    int u,r;
+    Razlomak dijeljenje;
+    u=Razlomak::NZD(this-&gt;brojnik,drugi.brojnik);
+    r=Razlomak::NZD(this-&gt;nazivnik,drugi.nazivnik);
+    dijeljenje=Razlomak::Pomnozi(Razlomak::Pomnozi(Razlomak::Pomnozi(this-&gt;brojnik,1/u),Razlomak::Pomnozi(drugi.nazivnik,1/r)),1/Razlomak::Pomnozi(Razlomak::Pomnozi(this-&gt;nazivnik,1/r),Razlomak::Pomnozi(drugi.brojnik,1/u)));
+    return dijeljenje;
+}
+
+
+int main ()
+{
+    std::cout&lt;&lt;"RADI, KEEP WORKING!";
+</font>
+    return 0;
+}</pre>
+</body>
+</html>

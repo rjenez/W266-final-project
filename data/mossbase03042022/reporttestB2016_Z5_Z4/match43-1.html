@@ -1,0 +1,325 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student5185.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z4/student8089.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;initializer_list&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match43-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_45.gif"/></a>
+
+template &lt;typename TipElementa&gt;
+    class GMatrica{
+        TipElementa matrica[4][4];
+        int brojRedova, brojKolona;
+        void BaciIzuzetak(){
+            throw std::logic_error("Ilegalan format matrice");
+        }
+    public:
+        //Konstruktori
+        GMatrica();
+        GMatrica(int brojRedova, int brojKolona, TipElementa initVr={});
+        template &lt;typename DrugiTipElemenata&gt;
+            GMatrica(GMatrica&lt;DrugiTipElemenata&gt; drugacijaMat);
+        GMatrica(TipElementa novaMatrica[4][4]);
+        GMatrica(std::vector&lt;std::vector&lt;TipElementa&gt;&gt; vektor);
+        GMatrica(std::initializer_list&lt;std::initializer_list&lt;TipElementa&gt;&gt; lista);
+        
+        //Getteri
+        int DajBrojRedova() const{
+            return brojRedova;
+        }
+        int DajBrojKolona() const{
+            return brojKolona;
+        }
+        void Ispisi() const{
+        for (int i = 0; i &lt; DajBrojRedova(); i++) {
+    for (int j = 0; j &lt; DajBrojRedova(); j++) {
+        std::cout &lt;&lt; matrica[i][j] &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; std::endl;
+}
+    } //Obrisati
+        
+        template &lt;typename tipPrvog, typename tipDrugog&gt;
+            friend auto operator+ (const GMatrica&lt;tipPrvog&gt; &amp;m1, const GMatrica&lt;tipDrugog&gt; &amp;m2) -&gt; decltype (GMatrica&lt;decltype(m1.matrica[0][0] + m2.matrica[0][0])&gt;
+            (m1.DajBrojRedova(), m1.DajBrojKolona(), m1.matrica[0][0] + m2.matrica[0][0]));
+    	template &lt;typename tipPrvog, typename tipDrugog&gt;
+            friend auto operator- (const GMatrica&lt;tipPrvog&gt; &amp;m1, const GMatrica&lt;tipDrugog&gt; &amp;m2) -&gt; decltype (GMatrica&lt;decltype(m1.matrica[0][0] - m2.matrica[0][0])&gt;
+            (m1.DajBrojRedova(), m1.DajBrojKolona(), m1.matrica[0][0] - m2.matrica[0][0]));
+    	
+    	template &lt;typename tipPrvog, typename tipDrugog&gt;
+            friend auto operator* (const GMatrica&lt;tipPrvog&gt; &amp;m1, const GMatrica&lt;tipDrugog&gt; &amp;m2) -&gt; decltype (GMatrica&lt;decltype(m1.matrica[0][0] * m2.matrica[0][0])&gt;
+            (m1.DajBrojRedova(), m1.DajBrojKolona(), m1.matrica[0][0] * m2.matrica[0][0]));
+        
+        template &lt;typename tipPrvog, typename tipDrugog&gt;
+            friend GMatrica&lt;tipPrvog&gt; operator* (const GMatrica&lt;tipPrvog&gt; &amp;m1, tipDrugog a);
+            
+        template &lt;typename tipPrvog, typename tipDrugog&gt;
+            friend GMatrica&lt;tipPrvog&gt; operator* (tipDrugog a, const GMatrica&lt;tipPrvog&gt; &amp;m1);
+    	
+    	
+    	GMatrica&lt;TipElementa&gt; &amp;operator += (const GMatrica&lt;TipElementa&gt; &amp;m2);
+    	    
+        GMatrica&lt;TipElementa&gt; &amp;operator -= (const GMatrica&lt;TipElementa&gt; &amp;m1);
+    	
+    	GMatrica&lt;TipElementa&gt; &amp;operator *= (const GMatrica&lt;TipElementa&gt; &amp;m1);   
+    	
+        GMatrica &amp;operator *= (TipElementa a);
+        
+        template &lt;typename tipDrugog&gt;
+        bool operator ==(const GMatrica&lt;tipDrugog&gt; &amp;m1){
+            if (brojRedova != m1.brojRedova || brojKolona != m1.DajBrojKolona()) return false;
+            for (int i = 0; i &lt; brojRedova; i++) for (int j = 0; j &lt; brojKolona; j++) if (matrica[i][j] != m1.matrica[i][j]) return false;
+            return true;
+        }
+        
+        template &lt;typename tipDrugog&gt;
+        bool operator != (const GMatrica&lt;tipDrugog&gt; &amp;m1){
+            if (!(*this == m1)) return true; 
+            return false;
+        }
+      
+        
+        TipElementa*  operator [](int i) {
+            return matrica[i];
+        }
+        
+        TipElementa &amp;operator () (int i, int j){
+            if (!(i&gt;0 &amp;&amp; i &lt; brojKolona &amp;&amp; j &gt; 0 &amp;&amp; j &lt; brojKolona)) throw std::range_error ("Nedozvoljen indeks");
+            return matrica[i-1][j-1];
+        }
+        TipElementa operator () (int i, int j) const{
+            if (!(i&gt;0 &amp;&amp; i &lt; brojKolona &amp;&amp; j &gt; 0 &amp;&amp; j &lt; brojKolona)) throw std::range_error ("Nedozvoljen indeks");
+            return matrica[i-1][j-1];
+        }
+        
+        friend std::istream &amp;operator &gt;&gt; (std::istream &amp;tok, GMatrica&lt;TipElementa&gt; &amp;a){
+            if (tok.peek() == '['){
+                std::vector&lt;std::vector&lt;TipElementa&gt;&gt; matrica(4);
+                int i(0); bool timeToGo(false);
+                char znak; tok &gt;&gt; znak;
+                while(!timeToGo){
+                    int n; tok &gt;&gt; n;
+                    if(tok) matrica[i].push_back(n);
+                    else{ tok.setstate(std::ios::failbit); return tok;}
+                    if (tok.peek() == ',') tok&gt;&gt; znak;
+                    else if (tok.peek() == ';'){ tok&gt;&gt;znak; i++;}
+                    else if (tok.peek() == ']'){ timeToGo = true; break;}
+                    else{ tok.setstate(std::ios::failbit); return tok;}
+                }
+                matrica.resize(i+1);
+                
+                a = GMatrica(matrica);
+                return tok;
+            }
+            
+            tok.setstate(std::ios::failbit);
+            return tok;
+        } 
+        friend std::ostream &amp;operator &lt;&lt; (std::ostream &amp;tok, GMatrica&lt;TipElementa&gt; a){
+            int sirina(tok.width()); if (sirina &lt; 6) sirina = 6;
+            
+            for (int i = 0; i &lt; a.DajBrojRedova(); i++) {
+                for (int j = 0; j &lt; a.DajBrojKolona(); j++) std::cout &lt;&lt; std::setw(sirina) &lt;&lt; a.matrica[i][j];
+                std::cout &lt;&lt; std::endl;    
+            }   
+            return tok;
+        }
+    };
+
+template &lt;typename TipElementa&gt;
+    GMatrica&lt;TipElementa&gt;::GMatrica()  : brojRedova(0), brojKolona(0){}
+    
+template &lt;typename TipElementa&gt;
+    GMatrica&lt;TipElementa&gt;::GMatrica(int brojRedova, int brojKolona, TipElementa initVr) : brojRedova(brojRedova), brojKolona(brojKolona){
+        if (!(brojKolona &gt;= 0 &amp;&amp; brojKolona &lt;= 4 &amp;&amp; brojRedova &gt;= 0 &amp;&amp; brojRedova &lt;= 4)) BaciIzuzetak();
+        
+        for (int i = 0; i &lt; brojRedova; i++) for (int j = 0; j &lt; brojKolona; j++) matrica[i][j] = initVr; 
+    }
+
+template &lt;typename TipElementa&gt;
+    template &lt;typename DrugiTipElemenata&gt;
+        GMatrica&lt;TipElementa&gt;::GMatrica (GMatrica&lt;DrugiTipElemenata&gt; drugacijaMat) : brojRedova(drugacijaMat.brojRedova), brojKolona(drugacijaMat.brojKolona) {
+            for (int i = 0; i &lt; brojRedova; i++) for (int j = 0; j &lt; brojKolona; j++) matrica[i][j] = drugacijaMat[i][j]; 
+        }
+        
+template &lt;typename TipElementa&gt;
+    GMatrica&lt;TipElementa&gt;::GMatrica(TipElementa novaMatrica[4][4]): brojRedova(4), brojKolona(4){
+        for (int i = 0; i &lt; brojRedova; i++) for (int j = 0; j &lt; brojKolona; j++) matrica[i][j] = novaMatrica[i][j]; 
+</font>    }
+
+template &lt;typename TipElementa&gt;
+<a name="2"></a><font color="#0000FF"><a href="match43-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_15.gif"/></a>
+
+    GMatrica&lt;TipElementa&gt;::GMatrica(std::vector&lt;std::vector&lt;TipElementa&gt;&gt; vektor){
+        
+        if (vektor.size() &lt; 0 || vektor.size() &gt; 4) BaciIzuzetak();
+        int a(vektor[0].size()); if (a &lt; 0 || a &gt; 4) BaciIzuzetak();
+        
+        
+        int i;
+        for (i = 1; i &lt; vektor.size(); i++) {
+            if (vektor[i].size() != a){break;}
+            else if (vektor[i].size() &lt; 0 || vektor[i].size() &gt; 4) BaciIzuzetak();
+        }
+       
+        if (i &lt; vektor.size()) BaciIzuzetak();
+        
+        brojRedova = vektor.size();
+        brojKolona = a;
+        for (int i = 0; i &lt; vektor.size(); i++) for (int j = 0; j &lt; a; j++) matrica[i][j]= vektor[i][j];
+        
+    }
+template &lt;typename TipElementa&gt;    
+    GMatrica&lt;TipElementa&gt;::GMatrica(std::initializer_list&lt;std::initializer_list&lt;TipElementa&gt;&gt; lista){
+        int brojac1(0), brojac2(0), prosli(-5);
+        for (auto i : lista) {
+            brojac2 = 0;
+            for (auto j : i) {
+                brojac2++;
+            }
+            if (prosli == -5){}
+            else if (brojac2 != prosli || brojac2 &gt; 4) BaciIzuzetak();
+            brojac1++;
+            prosli = brojac2;
+        }
+        if (brojac1 &gt; 4) BaciIzuzetak();
+        
+        brojRedova = brojac1;
+        brojKolona = brojac2;
+        int a(0), b(0);
+        for (auto i : lista) {
+            for (auto j : i) matrica[a][b++] = j;
+            a++;
+            b=0;
+        }
+    }
+
+template &lt;typename tipPrvog, typename tipDrugog&gt;
+    auto operator+ (const GMatrica&lt;tipPrvog&gt; &amp;m1, const GMatrica&lt;tipDrugog&gt; &amp;m2) -&gt; decltype (GMatrica&lt;decltype(m1.matrica[0][0] + m2.matrica[0][0])&gt;
+    (m1.DajBrojRedova(), m1.DajBrojKolona(), m1.matrica[0][0] + m2.matrica[0][0])){
+
+        if(m1.brojRedova != m2.brojRedova || m1.brojKolona != m2.brojKolona)	throw std::domain_error("Nedozvoljena operacija");
+        GMatrica&lt;decltype(m1.matrica[0][0] + m2.matrica[0][0])&gt; m3(m1.DajBrojRedova(), m1.DajBrojKolona());
+        for (int i = 0; i &lt; m1.brojRedova; i++)	for(int j = 0; j &lt; m1.brojKolona; j++)	m3.matrica[i][j] = m1.matrica[i][j] + m2.matrica[i][j];
+</font><a name="4"></a><font color="#FF00FF"><a href="match43-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_6.gif"/></a>
+
+        		return m3;
+    }
+    
+template &lt;typename tipPrvog, typename tipDrugog&gt;
+    auto operator- (const GMatrica&lt;tipPrvog&gt; &amp;m1, const GMatrica&lt;tipDrugog&gt; &amp;m2) -&gt; decltype (GMatrica&lt;decltype(m1.matrica[0][0] - m2.matrica[0][0])&gt;
+    (m1.DajBrojRedova(), m1.DajBrojKolona(), m1.matrica[0][0] - m2.matrica[0][0])){
+        
+        if(m1.brojRedova != m2.brojRedova || m1.brojKolona != m2.brojKolona)	throw std::domain_error("Matrice nemaju jednake dimenzije!");
+        GMatrica&lt;decltype(m1.matrica[0][0] - m2.matrica[0][0])&gt; m3(m1.DajBrojRedova(), m1.DajBrojKolona());
+        for(int i = 0; i &lt; m1.brojRedova; i++)	for(int j = 0; j &lt; m1.brojKolona; j++) m3.matrica[i][j] = m1.matrica[i][j] - m2.matrica[i][j];
+</font>        return m3;
+    }
+    	
+<a name="3"></a><font color="#00FFFF"><a href="match43-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_10.gif"/></a>
+
+template &lt;typename tipPrvog, typename tipDrugog&gt;
+    auto operator* (const GMatrica&lt;tipPrvog&gt; &amp;m1, const GMatrica&lt;tipDrugog&gt; &amp;m2) -&gt; decltype (GMatrica&lt;decltype(m1.matrica[0][0] * m2.matrica[0][0])&gt;
+    (m1.DajBrojRedova(), m1.DajBrojKolona(), m1.matrica[0][0] * m2.matrica[0][0])){
+    
+    	if (m1.DajBrojKolona() != m2.DajBrojRedova()) throw std::domain_error ("Nedozvoljena operacija");
+        GMatrica&lt;decltype(m1.matrica[0][0] * m2.matrica[0][0])&gt; m3(m1.DajBrojRedova(), m1.DajBrojKolona());
+    	for(int i = 0; i &lt; m1.brojRedova; i++)
+    		for(int j = 0; j &lt; m2.brojKolona; j++){
+    		    decltype(m1.matrica[0][0] * m2.matrica[0][0]) suma{}; 
+    		    for (int k = 0; k &lt; m2.DajBrojRedova(); k++) suma += m1.matrica[i][k] * m2.matrica[k][j];
+    			    m3.matrica[i][j] = suma;
+    			}
+    				
+    	return m3;
+    }
+
+template &lt;typename tipPrvog, typename tipDrugog&gt;
+    GMatrica&lt;tipPrvog&gt; operator* (const GMatrica&lt;tipPrvog&gt; &amp;m1, tipDrugog a){
+        GMatrica&lt;tipPrvog&gt; m3(m1.DajBrojRedova(), m1.DajBrojKolona());
+    	for(int i = 0; i &lt; m1.brojRedova; i++)
+    		for(int j = 0; j &lt; m1.brojKolona; j++)
+</font><a name="1"></a><font color="#00FF00"><a href="match43-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_15.gif"/></a>
+
+    		    m3.matrica[i][j] = m1.matrica[i][j] * a; 
+    				
+    	return m3;
+    }
+
+template &lt;typename tipPrvog, typename tipDrugog&gt;
+    GMatrica&lt;tipPrvog&gt; operator* (tipDrugog a, const GMatrica&lt;tipPrvog&gt; &amp;m1){
+        return m1 * a;
+    }  
+
+template &lt;typename smrt&gt;
+GMatrica&lt;smrt&gt; &amp;GMatrica&lt;smrt&gt;::operator+= (const GMatrica&lt;smrt&gt; &amp;m2){
+    	        
+                //Testira ako se mogu sabrati. Ako bude ikakav problem bacit ce se izuzetak
+            	try{
+            	    auto m3 = *this + m2;
+            	}
+            	catch (...){ throw;}
+            	       
+            	for (int i = 0; i &lt; DajBrojRedova(); i++) for (int j = 0; j &lt; DajBrojKolona(); j++) matrica[i][j] += m2.matrica[i][j];
+            	           
+            	return *this;
+    	    }
+
+template &lt;typename smrt&gt;
+GMatrica&lt;smrt&gt; &amp;GMatrica&lt;smrt&gt;::operator -= (const GMatrica&lt;smrt&gt; &amp;m2){
+        //Testira ako se mogu sabrati. Ako bude ikakav problem bacit ce se izuzetak
+    	try{
+    	auto m3 = *this - m2;
+    	}
+    	catch (...){ throw;}
+    	       
+    	for (int i = 0; i &lt; DajBrojRedova(); i++) for (int j = 0; j &lt; DajBrojKolona(); j++) matrica[i][j] -= m2.matrica[i][j];
+    	           
+    	return *this;
+}
+
+template &lt;typename smrt&gt;
+GMatrica&lt;smrt&gt; &amp;GMatrica&lt;smrt&gt;::operator *= (const GMatrica&lt;smrt&gt; &amp;m2){
+        //Testira ako se mogu sabrati. Ako bude ikakav problem bacit ce se izuzetak
+    	try{
+    	auto m3 = *this * m2;
+    	}
+    	catch (...){ throw;}
+    	       
+    	for (int i = 0; i &lt; DajBrojRedova(); i++) for (int j = 0; j &lt; DajBrojKolona(); j++) matrica[i][j] *= m2.matrica[i][j];
+    	           
+    	return *this;
+}
+
+template &lt;typename TipElementa&gt;
+GMatrica&lt;TipElementa&gt; &amp;GMatrica&lt;TipElementa&gt;::operator *= (TipElementa a){
+        //Testira ako se mogu sabrati. Ako bude ikakav problem bacit ce se izuzetak
+    	try{
+    	auto m3 = *this * a;
+    	}
+    	catch (...){ throw;}
+    	       
+    	for (int i = 0; i &lt; DajBrojRedova(); i++) for (int j = 0; j &lt; DajBrojKolona(); j++) matrica[i][j] *= a;
+    	           
+    	return *this;
+}
+
+int main (){
+    
+    //operatori {} i []
+   
+   GMatrica&lt;int&gt; m1({{1, 2}, {3, 4}});
+   std::cout &lt;&lt; m1(1,1) &lt;&lt; std::endl;
+   std::cout &lt;&lt; m1[1][1] &lt;&lt; std::endl;
+    
+	return 0;
+</font>}</pre>
+</body>
+</html>

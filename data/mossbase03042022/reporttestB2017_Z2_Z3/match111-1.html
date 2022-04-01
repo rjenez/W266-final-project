@@ -1,0 +1,232 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student5287.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student1581.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;new&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match111-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::vector;
+
+//Funkcije kopirane iz 2. zadatka tutorijala 2
+template &lt;typename cijeli&gt;
+bool TestPerioda(vector&lt;cijeli&gt; niz, int p) {
+	//nije periodican na p, 1 &lt;= p &lt; n
+	if (p &gt;= niz.size() || p &lt; 1) return false;
+	
+	bool periodican = true;
+
+	for (int i = 0; i &lt; niz.size()-p; i++) {
+		if (niz[i] != niz[i + p]) {
+			periodican = false;
+			break;
+		}
+	}
+
+	return periodican;
+}
+
+template &lt;typename cijeli&gt;
+int OdrediOsnovniPeriod(vector&lt;cijeli&gt; niz) {
+	int osnovni = 0;
+	
+	for (int i = 1; i &lt; niz.size(); i++) {
+		if (TestPerioda(niz, i)) {
+			osnovni = i;
+			break;
+		}
+	}
+	
+	return osnovni;
+}
+
+template &lt;typename cijeli&gt;
+void ProvjeriVektor(const vector&lt;cijeli&gt; &amp;vec){
+	if(vec.size() == 0)
+		throw "Prazan vektor!";
+	
+	//Provjeri negativne vr vektora
+	for(int i = 0; i &lt; vec.size(); i++){
+		if(vec.at(i) &lt;= 0)
+			throw std::domain_error("Neispravan vektor!");
+	}
+}
+
+template &lt;typename cijeli&gt;
+void Periodi(const vector&lt;cijeli&gt; &amp;vec, int &amp;osnovni, int &amp;brPerioda, int &amp;koliko_puta){
+	if(osnovni == 0){
+		koliko_puta = 2;
+		brPerioda = 1;
+		osnovni = vec.size();
+	}else{
+		brPerioda = vec.size() / osnovni;
+		koliko_puta = brPerioda;
+		if(vec.size() % osnovni != 0)
+			koliko_puta++;
+	}
+}
+
+template &lt;typename cijeli&gt;
+void Delete(cijeli **mat, int brRedova, bool fragmentirana){
+	//Obrisi nizove
+	if(fragmentirana){
+		for(int i = 0; i &lt; brRedova; i++)
+			delete[] mat[i];
+	}else{
+		delete[] mat[0];
+	}
+	
+	//Obrisi niz pokazivaca
+	delete[] mat;
+}
+
+template &lt;typename cijeli&gt;
+cijeli **AlocirajFragmentirano(const vector&lt;cijeli&gt; &amp;vec, int &amp;koliko_puta){
+	ProvjeriVektor(vec);
+	
+	//Nadji osnovni period i broj ponavljanja tog perioda
+	int brPerioda = 0;
+	int osnovni = OdrediOsnovniPeriod(vec);
+	Periodi(vec, osnovni, brPerioda, koliko_puta);
+	//Broj redova u matrici
+	int brRedova = koliko_puta * osnovni;
+	cijeli **mat = nullptr;
+	
+	try{
+		mat = new cijeli*[brRedova]{};
+		//Nadji max br elemenata u bilo kojem redu
+		int max = vec[0];
+		for(int i = 1; i &lt; osnovni; i++){
+			if(vec[i] &gt; max) max = vec[i];
+		}
+		
+		for(int i = 0; i &lt; brRedova; i++){
+			//Osiguraj da se nakon sto se prodje posljednji period unutar vektora
+			//krene sa pocetka. Ovime se simulira potpunost vektora
+			int brKolona = (i &lt; brPerioda * osnovni)? vec.at(i) : vec.at(i - brPerioda * osnovni);
+			mat[i] = new cijeli[brKolona];
+			int cnt = max;
+			//Dodijeli odg vrijednosti elementima reda
+			for(int j = brKolona-1; j &gt;= 0; j--){
+				mat[i][j] = cnt--;
+			}
+		}
+	}catch(std::bad_alloc err){
+		Delete(mat, brRedova, true);
+		throw;
+	}
+	
+	return mat;
+}
+
+template &lt;typename cijeli&gt;
+cijeli **AlocirajKontinualno(const vector&lt;cijeli&gt; &amp;vec, int &amp;koliko_puta){
+	ProvjeriVektor(vec);
+	
+	//Nadji osnovni period i broj ponavljanja tog perioda
+	int brPerioda = 0;
+	int osnovni = OdrediOsnovniPeriod(vec);
+	Periodi(vec, osnovni, brPerioda, koliko_puta);
+	//Broj redova u matrici
+	int brRedova = koliko_puta * osnovni;
+	cijeli **mat = nullptr;
+	
+	try{
+		//Niz pokazivaca
+		mat = new cijeli*[brRedova]{};
+		//Ukupna "sirina" kontinualnog niza
+		int ukupnoElemenata = 0;
+		for(int i = 0; i &lt; brRedova; i++){
+			ukupnoElemenata += (i &lt; brPerioda * osnovni)? vec.at(i) : vec.at(i - brPerioda * osnovni);
+		}
+		mat[0] = new cijeli[ukupnoElemenata];
+		
+		for(int i = 1; i &lt; brRedova; i++){
+			//Osiguraj da se nakon sto se prodje posljednji period unutar vektora
+			//krene sa pocetka. Ovime se simulira potpunost vektora
+			//BrKolona proslog reda
+			int brKolona = (i-1 &lt; brPerioda * osnovni)? vec.at(i-1) : vec.at(i - 1 - brPerioda * osnovni);
+			mat[i] = mat[i-1] + brKolona;
+		}
+		for(int i = 0; i &lt; brRedova; i++){
+			int brKolona = (i &lt; brPerioda * osnovni)? vec.at(i) : vec.at(i - brPerioda * osnovni);
+			//Dodijeli odg vrijednosti elementima reda
+			for(int j = 0; j &lt; brKolona; j++){
+				mat[i][j] = brKolona-j;
+			}
+		}
+	}catch(std::bad_alloc err){
+		Delete(mat, brRedova, false);
+		throw;
+	}
+	
+	return mat;
+}
+
+int main () {
+	int n;
+	int koliko_puta = 0;
+	vector&lt;int&gt; vec;
+	int **mat = nullptr;
+	bool frag;
+	
+	std::cout &lt;&lt; "Unesite broj elemenata vektora: ";
+	std::cin &gt;&gt; n;
+	
+	vec.resize(n);
+	std::cout &lt;&lt; "Unesite elemente vektora: ";
+	for(int &amp;br : vec)
+		std::cin &gt;&gt; br;
+	
+	std::cout &lt;&lt; "Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+	std::cin &gt;&gt; frag;
+	
+	//Priprema za ispisivanje matrice
+	int brPerioda = 0;
+	int osnovni = OdrediOsnovniPeriod(vec);
+	Periodi(vec, osnovni, brPerioda, koliko_puta);
+	int brRedova = koliko_puta * osnovni;
+	
+	//Pokusaj alokaciju matrica
+	try{
+		if(frag)
+			mat = AlocirajFragmentirano(vec, koliko_puta);
+		else
+			mat = AlocirajKontinualno(vec, koliko_puta);
+	}catch(std::domain_error err){
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; err.what();
+		//Delete(mat, brRedova, frag);
+		return 0;
+	}catch(std::bad_alloc err){
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; err.what();
+		Delete(mat, brRedova, frag);
+		return 0;
+	}catch(const char* err){
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; err;
+		return 0;
+	}
+	
+	//Ispisivanje matrica
+	std::cout &lt;&lt; "Dinamicki alocirana matrica:\n";
+	for(int i = 0; i &lt; brRedova; i++){
+		int brKolona = (i &lt; brPerioda * osnovni)? vec.at(i) : vec.at(i - brPerioda * osnovni);
+		for(int j = 0; j &lt; brKolona; j++){
+			std::cout.width(3);
+			std::cout &lt;&lt; std::left &lt;&lt; mat[i][j];
+		}
+		std::cout &lt;&lt; std::endl;
+	}
+	
+	//Brisanje matrice
+	Delete(mat, brRedova, frag);
+</font>	
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z1/student8886.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z1/student5015.cpp<p></p><pre>
+/B16/17 (Zadaća 5, Zadatak 1)
+//Autotestovi by Eldar Kurtic (mail: ekurtic3@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+
+struct Korisnik
+{
+    std::string ime, prezime, adresa, telefon;
+};
+
+class Knjiga
+{
+    std::string naslov, ime_pisca, zanr;
+    int godina;
+    Korisnik *zaduzenje;
+public:
+    Knjiga(std::string n, std::string ime, std::string z, int god) : naslov(n), ime_pisca(ime), zanr(z), godina(god), zaduzenje(nullptr) {} 
+<a name="0"></a><font color="#FF0000"><a href="match212-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_80.gif"/></a>
+
+    std::string DajNaslov() const { return naslov; }
+    std::string DajZanr() const { return zanr; }
+    std::string DajAutora() const { return ime_pisca; }
+    int GodinuIzdavanja() const { return godina; }
+    Korisnik DajKodKogaJe() const { return *zaduzenje; }
+    void ZaduziKnjigu(Korisnik &amp;k) { zaduzenje=&amp;k; }
+    void RazduziKnjigu() { zaduzenje=nullptr; }
+    bool DaLiJeZaduzena() const { if (zaduzenje!=nullptr) return true; return false; }
+};
+
+class Biblioteka
+{
+    std::map&lt;int, Korisnik*&gt; mapa_korisnika;
+    std::map&lt;int, Knjiga*&gt; mapa_knjiga;
+public:
+    Biblioteka() = default;
+    Biblioteka(const Biblioteka &amp;b)
+    {
+        std::map&lt;int, Korisnik*&gt; pomocna1;
+        std::map&lt;int, Knjiga*&gt; pomocna2;
+        Korisnik *pok1{};
+        Knjiga *pok2{};
+        try
+        {
+            for (auto it=b.mapa_korisnika.begin(); it!=b.mapa_korisnika.end(); it++)
+            {
+                pok1=new Korisnik(*(it-&gt;second));
+                pomocna1.insert(std::make_pair(it-&gt;first, pok1));
+            }
+        }
+        catch(...)
+        {
+            delete pok1;
+            throw;
+        }
+        try
+        {
+            for (auto it=b.mapa_knjiga.begin(); it!=b.mapa_knjiga.end(); it++)
+            {
+                pok2=new Knjiga(*(it-&gt;second));
+                pomocna2.insert(std::make_pair(it-&gt;first, pok2));
+            }
+        }
+        catch(...)
+        {
+            delete pok2;
+            throw;
+        }
+        mapa_korisnika=pomocna1;
+        mapa_knjiga=pomocna2;
+    }
+    Biblioteka(Biblioteka &amp;&amp;b)
+    {
+        b.mapa_korisnika=mapa_korisnika;
+        b.mapa_knjiga=mapa_knjiga;
+        for (auto it=mapa_korisnika.begin(); it!=mapa_korisnika.end(); it++) it-&gt;second=nullptr;
+        for (auto it=mapa_knjiga.begin(); it!=mapa_knjiga.end(); it++) it-&gt;second=nullptr;
+    }
+    Biblioteka &amp;operator =(const Biblioteka &amp;b)
+    {
+        std::map&lt;int, Korisnik*&gt; pomocna1;
+        std::map&lt;int, Knjiga*&gt; pomocna2;
+        Korisnik *pok1{};
+        Knjiga *pok2{};
+        try
+        {
+            for (auto it=b.mapa_korisnika.begin(); it!=b.mapa_korisnika.end(); it++)
+            {
+                pok1=new Korisnik(*(it-&gt;second));
+                pomocna1.insert(std::make_pair(it-&gt;first, pok1));
+            }
+        }
+        catch(...)
+        {
+            delete pok1;
+            throw;
+        }
+        try
+        {
+            for (auto it=b.mapa_knjiga.begin(); it!=b.mapa_knjiga.end(); it++)
+            {
+                pok2=new Knjiga(*(it-&gt;second));
+                pomocna2.insert(std::make_pair(it-&gt;first, pok2));
+            }
+        }
+        catch(...)
+        {
+            delete pok2;
+            throw;
+        }
+        for (auto it=mapa_knjiga.begin(); it!=mapa_knjiga.end(); it++) delete it-&gt;second, it-&gt;second=nullptr;
+        for (auto it=mapa_korisnika.begin(); it!=mapa_korisnika.end(); it++) delete it-&gt;second, it-&gt;second=nullptr;
+        mapa_korisnika=pomocna1;
+        mapa_knjiga=pomocna2;
+        return *this;
+    }
+    Biblioteka &amp;operator =(Biblioteka &amp;&amp;b)
+    {
+        std::swap(mapa_korisnika, b.mapa_korisnika); std::swap(mapa_knjiga, b.mapa_knjiga);
+        return *this;
+    }
+    void RegistrirajNovogKorisnika(int cl_br, std::string ime, std::string pr, std::string ad, std::string br_tel)
+    {
+        Korisnik k;
+        k.ime=ime; k.prezime=pr; k.adresa=ad; k.telefon=br_tel;
+        for (auto it=mapa_korisnika.begin(); it!=mapa_korisnika.end(); it++) 
+            if (it-&gt;first==cl_br) throw std::logic_error("Korisnik vec postoji");
+        mapa_korisnika[cl_br]=new Korisnik(k);
+    }
+    void RegistrirajNovuKnjigu(int ev_br, std::string nasl, std::string ime, std::string z, int god)
+    {
+        Knjiga *novi=new Knjiga(nasl, ime, z, god);
+        for (auto it=mapa_knjiga.begin(); it!=mapa_knjiga.end(); it++) 
+            if (it-&gt;first==ev_br) throw std::logic_error("Knjiga vec postoji");
+        mapa_knjiga[ev_br]=novi;
+    }
+    Korisnik &amp;NadjiKorisnika(int br)
+    { 
+        if (!mapa_korisnika.count(br)) throw std::logic_error("Korisnik nije nadjen");
+        return *mapa_korisnika[br];
+    }
+    Korisnik &amp;NadjiKnjigu(int br) 
+    { 
+        if (!mapa_knjiga.count(br)) throw std::logic_error("Knjiga nije nadjena");
+        return *mapa_knjiga[br];
+    }
+    void IzlistajKorisnike() const 
+    {
+        for (auto it=mapa_korisnika.begin(); it!=mapa_korisnika.end(); it++)
+        {
+            std::cout &lt;&lt; "Clanski broj: " &lt;&lt; it-&gt;first &lt;&lt; std::endl;
+</font>            std::cout &lt;&lt; "Ime i prezime: " &lt;&lt; it-&gt;second-&gt;ime &lt;&lt; " " &lt;&lt; it-&gt;second-&gt;prezime &lt;&lt; std::endl;
+            std::cout &lt;&lt; "Adresa: " &lt;&lt; it-&gt;second-&gt;adresa &lt;&lt; std::endl;
+<a name="1"></a><font color="#00FF00"><a href="match212-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+            std::cout &lt;&lt; "Broj telefona " &lt;&lt; it-&gt;second-&gt;telefon &lt;&lt; std::endl;
+         //   if (zaduzenje!=nullptr) std::cout &lt;&lt; "Zaduzena kod korisnika: " &lt;&lt; zaduzenje-&gt;ime &lt;&lt; " " &lt;&lt; zaduzenje-&gt;prezime &lt;&lt; std::endl;
+            std::cout &lt;&lt; std::endl;
+        }
+    }
+    
+};
+
+
+int main ()
+</font>{
+	return 0;
+}</pre>
+</body>
+</html>

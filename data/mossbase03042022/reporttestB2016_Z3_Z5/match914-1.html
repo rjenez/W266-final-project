@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student9998.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student8089.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+
+struct Dijete{
+    std::string ime;
+    Dijete* sljedeci;
+};
+
+int nadjiRazmak (std::string s){
+    int brojac(0);
+    for (int i = 0; i &lt; s.length(); i++) {
+<a name="0"></a><font color="#FF0000"><a href="match914-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_12.gif"/></a>
+
+        if ((s[i] &gt;= 'a' &amp;&amp; s[i] &lt;= 'z') || (s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z') || (s[i] &gt;= '0' &amp;&amp; s[i] &lt;= '9')) {
+            brojac++;
+        }
+    }
+    
+    return brojac;
+}
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje (std::vector&lt;std::string&gt; imenaDjece, int brojTimova){
+    if (brojTimova &lt; 1 || brojTimova &gt; imenaDjece.size()) throw std::logic_error("Razvrstavanje nemoguce");
+   
+    //Prvo kopiraj iz vec string -&gt; listu
+    
+    Dijete *pocetak(nullptr), *prethodni(nullptr);
+</font>    
+    for (int i = imenaDjece.size()-1; i &gt;= 0; i--) {
+        Dijete* novo(new Dijete);
+        if (!pocetak) pocetak = novo;
+        novo-&gt;ime = imenaDjece[i]; novo-&gt;sljedeci = prethodni;
+        prethodni = novo;
+    }
+    Dijete* temp(pocetak);
+    pocetak-&gt;sljedeci = prethodni;
+    prethodni = temp;
+    pocetak = pocetak-&gt;sljedeci;
+    
+       int n(imenaDjece.size()%brojTimova); std::vector&lt;int&gt; brIgracaPoTimu(brojTimova);
+    
+    //Postavljanje velicine timova
+    
+    for (int i = 0; i &lt; brojTimova; i++) {
+        brIgracaPoTimu[i] = imenaDjece.size() / brojTimova;
+        if (n-- &gt; 0) brIgracaPoTimu[i]++;
+    }
+        
+    std::vector&lt;std::set&lt;std::string&gt;&gt; Timovi(brojTimova);
+    
+    
+    //Svrstavanje u timove
+    int o(0), razmak(0);
+    for (auto j : brIgracaPoTimu) {
+        std::set&lt;std::string&gt; trenutniTim;
+        
+        for (int i = 0; i &lt; j; i++) {
+           
+            for (int k = 0; k &lt; razmak; k++) { 
+                prethodni = pocetak;
+                pocetak = pocetak-&gt;sljedeci;
+            } //Simulacija advance-a
+       
+            trenutniTim.insert(pocetak-&gt;ime);
+            razmak = nadjiRazmak(pocetak-&gt;ime);
+            
+            
+            prethodni-&gt;sljedeci = pocetak-&gt;sljedeci; 
+            
+            delete pocetak; pocetak = prethodni; //Simulacija delete-a
+            
+            
+     
+        }
+        
+        Timovi[o++] = trenutniTim;
+    }    
+    
+    return Timovi;
+}
+
+int main (){
+    
+    int n; std::cout &lt;&lt; "Unesite broj djece: "; std::cin &gt;&gt; n; std::cin.ignore(10000, '\n'); 
+    std::cout &lt;&lt; "Unesite imena djece: " &lt;&lt; std::endl;
+    std::vector&lt;std::string&gt; imenaDjece(n);
+   
+<a name="1"></a><font color="#00FF00"><a href="match914-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+    for (int i = 0; i &lt; n; i++) {
+        std::string temp; std::getline(std::cin, temp);
+        imenaDjece[i]=temp;
+    }
+
+   std::cout &lt;&lt; "Unesite broj timova: "; std::cin &gt;&gt; n; std::cin.ignore(10000, '\n');
+</font>  
+    try{
+        std::vector&lt;std::set&lt;std::string&gt;&gt; Timovi(Razvrstavanje(imenaDjece, n)); n=1;
+        
+        for (auto i : Timovi) {
+            int o(0);
+            std::cout &lt;&lt; "Tim " &lt;&lt; n &lt;&lt; ": ";
+            for (auto j : i) {
+                if (o == 0) {
+                    std::cout &lt;&lt; j; o++;
+                }
+                else{
+                    std::cout &lt;&lt; ", " &lt;&lt; j;
+                }
+            }
+            std::cout &lt;&lt; std::endl;
+            n++;
+        }
+    }
+    catch (std::logic_error e){
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; std::endl;
+    }
+    
+   
+	return 0;
+}</pre>
+</body>
+</html>

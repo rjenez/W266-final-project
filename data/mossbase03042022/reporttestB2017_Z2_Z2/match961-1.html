@@ -1,0 +1,292 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student1446.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student8329.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;type_traits&gt;
+
+enum class SmjerKretanja {NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo};
+
+template&lt;typename kont&gt;
+
+kont PjescaniSat(kont a, SmjerKretanja smjer)
+{
+	for(int i(0);i&lt;a.size();i++)
+	{
+		for(int j(0);j&lt;a.at(i).size();j++)
+		{
+				if(a.at(i).size()!=a.at(i).at(j).size())throw std::domain_error("3D matrica nema oblik kocke");
+				if(a.at(0).size()!=a.at(i).size())throw std::domain_error("3D matrica nema oblik kocke");
+				if(a.size()!=a.at(0).size())throw std::domain_error("3D matrica nema oblik kocke");
+		}
+	}
+	
+	if(a.size()%2==0 &amp;&amp; a.size()!=0)throw std::length_error("3D kontejner ne zadovoljava uvjet neparnosti");
+	if(a.size()==0)return {};
+	typename std::remove_reference&lt;decltype(a.at(0))&gt;::type Matrica(a.size());
+//	kont v(a.size(),decltype(Matrica)(a.size()));
+kont v;
+for(int i(0);i&lt;a.size();i++)
+{
+	v.push_back(Matrica);
+}
+
+
+
+	//Gore Dolje
+	if(a.size()==1)return a;
+	if(smjer==SmjerKretanja::GoreDolje)
+	{	
+		for(int i(0);i&lt;a.size();i++)
+		{
+			for(int j(0);j&lt;=a.at(i).size()/2;j++)
+			{
+				for(int k(0);k&lt;a.at(i).size();k++)
+				{
+					if(k&gt;=j &amp;&amp; k&lt;a.size()-j)v.at(i).at(j).push_back(a.at(i).at(j).at(k));
+				}
+			}
+			int A(a.at(i).size()/2);
+			int E(1);
+			for(int j(a.at(i).size()/2+1);j&lt;a.at(i).size();j++)
+			{
+				for(int k(0);k&lt;a.at(i).size();k++)
+				{
+					if(k&gt;=A-E &amp;&amp; k&lt;=A+E)v.at(i).at(j).push_back(a.at(i).at(j).at(k));
+				}
+				E++;
+			}
+		}
+	}
+	//Dolje Gore
+	if(smjer==SmjerKretanja::DoljeGore)
+	{	
+		for(int i(0);i&lt;a.size();i++)
+		{
+			int j(0);
+			for(int p(a.at(i).size()-1);p&gt;=a.at(i).size()/2;p--)
+			{
+				for(int k(0);k&lt;a.at(i).size();k++)
+				{
+					if(k&gt;=j &amp;&amp; k&lt;a.size()-j)v.at(i).at(j).push_back(a.at(i).at(p).at(k));
+				}
+				j++;
+			}
+			int A(a.at(i).size()/2);
+			int E(1);
+			for(int p(a.at(i).size()/2-1);p&gt;=0;p--)
+			{
+				for(int k(0);k&lt;a.at(i).size();k++)
+				{
+					if(k&gt;=A-E &amp;&amp; k&lt;=A+E)v.at(i).at(j).push_back(a.at(i).at(p).at(k));
+				}
+				E++;
+				j++;
+			}
+		}
+	}
+	//Desno Lijevo
+	if(smjer==SmjerKretanja::DesnoLijevo)
+	{	
+		for(int i(0);i&lt;a.size();i++)
+		{
+			int sklj(0);
+			for(int j(0);j&lt;a.at(i).size();j++)
+			{
+				if(sklj==a.at(i).size())break;
+				for(int k(a.at(i).size()-1);k&gt;=0;k--)
+				{
+					if(k!=a.at(i).size()-1-sklj)continue;
+					while(j&lt;a.at(i).size())
+					{
+						if((j&gt;=sklj &amp;&amp; j&lt;a.size()-sklj) || (j&gt;=0+(a.size()-sklj-1) &amp;&amp; j&lt;=sklj &amp;&amp; sklj&gt;a.size()/2))v.at(i).at(sklj).push_back(a.at(i).at(j).at(k));
+						j++;
+					}
+				}
+				j=-1;
+				sklj++;
+			}
+		}
+	}
+	
+	//Lijevo Desno
+	if(smjer==SmjerKretanja::LijevoDesno)
+	{	
+		for(int i(0);i&lt;a.size();i++)
+		{
+			int sklj(0);
+			for(int j(0);j&lt;a.at(i).size();j++)
+			{
+				if(sklj==a.at(i).size())break;
+				for(int k(0);k&lt;a.at(i).size();k++)
+				{
+					if(k!=0+sklj)continue;
+					while(j&lt;a.at(i).size())
+					{
+						if((j&gt;=sklj &amp;&amp; j&lt;a.size()-sklj) || (j&gt;=0+(a.size()-sklj-1) &amp;&amp; j&lt;=sklj &amp;&amp; sklj&gt;a.size()/2))v.at(i).at(sklj).push_back(a.at(i).at(j).at(k));
+						j++;
+					}
+				}
+				j=-1;
+				sklj++;
+			}
+		}
+	}
+	//Naprijed Nazad
+	if(smjer==SmjerKretanja::NaprijedNazad)
+	{
+		int sklj(0);
+		for(int i(0);i&lt;a.size();i++)
+		{
+			if(sklj==a.size())break;
+			for(int j(0);j&lt;a.size();j++)
+			{
+				if(j!=i)continue;
+				while(i&lt;a.size())
+				{
+					for(int k(0);k&lt;a.at(i).size();k++)
+					{
+						if((k&gt;=i &amp;&amp; k&lt;a.size()-i) || (k&gt;=0+(a.size()-i-1) &amp;&amp; k&lt;=i))v.at(sklj).at(i).push_back(a.at(i).at(sklj).at(k));
+					}
+					i++;
+				}
+			}
+			i=-1;
+			sklj++;
+		}
+	}
+	
+	//Nazad Naprijed
+	if(smjer==SmjerKretanja::NazadNaprijed)
+	{
+		int sklj(0);
+		for(int i(a.size()-1);i&gt;=0;i--)
+		{
+			if(sklj==a.size())break;
+			for(int j(0);j&lt;a.size();j++)
+			{
+				if(j!=sklj)continue;
+				int red(0);
+				while(i&gt;=0)
+				{
+					for(int k(0);k&lt;a.size();k++)
+					{
+						if((k&gt;=i &amp;&amp; k&lt;a.size()-i) || (k&gt;=0+(a.size()-i-1) &amp;&amp; k&lt;=i))v.at(sklj).at(red).push_back(a.at(i).at(j).at(k));
+					}
+					i--;
+					red++;
+				}
+			}
+			i=a.size();
+			sklj++;
+		}
+	}
+	
+	
+	
+	return v;
+}
+
+int main ()
+{
+	try
+	{
+		std::cout&lt;&lt;"Unesite dimenziju (x/y/z): ";
+		int x;
+<a name="0"></a><font color="#FF0000"><a href="match961-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+		std::cin&gt;&gt;x;
+		while(x&lt;0)
+		{
+			std::cout&lt;&lt;"Dimenzija nije ispravna, unesite opet: ";
+			std::cin&gt;&gt;x;
+		}
+		std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt;v(x, std::deque&lt;std::deque&lt;int&gt;&gt;(x));
+</font>		std::cout&lt;&lt;"Unesite elemente kontejnera: ";
+		for(int i(0);i&lt;v.size();i++)
+		{
+			for(int j(0);j&lt;v.at(i).size();j++)
+			{
+				for(int k(0);k&lt;v.size();k++)
+				{
+					int n;
+					std::cin&gt;&gt;n;
+					v.at(i).at(j).push_back(n);
+				}
+			}
+		}
+		std::cout&lt;&lt;"Unesite smjer kretanja [0 - 5]: ";
+		int smjer;
+<a name="2"></a><font color="#0000FF"><a href="match961-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+		std::cin&gt;&gt;smjer;
+		while(smjer&lt;0 || smjer&gt;5)
+		{
+			std::cout&lt;&lt;"Smjer nije ispravan, unesite opet: ";
+			std::cin&gt;&gt;smjer;
+		}
+		std::cout&lt;&lt;std::endl;
+</font>		if(v.size()%2==0 &amp;&amp; v.size()!=0)throw std::length_error("3D kontejner ne zadovoljava uvjet neparnosti");
+		auto a(PjescaniSat(v,SmjerKretanja(smjer)));
+		std::cout&lt;&lt;"Pjescani sat unesene matrice je:"&lt;&lt;std::endl;
+		std::cout&lt;&lt;std::endl;
+		for(int i(0);i&lt;a.size();i++)
+		{
+			for(int j(0);j&lt;a.at(i).size();j++)
+			{
+				for(int k(0);k&lt;a.at(i).at(j).size();k++)
+				{
+					if(j&lt;=a.size()/2)
+					{
+						if((k==0 || k==a.at(i).at(j).size()) &amp;&amp; j!=a.at(i).size()-1)std::cout&lt;&lt;std::setw(4*(j+1))&lt;&lt;a.at(i).at(j).at(k);
+						else std::cout&lt;&lt;std::setw(4)&lt;&lt;a.at(i).at(j).at(k);
+					}
+					else
+					{
+						if((k==0 || k==a.at(i).at(j).size()) &amp;&amp; j!=a.at(i).size()-1)std::cout&lt;&lt;std::setw(4*(a.size()-j))&lt;&lt;a.at(i).at(j).at(k);
+						else std::cout&lt;&lt;std::setw(4)&lt;&lt;a.at(i).at(j).at(k);
+					}
+				}
+				std::cout&lt;&lt;std::endl;
+			}
+<a name="1"></a><font color="#00FF00"><a href="match961-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+			std::cout&lt;&lt;std::endl;
+		}
+		
+		
+	}
+	catch(std::length_error Izuzetak)
+	{
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;Izuzetak.what();
+	}
+	catch(std::domain_error Izuzetak)
+	{
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;Izuzetak.what();
+</font>	}
+	
+	
+	return 0;
+}</pre>
+</body>
+</html>

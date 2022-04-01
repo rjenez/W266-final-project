@@ -1,0 +1,334 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z2/student6548.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z2/student6267.cpp<p></p><pre>
+/B16/17 (Zadaća 5, Zadatak 2)
+//Autotestovi by Eldar Kurtic (mail: ekurtic3@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+#include &lt;algorithm&gt;
+#include &lt;memory&gt;
+<a name="4"></a><font color="#FF00FF"><a href="match96-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_3.gif"/></a>
+
+struct  Korisnik
+{
+    std::string ime, prezime, adresa, telefon;
+};
+
+class Knjiga
+{
+    std::string naslov, ime_pisca, zanr;
+    int godina_izdavanja;
+    std::shared_ptr&lt;Korisnik&gt; pok;
+public:  
+    Knjiga(std::string naslov, std::string ime_pisca, std::string zanr, int godina_izdavanja) : naslov(naslov), ime_pisca (ime_pisca), zanr (zanr), godina_izdavanja (godina_izdavanja), pok(nullptr) {};
+</font><a name="3"></a><font color="#00FFFF"><a href="match96-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_9.gif"/></a>
+
+    std::string DajNaslov() const { return naslov;}
+    std::string DajAutora() const { return ime_pisca;}
+    std::string DajZanr() const { return zanr;}
+    int DajGodinuIzdavanja() const { return godina_izdavanja; }
+    auto DajKodKogaJe() const {return pok;}
+    void ZaduziKnjigu(Korisnik &amp;neko) { pok = &amp;neko;}
+    void RazduziKnjigu () 
+    {
+        if(pok == nullptr) throw std::logic_error("Knjiga nije zaduzena");
+        pok = nullptr;
+        
+    }
+    bool DaLiJeZaduzena () { if(pok!=nullptr) return true;
+        else return false;
+    }
+ 
+    
+ };
+ 
+ class Biblioteka
+ {
+    std::map&lt;int , std::shared_ptr&lt;Korisnik&gt;&gt; korisnici;
+    std::map&lt;int , std::shared_ptr&lt;Knjiga&gt;&gt; knjige;
+    auto NadjiKorisnikaPokazivac(int clanskibroj);
+
+public:
+    Biblioteka(){};
+    Biblioteka (const Biblioteka &amp;b);
+    Biblioteka(Biblioteka &amp;&amp;b) 
+    {         
+        korisnici = b.korisnici;
+        knjige = b.knjige;
+    }
+
+    Biblioteka &amp;operator = (const Biblioteka b);
+    Biblioteka &amp;operator = (Biblioteka &amp;&amp;b);
+    void RegistrirajNovogKorisnika (int clanskibroj, std::string ime, std::string prezime, std::string adresa, std::string telefon);
+</font>    void RegistrirajNovuKnjigu (int evidencijskibroj, std::string naslov, std::string ime_pisca, std::string zanr, int godina_izdavanja);
+    Korisnik &amp;NadjiKorisnika(int clanskibroj);
+<a name="0"></a><font color="#FF0000"><a href="match96-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_29.gif"/></a>
+
+    Knjiga &amp;NadjiKnjigu(int evidencijskibroj);
+    void IzlistajKorisnike() const;
+    void IzlistajKnjige() const;
+    void ZaduziKnjigu(int clanskibroj, int evidencijskibroj);
+    void RazduziKnjigu(int evidencijskibroj);
+    void PrikaziZaduzenja(int clanskibroj);
+    ~Biblioteka ();
+ };
+
+
+Biblioteka &amp;Biblioteka::operator = ( Biblioteka b)
+{
+
+    std::swap(korisnici, b.korisnici);
+    std::swap(knjige, b.knjige);
+    return *this;
+}
+Biblioteka::Biblioteka (const Biblioteka &amp;b)
+{
+    knjige = b.knjige;
+    korisnici = b.korisnici;
+    
+}
+Biblioteka &amp;Biblioteka::operator =(Biblioteka &amp;&amp;b)
+{
+    if(&amp;b!=this)
+    {
+        korisnici = b.korisnici;
+        for(auto it = korisnici.begin();it!=korisnici.end();it++) it-&gt;second = nullptr;
+        knjige = b.knjige;
+        for(auto it = knjige.begin();it!=knjige.end();it++) it-&gt;second = nullptr;
+    }
+    return *this;
+}
+Biblioteka::~Biblioteka()
+{
+    for(auto it = korisnici.begin();it!=korisnici.end();it++)
+        delete it-&gt;second;
+    for(auto it = knjige.begin();it!=knjige.end();it++)
+        delete it-&gt;second;
+
+ }
+void Biblioteka::RegistrirajNovogKorisnika(int clanskibroj, std::string ime, std::string prezime, std::string adresa, std::string telefon)
+    {
+        if(!korisnici.count(clanskibroj))
+        {
+            Korisnik *user(new Korisnik);
+            user-&gt;ime = ime;
+            user-&gt;prezime = prezime;
+            user-&gt;adresa = adresa;
+            user-&gt;telefon = telefon;
+            korisnici.insert(std::make_pair(clanskibroj, user));  
+        }
+        else
+        {
+            throw std::logic_error("Korisnik vec postoji");
+        }
+    }
+void Biblioteka::RegistrirajNovuKnjigu (int evidencijskibroj, std::string naslov, std::string ime_pisca, std::string zanr, int godina_izdavanja)
+{
+    if(!knjige.count(evidencijskibroj)) 
+    {
+        Knjiga *book(new Knjiga(naslov, ime_pisca, zanr, godina_izdavanja));
+        knjige.insert(std::make_pair(evidencijskibroj, book));
+    }
+    else throw std::logic_error("Knjiga vec postoji");
+    
+}
+Korisnik&amp; Biblioteka::NadjiKorisnika(int clanskibroj) 
+{
+    if(!korisnici.count(clanskibroj)) throw std::logic_error("Korisnik nije nadjen");
+    else
+        {
+            auto it(korisnici.find(clanskibroj));
+            Korisnik *p = it-&gt;second;
+            Korisnik &amp;b(*p);
+            p=nullptr;
+            return b;
+        }
+}
+
+
+Korisnik* Biblioteka::NadjiKorisnikaPokazivac(int clanskibroj)
+{
+    if(!korisnici.count(clanskibroj)) throw std::logic_error("Korisnik nije nadjen");
+    else
+        {
+            auto it(korisnici.find(clanskibroj));
+            return it-&gt;second;
+        }
+}
+
+
+Knjiga&amp; Biblioteka::NadjiKnjigu(int evidencijskibroj) 
+{
+    if(!knjige.count(evidencijskibroj)) throw std::logic_error("Knjiga nije nadjena");
+    else
+        {
+            auto it(knjige.find(evidencijskibroj));
+            Knjiga *p = it-&gt;second;
+            Knjiga &amp;b(*p);
+            p = nullptr;
+            return b;
+        }
+}
+
+void Biblioteka::IzlistajKorisnike() const
+{
+
+    for(auto it = korisnici.begin();it!=korisnici.end();it++)
+    {
+        std::cout&lt;&lt;"Clanski broj: "&lt;&lt;it-&gt;first&lt;&lt;std::endl;
+</font>        std::cout&lt;&lt;"Ime i prezime: "&lt;&lt;(it-&gt;second)-&gt;ime&lt;&lt;" "&lt;&lt;(it-&gt;second)-&gt;prezime&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Adresa: "&lt;&lt;(it-&gt;second)-&gt;adresa&lt;&lt;std::endl;
+<a name="5"></a><font color="#FF0000"><a href="match96-0.html#5" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+        std::cout&lt;&lt;"Broj telefona: "&lt;&lt;(it-&gt;second)-&gt;telefon&lt;&lt;std::endl;
+        std::cout&lt;&lt;std::endl;
+    }
+}
+void Biblioteka::IzlistajKnjige() const//DORADI
+{
+    for(auto it = knjige.begin();it!=knjige.end();it++)
+</font>    {
+        std::cout&lt;&lt;"Evidencijski broj: "&lt;&lt;it-&gt;first&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Naslov: "&lt;&lt;(it-&gt;second)-&gt;DajNaslov()&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Pisac: "&lt;&lt;(it-&gt;second)-&gt;DajAutora()&lt;&lt;std::endl;
+        std::cout&lt;&lt;"Zanr: "&lt;&lt;(it-&gt;second)-&gt;DajZanr()&lt;&lt;std::endl;
+<a name="2"></a><font color="#0000FF"><a href="match96-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_11.gif"/></a>
+
+        std::cout&lt;&lt;"Godina izdavanja: "&lt;&lt;(it-&gt;second)-&gt;DajGodinuIzdavanja()&lt;&lt;std::endl;
+        if((it-&gt;second)-&gt;DaLiJeZaduzena() == true) 
+        {
+            std::cout&lt;&lt;"Zaduzena kod korisnika: "&lt;&lt;(it-&gt;second)-&gt;DajKodKogaJe()-&gt;ime&lt;&lt;" "&lt;&lt;(it-&gt;second)-&gt;DajKodKogaJe()-&gt;prezime&lt;&lt;std::endl;
+        }
+        std::cout&lt;&lt;std::endl;
+    }
+    std::cout&lt;&lt;std::endl;
+}
+void Biblioteka::ZaduziKnjigu(int evidencijskibroj, int clanskibroj)//PROBLEM
+    {
+        Knjiga&amp; book(NadjiKnjigu(evidencijskibroj));
+        Korisnik&amp; user(NadjiKorisnika(clanskibroj));
+        if(book.DaLiJeZaduzena() == true) throw std::logic_error("Knjiga vec zaduzena");
+        book.ZaduziKnjigu(user);
+        
+    }
+void Biblioteka::RazduziKnjigu(int evidencijskibroj)
+{
+    Knjiga &amp;book (NadjiKnjigu(evidencijskibroj));
+    book.RazduziKnjigu();
+}
+void Biblioteka::PrikaziZaduzenja(int clanskibroj)
+{
+    int br(0);
+    for(auto it = knjige.begin();it!=knjige.end();it++)
+    {
+        if(NadjiKorisnikaPokazivac(clanskibroj) == (it-&gt;second)-&gt;DajKodKogaJe())
+        {
+            std::cout&lt;&lt;"Evidencijski broj: "&lt;&lt;it-&gt;first&lt;&lt;std::endl;
+            std::cout&lt;&lt;"Naslov: "&lt;&lt;(it-&gt;second)-&gt;DajNaslov()&lt;&lt;std::endl;
+</font>            std::cout&lt;&lt;"Pisac: "&lt;&lt;(it-&gt;second)-&gt;DajAutora()&lt;&lt;std::endl;
+<a name="1"></a><font color="#00FF00"><a href="match96-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_26.gif"/></a>
+
+            std::cout&lt;&lt;"Zanr: "&lt;&lt;(it-&gt;second)-&gt;DajZanr()&lt;&lt;std::endl;
+            std::cout&lt;&lt;"Godina izdavanja: "&lt;&lt;(it-&gt;second)-&gt;DajGodinuIzdavanja()&lt;&lt;std::endl;
+            br++;
+        }
+        std::cout&lt;&lt;std::endl;
+
+    }
+    if(br==0)
+    {
+        std::cout &lt;&lt; "Nema zaduzenja za tog korisnika!" &lt;&lt; std::endl;
+    }
+    
+    std::cout&lt;&lt;std::endl;
+}
+int main ()
+{
+    for(;;)
+    {
+        Biblioteka b;
+        int broj;
+
+        std::cout&lt;&lt;"Exit: 0 \n";
+        std::cout&lt;&lt;"Registruj novog korisnika: 1 \n";
+        std::cout&lt;&lt;"Registruj novu knjigu: 2 \n";
+        std::cout&lt;&lt;"Prikazi zaduzenja: 3 \n";
+        std::cout&lt;&lt;"Zaduzi knjigu: 4 \n";
+        std::cout&lt;&lt;"Razduzi knjigu: 5 \n";
+        std::cout&lt;&lt;"Izlistaj korisnike: 6 \n";
+        std::cout&lt;&lt;"Izlistaj knjige: 7 \n";
+        
+        std::cin&gt;&gt;broj;
+        if(broj == 0) break;
+        if(broj == 1)
+        {
+            std::string s1, s2, s3, s4;
+            int clanskibroj;
+            std::cout&lt;&lt;"Clanski broj: ";
+            std::cin&gt;&gt;clanskibroj;
+            std::cout&lt;&lt;"Ime: ";
+            std::cin&gt;&gt;s1;
+            std::cout&lt;&lt;"Prezime: ";
+            std::cin&gt;&gt;s2;
+            std::cout&lt;&lt;"Adresa: ";
+            std::cin&gt;&gt;s3;
+            std::cout&lt;&lt;"Telefon: ";
+            std::cin&gt;&gt;s4;
+            b.RegistrirajNovogKorisnika(clanskibroj, s1, s2, s3,s4);
+        }
+        if(broj == 2)
+        {
+            std::string s1, s2, s3;
+            int evidencijskibroj;
+            int godina_izdavanja;
+            std::cout&lt;&lt;"Evidencijski broj: ";
+            std::cin&gt;&gt;evidencijskibroj;
+            std::cout&lt;&lt;"Naslov: ";
+            std::cin&gt;&gt;s1;
+            std::cout&lt;&lt;"Ime pisca: ";
+            std::cin&gt;&gt;s2;
+            std::cout&lt;&lt;"Zanr: ";
+            std::cin&gt;&gt;s3;
+            std::cout&lt;&lt;"Godina izdavanja: ";
+            std::cin&gt;&gt;godina_izdavanja;
+            b.RegistrirajNovuKnjigu(evidencijskibroj, s1, s2, s3,godina_izdavanja);
+        }
+        if(broj == 3)
+        {
+            int clanskibroj;
+            std::cout&lt;&lt;"Clanski broj: ";
+            std::cin&gt;&gt;clanskibroj;
+            b.PrikaziZaduzenja(clanskibroj);
+        }
+        if(broj == 4) 
+        {
+            int clanskibroj;
+            std::cout&lt;&lt;"Clanski broj: ";
+            std::cin&gt;&gt;clanskibroj;
+            int evidencijskibroj;
+            std::cout&lt;&lt;"Evidencijski broj: ";
+            std::cin&gt;&gt;evidencijskibroj;
+            b.ZaduziKnjigu(clanskibroj, evidencijskibroj);
+        }
+        if(broj == 5)
+        {
+            int evidencijskibroj;
+            std::cout&lt;&lt;"Evidencijski broj: ";
+            std::cin&gt;&gt;evidencijskibroj;
+            b.RazduziKnjigu(evidencijskibroj);
+            if(broj == 6) b.IzlistajKorisnike();
+            if(broj == 7) b.IzlistajKnjige();
+        }
+    }
+    return 0;
+</font>}</pre>
+</body>
+</html>

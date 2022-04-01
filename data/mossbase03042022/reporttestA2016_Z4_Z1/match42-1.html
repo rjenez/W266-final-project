@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z1/student5899.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z1/student4438.c<p></p><pre>
+#include &lt;stdio.h&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match42-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+char maloslovo(char slovo){
+	if(slovo&lt;='Z' &amp;&amp; slovo&gt;='A') return slovo + 'a' - 'A';
+	else return slovo;
+}
+char* delete_word(char *s, const char *word) {
+   
+	int i = 0,index = 0, nasao = 0;
+	char* povratna = s;
+	int prvaRijec = 0;
+	while(*s != '\0'){
+		if(maloslovo(*s) == *word &amp;&amp; (prvaRijec == 0 || !(s[-1] &lt;= 'z' &amp;&amp; s[-1] &gt;='a' )|| (s[-1] &lt;='Z' &amp;&amp;s[-1]&gt;='A'))){
+			i = 0;
+			
+			prvaRijec = 1;
+			while(((s[i] &lt;= 'z' &amp;&amp; s[i] &gt;='a' )|| (s[i] &lt;='Z' &amp;&amp;s[i]&gt;='A')) &amp;&amp; word[i] != '\0' &amp;&amp; maloslovo(s[i])== word[i]){
+					i++;
+			}
+			if(word[i] == '\0' &amp;&amp; !((s[i] &lt;= 'z' &amp;&amp; s[i] &gt;='a' )|| (s[i] &lt;='Z' &amp;&amp;s[i]&gt;='A'))){
+				nasao = 1;
+				index = 0;
+				while(s[i + index] != '\0'){
+					s[index] = s[i + index];
+					index++;
+				}
+				s[index] = s[i + index];
+				return povratna;
+			} else  {
+				s+=i;
+			
+			}
+			
+		}
+		s++;
+		
+	}
+	if(nasao == 0) return NULL;
+    return povratna;
+}
+
+char* izbaci_najcescu(char *s) {
+	
+	if(*s == '\0') return s;
+	int br = -1, k, i = 0;
+	char *pocetak = s;;
+	char rijeci[100][100];
+	while(s[i] != '\0'){
+		if((s[i] &lt;= 'z' &amp;&amp; s[i] &gt;='a' )|| (s[i] &lt;='Z' &amp;&amp;s[i]&gt;='A')){
+			br++;
+			k = 0;
+			while((s[i+k] &lt;= 'z' &amp;&amp; s[i+k] &gt;='a' )|| (s[i+k] &lt;='Z' &amp;&amp;s[i+k]&gt;='A')){
+				rijeci[br][k] = s[i+k];
+				if(rijeci[br][k] &lt;= 'Z' &amp;&amp; rijeci[br][k] &gt;='A') {
+					rijeci[br][k]+= 'a' - 'A';
+				}
+				k++;
+			}
+			rijeci[br][k] = '\0';
+			i+=k;
+		} else {
+			i++;
+		}
+	}
+//	for(i = 0; i &lt;= br; i ++){printf("%s|\n",rijeci[i]);}
+	int najcescaRijec = 0,ponavljanje = -1, j;
+	for(i = 0; i &lt;= br; i++){
+		int trenutnoPonavljanje = 0;
+		for(k = i + 1; k &lt;= br; k++){
+			
+			j = 0;
+			while(rijeci[i][j] != '\0' &amp;&amp; rijeci[k][j] != '\0' &amp;&amp; rijeci[i][j] == rijeci[k][j]){
+				j++;
+			}
+			if(rijeci[i][j] == '\0' &amp;&amp; rijeci[k][j] == '\0'){
+				trenutnoPonavljanje++;
+			}
+		}
+		if(trenutnoPonavljanje &gt; ponavljanje){
+			najcescaRijec = i;
+			ponavljanje = trenutnoPonavljanje;
+		}
+	}
+	if(ponavljanje == -1) return pocetak;
+	while(delete_word(s,rijeci[najcescaRijec]) != NULL){}
+	return pocetak;
+}
+
+int main() {
+
+char t[10] = "";
+izbaci_najcescu(t);
+printf("%d '%s'", t[0], t);
+
+return 0;
+</font>}
+</pre>
+</body>
+</html>

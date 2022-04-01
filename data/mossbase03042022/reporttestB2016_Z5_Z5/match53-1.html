@@ -1,0 +1,232 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student1639.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student3572.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;ostream&gt;
+#include &lt;iterator&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match53-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+class Temperature {
+    int min_ogranicenje, max_ogranicenje;
+    list&lt;int&gt; min_dnevna, max_dnevna;
+    public:
+    Temperature (int min, int max) {
+        if(max&lt;min) throw range_error("Nekorektne temperature");
+        min_ogranicenje=min;
+        max_ogranicenje=max;
+    }
+    Temperature (const Temperature&amp; temp) {
+        min_ogranicenje=temp.min_ogranicenje;
+        max_ogranicenje=temp.max_ogranicenje;
+        min_dnevna.assign(temp.min_dnevna.begin(), temp.min_dnevna.end());
+        max_dnevna.assign(temp.max_dnevna.begin(), temp.max_dnevna.end());
+    }
+    void RegistrirajTemperature (pair&lt;int,int&gt; nove) {
+        if(nove.first&lt;min_ogranicenje or nove.second&gt;max_ogranicenje or nove.second&lt;nove.first) throw range_error("Nekorektne temperature");
+        min_dnevna.push_back(nove.first);
+        max_dnevna.push_back(nove.second);
+    }
+    void BrisiSve () {
+        min_dnevna.clear();
+        max_dnevna.clear();
+    }
+    void BrisiNegativne () { // mozda i ovo moras preko algoritma
+        int brojac(0);
+        auto pok(max_dnevna.begin());
+        for(auto i=min_dnevna.begin(); i!=min_dnevna.end(); i++) {
+            if(*i&lt;0) {
+                min_dnevna.erase(i);
+                break;
+            }
+            brojac++;
+        }
+        
+        if(brojac!=min_dnevna.size()) {
+             for(int i=0; i&lt;brojac; i++) {
+                pok++;
+            }
+            
+             max_dnevna.erase(pok);
+        }
+    }
+    int DajBrojRegistriranih () const {
+        if(min_dnevna.empty()) throw logic_error("Nema registriranih temperatura");
+        return min_dnevna.size();
+    }
+    int DajMaksimalnuTemperaturu () const {
+        if(max_dnevna.empty()) throw logic_error("Nema registriranih temperatura");
+        auto it(max_element(max_dnevna.begin(), max_dnevna.end()));
+        return *it;
+    }
+    int DajMinimalnuTemperaturu() const {
+        if(min_dnevna.empty()) throw logic_error("Nema registriranih temperatura");
+        auto it(min_element(min_dnevna.begin(), min_dnevna.end()));
+        return *it;
+    }
+    int DajBrojTemperaturaVecihOd (int od_ovog_veci) const {
+        if(min_dnevna.empty()) throw logic_error("Nema registriranih temperatura");
+        return count_if( max_dnevna.begin(), max_dnevna.end(), bind (greater&lt;int&gt;(), od_ovog_veci, placeholders::_1));
+    }
+    int DajBrojTemperaturaManjihOd (int od_ovog_manji) const {
+        if(min_dnevna.empty()) throw logic_error("Nema registriranih temperatura");
+        return count_if( min_dnevna.begin(), min_dnevna.end(), bind (less&lt;int&gt;(), od_ovog_manji, placeholders::_1));
+    }
+    
+    const pair&lt;int,int&gt; operator[] (int x) const;
+    friend bool Netacnost (const Temperature&amp; temp);
+    friend bool operator! (const Temperature&amp; temp);
+    friend bool operator== (const Temperature&amp; t1, const Temperature&amp; t2);
+    friend bool operator!= (const Temperature&amp; t1, const Temperature&amp; t2);
+    friend ostream&amp; operator&lt;&lt; (ostream&amp; tok, const Temperature&amp; temp);
+    friend Temperature&amp; operator++ (Temperature&amp; temp);
+    friend Temperature&amp; operator-- (Temperature&amp; temp);
+    friend Temperature operator++ (Temperature&amp; temp, int);
+    friend Temperature operator-- (Temperature&amp; temp, int);
+    friend vector&lt;int&gt; operator* (const Temperature&amp; temp);
+    friend vector&lt;int&gt; operator+ (const Temperature&amp; temp);
+    friend vector&lt;int&gt; operator- (const Temperature&amp; temp);
+    friend Temperature operator+ (Temperature temp, int koliko);
+    friend Temperature operator+ (int koliko, Temperature temp);
+    friend Temperature operator- (Temperature temp, int koliko);
+    friend Temperature operator- (int koliko, Temperature temp);
+    friend Temperature operator+= (Temperature temp, int koliko);
+    friend Temperature operator-= (Temperature temp, int koliko);
+    
+   
+};
+
+
+Temperature operator+ (Temperature temp, int koliko) {
+    transform(temp.min_dnevna.begin(), temp.min_dnevna.end(), temp.min_dnevna.begin(), bind(plus&lt;int&gt;(), koliko, placeholders::_1));
+    transform(temp.max_dnevna.begin(), temp.max_dnevna.end(), temp.max_dnevna.begin(), bind(plus&lt;int&gt;(), koliko, placeholders::_1));
+    if(Netacnost(temp)) throw logic_error("Prekoracen dozvoljeni opseg temperatura");
+    return temp;
+}
+
+Temperature operator+ (int koliko, Temperature temp) {
+    return temp+koliko;
+}
+
+Temperature operator- (int koliko, Temperature temp) {
+    int zapamti(temp.max_ogranicenje);
+    temp.max_ogranicenje=temp.min_ogranicenje;
+    temp.min_ogranicenje=zapamti;
+    
+    transform(temp.min_dnevna.begin(), temp.min_dnevna.end(), temp.min_dnevna.begin(), bind(minus&lt;int&gt;(), abs(koliko), placeholders::_1));
+    transform(temp.max_dnevna.begin(), temp.max_dnevna.end(), temp.max_dnevna.begin(), bind(minus&lt;int&gt;(), abs(koliko), placeholders::_1));
+    if(Netacnost(temp)) throw logic_error("Prekoracen dozvoljeni opseg temperatura");
+    return temp;
+}
+
+Temperature operator- (Temperature temp, int koliko) {
+    return temp+(-koliko);
+}
+
+Temperature operator+= (Temperature temp, int koliko) {
+    return temp+koliko;
+}
+Temperature operator-= (Temperature temp, int koliko) {
+    return temp-koliko;
+}
+
+bool Netacnost (const Temperature&amp; temp) {
+        int broj_netacnih1(count_if(temp.min_dnevna.begin(), temp.min_dnevna.end(), bind(less&lt;int&gt;(), temp.min_ogranicenje, placeholders::_1)));
+        if(broj_netacnih1&gt;0) return false;
+        int broj_netacnih2(count_if(temp.max_dnevna.begin(), temp.max_dnevna.end(), bind(greater&lt;int&gt;(), temp.max_ogranicenje, placeholders::_1)));
+        if(broj_netacnih2&gt;0) return false;
+        return true;
+    }
+
+bool operator== (const Temperature&amp; t1, const Temperature&amp; t2) {
+    return(t1.max_ogranicenje==t2.max_ogranicenje and t1.min_ogranicenje==t2.max_ogranicenje and t1.max_dnevna.size()==t2.max_dnevna.size()
+    and t1.min_dnevna.size()==t2.min_dnevna.size() and t1.max_dnevna==t2.max_dnevna and t1.min_dnevna==t2.min_dnevna);
+}
+
+bool operator!= (const Temperature&amp; t1, const Temperature&amp; t2) {
+    return(t1.max_ogranicenje!=t2.max_ogranicenje or t1.min_ogranicenje!=t2.max_ogranicenje or t1.max_dnevna.size()!=t2.max_dnevna.size()
+    or t1.min_dnevna.size()!=t2.min_dnevna.size() or t1.max_dnevna!=t2.max_dnevna or t1.min_dnevna!=t2.min_dnevna);
+}
+
+vector&lt;int&gt; operator+ (const Temperature&amp; temp) {
+    vector&lt;int&gt; bile_manje_za(temp.max_dnevna.size());
+    transform(temp.max_dnevna.begin(), temp.max_dnevna.end(), bile_manje_za.begin(), bind(minus&lt;int&gt;(), abs(temp.max_ogranicenje), placeholders::_1));
+    return bile_manje_za;
+}
+
+vector&lt;int&gt; operator- (const Temperature&amp; temp) {
+    vector&lt;int&gt; bile_vece_za(temp.min_dnevna.size());
+    transform(temp.min_dnevna.begin(), temp.min_dnevna.end(), bile_vece_za.begin(), bind(minus&lt;int&gt;(), abs(temp.min_ogranicenje), placeholders::_1));
+    return bile_vece_za;
+}
+
+vector&lt;int&gt; operator* (const Temperature&amp; temp) {
+    vector&lt;int&gt; razlika(temp.min_dnevna.size()); 
+    transform(temp.max_dnevna.begin(), temp.max_dnevna.end(), temp.min_dnevna.begin(), razlika.begin(), minus&lt;int&gt;());
+    return razlika;
+}
+
+Temperature&amp; operator++ (Temperature&amp; temp) {
+    transform(temp.min_dnevna.begin(), temp.min_dnevna.end(), temp.min_dnevna.begin(), bind(plus&lt;int&gt;(), 1, placeholders::_1));
+    transform(temp.max_dnevna.begin(), temp.max_dnevna.end(), temp.max_dnevna.begin(), bind(plus&lt;int&gt;(), 1, placeholders::_1));
+    if(Netacnost(temp)) throw logic_error("Ilegalna operacija");
+    return temp;
+}
+
+Temperature operator++ (Temperature&amp; temp, int) {
+    Temperature kopija(temp);
+    ++temp;
+    return kopija;
+}
+
+Temperature&amp; operator-- (Temperature&amp; temp) {
+    transform(temp.min_dnevna.begin(), temp.min_dnevna.end(), temp.min_dnevna.begin(), bind(plus&lt;int&gt;(), -1, placeholders::_1));
+    transform(temp.max_dnevna.begin(), temp.max_dnevna.end(), temp.max_dnevna.begin(), bind(plus&lt;int&gt;(), -1, placeholders::_1));
+    if(Netacnost(temp)) throw logic_error("Ilegalna operacija");
+    return temp;
+}
+
+Temperature operator-- (Temperature&amp; temp, int) {
+    Temperature kopija(temp);
+    --temp;
+    return kopija;
+}
+
+const pair&lt;int,int&gt; Temperature::operator[] (int x) const {
+    if(x&gt;min_dnevna.size() or x&lt;=0) throw range_error("Neispravan indeks");
+    auto minimalni(min_dnevna.begin()), maksimalni(max_dnevna.begin());
+    advance(minimalni, x);
+    advance(maksimalni, x);
+    return make_pair(*minimalni,*maksimalni);
+}
+
+bool operator! (const Temperature&amp; temp) {
+    return temp.min_dnevna.empty();
+}
+
+ostream&amp; operator&lt;&lt; (ostream&amp; tok, const Temperature&amp; temp) {
+    copy(temp.min_dnevna.begin(), temp.min_dnevna.end(), ostream_iterator&lt;int&gt;(tok, " "));
+    tok &lt;&lt; endl;
+    copy(temp.max_dnevna.begin(), temp.max_dnevna.end(), ostream_iterator&lt;int&gt;(tok, " "));
+    return tok;
+}
+
+
+int main ()
+</font>{
+	return 0;
+}</pre>
+</body>
+</html>

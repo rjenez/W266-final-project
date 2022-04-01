@@ -1,0 +1,189 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student7911.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student7911.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match459-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_14.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt;
+
+
+
+using std::vector;
+using std::string;
+using std::cin;
+using std::cout;
+using std::endl;
+using std::logic_error;
+using std::getline;
+using std::set;
+using std::shared_ptr;
+
+struct Dijete{
+    string ime;
+    shared_ptr&lt;Dijete&gt; sljedeci;
+};
+
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje (vector&lt;string&gt; imena, int br_tim){
+    if(br_tim&lt;1 || br_tim&gt;imena.size())throw logic_error("Razvrstavanje nemoguce");
+
+    
+    shared_ptr&lt;Dijete&gt; pocetak(nullptr);
+    shared_ptr&lt;Dijete&gt; prethodni;
+</font>    
+    for(int i = 0; i&lt;imena.size(); i++){
+        
+        if(i==imena.size()-1){
+            shared_ptr&lt;Dijete&gt; novi(new Dijete);
+            novi-&gt;ime = imena[i];
+            novi-&gt;sljedeci = nullptr;
+            
+            if(!pocetak)pocetak = novi;
+            else{prethodni-&gt;sljedeci = novi;}
+            prethodni = novi;
+            
+            novi-&gt;sljedeci = pocetak;//postavlja kraj na pocetak
+            continue;
+        }
+        shared_ptr&lt;Dijete&gt; novi (new Dijete);
+        novi-&gt;ime = imena[i];
+        novi-&gt;sljedeci = nullptr;
+        
+        if(!pocetak)pocetak = novi;
+        else{prethodni-&gt;sljedeci = novi;}
+        prethodni = novi;
+    }
+    
+    int broj_clanova = imena.size()/br_tim;
+    vector&lt;int&gt; velicina_tima(br_tim, broj_clanova);
+    
+    int br_vecih_timova = imena.size()%br_tim;
+    
+    for(int k=0; k&lt;br_vecih_timova; k++){
+        velicina_tima[k] = broj_clanova + 1;
+    }
+    
+    vector&lt;set&lt;string&gt;&gt; timovi(br_tim);
+    
+<a name="1"></a><font color="#00FF00"><a href="match459-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+    for(int i=0; i&lt;br_tim; i++){
+        
+        set&lt;string&gt; tim;
+        
+        for(int j=0; j&lt;velicina_tima[i]; j++){
+</font>            
+            if(i==0 &amp;&amp; j==0){
+                tim.insert(pocetak-&gt;ime);
+                string ime = pocetak-&gt;ime;
+                
+                int pomjeranje = 0;
+                for(int l=0; l&lt;ime.length(); l++){
+                    if((ime[l]&gt;='A' &amp;&amp; ime[l]&lt;='Z') || (ime[l]&gt;='a' &amp;&amp; ime[l]&lt;='z') || (ime[l]&gt;='0' &amp;&amp; ime[l]&lt;='9'))pomjeranje++;
+                    else continue;
+                }
+                
+                prethodni-&gt;sljedeci = pocetak-&gt;sljedeci;//brisanje
+                
+                
+                if(pocetak!=prethodni)pocetak = prethodni-&gt;sljedeci;
+                
+                
+                
+               for(int l=0; l&lt;pomjeranje-1; l++){
+                    pocetak = pocetak-&gt;sljedeci;
+                    prethodni = prethodni -&gt;sljedeci;
+                }
+                
+                continue;
+                
+            }
+            
+            tim.insert(pocetak-&gt;ime);
+            string ime = pocetak-&gt;ime;
+            
+            int pomjeranje = 0;
+            for(int l=0; l&lt;ime.length(); l++){
+                    if((ime[l]&gt;='A' &amp;&amp; ime[l]&lt;='Z') || (ime[l]&gt;='a' &amp;&amp; ime[l]&lt;='z') || (ime[l]&gt;='0' &amp;&amp; ime[l]&lt;='9'))pomjeranje++;
+                    else continue;
+                }
+                
+            prethodni-&gt;sljedeci = pocetak-&gt;sljedeci;//brisanje
+            
+            
+            if(pocetak!=prethodni){
+                pocetak= prethodni-&gt;sljedeci;
+                
+            
+            for(int m=0; m&lt;pomjeranje-1; m++){
+                prethodni=prethodni-&gt;sljedeci;
+                pocetak=pocetak-&gt;sljedeci;
+                
+            }
+            }
+            
+            
+            
+            
+            
+        }
+        
+        timovi[i] = tim;
+    }
+    
+    pocetak-&gt;sljedeci = nullptr;
+    pocetak = nullptr;
+     prethodni=nullptr;
+    
+    return timovi;
+}
+
+int main ()
+{
+    try{
+        cout&lt;&lt;"Unesite broj djece: ";
+        int n;
+        cin&gt;&gt;n;
+        vector&lt;string&gt; imena;
+        cout&lt;&lt;"Unesite imena djece: "&lt;&lt;endl;
+        cin.ignore(1000,'\n');
+        for(int i=0; i&lt;n; i++){
+            string ime;
+            getline(cin,ime);
+            imena.push_back(ime);
+        }
+        
+        int br_tim;
+        cout&lt;&lt;"Unesite broj timova: ";
+        cin&gt;&gt;br_tim;
+        
+        auto konacni = Razvrstavanje(imena, br_tim);
+        
+        for(int i=0; i&lt;br_tim; i++){
+            cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+            
+            for(auto x : konacni[i]){
+                if(x==*(--konacni[i].end())){cout&lt;&lt;x; break;}
+                cout&lt;&lt;x&lt;&lt;", ";
+            }
+            cout&lt;&lt;endl;
+        }
+        
+    }
+    
+    catch(logic_error i){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;i.what();
+    }
+    
+	return 0;
+}</pre>
+</body>
+</html>

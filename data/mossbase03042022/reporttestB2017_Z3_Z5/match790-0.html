@@ -1,0 +1,320 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student3739.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z5/student3739.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stack&gt;
+#include &lt;utility&gt;
+
+enum class Boje {Pik, Tref, Herc, Karo};
+
+struct Karta {
+    Boje boja;
+    std::string vrijednost;
+};
+
+struct Cvor {
+    Karta karta;
+    Cvor* sljedeci;
+};
+
+void UnistiSpil (Cvor* prva) {
+    if (prva!=nullptr) {
+        Cvor* zadnja(prva);
+        while (zadnja-&gt;sljedeci!=prva) zadnja=zadnja-&gt;sljedeci;
+        zadnja-&gt;sljedeci=nullptr;
+        while (prva-&gt;sljedeci!=nullptr) {
+            Cvor* temp(prva);
+            prva=prva-&gt;sljedeci;
+            temp-&gt;sljedeci=temp;
+            delete temp;
+        }
+        delete prva;
+    }
+    return;
+}
+
+
+Cvor *KreirajSpil() {
+    
+    const char* karte[13]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    
+    Cvor *prva(nullptr);
+    Cvor *prethodna(nullptr);
+    Cvor *nova(nullptr);
+    
+<a name="2"></a><font color="#0000FF"><a href="match790-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+    for (int i=0; i&lt;4; i++) {
+        for (int j=0; j&lt;13; j++) {
+            nova=new Cvor;
+            nova-&gt;karta={Boje(i), karte[j]}; nova-&gt;sljedeci=nullptr;
+</font>            if (!prva) prva=nova;
+            else prethodna-&gt;sljedeci=nova;
+            prethodna=nova;
+        }
+    }
+    prethodna-&gt;sljedeci=prva;
+    return prva;
+}
+
+bool Nije_Kruzna (Cvor* prva) {
+    Cvor* pomocni(prva);
+    for (int i=0; i&lt;52; i++) {
+        pomocni=pomocni-&gt;sljedeci;
+        if (pomocni==nullptr) return true;
+        if (pomocni==prva) return false;
+    }
+    return true;
+}
+
+bool Prije (Karta trenutna, Karta sljedeca) {
+    const char* karte[13]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    int trenutna_vrijednost, sljedeca_vrijednost;
+    for (int i=0; i&lt;13; i++) if (trenutna.vrijednost==karte[i]) trenutna_vrijednost=i;
+    for (int i=0; i&lt;13; i++) if (sljedeca.vrijednost==karte[i]) sljedeca_vrijednost=i;
+    if ((trenutna.boja==sljedeca.boja &amp;&amp; trenutna_vrijednost&gt;sljedeca_vrijednost) || int(trenutna.boja)&gt;int(sljedeca.boja)) return false;
+    return true;
+}
+
+bool Nije_Sortirana (Cvor* prva) {
+    Cvor* trenutna(prva);
+    do {
+        Cvor* sljedeca=trenutna-&gt;sljedeci;
+        if (sljedeca==prva) return false;
+        if (trenutna-&gt;karta.boja==sljedeca-&gt;karta.boja &amp;&amp; trenutna-&gt;karta.vrijednost==sljedeca-&gt;karta.vrijednost) return true;
+        if (Prije(sljedeca-&gt;karta, trenutna-&gt;karta)) return true;
+        
+        trenutna=trenutna-&gt;sljedeci;
+    } while (trenutna!=prva);
+    return false;
+}
+
+bool Besmisleni (std::string naziv_boje, std::string vrijednost) {
+<a name="0"></a><font color="#FF0000"><a href="match790-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+    const char* karte[13]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    const char* boje[4]{"Pik", "Tref", "Herc", "Karo"};
+</font>    for (int i=0; i&lt;4; i++) {
+        for (int j=0; j&lt;13; j++) {
+            if (naziv_boje==boje[i] &amp;&amp; vrijednost==karte[j]) return false;
+        }
+    }
+    return true;
+}
+
+bool BesmislenaLista (Cvor* prva) {
+    const char* boje[4]{"Pik", "Tref", "Herc", "Karo"};
+    if (Besmisleni(boje[int((*prva).karta.boja)], (*prva).karta.vrijednost)) return true;
+    for (Cvor* trenutna=prva-&gt;sljedeci; trenutna!=prva; trenutna=trenutna-&gt;sljedeci) if (Besmisleni(boje[int((*trenutna).karta.boja)], (*trenutna).karta.vrijednost)) return true;
+    return false;
+}
+
+bool Neispravna (Cvor* prva) {
+    if (Nije_Kruzna(prva)) return true;
+    if (BesmislenaLista(prva)) return true;
+    if (Nije_Sortirana(prva)) return true;
+    return false;
+}
+
+Cvor* Obrisi (Cvor* &amp;prethodna, Cvor* &amp;trenutna) {
+    if (trenutna==prethodna) { delete trenutna; return nullptr; }
+    prethodna-&gt;sljedeci=trenutna-&gt;sljedeci;
+    trenutna-&gt;sljedeci=trenutna;
+    delete trenutna;
+    return prethodna-&gt;sljedeci;
+}
+
+void IzbaciKarte (Cvor* &amp;prva, std::multimap&lt;Boje, std::string&gt; &amp;multimapa) {
+    if (prva==nullptr) return;
+    if (Neispravna(prva)) throw std::logic_error("Neispravna lista!");
+    
+    for (auto it=multimapa.begin(); it!=multimapa.end(); it++) {
+        
+        Cvor* zadnja(prva);
+        for (Cvor* trenutna=prva-&gt;sljedeci; trenutna!=prva; trenutna=trenutna-&gt;sljedeci) zadnja=trenutna;
+        
+        if ((*prva).karta.boja==(*it).first &amp;&amp; (*prva).karta.vrijednost==(*it).second) {
+            prva=Obrisi(zadnja, prva);
+            if (prva==nullptr) return;
+        }
+        else {
+            Cvor* prethodna(prva);
+            for (Cvor* trenutna=prva-&gt;sljedeci; trenutna!=prva; trenutna=trenutna-&gt;sljedeci) {
+                if (!(trenutna==prva-&gt;sljedeci)) prethodna=prethodna-&gt;sljedeci;
+                if ((*trenutna).karta.boja==(*it).first &amp;&amp; (*trenutna).karta.vrijednost==(*it).second) {
+                    trenutna=Obrisi(prethodna, trenutna);
+                    if (trenutna==nullptr) return;
+                }
+            }
+        }
+    }
+    return;
+} 
+
+<a name="3"></a><font color="#00FFFF"><a href="match790-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; IzbaciKarteRazbrajanjem (Cvor* &amp;prva, const short int &amp;korak_razbrajanja, int &amp;broj_karata) {
+</font>    std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; red;
+    if (prva==nullptr) return red;
+    if (korak_razbrajanja&lt;1 || korak_razbrajanja&gt;52 || broj_karata&lt;1) throw std::logic_error("Neispravni elementi za izbacivanje!");
+    if (Neispravna(prva)) throw std::logic_error("Neispravna lista!");
+    
+    int brojac(1), br_karata(broj_karata);
+    const char* boje[4]{"Pik", "Tref", "Herc", "Karo"};
+    Cvor* trenutna(prva);
+    Cvor* prethodna(prva);
+    while (prethodna-&gt;sljedeci!=trenutna) prethodna=prethodna-&gt;sljedeci;
+    
+    while (br_karata) {
+        
+        while (brojac!=korak_razbrajanja) { trenutna=trenutna-&gt;sljedeci; prethodna=prethodna-&gt;sljedeci; brojac++; }
+        
+        red.push(std::make_pair(boje[int((*trenutna).karta.boja)], (*trenutna).karta.vrijednost));
+        if (trenutna==prva) {
+            prva=Obrisi(prethodna, trenutna);
+            if (prva==nullptr) return red;
+            trenutna=prva;
+            prethodna-&gt;sljedeci=prva;
+        }
+        else trenutna=Obrisi(prethodna, trenutna);
+        if (trenutna==nullptr) return red;
+        brojac=1;
+        br_karata--;
+    }
+    return red;
+}
+
+bool BesmislenStek (std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; red) {
+    
+    while (!red.empty()) {
+        if (Besmisleni(red.top().first, red.top().second)) return true;
+        red.pop();
+    }
+    return false;
+}
+
+Cvor* Ubaci (Cvor* &amp;prethodna, Cvor* &amp;trenutna, Karta karta) {
+    Cvor* nova=new Cvor;
+    nova-&gt;karta=karta; nova-&gt;sljedeci=trenutna;
+    prethodna-&gt;sljedeci=nova;
+    return nova;
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match790-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+void VratiPosljednjihNKarata (Cvor* &amp;prva, std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; &amp;red, int n) {
+    
+    if (n&lt;0) throw std::domain_error("Broj n je besmislen!");
+</font>    if (n&gt;int(red.size())) throw std::range_error ("Nedovoljno karata u steku!");
+    if (BesmislenStek(red)) throw std::logic_error("Neispravne karte!");
+    if (n==0 || red.empty()) return;
+    
+    const char* boje[4]{"Pik", "Tref", "Herc", "Karo"};
+    
+    std::pair&lt;std::string, std::string&gt; karta(red.top());
+    int redni_broj(0);
+    for (int i=0; i&lt;4; i++) if (karta.first==boje[i]) redni_broj=i;
+    try {
+        if (prva==nullptr) {
+            prva=new Cvor({{Boje(redni_broj), karta.second}, nullptr});
+            prva-&gt;sljedeci=prva;
+            red.pop();
+            n--;
+        }
+    }
+    catch(...) {
+        UnistiSpil(prva);
+        return;
+    }
+    
+    try {
+    
+        while (n &amp;&amp; red.size()) {
+            
+            Cvor* trenutna(prva), *prethodna(prva);
+            while (prethodna-&gt;sljedeci!=prva) prethodna=prethodna-&gt;sljedeci;
+            
+            karta=red.top();
+            for (int i=0; i&lt;4; i++) if (karta.first==boje[i]) redni_broj=i;
+            
+            for (;;) {
+                if (int((*trenutna).karta.boja)==redni_broj &amp;&amp; (*trenutna).karta.vrijednost==karta.second) {
+                    red.pop();
+                    break;
+                }
+                else if (int((*prethodna).karta.boja)==redni_broj &amp;&amp; (*prethodna).karta.vrijednost==karta.second) {
+                    red.pop();
+                    break;
+                }
+                else if ((int((*trenutna).karta.boja)==redni_broj &amp;&amp; Prije({Boje(redni_broj), karta.second}, (*trenutna).karta)) || int((*trenutna).karta.boja)&gt;redni_broj || (trenutna==prva &amp;&amp; ((int((*prethodna).karta.boja)==redni_broj &amp;&amp; Prije((*prethodna).karta, {Boje(redni_broj), karta.second})) || int((*prethodna).karta.boja)&lt;redni_broj ))) {
+                    if (trenutna==prva &amp;&amp; redni_broj&lt;=int((*prva).karta.boja)) prva=Ubaci(prethodna, prva,  {Boje(redni_broj), karta.second});
+                    else trenutna=Ubaci(prethodna, trenutna, {Boje(redni_broj), karta.second});
+                    red.pop();
+                    n--;
+                    break;
+                }
+                trenutna=trenutna-&gt;sljedeci; prethodna=prethodna-&gt;sljedeci;
+            }
+        }
+    }
+    catch(...) {
+        UnistiSpil(prva);
+        return;
+    }
+    return;
+}
+
+
+void Ispisi (Cvor* prva) {
+    const char* boje[4]{"Pik", "Tref", "Herc", "Karo"};
+    
+    for (int i=0; i&lt;4; i++) {
+        std::cout &lt;&lt; std::endl &lt;&lt; boje[i] &lt;&lt; ": ";
+        if (prva==nullptr) continue;
+        if (int((*prva).karta.boja)==i) std::cout &lt;&lt; (*prva).karta.vrijednost &lt;&lt; " ";
+        for (Cvor* trenutna=prva-&gt;sljedeci; trenutna!=prva; trenutna=trenutna-&gt;sljedeci) {
+            if (int((*trenutna).karta.boja)==i) std::cout &lt;&lt; (*trenutna).karta.vrijednost &lt;&lt; " ";
+        }
+    }
+    std::cout &lt;&lt; std::endl;
+    return;
+}
+
+int main ()
+{
+    short int r;
+    int n, b;
+    std::cout &lt;&lt; "Unesite korak razbrajanja: ";
+    std::cin &gt;&gt; r;
+    std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    std::cin &gt;&gt; b;
+    Cvor* prva;
+    try {
+        prva=KreirajSpil();
+        std::stack&lt;std::pair&lt;std::string, std::string&gt;&gt; stek(IzbaciKarteRazbrajanjem(prva, r, b));
+        std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; 52-stek.size() &lt;&lt; " karata, i to:";
+        Ispisi(prva);
+        std::cout &lt;&lt; "Unesite broj karata koje zelite vratiti u spil: ";
+        std::cin &gt;&gt; n;
+        VratiPosljednjihNKarata(prva, stek, n);
+        std::cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; 52-stek.size() &lt;&lt; " karata, i to:";
+        Ispisi(prva);
+        UnistiSpil(prva);
+    }
+    catch (std::exception &amp;izuzetak) {
+        UnistiSpil(prva);
+        std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+    }
+    
+	return 0;
+}
+</pre>
+</body>
+</html>

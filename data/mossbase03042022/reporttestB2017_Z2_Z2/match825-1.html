@@ -1,0 +1,150 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student1424.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z2/student6781.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 2, Zadatak 2
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za
+	autotestove javiti se na forum (c2).
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;type_traits&gt;
+
+enum class SmjerKretanja
+{
+    NaprijedNazad=0, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo
+};
+template &lt;typename Tip&gt; auto PjescaniSat(Tip kont, SmjerKretanja smjer) -&gt; Tip {
+	int m(kont.size());
+	if (m==0) {
+		Tip prazan;
+		return prazan;
+	}
+	for(int i=0; i&lt;m; i++) {
+		int n (kont.at(i).size());
+<a name="0"></a><font color="#FF0000"><a href="match825-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+		if(n!=m) throw std::domain_error ("3D matrica nema oblik kocke");
+		for(int j=0; j&lt;n; j++) {
+			if(kont.at(i).at(j).size()!=m) throw std::domain_error ("3D matrica nema oblik kocke");
+		}
+	}
+	if(m%2==0) throw std::length_error ("3D kontejner ne zadovoljava uvjet neparnosti");
+</font>	typedef typename std::remove_reference&lt;decltype(kont.at(0).at(0))&gt;::type Red;
+	Tip nova(m);
+	for(int k=0; k&lt;m; k++) {
+		for(int i=0; i&lt;m; i++) {
+			Red red;
+			for(int j=0; j&lt;m; j++) {
+				if(smjer==SmjerKretanja::GoreDolje) {
+					if((i&gt;j &amp;&amp; i+j&lt;m-1) || (i&lt;j &amp;&amp; i+j&gt;m-1)) continue;
+					else red.push_back(kont.at(k).at(i).at(j));
+				}
+				if(smjer==SmjerKretanja::DoljeGore) {
+					if((i&gt;j &amp;&amp; i+j&lt;m-1) || (i&lt;j &amp;&amp; i+j&gt;m-1)) continue;
+					else red.push_back(kont.at(k).at(m-1-i).at(j));
+				}
+				if(smjer==SmjerKretanja::DesnoLijevo) {
+					if((i&lt;j &amp;&amp; i+j&gt;m-1)||(i&gt;j &amp;&amp; i+j&lt;m-1)) continue;
+					else red.push_back(kont.at(k).at(j).at(m-1-i));
+				}
+				if(smjer==SmjerKretanja::LijevoDesno) {
+					if((i&lt;j &amp;&amp; i+j&gt;m-1)||(i&gt;j &amp;&amp; i+j&lt;m-1)) continue;
+					else red.push_back(kont.at(k).at(j).at(i));
+				}
+				if(smjer==SmjerKretanja::NaprijedNazad) {
+					if((i&gt;j &amp;&amp; i+j&lt;m-1) || (i&lt;j &amp;&amp; i+j&gt;m-1)) continue;
+					else if(i&lt;m/2) red.push_back(kont.at(i).at(k).at(i+j));
+					else if(i==m/2) red.push_back(kont.at(i).at(k).at(i));
+					else red.push_back(kont.at(i).at(k).at(m-1-i+j));
+				}
+				if(smjer==SmjerKretanja::NazadNaprijed) {
+					if((i&gt;j &amp;&amp; i+j&lt;m-1) || (i&lt;j &amp;&amp; i+j&gt;m-1)) continue;
+					else if(i&lt;m/2) red.push_back(kont.at(m-1-i).at(k).at(i+j));
+					else if(i==m/2) red.push_back(kont.at(i).at(k).at(i));
+					else red.push_back(kont.at(m-1-i).at(k).at(m-1-i+j));
+				}
+			}
+			nova.at(k).push_back(red);
+		}
+	}
+	return nova;
+}
+int main ()
+{
+	typedef std::deque&lt;std::deque&lt;int&gt;&gt; matrica;
+	int dim(0);
+	std::cout &lt;&lt; "Unesite dimenziju (x/y/z): ";
+	std::cin &gt;&gt; dim;
+	while(dim&lt;0) {
+		std::cout &lt;&lt; "Dimenzija nije ispravna, unesite opet: ";
+		std::cin &gt;&gt; dim;
+	}
+	std::cout &lt;&lt; "Unesite elemente kontejnera: ";
+	std::vector&lt;matrica&gt; kontejner (dim, matrica(dim, std::deque&lt;int&gt; (dim)));
+<a name="1"></a><font color="#00FF00"><a href="match825-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+	for(int i=0; i&lt;dim; i++) {
+		for(int j=0; j&lt;dim; j++) {
+			for(int k=0; k&lt;dim; k++) {
+				std::cin &gt;&gt; kontejner.at(i).at(j).at(k);
+			}
+		}
+	}
+	SmjerKretanja smjer;
+</font>	std::cout &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+	int s(0);
+	std::cin &gt;&gt; s;
+	while(!(s&gt;=0 &amp;&amp; s&lt;=5)) {
+		std::cout &lt;&lt; "Smjer nije ispravan, unesite opet: ";
+		std::cin &gt;&gt; s;
+	}
+	smjer=SmjerKretanja(s);
+	std::cout &lt;&lt; std::endl;
+	try {
+		std::vector&lt;matrica&gt; p_sat;
+		p_sat=PjescaniSat(kontejner,smjer);
+
+		std::cout &lt;&lt; "Pjescani sat unesene matrice je:" &lt;&lt; std::endl;
+
+		for(int i=0; i&lt;p_sat.size(); i++) {
+			for(int j=0; j&lt;p_sat.at(i).size(); j++) {
+				for(int k=0; k&lt;p_sat.at(i).at(j).size(); k++) {
+					int sirina((p_sat.size()-p_sat.at(i).at(j).size())/2);
+					while(sirina!=0) {
+						std::cout &lt;&lt; std::setw(4)&lt;&lt;" ";
+						sirina--;
+					}
+<a name="2"></a><font color="#0000FF"><a href="match825-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+					std::cout &lt;&lt; std::setw(4) &lt;&lt; p_sat.at(i).at(j).at(k);
+				}
+				std::cout &lt;&lt; std::endl;
+			}
+			std::cout  &lt;&lt; std::endl;
+		}
+
+	} catch (std::domain_error greska) {
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; greska.what() &lt;&lt; std::endl;
+</font>	} catch(std::length_error greska) {
+		std::cout &lt;&lt; "Izuzetak: "&lt;&lt; greska.what() &lt;&lt; std::endl;
+	}
+
+	return 0;
+}</pre>
+</body>
+</html>

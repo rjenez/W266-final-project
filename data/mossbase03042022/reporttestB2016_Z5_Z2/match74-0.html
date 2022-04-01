@@ -1,0 +1,355 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z2/student2213.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z2/student2213.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;memory&gt;
+#include &lt;new&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match74-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_51.gif"/></a>
+
+using namespace std;
+
+struct Korisnik{
+    string ime;
+    string prezime;
+    string adresa;
+    string telefon;
+    
+};
+
+class Knjiga{
+    private:
+        string naslov;
+        string ime_pisca;
+        string zanr;
+        int godina_izdavanja;
+        Korisnik *zaduzio;
+    
+    public:
+        Knjiga(string _naslov, string _ime, string _zanr, int _godina_izdavanja){
+            naslov = _naslov;
+            ime_pisca = _ime;
+            zanr = _zanr; 
+            godina_izdavanja = _godina_izdavanja;
+            zaduzio = nullptr;
+        }
+        
+        string DajNaslov() const {
+            return naslov;
+        }
+        
+        string DajAutora() const{
+            return ime_pisca;
+        }
+        
+        string DajZanr() const{
+            return zanr;
+        }
+        
+        int DajGodinuIzdavanja() const{
+            return godina_izdavanja;
+        }
+        
+        Korisnik* DajKodKogaJe() const{
+            return zaduzio;
+        }
+        
+        void ZaduziKnjigu(Korisnik* _zaduzio){
+            zaduzio = _zaduzio;
+        }
+        
+        void ZaduziKnjigu(Korisnik _zaduzio){
+            zaduzio = &amp;_zaduzio;
+        }
+        
+        void RazduziKnjigu(){
+            zaduzio = nullptr;
+        }
+        
+        bool DaLiJeZaduzena(){
+            if(zaduzio == nullptr) return false;
+            else return true;
+        }
+        
+        
+};
+
+class Biblioteka{
+    private:
+        map&lt;int, shared_ptr&lt;Korisnik&gt;&gt; mapa_korisnika;
+        map&lt;int, shared_ptr&lt;Knjiga&gt;&gt; mapa_knjiga;
+    public:
+        Biblioteka():mapa_korisnika(),mapa_knjiga(){}
+        
+        Biblioteka(Biblioteka &amp;b){
+            
+            for(auto val : b.mapa_korisnika){
+                shared_ptr&lt;Korisnik&gt; novi_korisnik(new Korisnik{val.second -&gt; ime, val.second -&gt; prezime, val.second -&gt; adresa, val.second -&gt; telefon});
+                int clanski_kopija = val.first;
+                
+                mapa_korisnika.insert(pair&lt;int, shared_ptr&lt;Korisnik&gt;&gt;(clanski_kopija, novi_korisnik));
+            }
+            
+           for(auto val : b.mapa_knjiga){
+               shared_ptr&lt;Knjiga&gt; nova_knjiga(new Knjiga(val.second -&gt; DajNaslov(), val.second -&gt; DajAutora(), val.second -&gt; DajZanr(), val.second -&gt; DajGodinuIzdavanja()));
+               int evidencijski_kopija = val.first;
+               
+               mapa_knjiga.insert(pair&lt;int, shared_ptr&lt;Knjiga&gt;&gt;(evidencijski_kopija, nova_knjiga));
+           }
+        }
+        
+        Biblioteka operator=(const Biblioteka &amp;b){
+            if( this == &amp;b){
+                for(auto val : b.mapa_korisnika){
+                    shared_ptr&lt;Korisnik&gt; novi_korisnik(new Korisnik{val.second -&gt; ime, val.second -&gt; prezime, val.second -&gt; adresa, val.second -&gt; telefon});
+                    int clanski_kopija = val.first;
+                    
+                    mapa_korisnika.insert(pair&lt;int, shared_ptr&lt;Korisnik&gt;&gt;(clanski_kopija, novi_korisnik));
+                }
+                for(auto val : b.mapa_knjiga){
+                    shared_ptr&lt;Knjiga&gt; nova_knjiga(new Knjiga(val.second -&gt; DajNaslov(), val.second -&gt; DajAutora(), val.second -&gt; DajZanr(), val.second -&gt; DajGodinuIzdavanja()));
+                    int evidencijski_kopija = val.first;
+                    
+                    mapa_knjiga.insert(pair&lt;int, shared_ptr&lt;Knjiga&gt;&gt;(evidencijski_kopija, nova_knjiga));
+                }
+            }
+            return*this;
+        }
+        
+        
+        
+        void RegistrirajNovogKorisnika(int clanskiBroj, string _ime, string _prezime, string _adresa, string _telefon){
+            
+                for(auto val : mapa_korisnika){
+                    if( val.first == clanskiBroj &amp;&amp; val.second -&gt; ime == _ime &amp;&amp; val.second -&gt; prezime == _prezime &amp;&amp; 
+                        val.second -&gt; adresa == _adresa &amp;&amp; val.second -&gt; telefon == _telefon) throw logic_error("Korisnik vec postoji.");
+                    }
+                    
+                    shared_ptr&lt;Korisnik&gt; n_korisnik(new Korisnik{_ime, _prezime, _adresa, _telefon});
+                    mapa_korisnika.insert(pair&lt;int, shared_ptr&lt;Korisnik&gt;&gt; (clanskiBroj, n_korisnik));
+            
+                
+           
+        }
+        
+        void RegistrirajNovuKnjigu(int evidencijskiBroj, string _naslov, string _ime_pisca, string _zanr, int _godina_izdavanja){
+            
+                for(auto val : mapa_knjiga){
+                    if(val.first == evidencijskiBroj &amp;&amp; val.second -&gt; DajNaslov() == _naslov &amp;&amp; val.second -&gt; DajAutora() == _ime_pisca &amp;&amp;
+                    val.second -&gt; DajZanr() == _zanr &amp;&amp; val.second -&gt; DajGodinuIzdavanja() == _godina_izdavanja) throw logic_error("Knjiga vec postoji");
+                }
+                
+                shared_ptr&lt;Knjiga&gt; n_knjiga(new Knjiga(_naslov, _ime_pisca, _zanr, _godina_izdavanja));
+                mapa_knjiga.insert(pair&lt;int, shared_ptr&lt;Knjiga&gt;&gt; (evidencijskiBroj, n_knjiga));
+                
+           
+        }
+        
+        Korisnik&amp; NadjiKorisnika(const int _clanskiBroj) const{
+            
+                if(mapa_korisnika.count( _clanskiBroj ) &gt; 0) return *(mapa_korisnika.find(_clanskiBroj) -&gt; second);
+                else throw logic_error("Korisnik nije nadjen");
+                
+            
+        }
+        
+        Knjiga&amp; NadjiKnjigu(const int _evidencijskiBroj) const{
+                
+                if(mapa_knjiga.count(_evidencijskiBroj) &gt; 0){
+                    return *(mapa_knjiga.find(_evidencijskiBroj) -&gt; second);
+                }
+                else throw logic_error("Knjiga nije nadjena");
+            
+        }
+        
+        void IzlistajKorisnike() const{
+            for(auto val : mapa_korisnika){
+                cout &lt;&lt; "Clanski broj: " &lt;&lt; val.first&lt;&lt;endl;
+                cout &lt;&lt; "Ime i prezime: " &lt;&lt; val.second -&gt; ime &lt;&lt; " " &lt;&lt; val.second -&gt; prezime &lt;&lt; endl; 
+                cout &lt;&lt; "Adresa: " &lt;&lt; val.second -&gt; adresa &lt;&lt; endl;
+                cout &lt;&lt; "Broj telefona: " &lt;&lt; val.second -&gt; telefon &lt;&lt; endl;
+            }
+        }
+        
+        void IzlistajKnjige() const{
+            for(auto val : mapa_knjiga){
+                cout &lt;&lt; "Evidencijski broj: " &lt;&lt; val.first&lt;&lt;endl;
+                cout &lt;&lt; "Naslov: " &lt;&lt; val.second -&gt; DajNaslov()&lt;&lt;endl;
+                cout &lt;&lt; "Pisac: " &lt;&lt; val.second -&gt; DajAutora() &lt;&lt; endl;
+</font><a name="2"></a><font color="#0000FF"><a href="match74-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_15.gif"/></a>
+
+                cout &lt;&lt; "Zanr: " &lt;&lt; val.second -&gt; DajZanr() &lt;&lt; endl;
+                cout &lt;&lt; "Godina izdavanja: " &lt;&lt; val.second -&gt; DajGodinuIzdavanja() &lt;&lt;endl;
+                
+                if(val.second -&gt; DaLiJeZaduzena()) cout &lt;&lt; "Zaduzena kod korisnika: " &lt;&lt; val.second -&gt; DajKodKogaJe() -&gt; ime  &lt;&lt; " " &lt;&lt; val.second -&gt; DajKodKogaJe() -&gt; prezime &lt;&lt; endl;
+            }
+        }
+        
+        void ZaduziKnjigu(int evid, int clans){
+            if(mapa_knjiga.count(evid) == 0) throw logic_error("Knjiga nije nadjena");
+            else if(mapa_knjiga.find(evid) -&gt; second -&gt; DaLiJeZaduzena()) throw logic_error("Knjiga vec zaduzena");
+            else mapa_knjiga.find(evid) -&gt; second -&gt; Knjiga::ZaduziKnjigu(&amp;*(mapa_korisnika[clans]));
+        }
+        
+        void RazduziKnjigu(int evid){
+            if(mapa_knjiga.count(evid) == 0) throw logic_error("Knjiga nije nadjena");
+            else if(!(mapa_knjiga.find(evid) -&gt; second -&gt; DaLiJeZaduzena())) throw logic_error("Knjiga nije zaduzena");
+            else NadjiKnjigu(evid).RazduziKnjigu();
+        }
+        
+        void PrikaziZaduzenja(int clans) const{
+            shared_ptr&lt;Korisnik&gt; korisnik_temp = mapa_korisnika.find(clans) -&gt; second;
+            if(mapa_korisnika.count(clans) == 0) throw logic_error("Korisnik nije nadjen");
+            else {
+                int counter = 0;
+                for(auto val : mapa_knjiga){
+                    if(val.second -&gt; DajKodKogaJe() == &amp;*korisnik_temp) {
+                        cout &lt;&lt; "Evidencijski broj: " &lt;&lt; val.first &lt;&lt; endl;
+                        cout &lt;&lt; "Naslov: " &lt;&lt; val.second -&gt; DajNaslov() &lt;&lt; endl;
+                        cout &lt;&lt; "Pisac: " &lt;&lt; val.second -&gt; DajAutora() &lt;&lt; endl;
+</font><a name="3"></a><font color="#00FFFF"><a href="match74-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_4.gif"/></a>
+
+                        cout &lt;&lt; "Zanr: " &lt;&lt; val.second -&gt; DajZanr() &lt;&lt; endl;
+                        cout &lt;&lt; "Godina izdavanja: " &lt;&lt; val.second -&gt; DajGodinuIzdavanja() &lt;&lt; endl;
+                        counter++;
+                    }
+                }
+                if(counter == 0) throw logic_error("Nema zaduzenja za tog korisnika!");
+            }
+        }
+        
+};
+
+int main ()
+{
+    Biblioteka mojaBib;
+    int komanda = -1;
+    while(komanda != 0){
+        cout &lt;&lt; "Izaberite komandu: "&lt;&lt; endl;
+        cout &lt;&lt; "1 - Kreiranje nove knjige " &lt;&lt; endl;
+        cout &lt;&lt; "2 - Kreiranje novog korisnika "&lt;&lt; endl;
+        cout &lt;&lt; "3 - Zaduzivanje knjige "&lt;&lt; endl;
+</font>        cout &lt;&lt; "4 - Razduzivanje knjige "&lt;&lt; endl;
+<a name="1"></a><font color="#00FF00"><a href="match74-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_24.gif"/></a>
+
+        cout &lt;&lt; "5 - Izlistavanje knjiga " &lt;&lt; endl;
+        cout &lt;&lt; "6 - Izlistavanje korisnika "&lt;&lt; endl;
+        cout &lt;&lt; "0 - Izlazak iz programa "&lt;&lt; endl;
+        
+        cin &gt;&gt; komanda;
+        cin.clear();
+        switch(komanda){
+            case 1:
+            {
+                cout &lt;&lt; "Unesite podatke o knjizi: "&lt;&lt; endl;
+                cout &lt;&lt; "Unesite naslov knjige: ";
+                string naslov_knjige;
+                cin &gt;&gt; naslov_knjige;
+                cin.clear();
+                cout &lt;&lt; endl;
+                cout &lt;&lt; "Unesite autora knjige: " &lt;&lt; endl;
+                string autor;
+                cin &gt;&gt; autor;
+                cin.clear();
+                cout &lt;&lt; endl;
+                cout &lt;&lt; "Unesite zanr knjige: " &lt;&lt; endl;
+                string zanr_knjige;
+                cin &gt;&gt; zanr_knjige;
+                cin.clear();
+                cout &lt;&lt; endl;
+                cout &lt;&lt; "Unesite godinu izdavanja knjige: " &lt;&lt; endl;
+                int godina_izdavanja_knjige;
+                cin &gt;&gt; godina_izdavanja_knjige;
+                cin.clear();
+                cout &lt;&lt; endl;
+                cout &lt;&lt; "Unesite evidencijski broj knjige: ";
+                int ev_br;
+                cin &gt;&gt; ev_br;
+                cin.clear();
+                cout &lt;&lt; endl;
+                mojaBib.RegistrirajNovuKnjigu(ev_br,naslov_knjige, autor, zanr_knjige, godina_izdavanja_knjige);
+                cout &lt;&lt; "Knjiga uspjesno kreirana." &lt;&lt; endl;
+                break;
+            }
+            case 2:
+            {
+                cout &lt;&lt; "Unesite podatke korisnika: "&lt;&lt; endl;
+                cout &lt;&lt; "Unesite ime korisnika: ";
+                string ime_korisnika;
+                cin &gt;&gt; ime_korisnika;
+                cin.clear();
+                cout &lt;&lt; endl;
+                cout &lt;&lt; "Unesite prezime korisnika: ";
+                string prezime_korisnika;
+                cin &gt;&gt; prezime_korisnika;
+                cin.clear();
+                cout &lt;&lt; endl;
+                cout &lt;&lt; "Unesite adresu korisnika: ";
+                string adresa_korisnika;
+                cin &gt;&gt; adresa_korisnika;
+                cin.clear();
+                cout &lt;&lt; endl;
+                cout &lt;&lt; "Unesite telefon korisnika: ";
+                string telefon_korisnika;
+                cin &gt;&gt; telefon_korisnika;
+                cin.clear();
+                cout &lt;&lt; endl;
+                cout &lt;&lt; "Unesite clanski broj korisnika: ";
+                int cl_br;
+                cin &gt;&gt; cl_br;
+                cin.clear();
+                cout &lt;&lt; endl;
+                mojaBib.RegistrirajNovogKorisnika(cl_br, ime_korisnika, prezime_korisnika, adresa_korisnika, telefon_korisnika);
+                cout &lt;&lt; "Korisnik uspjesno kreiran." &lt;&lt; endl;
+                break;
+            }
+            case 3:
+            {
+                cout &lt;&lt; "Unesite evidencijski broj knjige koju zelite zaduziti: ";
+                int ev_br1;
+                cin &gt;&gt; ev_br1;
+                cin.clear();
+                cout &lt;&lt; endl;
+                cout &lt;&lt; "Unesite clanski broj korisnika koji zaduzuje knjigu: ";
+                int cl_br1;
+                cin &gt;&gt; cl_br1;
+                cin.clear();
+                cout &lt;&lt; endl;
+                mojaBib.ZaduziKnjigu(ev_br1,cl_br1);
+                cout &lt;&lt; "Knjiga uspjesno zaduzena" &lt;&lt; endl;
+                break;
+            }
+            case 4:
+            {
+                cout &lt;&lt; "Unesite evidencijski broj knjige koju zelite razduziti: ";
+                int ev_br2;
+                cin &gt;&gt; ev_br2;
+                cin.clear();
+                mojaBib.RazduziKnjigu(ev_br2);
+                break;
+            }
+            case 5:
+            {
+                mojaBib.IzlistajKnjige();
+                break;
+            }
+            case 6:
+            {
+                mojaBib.IzlistajKorisnike();
+                break;
+</font>            }
+        }
+    }
+
+    
+	return 0;
+}</pre>
+</body>
+</html>

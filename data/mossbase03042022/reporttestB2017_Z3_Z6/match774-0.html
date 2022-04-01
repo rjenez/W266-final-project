@@ -1,0 +1,302 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z6/student7773.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z6/student7773.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt; // multimap
+#include &lt;stack&gt;
+#include &lt;utility&gt; // pair
+#include &lt;memory&gt;
+
+using namespace std;
+
+enum class Boje { Pik = 0, Tref, Herc, Karo };
+Boje SVE_BOJE[] = { Boje::Pik, Boje::Tref, Boje::Herc, Boje::Karo };
+string SVE_BOJE_STR[] = { "Pik", "Tref", "Herc", "Karo" };
+<a name="3"></a><font color="#00FFFF"><a href="match774-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+string SVE_VRIJEDNOSTI[] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+</font>
+struct Karta {
+    Boje boja;
+    string vrijednost;
+};
+
+struct Cvor {
+    Karta karta;
+    shared_ptr&lt;Cvor&gt; sljedeci;
+};
+
+bool KomparatorKarti(const Karta&amp; karta1, const Karta&amp; karta2) {
+    if (karta1.boja != karta2.boja) 
+        return karta1.boja &lt; karta2.boja;
+        
+<a name="2"></a><font color="#0000FF"><a href="match774-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+    string vrijednosti[] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+    int poz1(-1), poz2(-1);
+</font>    
+    for (int i = 0; i &lt; 13; i++) {
+        if (vrijednosti[i] == karta1.vrijednost)
+            poz1 = i;
+        if (vrijednosti[i] == karta2.vrijednost)
+            poz2 = i;
+    }
+    
+    if (poz1 &lt; 0 || poz2 &lt; 0)
+        throw "AAAAAA";
+    
+    return poz1 &lt; poz2;
+}
+
+bool SmislenaKarta(const Karta&amp; karta) {
+    int i;
+    for (i = 0; i &lt; 13; i++)
+        if (karta.vrijednost == SVE_VRIJEDNOSTI[i]) break;
+        
+    return i &lt; 13;
+}
+
+bool SmislenaKarta(const string&amp; boja, const string&amp; vrijednost) {
+    int i;
+    for (i = 0; i &lt; 4; i++)
+        if (boja == SVE_BOJE_STR[i]) break;
+    
+    if (i &gt; 3)
+        return false;
+        
+    for (i = 0; i &lt; 13; i++)
+        if (vrijednost == SVE_VRIJEDNOSTI[i]) break;
+        
+    return i &lt; 13;
+}
+
+Karta KartaIzPara(pair&lt;string, string&gt;&amp; par) {
+    Karta karta;
+    for (int i = 0; i &lt; 4; i++)
+        if (par.first == SVE_BOJE_STR[i])
+            karta.boja = SVE_BOJE[i];
+            
+    karta.vrijednost = par.second;
+    
+    return karta;
+}
+
+Karta KreirajKartu(Boje boja, string vrijednost) {
+    Karta karta;
+    karta.boja = boja;
+    karta.vrijednost = vrijednost;
+    
+    return karta;
+}
+
+shared_ptr&lt;Cvor&gt; KreirajSpil();
+void IzbaciKarte(shared_ptr&lt;Cvor&gt;&amp;, multimap&lt;Boje, string&gt;&amp;);
+stack&lt;pair&lt;string, string&gt;&gt; IzbaciKarteRazbrajanjem(shared_ptr&lt;Cvor&gt;&amp;, const short int&amp;, const int&amp;);
+void VratiPosljednjihNKarata(shared_ptr&lt;Cvor&gt;&amp;, stack&lt;pair&lt;string, string&gt;&gt;&amp;, int);
+
+void PrintSpilInfo(shared_ptr&lt;Cvor&gt;&amp; cvor) {
+    shared_ptr&lt;Cvor&gt; temp = cvor;
+    while (KomparatorKarti(temp-&gt;karta, temp-&gt;sljedeci-&gt;karta))
+        temp = temp-&gt;sljedeci;
+    
+    shared_ptr&lt;Cvor&gt; prvi = temp;
+    int i = 0;
+    do {
+        temp = temp-&gt;sljedeci;
+        i++;
+    } while (temp != prvi);
+    
+    cout &lt;&lt; "U spilu trenutno ima " &lt;&lt; i &lt;&lt; " karata, i to:\n";
+    
+    for (int i = 0; i &lt; 4; i++) {
+        cout &lt;&lt; SVE_BOJE_STR[i] &lt;&lt; ": ";
+        
+        while (temp-&gt;karta.boja != SVE_BOJE[i])
+            temp = temp-&gt;sljedeci;
+        
+        while (temp-&gt;karta.boja == SVE_BOJE[i]) {
+            cout &lt;&lt; temp-&gt;karta.vrijednost &lt;&lt; " ";
+            
+            temp = temp-&gt;sljedeci;
+        }
+        cout &lt;&lt; "\n";
+    }
+}
+
+void UnistiSpil(shared_ptr&lt;Cvor&gt;&amp; cvor) {
+    while (cvor-&gt;sljedeci != cvor) {
+        auto temp = cvor-&gt;sljedeci;
+        cvor-&gt;sljedeci = temp-&gt;sljedeci;
+        temp-&gt;sljedeci = nullptr;
+        temp = nullptr;
+    }
+    
+    cvor-&gt;sljedeci = nullptr;
+}
+
+int main () {
+    shared_ptr&lt;Cvor&gt; spil = KreirajSpil();
+    stack&lt;pair&lt;string, string&gt;&gt; izbaceno;
+    int r, b, n;
+    
+    cout &lt;&lt; "Unesite korak razbrajanja: ";
+    cin &gt;&gt; r;
+    cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    cin &gt;&gt; b;
+    
+    try {
+        izbaceno = IzbaciKarteRazbrajanjem(spil, r, b);
+    } catch(const exception&amp; e) {
+        cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; "\n";
+        UnistiSpil(spil);
+        return 0;
+    }
+    
+    PrintSpilInfo(spil);
+    cout &lt;&lt; "Unesite broj karata koje zelite vratiti u spil: ";
+    cin &gt;&gt; n;
+    
+    try {
+        VratiPosljednjihNKarata(spil, izbaceno, n);
+    } catch (const exception&amp; e) {
+        cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; "\n";
+        UnistiSpil(spil);
+        return 0;
+    }
+    
+    PrintSpilInfo(spil);
+    UnistiSpil(spil);
+	return 0;
+}
+
+shared_ptr&lt;Cvor&gt; KreirajSpil() {
+    shared_ptr&lt;Cvor&gt; pocetak = shared_ptr&lt;Cvor&gt;(new Cvor);
+    shared_ptr&lt;Cvor&gt; cvor = pocetak;
+    
+    for (int i = 0; i &lt; 4; i++) {
+        for (int j = 0; j &lt; 13; j++) {
+            cvor-&gt;karta.boja = SVE_BOJE[i];
+            cvor-&gt;karta.vrijednost = SVE_VRIJEDNOSTI[j];
+            
+            if (i == 3 &amp;&amp; j == 12)
+                cvor-&gt;sljedeci = pocetak;
+            else
+                cvor-&gt;sljedeci = shared_ptr&lt;Cvor&gt;(new Cvor);
+                
+            cvor = cvor-&gt;sljedeci;
+        }
+    }
+    
+    return pocetak;
+}
+
+void IzbaciKarte(shared_ptr&lt;Cvor&gt;&amp; cvor, multimap&lt;Boje, string&gt;&amp; za_izbaciti) {
+    shared_ptr&lt;Cvor&gt; prvi = cvor;
+    int i = 0;
+    do {
+        if (i &gt; 51 || !KomparatorKarti(cvor-&gt;karta, cvor-&gt;sljedeci-&gt;karta) || !SmislenaKarta(cvor-&gt;karta))
+            throw logic_error("Neispravna lista!");
+            
+        auto razmak = za_izbaciti.equal_range(cvor-&gt;karta.boja);
+        
+        for (auto map_it = razmak.first; map_it != razmak.second; map_it++) {
+            if (map_it-&gt;first == cvor-&gt;karta.boja &amp;&amp; map_it-&gt;second == cvor-&gt;karta.vrijednost) {
+<a name="1"></a><font color="#00FF00"><a href="match774-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+                za_izbaciti.erase(map_it);
+                
+                shared_ptr&lt;Cvor&gt; temp = cvor;
+                while (cvor-&gt;sljedeci != temp)
+                    cvor = cvor-&gt;sljedeci;
+                
+                cvor-&gt;sljedeci = temp-&gt;sljedeci;
+</font>                temp-&gt;sljedeci = nullptr;
+                temp = nullptr;
+                
+                break;
+            }
+        }
+        
+        cvor = cvor-&gt;sljedeci;
+        i++;
+    } while (cvor != prvi);
+}
+
+stack&lt;pair&lt;string, string&gt;&gt; IzbaciKarteRazbrajanjem(shared_ptr&lt;Cvor&gt;&amp; cvor, const short int&amp; r, const int&amp; b) {
+    if (r &lt; 1 || r &gt; 52 || b &lt; 1)
+        throw logic_error("Neispravni elementi za izbacivanje!");
+        
+    stack&lt;pair&lt;string, string&gt;&gt; stek;
+    int _b = b;
+    
+    while (_b &gt; 0 &amp;&amp; cvor != nullptr) {
+        for (int i = 1; i &lt; r; i++) {
+            if (!SmislenaKarta(cvor-&gt;karta))
+                throw logic_error("Neispravna lista!");
+                
+            cvor = cvor-&gt;sljedeci;
+        }
+        
+        stek.push(pair&lt;string, string&gt;(SVE_BOJE_STR[int(cvor-&gt;karta.boja)], cvor-&gt;karta.vrijednost));
+        
+        shared_ptr&lt;Cvor&gt; temp = cvor;
+        while (cvor-&gt;sljedeci != temp)
+            cvor = cvor-&gt;sljedeci;
+            
+        cvor-&gt;sljedeci = temp-&gt;sljedeci;
+        cvor = cvor-&gt;sljedeci;
+        temp-&gt;sljedeci = nullptr;
+        temp = nullptr;
+        
+        _b--;
+    }
+    
+    return stek;
+}
+
+<a name="0"></a><font color="#FF0000"><a href="match774-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+void VratiPosljednjihNKarata(shared_ptr&lt;Cvor&gt;&amp; cvor, stack&lt;pair&lt;string, string&gt;&gt;&amp; stek, int n) {
+    if (n &lt; 0)
+        throw domain_error("Broj n je besmislen!");
+    
+    if (n &gt; stek.size())
+        throw range_error("Nedovoljno karata u redu!");
+</font>    
+    for (int i = 0; i &lt; n; i++) {
+        while (KomparatorKarti(cvor-&gt;karta, cvor-&gt;sljedeci-&gt;karta))
+            cvor = cvor-&gt;sljedeci;
+        cvor = cvor-&gt;sljedeci;
+        
+        Karta karta = KartaIzPara(stek.top());
+        stek.pop();
+        
+        shared_ptr&lt;Cvor&gt; prvi = cvor;
+        int j = 0;
+        while (!(KomparatorKarti(cvor-&gt;karta, karta) &amp;&amp; KomparatorKarti(karta, cvor-&gt;sljedeci-&gt;karta))) {
+            if (j &gt; 51 || !SmislenaKarta(cvor-&gt;karta))
+                throw logic_error("Neispravna lista!");
+            
+            if (cvor-&gt;sljedeci == prvi)
+                break;
+                
+            cvor = cvor-&gt;sljedeci;
+            j++;
+        }
+        
+        shared_ptr&lt;Cvor&gt; temp = cvor-&gt;sljedeci;
+        
+        cvor-&gt;sljedeci = shared_ptr&lt;Cvor&gt;(new Cvor);
+        cvor-&gt;sljedeci-&gt;karta = karta;
+        cvor-&gt;sljedeci-&gt;sljedeci = temp;
+    }
+}
+</pre>
+</body>
+</html>

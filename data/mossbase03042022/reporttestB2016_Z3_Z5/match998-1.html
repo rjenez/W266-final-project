@@ -1,0 +1,120 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student7001.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student6874.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+
+struct Dijete{
+    std::string ime;
+    Dijete *sljedeci;
+};
+
+bool SlovoIliCifra (char znak){
+    return ((znak&gt;='a' &amp;&amp; znak&lt;='z') || (znak&gt;='A' &amp;&amp; znak&lt;='Z') || (znak&gt;='0' &amp;&amp; znak&lt;='9'));
+}
+
+
+<a name="1"></a><font color="#00FF00"><a href="match998-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_8.gif"/></a>
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje (const std::vector&lt;std::string&gt; &amp;v, int k){
+    if(k&lt;1 || k&gt;v.size())
+      throw std::logic_error ("Razvrstavanje nemoguce");
+</font>      
+    int n(v.size());
+    std::vector&lt;int&gt; niz(k);
+    for(int i=0; i&lt;k; i++){
+        if(i&lt;(n%k))
+          niz[i] = (n/k) + 1;
+        else
+          niz[i] = (n/k);
+    }
+    std::vector&lt;std::set&lt;std::string&gt;&gt; v_skup(k);
+    Dijete *pocetak(nullptr), *prethodni;
+    for(int i=0; i&lt;v.size(); i++){
+        Dijete *novi(new Dijete);
+        novi-&gt;ime = v[i];
+        
+        novi-&gt;sljedeci = nullptr;
+        if(!pocetak) pocetak = novi;
+        else prethodni-&gt;sljedeci = novi;
+        prethodni = novi;
+    }
+    if(pocetak)
+     prethodni-&gt;sljedeci = pocetak;
+    int br(0);
+    int brojac(0);
+    while(brojac&lt;k){
+        int br_igraca(0);
+        while (br_igraca&lt;niz[brojac]) {
+            int s = std::count_if(pocetak-&gt;ime.begin(), pocetak-&gt;ime.end(), SlovoIliCifra );
+            v_skup[brojac].insert(pocetak-&gt;ime);
+            br_igraca++;
+            br++;
+            auto trenutni(pocetak-&gt;sljedeci);
+            prethodni-&gt;sljedeci = trenutni;
+            
+            delete pocetak;
+           if(br==v.size() ) break;
+            pocetak = trenutni;
+            int a(1);
+            while(a&lt;s){
+                pocetak = pocetak-&gt;sljedeci;
+                prethodni = prethodni-&gt;sljedeci;
+                a++;
+            }
+        }
+        brojac++;
+    }
+return v_skup;
+}
+
+
+
+int main ()
+
+{
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    int n;
+<a name="0"></a><font color="#FF0000"><a href="match998-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_11.gif"/></a>
+
+    std::cin&gt;&gt;n;
+    std::cin.ignore(10000, '\n');
+    std::vector&lt;std::string&gt; v(n);
+    std::cout&lt;&lt;"Unesite imena djece: "&lt;&lt;std::endl;
+    for(int i=0; i&lt;n; i++)
+      std::getline(std::cin, v[i]);
+</font>    std::cout&lt;&lt;"Unesite broj timova: ";
+    int k;
+    std::cin&gt;&gt;k;
+    try{
+    auto v_skup(Razvrstavanje(v, k));
+    int brojac(1);
+    for(auto skup : v_skup){
+        std::cout&lt;&lt;"Tim "&lt;&lt;brojac&lt;&lt;": ";
+        int b(0);
+        for(auto x : skup){
+            std::cout&lt;&lt;x;
+            if(b!=skup.size() - 1)
+               std::cout&lt;&lt;", ";
+           b++; 
+        }
+        std::cout&lt;&lt;std::endl;
+        brojac++;
+    }
+    }
+    catch(std::logic_error e){
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;e.what();
+    }
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z1/student1688.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z1/student1688.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match157-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+class Kontejner {
+ Ugao **uglovi;
+ int br;
+ const int Kapacitet;
+public:
+ explicit Kontejner(int n) : Kapacitet(n), br(0), uglovi(new Ugao*[n]) {}
+ ~Kontejner() { Brisi(); delete[] uglovi; }
+ Kontejner(const Kontejner &amp;k);
+ Kontejner &amp;operator =(const Kontejner &amp;k);
+ void Upisi(int d, int m, int s);
+ void Brisi();
+ void Ispisi() const;
+ void IspisiUDatoteku(const char ime[]) const;
+ void Citaj(const char ime[]);
+ Ugao Najveci() const;
+ Ugao Najmanji() const;
+ int BrojUglova() const { return br; }
+ int BrojOstrih() const;
+ Ugao &amp;operator [](int i);
+ Ugao operator[](int i) const;
+ void Sacuvaj(const char ime[]) const;
+ void Obnovi(const char ime[]);
+};
+Kontejner::Kontejner(const Kontejner &amp;k) : Kapacitet(k.Kapacitet),
+ br(k.br), uglovi(new Ugao*[k.Kapacitet]) {
+ for(int i = 0; i &lt; br; i++) uglovi[i] = new Ugao(*k.uglovi[i]);
+}
+Kontejner &amp;Kontejner::operator =(const Kontejner &amp;k) {
+ if(&amp;k == this) return *this;
+ if(Kapacitet != k.Kapacitet) throw "Razliciti kapaciteti!\n";
+ Brisi(); br = k.br;
+ for(int i = 0; i &lt; br; i++) uglovi[i] = new Ugao(*k.uglovi[i]);
+ return *this;
+}
+void Kontejner::Upisi(int d, int m, int s) {
+ if(br == Kapacitet) throw "Kontejner popunjen!";
+ uglovi[br++] = new Ugao(d, m, s);
+}
+void Kontejner::Brisi() {
+ for(int i = 0; i &lt; br; i++) delete uglovi[i];
+ br = 0;
+}
+void Kontejner::Ispisi() const {
+ for(int i = 0; i &lt; br; i++) cout &lt;&lt; *uglovi[i] &lt;&lt; endl;
+}
+void Kontejner::IspisiUDatoteku(const char ime[]) const {
+ ofstream izlaz(ime);
+ for(int i = 0; i &lt; br; i++) izlaz &lt;&lt; *uglovi[i] &lt;&lt; endl;
+}
+
+void Kontejner::Citaj(const char ime[]) {
+ ifstream ulaz(ime);
+ Brisi();
+ Ugao u(0, 0, 0);
+ while(ulaz &gt;&gt; u) uglovi[br++] = new Ugao(u); 
+ Ugao Kontejner::Najveci() const {
+ if(br == 0) throw "Nema upisanih uglova!\n"; // S obzirom da niz "uglovi"
+ Ugao *pmax(uglovi[0]); // sadrži pokazivače, ove
+ for(int i = 1; i &lt; br; i++) // metode je prilično teško
+ if(*uglovi[i] &gt; pmax) pmax = uglovi[i]; // izvesti preko funkcija iz
+ return *pmax; // biblioteke "algorithm"...
+}
+Ugao Kontejner::Najmanji() const {
+ if(br == 0) throw "Nema upisanih uglova!\n";
+ Ugao *pmin(uglovi[0]);
+ for(int i = 1; i &lt; br; i++)
+ if(*uglovi[i] &lt; pmin) pmin = uglovi[i];
+ return *pmin;
+}
+int Kontejner::BrojOstrih() const {
+ int brojac(0);
+ for(int i = 0; i &lt; br; i++)
+ if(uglovi[i]-&gt; Stepeni() &lt; 90) brojac++;
+ return brojac;
+}
+Ugao &amp;Kontejner::operator [](int i) {
+ if(i &lt; 0 || i &gt;= br) throw "Pogrešan indeks!\n";
+ return *uglovi[i];
+}
+Ugao Kontejner::operator[](int i) const {
+ if(i &lt; 0 || i &gt;= br) throw "Pogrešan indeks!\n";
+ return *uglovi[i];
+}
+
+void Kontejner::Sacuvaj(const char ime[]) const {
+ ofstream izlaz(ime, ios::out | ios::binary);
+ izlaz.write((char*)this, sizeof *this);
+ for(int i = 0; i &lt; broj studenata; i++)
+ izlaz.write((char*)uglovi[i], sizeof(Ugao));
+}
+void Kontejner::Obnovi(const char ime[]) {
+ ifstream ulaz(ime, ios::in | ios::binary);
+ if(!ulaz) throw "Datoteka ne postoji!\n";
+ Brisi(); delete[] uglovi;
+ ulaz.read((char*)this, sizeof *this);
+ uglovi = new Ugao*[Kapacitet];
+ for(int i = 0; i &lt; br; i++) {
+ uglovi[i] = new Ugao(0, 0, 0);
+ ulaz.read((char*)studenti[i], sizeof(Ugao)); </font></pre>
+</body>
+</html>

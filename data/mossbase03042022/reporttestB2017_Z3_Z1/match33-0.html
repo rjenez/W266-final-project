@@ -1,0 +1,143 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student8055.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student8055.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match33-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;utility&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+
+bool JesuLiJednaki (double x, double y, double Eps = 1e-10) {
+    return std::fabs(x-y) &lt;= Eps * (std::fabs(x) + std::fabs(y));
+}
+bool JeLiManji (double x, double y) {
+    return x&lt;y &amp;&amp; !JesuLiJednaki(x,y);
+}
+
+
+typedef std::pair&lt;double, double&gt; par; 
+std::function &lt;double(double)&gt; LinearnaInterpolacija (std::vector&lt;par&gt; v){
+    std::sort(std::begin(v), std::end(v), [](par x, par y) {return x.first&lt;y.first; });
+    for (int i=0; i&lt;int(v.size())-1; i++) {
+        for (int j=i+1; j&lt;v.size(); j++){
+            if (JesuLiJednaki(v.at(i).first,v.at(j).first)) throw std::domain_error ("Neispravni cvorovi"); 
+        }
+    }
+        std::vector&lt;double&gt; vx, vy;
+        for (auto k : v) {
+            vx.push_back(k.first);
+            vy.push_back(k.second);
+        }
+        
+        
+    return [vx, vy] (double x){
+        if (JeLiManji(x, vx.at(0)) || JeLiManji(vx.at(vx.size()-1), x )) throw std::range_error ("Argument izvan opsega"); 
+        if (JesuLiJednaki(x, vx.at(vx.size()-1)) ) return vy.at(vy.size()-1);   
+        auto gornjixi (std::lower_bound(std::begin(vx), std::end(vx), x ));
+        auto donjixi (std::upper_bound(std::begin(vx), std::end(vx), x)-1 );
+        auto gornjix (*gornjixi); 
+        auto donjix (*donjixi);
+        int razlikag,razlikad;
+        razlikag = gornjixi-std::begin(vx);
+        razlikad = donjixi-std::begin(vx);
+        auto gornjiy  (*( std::begin(vy) + razlikag  ));
+        auto donjiy (*( std::begin(vy) + razlikad  ));
+        return donjiy + (gornjiy-donjiy)/(gornjix-donjix)*(x-donjix); 
+    };
+}
+std::function &lt;double(double)&gt; LinearnaInterpolacija (std::function&lt;double(double)&gt; f, double xmin, double xmax, double dx ){
+std::vector&lt;double&gt; vx,vy; 
+int i (0);
+if (JeLiManji(xmax, xmin) || JeLiManji(dx, 0) || JesuLiJednaki(dx,0)) throw std::domain_error("Nekonkretni parametri");
+
+for (; ;) {
+    if (!JeLiManji(xmin+dx*i, xmax) &amp;&amp; !JesuLiJednaki(xmin+dx*i, xmax)) break;
+    vx.push_back (xmin+dx*i);
+    vy.push_back (f(xmin+dx*i));
+    i++;
+}
+
+
+ return [vx, vy, f] (double x){
+        if (JeLiManji(x, vx.at(0)) || JeLiManji(vx.at(vx.size()-1), x )) throw std::range_error ("Argument izvan opsega"); 
+        if (JesuLiJednaki(x, vx.at(vx.size()-1)) ) return vy.at(vy.size()-1);   
+        auto  gornjix (*std::lower_bound(std::begin(vx), std::end(vx), x ));
+        auto  donjix (*(std::upper_bound(std::begin(vx), std::end(vx), x)-1 ));
+        auto  gornjiy (f(gornjix) );
+        auto  donjiy (f(donjix) );
+        return donjiy + (gornjiy-donjiy)/(gornjix-donjix)*(x-donjix); 
+    };
+
+    
+}
+int main ()
+{
+    std::cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    int o;
+    std::cin&gt;&gt;o; 
+    if (o == 1) {
+        std::cout&lt;&lt;"Unesite broj cvorova: ";
+        int n;
+        std::cin&gt;&gt;n;
+        std::vector&lt;par&gt; v;
+        std::cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+        double x,y;
+        for (int i=0; i&lt;n; i++){
+            std::cin&gt;&gt;x&gt;&gt;y;
+            par p{x,y};
+            v.push_back(p);
+        } try {
+        LinearnaInterpolacija ( v) ; }
+        catch (...) {
+            
+            std::cout&lt;&lt;"Neispravni cvorovi"; 
+            return 0; 
+            
+        }
+    for (;;){
+        double a;
+        std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+        std::cin&gt;&gt;a; 
+        if (!std::cin) break;  try {
+        std::cout&lt;&lt;"f("&lt;&lt;a&lt;&lt;") = "&lt;&lt;LinearnaInterpolacija(v)(a)&lt;&lt;"\n"; }
+        catch (std::domain_error e){
+            std::cout&lt;&lt;e.what()&lt;&lt;"\n";
+        }
+        catch (std::range_error e){
+            std::cout&lt;&lt;e.what()&lt;&lt;"\n";
+        }
+        
+    }
+    }
+    if (o == 2) {
+        std::cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+        double xmin, xmax, dx,a;
+        std::cin&gt;&gt;xmin&gt;&gt;xmax&gt;&gt;dx;
+        for (; ;){
+        std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+        std::cin&gt;&gt;a; 
+        if (!std::cin) break; try {
+        std::cout&lt;&lt;"f("&lt;&lt;a&lt;&lt;") = "&lt;&lt;a*a+std::sin(a)&lt;&lt;" fapprox("&lt;&lt;a&lt;&lt;") = " &lt;&lt; LinearnaInterpolacija([](double x){return x*x+std::sin(x);}, xmin, xmax,dx)(a)&lt;&lt;"\n"; }
+        catch (std::domain_error e){
+            std::cout&lt;&lt;e.what()&lt;&lt;"\n";
+        }
+        catch (std::range_error e){
+            std::cout&lt;&lt;e.what()&lt;&lt;"\n";
+        }
+        }
+    }
+    
+	return 0;
+</font>}
+</pre>
+</body>
+</html>

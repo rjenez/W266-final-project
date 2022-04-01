@@ -1,0 +1,141 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student8518.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z4/student8518.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include&lt;list&gt;
+#include&lt;vector&gt;
+#include&lt;set&gt;
+#include&lt;string&gt;
+#include&lt;stdexcept&gt;
+int duzina_imena(const std::string &amp;S)
+{
+    auto it(std::begin(S));
+    int brojac(0);
+    while( it!=std::end(S) ) {
+        while ( (!( ( *it&gt;='a' &amp;&amp; *it&lt;='z' ) || ( *it&gt;='0' &amp;&amp; *it&lt;='9' ) || ( *it&gt;='A' &amp;&amp; *it&lt;='Z' )  )) &amp;&amp; it!=std::end(S) ) { //preskacemo sve sto ne moze biti rijec
+            it++;
+        }
+        while ( ( ( *it&gt;='a' &amp;&amp; *it&lt;='z' ) || ( *it&gt;='0' &amp;&amp; *it&lt;='9' ) || ( *it&gt;='A' &amp;&amp; *it&lt;='Z' )  ) &amp;&amp; it!=std::end(S) ) { //preskacemo sve sto ne moze biti rijec
+            it++;
+            brojac++;
+        }
+        if(it==std::end(S)) {
+            break;
+        }
+        it++;
+    }
+    return brojac;
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match462-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+std::vector&lt;std::set&lt;std::string&gt;&gt;Razvrstavanje( const std::vector&lt;std::string&gt;&amp;Imena, int n )
+{
+
+    if( n&lt;1 || n&gt;Imena.size() ) {
+        throw std::logic_error("Razvrstavanje nemoguce");
+    }
+    int x(Imena.size()%n), y(Imena.size() / n);
+</font><a name="1"></a><font color="#00FF00"><a href="match462-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+    std::vector&lt;std::set&lt;std::string&gt;&gt;ekipe ;
+    std::list&lt;std::string&gt;lista ;
+    for(int i=0; i&lt;Imena.size(); i++) {
+        lista.push_back(Imena[i]);
+</font>    }
+    auto it (std::begin(lista));
+    std::set&lt;std::string&gt;pom  ;
+    for(int i=0; i&lt;n; i++) {
+        if(i&lt;x) {
+            pom= {};
+            for(int j=0; j&lt;y+1; j++) {
+                pom.insert(*it);
+                int duzina(duzina_imena(*it));
+                it=lista.erase(it);
+                for(int k=1; k&lt;duzina; k++) {
+                    if(it==std::end(lista)) {
+                        it=std::begin(lista);
+                    }
+                    if(it!=std::end(lista)) {
+                        it++;
+                    }
+                    if(it==std::end(lista)) {
+                        it=std::begin(lista);
+                    }
+                }
+            }
+            ekipe.push_back(pom);
+        } else {
+            pom= {};
+            for(int j=0; j&lt;y; j++) {
+                pom.insert(*it);
+                int duzina(duzina_imena(*it));
+                it=lista.erase(it);
+                for(int k=1; k&lt;duzina; k++) {
+                    if(it==std::end(lista)) {
+                        it=std::begin(lista);
+                    }
+                    if(it!=std::end(lista)) {
+                        it++;
+                    }
+                    if(it==std::end(lista)) {
+                        it=std::begin(lista);
+                    }
+                }
+            }
+            ekipe.push_back(pom);
+        }
+
+    }
+    return ekipe;
+}
+
+int main ()
+{
+    try {
+        std::cout &lt;&lt; "Unesite broj djece: ";
+        int br_djece(0);
+        std::cin &gt;&gt; br_djece;
+        std::cin.ignore(10000, '\n');
+<a name="0"></a><font color="#FF0000"><a href="match462-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+        std::vector&lt;std::string&gt;Imena ;
+        std::cout &lt;&lt; "Unesite imena djece: ";
+        for(int i=0; i&lt;br_djece; i++) {
+            std::string pom;
+            std::getline(std::cin, pom);
+            Imena.push_back(pom);
+        }
+        std::cout  &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Unesite broj timova: ";
+</font>        int n(0);
+        std::cin &gt;&gt; n;
+        auto ekipe ( Razvrstavanje(Imena,n)  );
+        for(int i=0; i&lt;n; i++) {
+            std::cout &lt;&lt; "Tim " &lt;&lt;i+1&lt;&lt;": ";
+            auto it2(std::begin( ekipe[i] ));
+            auto q(std::end( ekipe[i] ));
+            q--;
+            while(it2!=std::end(ekipe[i]) ) {
+                if(it2==q) {
+                    std::cout &lt;&lt; *it2 ;
+                } else {
+                    std::cout &lt;&lt; *it2 &lt;&lt;", ";
+                }
+                it2++;
+            }
+            std::cout &lt;&lt; std::endl;
+        }
+    } catch(std::logic_error Izuzetak) {
+        std::cout &lt;&lt;"Izuzetak: " &lt;&lt;Izuzetak.what() &lt;&lt; std::endl;
+    }
+    return 0;
+}
+</pre>
+</body>
+</html>

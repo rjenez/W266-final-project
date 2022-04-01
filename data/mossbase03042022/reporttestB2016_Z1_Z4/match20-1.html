@@ -1,0 +1,175 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student9451.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student8540.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+*/
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match20-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+std::string ObrniFraze(std::string S, std::vector&lt;std::string&gt; v)
+{
+	std::string s(S);
+	bool a=true;
+	int d=-1;
+	for(int k=0; k&lt;v.size(); k++) {
+		d=-1;
+		int j=0;
+		do {
+			while(j&lt;s.size() &amp;&amp; v[k][0]!=s[j] &amp;&amp; j!=0 &amp;&amp; s[j-1]&lt;'a' &amp;&amp; s[j-1]&gt;'z' &amp;&amp; s[j-1]&lt;'A' &amp;&amp; s[j-1]&gt;'Z') {
+				j++;
+			}
+			if(d!=s.size()) d=j;
+			a=true;
+			for(int l=0; l&lt;v[k].size(); l++) {
+				if((((d+l)&lt;=(s.size()-1)) &amp;&amp; v[k][l]!=s[d+l]) || ((d+l)&gt;(s.size()-1))) {
+					a=false;
+					break;
+				}
+			}
+			int g=(v[k].size()-1);
+			if(a &amp;&amp; g&lt;s.size() &amp;&amp; d&lt;s.size()) {
+				for(int m=d ; m&lt;d+v[k].size(); m++) {
+					if(m&lt;s.size()) {
+						s[m]=v[k][g];
+						g--;
+					}
+				}
+				k--;
+			} else j++;
+		} while(a==false &amp;&amp; j&lt;s.size());
+	}
+	return s;
+}
+std::string IzmijeniUPigLatin(std::string S, std::vector&lt;std::string&gt; v)
+{
+	for(int i=0; i&lt;v.size(); i++) {
+		for(int j=0; j&lt;v[i].size(); j++) {
+			if((v[i][j]&lt;'a' &amp;&amp; v[i][j]&gt;'Z') || v[i][j]&lt;'A' || v[i][j]&gt;'z') {
+				throw std::domain_error("Nekorektan izbor rijeci");
+			}
+		}
+	}
+
+	std::string s(S);
+	bool a=true;
+	int d=-1;
+	int m(s.size());
+	for(int k=0; k&lt;v.size(); k++) {
+		d=-1;
+		int j=0;
+		do {
+
+			if(j&gt;=s.size()) break;
+			while(j&lt;s.size() &amp;&amp; v[k][0]!=s[j] ) {
+				j++;
+			}
+			if(j!=s.size()) d=j;
+			else break;
+
+			a=true;
+
+			for(int l=0; l&lt;v[k].size(); l++) {
+				if(((d+l+1)&lt;=(s.size()-1)) &amp;&amp; ((d+l)&lt;=(s.size()-1)) &amp;&amp;(v[k][l]!=s[d+l] || (s[d+l+1]&lt;'a' &amp;&amp; s[d+l+1]&gt;'z' &amp;&amp; s[d+l+1]&lt;'A' &amp;&amp; s[d+l+1]&gt;'Z') || (s[d-1]&gt;'a' &amp;&amp; s[d-1]&lt;'z') || (s[d-1]&gt;'A' &amp;&amp; s[d-1]&lt;'Z') /*s[d+l+1]!=' ' || s[d+l+1]!='.' || s[d+l+1]!=','*/)) {
+					a=false;
+					break;
+				}
+			}
+
+			int g=(v[k].size()+d);
+
+			//	std::cout&lt;&lt;"D je "&lt;&lt;d&lt;&lt;" a g je"&lt;&lt; g&lt;&lt;" a fraza je"&lt;&lt;" "&lt;&lt;v[k]&lt;&lt;"\n";
+			if(j&gt;=s.size())break;
+			if(a &amp;&amp; g&lt;=s.size() &amp;&amp; d&lt;s.size()) {
+
+
+				if(g&lt;s.size() &amp;&amp; d&lt;s.size()) {
+					s[g]=s[d];
+					s.erase(s.begin()+d);
+					g--;
+					d--;
+					s.insert(s.begin()+g+1, ' ');
+					g++;
+					d++;
+					s.insert(s.begin()+g, 'a');
+					g++;
+					d++;
+					s.insert(s.begin()+g, 'y');
+					std::cout&lt;&lt;s&lt;&lt;" "&lt;&lt;j&lt;&lt;std::endl;
+					j=g;
+					if(j==m||j==(m+1)) break;
+				}
+				else if(g==s.size()) {
+					s.resize(s.size()+2);
+					s[g]=s[d];
+					s.erase(s.begin()+d);
+					g--;
+					d--;
+					s.insert(s.begin()+g+1, ' ');
+					g++;
+					d++;
+					s.insert(s.begin()+g-1, 'a');
+					g++;
+					d++;
+				s.insert(s.begin()+g, 'y');
+					std::cout&lt;&lt;s&lt;&lt;" "&lt;&lt;j&lt;&lt;std::endl;
+					j=g;
+					if(j==m||j==(m+1)) break;
+				}
+			} else j++;
+		} while(j&lt;s.size());
+
+	}
+
+	return s;
+}
+
+int main ()
+{
+
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	std::string recenica;
+	std::getline(std::cin, recenica);
+	std::cout &lt;&lt; "Unesite fraze: ";
+
+	std::vector&lt;std::string&gt; v(10000);
+	std::string s;
+	int i=0, duzinas=0;
+	while(s[0]!='\n') {
+
+		std::getline(std::cin, s);
+		duzinas=s.size();
+		if(duzinas==0) break;
+		v[i]=s;
+		i++;
+
+	}
+
+	try {
+		std::string recenicapig;
+		recenicapig=IzmijeniUPigLatin(recenica, v);
+		std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: "&lt;&lt;recenicapig&lt;&lt;"\n";
+	} catch(std::domain_error greska) {
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;greska.what()&lt;&lt;std::endl;
+	}
+	recenica=ObrniFraze(recenica, v);
+	std::cout&lt;&lt;"Recenica nakon obrtanja fraza: "&lt;&lt;recenica;
+</font>	return 0;
+}</pre>
+</body>
+</html>

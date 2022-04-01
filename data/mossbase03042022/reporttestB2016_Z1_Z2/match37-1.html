@@ -1,0 +1,198 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student8520.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student5261.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match37-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_94.gif"/></a>
+
+std::vector&lt;std::vector&lt;double&gt;&gt; h_ogledalo(std::vector&lt;std::vector&lt;double&gt;&gt; M)
+{
+	if(M.size() == 0) return M;
+	std::vector&lt;std::vector&lt;double&gt;&gt; hM;
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		hM.push_back(std::vector&lt;double&gt;());
+		for(int j=M[i].size()-1; j&gt;=0; j--)
+		{
+			hM[i].push_back(M[i][j]);
+			
+		}
+	}
+	return hM;
+}
+
+std::vector&lt;std::vector&lt;double&gt;&gt; v_ogledalo(std::vector&lt;std::vector&lt;double&gt;&gt; M)
+{
+	if(M.size() == 0) return M;
+	std::vector&lt;std::vector&lt;double&gt;&gt; vM;
+	for(int i=M.size()-1; i&gt;=0; i--)
+	{
+		vM.push_back(std::vector&lt;double&gt;());
+		for(int j=0; j&lt;M[i].size(); j++)
+		{
+			vM[M.size()-1-i].push_back(M[i][j]);
+		}
+	}
+	return vM;
+}
+
+std::vector&lt;std::vector&lt;double&gt;&gt; hv_ogledalo(std::vector&lt;std::vector&lt;double&gt;&gt; M)
+{
+	if(M.size() == 0) return M;
+	std::vector&lt;std::vector&lt;double&gt;&gt; hvM;
+	hvM = h_ogledalo(M);
+	hvM = v_ogledalo(hvM);
+	return hvM;
+}
+
+std::vector&lt;std::vector&lt;double&gt;&gt; OgledaloMatrica(std::vector&lt;std::vector&lt;double&gt;&gt; M)
+{
+	if(M.size() == 0) return M;
+	bool ista (true);
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		if(i &lt; M.size()-1)
+		{
+			if(M[0].size() != M[i+1].size())
+			{
+				ista = false;
+				break;
+			}
+		}
+	}
+	if(!ista) throw std::domain_error ("Matrica nije korektna!");
+	
+	std::vector&lt;std::vector&lt;double&gt;&gt; hM = h_ogledalo(M);
+	std::vector&lt;std::vector&lt;double&gt;&gt; vM = v_ogledalo(M);
+	std::vector&lt;std::vector&lt;double&gt;&gt; hvM = hv_ogledalo(M);
+	std::vector&lt;std::vector&lt;double&gt;&gt; oM;
+	oM.resize(M.size()*3);
+	for(int i=0; i&lt;oM.size(); i++)
+	{
+		oM[i].resize(M[0].size()*3);
+	}
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[i].size(); j++)
+		{
+			oM[i][j] = hvM[i][j];
+		}
+	}
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[i].size(); j++)
+		{
+			oM[i][j+M[i].size()] = vM[i][j];
+		}
+	}
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[i].size(); j++)
+		{
+			oM[i][j+2*M[i].size()] = hvM[i][j];
+		}
+	}
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[i].size(); j++)
+		{
+			oM[i+M.size()][j] = hM[i][j];
+		}
+	}
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[i].size(); j++)
+		{
+			oM[i+M.size()][j+M[i].size()] = M[i][j];
+		}
+	}
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[i].size(); j++)
+		{
+			oM[i+M.size()][j+2*M[i].size()] = hM[i][j];
+		}
+	}
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[i].size(); j++)
+		{
+			oM[i+2*M.size()][j] = hvM[i][j];		
+		}
+	}
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[i].size(); j++)
+		{
+			oM[i+2*M.size()][j+M[i].size()] = vM[i][j];
+		}
+	}
+	for(int i=0; i&lt;M.size(); i++)
+	{
+		for(int j=0; j&lt;M[i].size(); j++)
+		{
+			oM[i+2*M.size()][j+2*M[i].size()] = hvM[i][j];
+		}
+	}
+	return oM;
+}
+int main()
+{
+	try
+	{
+		int m, n;
+		std::cout &lt;&lt; "Unesite dimenzije matrice (m n): ";
+		std::cin &gt;&gt; m &gt;&gt; n;
+		if(m&lt;0 || n&lt;0)
+		{
+			std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!" &lt;&lt; std::endl;
+			return 0;
+		}
+		std::vector&lt;std::vector&lt;double&gt;&gt; matrica (m, std::vector&lt;double&gt;(n));
+		std::cout &lt;&lt; "Unesite elemente matrice: ";
+		for(int i=0; i&lt;m; i++)
+		{
+			for(int j=0; j&lt;n; j++)
+			{
+				std::cin &gt;&gt; matrica[i][j];
+			}
+		}
+		std::vector&lt;std::vector&lt;double&gt;&gt; velika_matrica = OgledaloMatrica(matrica);
+		std::cout &lt;&lt; "\nRezultantna matrica: " &lt;&lt; std::endl;
+		for(int i=0; i&lt;velika_matrica.size(); i++)
+</font>		{
+			for(int j=0; j&lt;velika_matrica[0].size(); j++)
+			{
+				std::cout &lt;&lt; std::setw(4) &lt;&lt; velika_matrica[i][j];
+			}
+			std::cout &lt;&lt; std::endl;
+		}
+	}
+	catch(std::domain_error IZUZETAK)
+	{
+		std::cout &lt;&lt; IZUZETAK.what();
+	}
+	return 0;
+}
+	
+
+</pre>
+</body>
+</html>

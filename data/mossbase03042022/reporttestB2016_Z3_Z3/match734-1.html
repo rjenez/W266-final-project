@@ -1,0 +1,189 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z3/student9998.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z3/student7368.cpp<p></p><pre>
+/B2016/2017: Zadaća 3, Zadatak 3
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+#include &lt;new&gt;
+#include &lt;vector&gt;
+
+template &lt;typename T&gt;
+struct Matrica {
+    int br_redova,br_kolona;
+    T **elementi = nullptr;
+};
+template &lt;typename T&gt;
+void UnistiMatricu(Matrica&lt;T&gt;mat) {
+    if (!mat.elementi) return;
+    for (int i=0; i&lt;mat.br_redova; i++) delete[] mat.elementi[i];
+    delete[] mat.elementi;
+    mat.elementi=nullptr;
+}
+template &lt;typename T&gt;
+Matrica&lt;T&gt;StvoriMatricu (int br_redova, int br_kolona) {
+    Matrica&lt;T&gt; mat;
+    mat.br_redova=br_redova; mat.br_kolona=br_kolona;
+    mat.elementi=new T *[br_redova];
+    for (int i=0; i&lt;br_redova; i++) mat.elementi[i]=nullptr;
+    try{
+        for (int i=0; i&lt;br_redova; i++)
+        mat.elementi[i]=new T [br_kolona];
+    }
+    catch(...) {
+        UnistiMatricu(mat);
+        throw;
+    }
+    return mat;
+}
+template &lt;typename T&gt;
+void UnesiMatricu (char ime_matrice, Matrica&lt;T&gt;&amp;mat) {
+    for (int i=0; i&lt;mat.br_redova; i++) {
+        for (int j=0; j&lt;mat.br_kolona; j++) {
+            std::cout&lt;&lt;ime_matrice&lt;&lt;"("&lt;&lt;i+1&lt;&lt;","&lt;&lt;j+1&lt;&lt;") = ";
+            std::cin&gt;&gt;mat.elementi[i][j];
+        }
+    }
+}
+template &lt;typename T&gt;
+void IspisiMatricu(const Matrica&lt;T&gt;&amp;mat, int sirina_ispisa, int preciznost=6, bool treba_brisati=false){
+    for (int i=0; i&lt;mat.br_redova; i++) {
+        for (int j=0; j&lt;mat.br_kolona;j++) std::cout&lt;&lt;std::setw(sirina_ispisa)&lt;&lt;std::setprecision(preciznost)&lt;&lt;mat.elementi[i][j];
+        std::cout&lt;&lt;std::endl;
+    }
+    if (treba_brisati==true) {
+        UnistiMatricu(mat);
+    }
+}
+template&lt;typename T&gt;
+Matrica&lt;T&gt;ZbirMatrica (const Matrica&lt;T&gt;&amp;m1, const Matrica&lt;T&gt;&amp;m2) {
+    if (m1.br_redova!=m2.br_redova || m1.br_kolona!=m2.br_kolona) 
+        throw std::domain_error ("Matrice nemaju jednake dimenzije!");
+    auto m3 (StvoriMatricu&lt;T&gt;(m1.br_redova,m1.br_kolona));
+    for (int i=0; i&lt;m1.br_redova; i++) {
+        for (int j=0; j&lt;m1.br_kolona; j++) m3.elementi[i][j]=m1.elementi[i][j]+m2.elementi[i][j];
+    }
+    return m3;
+}
+template&lt;typename T&gt;
+Matrica&lt;T&gt;ProduktMatrica(const Matrica&lt;T&gt;&amp;m1, const Matrica&lt;T&gt;&amp;m2) {
+    if (m1.br_kolona!=m2.br_redova) throw ("Matrice nisu saglasne za mnozenje");
+    Matrica&lt;T&gt;mat=StvoriMatricu&lt;T&gt;(m1.br_redova,m2.br_kolona);
+    for (int i=0; i&lt;mat.br_redova; i++) {
+        for (int j=0; j&lt;mat.br_kolona; j++) {
+            for (int k=0; k&lt;mat.br_redova; k++) {
+                mat.elementi[i][j]+=m1.elementi[i][k]*m2.elementi[k][j];
+            }
+        }
+    }
+    return mat; 
+}
+template&lt;typename T&gt;
+<a name="3"></a><font color="#00FFFF"><a href="match734-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+Matrica&lt;T&gt;KopijaMatrice(const Matrica&lt;T&gt;a) {
+    Matrica&lt;T&gt;mat=StvoriMatricu&lt;T&gt;(a.br_redova,a.br_kolona);
+    for (int i=0; i&lt;a.br_redova; i++) {
+</font><a name="0"></a><font color="#FF0000"><a href="match734-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+        for (int j=0; j&lt;a.br_kolona; j++) {
+            mat.elementi[i][j]=a.elementi[i][j];
+        }
+    }
+    return mat;
+}
+template&lt;typename T&gt;
+void Zamjena(Matrica&lt;T&gt;&amp;a1, Matrica&lt;T&gt;a) {
+    UnistiMatricu(a1);
+    a1=KopijaMatrice&lt;T&gt;(a);
+}
+template&lt;typename T&gt;
+Matrica&lt;T&gt;PomnoziSaSkalarom(Matrica&lt;T&gt;a, double n){
+</font>    Matrica&lt;T&gt;mat=StvoriMatricu&lt;T&gt;(a.br_redova,a.br_kolona);
+    if (n==0){
+        for (int i=0; i&lt;mat.br_redova;i++) {
+            for (int j=0; j&lt;mat.br_kolona; j++) {
+                mat.elementi[i][j]=0;
+            }
+        }
+    }
+    else {
+    for (int i=0; i&lt;mat.br_redova; i++) {
+        for (int j=0; j&lt;mat.br_kolona; j++) {
+            mat.elementi[i][j]=n*a.elementi[i][j];
+        }
+    }}
+    return mat; //mat alocirano
+}
+template&lt;typename T&gt;
+Matrica&lt;T&gt;Stepenuj(Matrica&lt;T&gt;a, int n) {
+    Matrica&lt;T&gt;mat=KopijaMatrice&lt;T&gt;(a);
+    if (n&gt;1) {
+        for (int i=0; i&lt;n-1; i++) {
+            Zamjena(mat,ProduktMatrica(mat,a));
+        }
+        return mat;
+    }
+    else if (n&lt;1){
+        for (int i=0; i&lt;mat.br_redova; i++) {
+            for (int j=0; j&lt;mat.br_kolona; j++) {
+                if (i==j) mat.elementi[i][j]=1;
+                else mat.elementi[i][j]=0;
+            }
+        }
+        return mat;
+    }
+<a name="1"></a><font color="#00FF00"><a href="match734-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+    return mat;
+}
+template&lt;typename T&gt;
+Matrica&lt;T&gt;MatricniPolinom (Matrica&lt;T&gt;m1, std::vector&lt;double&gt;v) {
+    if (m1.br_kolona!=m1.br_redova) throw std::domain_error ("Matrica mora biti kvadratna");
+    Matrica&lt;T&gt;mat=StvoriMatricu&lt;T&gt;(m1.br_redova,m1.br_kolona);
+</font><a name="2"></a><font color="#0000FF"><a href="match734-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+    for (int i=0; i&lt;v.size(); i++) {
+    Matrica&lt;T&gt;a=Stepenuj&lt;T&gt;(m1,i);
+    Matrica&lt;T&gt;b=PomnoziSaSkalarom&lt;T&gt;(a,v[i]);
+    Zamjena&lt;T&gt;(mat,ZbirMatrica&lt;T&gt;(mat,b));
+</font>    UnistiMatricu(a);
+    UnistiMatricu(b);
+    }
+    return mat;
+}
+int main () {
+    Matrica&lt;double&gt;a;
+    int m;
+    std::cout&lt;&lt;"Unesite dimenziju kvadratne matrice: ";
+    std::cin&gt;&gt;m;
+    try{
+        a=StvoriMatricu&lt;double&gt;(m,m);
+        std::cout&lt;&lt;"Unesite elemente matrice A: \n";
+        UnesiMatricu('A',a);
+    }
+    catch (std::bad_alloc) {
+        std::cout&lt;&lt;"Nema dovoljno memorije!\n";
+    }
+    std::cout&lt;&lt;"Unesite red polinoma: ";
+    int n;
+    std::cin&gt;&gt;n;
+    double x;
+    std::vector&lt;double&gt;v;
+    std::cout&lt;&lt;"Unesite koeficijente polinoma: ";
+    for (int i=0; i&lt;n+1; i++) {
+        std::cin&gt;&gt;x;
+        v.push_back(x);
+    }
+    Matrica&lt;double&gt;mat=MatricniPolinom&lt;double&gt;(a,v);
+    IspisiMatricu(mat,10);
+    UnistiMatricu(a);
+
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z2/student6571.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z2/student6571.cpp<p></p><pre>
+<a name="3"></a><font color="#00FFFF"><a href="match217-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_10.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 2)
+//Autotestovi by Eldar Kurtic (mail: ekurtic3@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;memory&gt;
+struct Korisnik{
+  
+  std::string ime ;
+  std::string prezime;
+  std::string adresa;
+  std::string telefon; 
+  
+};
+class Knjiga{
+  std::string naslov, ime_pisca, zanr;
+   int godina_izdanja;
+   std::shared_ptr&lt;Korisnik&gt; kod_koga_je;Korisnik *zaduzenje;
+  public:
+
+  Knjiga(std::string naslov, std::string ime_pisca, std::string zanr, int godina_izdanja) : naslov(naslov), ime_pisca(ime_pisca), zanr(zanr), godina_izdanja(godina_izdanja),kod_koga_je(nullptr) {}
+</font>  std::string DajNaslov() const{return naslov;}
+<a name="0"></a><font color="#FF0000"><a href="match217-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_43.gif"/></a>
+
+  std::string DajAutora() const{return ime_pisca;}
+  std::string DajZanr() const {return zanr;}
+  int DajGodinuIzdavanja() const {return godina_izdanja;}
+ 
+  Korisnik* DajKodKogaJe()  {
+    return  zaduzenje;
+    
+  }
+  //int zaduzenje=0;
+  void ZaduziKnjigu(Korisnik &amp;kod_koga_je){
+   zaduzenje=&amp;kod_koga_je;
+  }
+  void RazduziKnjigu(){
+    zaduzenje=nullptr;
+  }
+  bool DaLiJeZaduzena(){
+    if(zaduzenje!=nullptr) return true;
+    
+     if(zaduzenje==nullptr){return false;}
+  }
+};
+typedef std::map&lt;int,Korisnik*&gt;mapa1;
+typedef  std::pair&lt;int, Korisnik*&gt; par1;
+typedef std::map&lt;int, std::shared_ptr&lt;Knjiga&gt;&gt; mapa2;
+typedef std::pair&lt;int, std::shared_ptr&lt;Knjiga&gt;&gt; par2;
+class Biblioteka{
+ mapa1 mapa11;
+ mapa2 mapa22;
+ Korisnik*korisnici;
+//std::shared_ptr&lt;Korisnik&gt; korisnici;
+//std::shared_ptr&lt;Knjiga&gt; knjige ;
+  public:
+  
+~Biblioteka(){
+  
+  for(auto it=mapa11.begin(); it!=mapa11.end(); it++){
+    delete(it-&gt;second);
+  }
+  
+ 
+};
+
+  void RegistrirajNovogKorisnika(int clanski_broj, std::string ime, std::string prezime, std::string adresa, std::string telefon){
+  
+   korisnici=new Korisnik{ime,prezime,adresa,telefon};
+  mapa11.insert(par1(clanski_broj, korisnici)); 
+   
+  }
+ 
+  void RegistrirajNovuKnjigu(int clanski_broj, std::string naslov, std::string ime_pisca, std::string zanr, int godina_izdanja){
+ 
+    
+    //std::shared_ptr&lt;Knjiga&gt;knjige=std::make_shared Knjiga{ naslov, ime_pisca, zanr, godina_izdanja};
+  std::shared_ptr&lt;Knjiga&gt; knjige(std::make_shared&lt;Knjiga&gt;(naslov, ime_pisca, zanr, godina_izdanja));
+    mapa22.insert(par2(clanski_broj, knjige));
+    
+  
+    
+  }
+  Korisnik NadjiKorisnika(int clanski_broj){
+   for(auto it=mapa11.begin(); it!=mapa11.end(); it++) {
+      if(it-&gt;first==clanski_broj ){
+        auto p=it-&gt;second;
+      
+        return *p;
+        
+      }
+     
+ 
+  }
+  }
+  
+  Knjiga NadjiKnjigu(int clanski_broj){
+    for(auto it=mapa22.begin(); it!=mapa22.end(); it++){
+      if(it-&gt;first==clanski_broj ){
+        auto p(it-&gt;second);
+        p.get();
+        return *p;
+      }
+    }
+  }
+  
+  void IzlistajKorisnike(){
+    for(auto it=mapa11.begin(); it!=mapa11.end(); it++){
+      std::cout&lt;&lt;"Clanski broj: "&lt;&lt;it-&gt;first&lt;&lt;std::endl;
+</font>      std::cout&lt;&lt;"Ime i prezime: "&lt;&lt;it-&gt;second-&gt;ime&lt;&lt;" "&lt;&lt;it-&gt;second-&gt;prezime&lt;&lt;std::endl;
+      std::cout&lt;&lt;"Adresa: "&lt;&lt;it-&gt;second-&gt;adresa&lt;&lt;std::endl;
+<a name="1"></a><font color="#00FF00"><a href="match217-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_14.gif"/></a>
+
+      std::cout&lt;&lt;"Broj telefona: "&lt;&lt;it-&gt;second-&gt;telefon&lt;&lt;std::endl;
+      std::cout&lt;&lt;std::endl;
+      
+    }
+  }
+  void IzlistajKnjige(){
+    int brojac = 0;
+    for(auto it=mapa22.begin(); it!=mapa22.end(); it++){
+      for(auto it1=mapa11.begin(); it1!=mapa11.end(); it1++){
+        if(it-&gt;second-&gt;DaLiJeZaduzena()) brojac ++;
+    }
+    }
+    int novi_brojac=0;
+    for(auto it=mapa22.begin(); it!=mapa22.end(); it++){
+    for(auto it1=mapa11.begin(); it1!=mapa11.end(); it1++){
+      std::cout&lt;&lt;"Evidencijski broj: "&lt;&lt;it-&gt;first&lt;&lt;std::endl;
+</font>      std::cout&lt;&lt;"Naslov: "&lt;&lt;it-&gt;second-&gt;DajNaslov()&lt;&lt;std::endl;
+      std::cout&lt;&lt;"Pisac: "&lt;&lt;it-&gt;second-&gt;DajAutora()&lt;&lt;std::endl;
+      std::cout&lt;&lt;"Zanr: "&lt;&lt;it-&gt;second-&gt;DajZanr()&lt;&lt;std::endl;
+<a name="2"></a><font color="#0000FF"><a href="match217-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_11.gif"/></a>
+
+      std::cout&lt;&lt;"Godina izdavanja: "&lt;&lt;it-&gt;second-&gt;DajGodinuIzdavanja()&lt;&lt;std::endl;
+   
+    if(it-&gt;second-&gt;DaLiJeZaduzena()) novi_brojac++;
+      if (it-&gt;second-&gt;DaLiJeZaduzena() &amp;&amp; novi_brojac==brojac){ std::cout&lt;&lt;"Zaduzena kod korisnika: "&lt;&lt;it1-&gt;second-&gt;ime&lt;&lt;" "&lt;&lt;it1-&gt;second-&gt;prezime&lt;&lt;std::endl;
+     std::cout&lt;&lt;std::endl;}
+      else  { 
+        std::cout&lt;&lt;std::endl;
+        break;
+       }
+       
+       
+    }
+  }
+  }/*
+  void ZaduziKnjigu(int evidencijski_broj, int clanski_broj){
+    for(auto it=mapa22.begin(); it!=mapa22.end(); it++){
+      if(it-&gt;second-&gt;DaLiJeZaduzena()) continue;
+    
+ else{
+     NadjiKnjigu(evidencijski_broj);
+     auto k=NadjiKorisnika(clanski_broj);
+     for(auto it=mapa22.begin(); it!=mapa22.end(); it++){
+      auto a( it-&gt;second-&gt;ZaduziKnjigu(k));
+      a.get();
+     }
+  }
+}
+}*/
+};
+int main ()
+{
+
+	return 0;
+</font>}</pre>
+</body>
+</html>

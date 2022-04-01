@@ -1,0 +1,197 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4736.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student4736.cpp<p></p><pre>
+<a name="3"></a><font color="#00FFFF"><a href="match754-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;vector&gt;
+#include &lt;tuple&gt;
+
+using namespace std;
+
+
+typedef map&lt;string, vector&lt;string&gt;&gt; Knjiga;
+</font>
+bool Razmak(char znak)
+{
+    return !((znak&gt;='a'&amp;&amp;znak&lt;='z')||(znak&gt;='A'&amp;&amp;znak&lt;='Z')||(znak&gt;='0'&amp;&amp;znak&lt;='9'));
+}
+
+
+void izdvojiRijeciUMalaSlova(string recenica,set&lt;string&gt;&amp;rijeci)
+{
+    string rijec="";
+
+    for(int i = 0; i &lt; recenica.size(); i++) {
+        char znak = recenica[i];
+        if((znak&gt;='a'&amp;&amp;znak&lt;='z')||(znak&gt;='A'&amp;&amp;znak&lt;='Z')||(znak&gt;='0'&amp;&amp;znak&lt;='9')) {
+            if(znak&gt;='A'&amp;&amp;znak&lt;='Z')znak+=32;
+
+            rijec+=znak;
+        } else {
+            if(rijec!="")
+                rijeci.insert(rijec);
+            rijec="";
+        }
+    }
+    if(rijec!="")rijeci.insert(rijec);
+
+}
+
+
+set&lt;int&gt; vratiPozicije(string recenica, string rijec)
+{
+    for(int i = 0; i &lt; recenica.size(); i++) {
+        if(recenica[i]&gt;='A'&amp;&amp;recenica[i]&lt;='Z')recenica[i]+=32;
+    }
+    set&lt;int&gt;pozicije;
+    for(int i = 0; i &lt;= (int(recenica.size())-int(rijec.size())); i++) {
+        int prije=i-1;
+        int poslije = i+rijec.size();
+        if(recenica.substr(i,rijec.size())==rijec) {
+            if((prije==-1 || Razmak(recenica[prije]))&amp;&amp;(poslije==recenica.size()||Razmak(recenica[poslije])) ) {
+                pozicije.insert(i);
+            }
+        }
+    }
+    return pozicije;
+}
+
+
+<a name="2"></a><font color="#0000FF"><a href="match754-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+map&lt; string, set&lt; tuple&lt;string,int,int&gt; &gt; &gt; KreirajIndeksPojmova(Knjiga k)
+{
+    map&lt;string, set&lt; tuple&lt;string,int,int&gt; &gt;&gt;indeks_pojmova;
+</font>
+
+    set&lt;string&gt;pojmovi;
+
+    for(auto it = k.begin(); it!=k.end(); it++) {
+        string ime_poglavlja = it-&gt;first;
+        vector&lt;string&gt;stranice = it-&gt;second;
+
+        for(string stranica:stranice) {
+            izdvojiRijeciUMalaSlova(stranica, pojmovi);
+        }
+    }
+
+    for (auto pojam : pojmovi) {
+        set&lt; tuple&lt;string,int,int&gt; &gt; skup_pozicija;
+        for(auto it = k.begin(); it!=k.end(); it++) {
+            string ime_poglavlja = it-&gt;first;
+            vector&lt;string&gt;stranice = it-&gt;second;
+            for(int i=0; i&lt;stranice.size(); i++) {
+                set&lt;int&gt;indeksi = vratiPozicije(stranice[i],pojam);
+                for(int indeks:indeksi) {
+                    tuple&lt;string,int,int&gt;t(ime_poglavlja,i+1,indeks);
+                    skup_pozicija.insert(t);
+                }
+            }
+        }
+<a name="0"></a><font color="#FF0000"><a href="match754-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+        indeks_pojmova[pojam] = skup_pozicija;
+    }
+
+    return indeks_pojmova;
+}
+
+
+set&lt;tuple&lt;string,int,int&gt;&gt; PretraziIndeksPojmova(string rijec, map&lt;string, set&lt;tuple&lt;string,int,int&gt;&gt;&gt; indeks_pojmova)
+</font>{
+    auto it = indeks_pojmova.find(rijec);
+
+    if(it == indeks_pojmova.end()) {
+        throw logic_error("Pojam nije nadjen");
+    } else {
+<a name="1"></a><font color="#00FF00"><a href="match754-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+        return it-&gt;second;
+    }
+}
+
+
+void IspisiIndeksPojmova(map&lt;string, set&lt;tuple&lt;string,int,int&gt;&gt;&gt; indeksPojmova)
+{
+
+    for(auto it = indeksPojmova.begin(); it!=indeksPojmova.end(); it++) {
+</font>        string pojam = it-&gt;first;
+        auto skup_pozicija = it-&gt;second;
+        cout&lt;&lt;pojam&lt;&lt;": ";
+        for(auto it = skup_pozicija.begin(); it!=skup_pozicija.end();) {
+            auto t = *(it);
+            cout&lt;&lt;get&lt;0&gt;(t)&lt;&lt;"/"&lt;&lt;get&lt;1&gt;(t)&lt;&lt;"/"&lt;&lt;get&lt;2&gt;(t);
+            it++;
+            if(it!=skup_pozicija.end())cout&lt;&lt;", ";
+        }
+        cout&lt;&lt;endl;
+    }
+}
+int main ()
+{
+    Knjiga k;
+    string poglavlje="";
+
+    while(true) {
+        cout&lt;&lt;"Unesite naziv poglavlja: ";
+        cin&gt;&gt;poglavlje;
+        cin.ignore(1000,'\n');
+        if(poglavlje==".")break;
+
+        vector&lt;string&gt; stranice;
+        while(true) {
+            cout&lt;&lt;"Unesite sadrzaj stranice "&lt;&lt;stranice.size()+1&lt;&lt;": ";
+            string sadrzajStranice;
+            getline(cin,sadrzajStranice);
+            if(sadrzajStranice==".") break;
+            stranice.push_back(sadrzajStranice);
+        }
+        k[poglavlje] = stranice;
+    }
+
+
+    /*for(auto it=k.begin();it!=k.end();it++){
+        string poglavlje = it-&gt;first;
+        vector&lt;string&gt; stranice = it-&gt;second;
+        cout&lt;&lt;poglavlje&lt;&lt;": ";
+        for(string stranica:stranice)cout&lt;&lt;stranica&lt;&lt;endl;
+    }*/
+    cout&lt;&lt;endl&lt;&lt;"Kreirani indeks pojmova:"&lt;&lt;endl;
+
+
+    map&lt; string, set&lt; tuple&lt;string,int,int&gt; &gt; &gt; indeksPojmova = KreirajIndeksPojmova(k);
+    IspisiIndeksPojmova(indeksPojmova);
+
+
+    while(true) {
+        try {
+            string trazenaRijec;
+            cout&lt;&lt;"Unesite rijec: ";
+            cin&gt;&gt;trazenaRijec;
+            if(trazenaRijec==".")break;
+            set&lt;tuple&lt;string,int,int&gt;&gt; skup_pozicija = PretraziIndeksPojmova(trazenaRijec,indeksPojmova);
+
+
+            for(auto it = skup_pozicija.begin(); it!=skup_pozicija.end();) {
+                auto t = *(it);
+                cout&lt;&lt;get&lt;0&gt;(t)&lt;&lt;"/"&lt;&lt;get&lt;1&gt;(t)&lt;&lt;"/"&lt;&lt;get&lt;2&gt;(t)&lt;&lt;" ";
+                it++;
+            }
+            cout&lt;&lt;endl;
+        } catch(logic_error e) {
+            cout&lt;&lt;"Unesena rijec nije nadjena!"&lt;&lt;endl;
+        }
+    }
+    return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student2676.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student2676.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match145-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cin;
+using std::cout;
+using std::pair;
+using std::vector;
+
+std::function&lt;double(double)&gt; BaricentricnaInterpolacija(vector&lt;pair&lt;double, double&gt;&gt; v, int d)
+{
+    if(d&lt;0 || d&gt;v.size()) throw std::domain_error("Nedozvoljen red");
+    vector&lt;double&gt; w;
+    for(int i=1;i&lt;=v.size();i++)
+    {
+        for(int o=i;o&lt;v.size();o++)
+        {
+            if(v[o].first==v[i-1].first) throw std::domain_error("Neispravni cvorovi");
+        }
+        w.push_back(0);
+        int mx, mn;
+        if(1&gt;=i-d) mx=1; else mx=i-d;
+        if(i&lt;=v.size()-d) mn=i; else mn=v.size()-d;
+        for(int k=mx;k&lt;=mn;k++)
+        {
+            double pr=1;
+            for(int j=k;j&lt;=k+d;j++)
+            {
+                if(i!=j) pr*=(1/(v[i-1].first-v[j-1].first));
+            }
+            w[i-1]+=pow(-1, k-1)*pr;
+        }
+    }
+    return [v, w](double x)
+    {
+        double s1=0, s2=0, s;
+        for(int i=0;i&lt;v.size();i++)
+        {
+            if(x==v[i].first) return v[i].second;
+            s=w[i]/(x-v[i].first);
+            s1+=s*v[i].second;
+            s2+=s;
+        }
+        return s1/s2;
+    };
+}
+
+std::function&lt;double(double)&gt; BaricentricnaInterpolacija(double f(double), double xmn, double xmx, double dtx, int d)
+{
+    if(xmn&gt;xmx || dtx&lt;=0) throw std::domain_error("Nekorektni parametri");
+    vector&lt;pair&lt;double, double&gt;&gt; v;
+    for(double i=xmn; i&lt;=xmx; i+=dtx) v.push_back(std::make_pair(i, f(i)));
+    try
+    {
+        return BaricentricnaInterpolacija(v, d);
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+int main ()
+{
+    int op;
+    cout &lt;&lt; "Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    cin &gt;&gt; op;
+    int d;
+    if(op==1)
+    {
+        int bc;
+        cout &lt;&lt; "Unesite broj cvorova: ";
+        cin &gt;&gt; bc;
+        vector&lt;pair&lt;double, double&gt;&gt; v(bc);
+        cout &lt;&lt; "Unesite cvorove kao parove x y: ";
+        for(int i=0;i&lt;bc;i++)
+        {
+            cin &gt;&gt; v[i].first;
+            cin &gt;&gt; v[i].second;
+        }
+        cout &lt;&lt; "Unesite red interpolacije: ";
+        cin &gt;&gt; d;
+        double a;
+        try
+        {
+            auto f=BaricentricnaInterpolacija(v, d);
+            while(cin)
+            {
+                cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                cin &gt;&gt; a;
+                if(cin) cout &lt;&lt; "f(" &lt;&lt; a &lt;&lt; ") = " &lt;&lt; f(a) &lt;&lt; "\n";       
+            }
+        }
+        catch(std::domain_error ero)
+        {
+            cout &lt;&lt; ero.what() &lt;&lt; "\n";
+            return 0;
+        }
+    }
+    if(op==2)
+    {
+        double x1, x2, ko;
+        cout &lt;&lt; "Unesite krajeve intervala i korak: ";
+        cin &gt;&gt; x1;
+        cin &gt;&gt; x2;
+        cin &gt;&gt; ko;
+        cout &lt;&lt; "Unesite red interpolacije: ";
+        cin &gt;&gt; d;
+        double a;
+        try
+        {
+            auto f=BaricentricnaInterpolacija([](double x){return x*x + sin(x);}, x1, x2, ko, d);
+            while(cin)
+            {
+                cout &lt;&lt; "Unesite argument (ili \"kraj\" za kraj): ";
+                cin &gt;&gt; a;
+                if(cin) cout &lt;&lt; "f(" &lt;&lt; a &lt;&lt; ") = " &lt;&lt; a*a+sin(a) &lt;&lt; " fapprox(" &lt;&lt; a &lt;&lt; ") = " &lt;&lt; f(a) &lt;&lt; "\n";
+            }
+        }
+        catch(std::domain_error ero)
+        {
+            cout &lt;&lt; ero.what() &lt;&lt; "\n";
+            return 0;
+        }
+    }
+	return 0;
+</font>}</pre>
+</body>
+</html>

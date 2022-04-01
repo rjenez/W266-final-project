@@ -1,0 +1,195 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student4273.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student4273.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt; //u njoj su definirani standardni izuzeci
+
+<a name="0"></a><font color="#FF0000"><a href="match103-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cin; using std::cout; using std::endl; using std::vector;
+typedef vector&lt;vector&lt;double&gt;&gt; Matrica;
+
+Matrica KreirajMatricu (int br_redova, int br_kolona) {
+	return Matrica(br_redova, std::vector&lt;double&gt;(br_kolona));
+}
+
+Matrica HorizontlnoOgledalo (Matrica m) {
+	Matrica pomocna;
+	int br_redova(m.size()), br_kolona(m[0].size());
+	
+	pomocna=KreirajMatricu(br_redova, br_kolona); //m nije grbava?
+	for (int i=0; i&lt;br_redova; i++) {
+		for (int j=0; j&lt;br_kolona; j++) {
+			pomocna[i][j]=m[i][br_kolona-j-1];
+		}
+	}
+	return pomocna;
+}
+
+Matrica VertikalnoOgledalo (Matrica m) {
+	Matrica pomocna;
+	int br_redova(m.size()), br_kolona(m[0].size());
+	
+	pomocna=KreirajMatricu(br_redova, br_kolona); //m nije grbava?
+	for (int i=0; i&lt;br_redova; i++) {
+		for (int j=0; j&lt;br_kolona; j++) {
+			pomocna[i][j]=m[br_redova-i-1][j];
+		}
+	}
+	return pomocna;
+}
+
+Matrica KombinovanoOgledalo (Matrica m) {
+	Matrica pomocna;
+	int br_redova(m.size()), br_kolona(m[0].size());
+	
+	pomocna=KreirajMatricu(br_redova, br_kolona); //m nije grbava?
+	for (int i=0; i&lt;br_redova; i++) {
+		for (int j=0; j&lt;br_kolona; j++) {
+			pomocna[i][j]=m[br_redova-i-1][br_kolona-j-1];
+		}
+	}
+	return pomocna;
+}
+
+Matrica OgledaloMatrica (Matrica m) {
+	Matrica pomocna, math, matv, mathv;
+	//Provjerimo da li je matrica ispravnog formata
+	for (int i=1; i&lt;m.size(); i++) {
+		if (m[i].size() != m[0].size()) throw std::domain_error ("Matrica nije korektna");
+	}
+	//Ako je m formata 0x0 vracamo matricu formata 0x0
+	if (m.size()==0) return KreirajMatricu(0,0);
+	int br_redova(m.size()), br_kolona(m[0].size());
+	
+	pomocna=KreirajMatricu(3*br_redova, 3*br_kolona);
+	math=HorizontlnoOgledalo(m);
+	matv=VertikalnoOgledalo(m);
+	mathv=KombinovanoOgledalo(m);
+	
+	for (int i=0; i&lt;pomocna.size(); i++) {
+		for (int j=0; j&lt;pomocna[0].size(); j++) {
+			//Popunimo matricu sa kombinovanim ogledalima
+			if (i&lt;br_redova &amp;&amp; j&lt;br_kolona) {
+				pomocna[i][j]=mathv[i][j];
+				continue;
+			}
+			if (i&gt;(2*br_redova-1) &amp;&amp; j&lt;br_kolona) {
+				pomocna[i][j]=mathv[i-2*br_redova][j];
+				continue;
+			}
+			if (i&lt;br_redova &amp;&amp; j&gt;(2*br_kolona-1)) {
+				pomocna[i][j]=mathv[i][j-2*br_kolona];
+				continue;
+			}
+			if (i&gt;(2*br_redova-1) &amp;&amp; j&gt;(2*br_kolona-1)) {
+				pomocna[i][j]=mathv[i-2*br_redova][j-2*br_kolona];
+				continue;
+			}
+			//Popunimo sada vertikalna ogledala
+			if (i&lt;br_redova &amp;&amp; j&lt;(2*br_kolona) &amp;&amp; j&gt;(br_kolona-1)) {
+				pomocna[i][j]=matv[i][j-br_kolona];
+				continue;
+			}
+			if (i&gt;(2*br_redova-1) &amp;&amp; j&lt;(2*br_kolona) &amp;&amp; j&gt;(br_kolona-1)) {
+				pomocna[i][j]=matv[i-2*br_redova][j-br_kolona];
+				continue;
+			}
+			//Popunimo sada horizontalna ogledala
+			if (i&gt;(br_redova-1) &amp;&amp; i&lt;(2*br_redova) &amp;&amp; j&lt;br_kolona) {
+				pomocna[i][j]=math[i-br_redova][j];
+				continue;
+			}
+			if (i&gt;(br_redova-1) &amp;&amp; i&lt;(2*br_redova) &amp;&amp; j&gt;=2*br_kolona) {
+				pomocna[i][j]=math[i-br_redova][j-2*br_kolona];
+				continue;
+			}
+			//Popunimo sada sa pocetnom matricom
+			else {
+				pomocna[i][j]= m[i-br_redova][j-br_kolona];
+			}
+		}
+	}
+	return pomocna;
+}
+
+int main ()
+{
+	int m, n;
+	cout &lt;&lt; "Unesite dimenzije matrice (m n): ";
+	cin &gt;&gt; m &gt;&gt; n;
+	if (m&lt;0 || n&lt;0) {
+		cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!";
+		return 0;
+	}
+	Matrica mat, mat1, mat2, mat3, mat4;
+	mat=KreirajMatricu(m, n);
+	cout &lt;&lt; "Unesite elemente matrice: ";
+	for (int i=0; i&lt;m; i++) {
+		for (int j=0; j&lt;n; j++) {
+			cin &gt;&gt; mat[i][j];
+		}
+	}
+	cout &lt;&lt; endl;
+	
+/*	mat1=HorizontlnoOgledalo(mat);
+	cout &lt;&lt; "Horizontalno ogledalo matrice je: " &lt;&lt; endl;
+	for (int i=0; i&lt;m; i++) {
+		for (int j=0; j&lt;n; j++) {
+			cout &lt;&lt; mat1[i][j] &lt;&lt; " ";
+		}
+		cout &lt;&lt; endl;
+	}
+	mat2=VertikalnoOgledalo(mat);
+	cout &lt;&lt; "Vertikalno ogledalo matrice je: " &lt;&lt; endl;
+	for (int i=0; i&lt;m; i++) {
+		for (int j=0; j&lt;n; j++) {
+			cout &lt;&lt; mat2[i][j] &lt;&lt; " ";
+		}
+		cout &lt;&lt; endl;
+	}
+	
+	mat3=KombinovanoOgledalo(mat);
+	cout &lt;&lt; "Kombinovano ogledalo matrice je: " &lt;&lt; endl;
+	for (int i=0; i&lt;m; i++) {
+		for (int j=0; j&lt;n; j++) {
+			cout &lt;&lt; mat3[i][j] &lt;&lt; " ";
+		}
+		cout &lt;&lt; endl;
+	}*/
+	
+	try {
+		mat4=OgledaloMatrica(mat);
+	}
+	catch (std::domain_error izuzetak) {
+      cout &lt;&lt; izuzetak.what() &lt;&lt; endl;
+   }
+	cout &lt;&lt; "Rezultantna matrica: " &lt;&lt; endl;
+	for (int i=0; i&lt;mat4.size(); i++) {
+		for (int j=0; j&lt;mat4[0].size(); j++) {
+			cout &lt;&lt;std::setw(4) &lt;&lt; mat4[i][j];
+		}
+		cout &lt;&lt; endl;
+	}
+	
+	return 0;
+</font>}</pre>
+</body>
+</html>

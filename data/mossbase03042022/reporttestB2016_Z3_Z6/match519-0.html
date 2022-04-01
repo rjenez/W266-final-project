@@ -1,0 +1,128 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student8389.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student8389.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match519-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 6
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;list&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt;
+struct Dijete {
+    std::string ime;
+    std::shared_ptr&lt;Dijete&gt; sljedeci;
+};
+int IzbrojiSlova (std::string s) {
+    int brojac(0);
+    for (int i=0; i&lt;s.size(); i++) {
+        if ((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9'))
+</font><a name="1"></a><font color="#00FF00"><a href="match519-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+        //if ((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]='A' &amp;&amp; s[i]&lt;='Z'))
+            brojac++;
+    }
+    return brojac;
+}
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje (std::vector&lt;std::string&gt; v, int n) {
+</font>    int broj, ostatak;
+    if (n&lt;1 || n&gt;v.size()) throw std::logic_error ("Razvrstavanje nemoguce");
+    broj=v.size()/n;
+    ostatak=v.size()%n;
+    std::list&lt;std::string&gt;lista;
+    std::shared_ptr&lt;Dijete&gt; pocetak(nullptr), prethodni(nullptr),  p(nullptr);
+   std::shared_ptr&lt;Dijete&gt;novi(nullptr);
+    for (int i=0; i&lt;v.size(); i++) {
+        std::shared_ptr&lt;Dijete&gt;novi(new Dijete);
+        novi-&gt;ime=v[i];
+        novi-&gt;sljedeci=nullptr;
+        if (i==v.size()-1) {
+            novi-&gt;sljedeci=pocetak;
+            p=novi;
+        }
+        if(!pocetak)
+            pocetak=novi;
+        else prethodni-&gt;sljedeci=novi;
+        prethodni=novi;
+        novi=nullptr;
+    }
+    auto it(pocetak);
+    std::vector&lt;std::set&lt;std::string&gt;&gt; skup(n);
+    int brojac(0);
+    bool imaostatka(false);
+    int preostalo;
+    for (int i=0; i&lt;n; i++) {
+        std::string temp;
+        temp.resize(0);
+        if (ostatak&gt;0) imaostatka=true;
+        else imaostatka=false;
+        if(imaostatka) {
+            preostalo=1;
+            ostatak--;
+        }
+        else preostalo=0;
+        for (int j=0; j&lt;broj+preostalo; j++) {
+            for (int k=0; k&lt;brojac-1; k++) {
+                it=it-&gt;sljedeci;
+                p=p-&gt;sljedeci;
+            }
+            skup[i].insert(it-&gt;ime);
+            temp=it-&gt;ime;
+            brojac=IzbrojiSlova(temp);
+            if (it==p) {
+                temp=p-&gt;ime;
+                p=nullptr;
+                continue;
+            }
+            p-&gt;sljedeci=it-&gt;sljedeci;
+           // it=nullptr;
+            //if (p!=nullptr)
+            it=nullptr;
+            if (p!=nullptr)
+            it=p-&gt;sljedeci;
+        }
+    }
+    it-&gt;sljedeci=nullptr;
+    //p-&gt;sljedeci=nullptr;
+    return skup;
+}
+int main ()
+{
+    int n, brojtimova;
+    std::cout&lt;&lt;"Unesite broj djece: ";
+    std::cin&gt;&gt;n;
+    std::vector&lt;std::string&gt;djeca(n);
+    std::cout&lt;&lt;"Unesite imena djece: ";
+    std::cin.ignore(10000, '\n');
+    for (int i=0; i&lt;n; i++) {
+        std::getline(std::cin, djeca[i]);
+    }
+<a name="2"></a><font color="#0000FF"><a href="match519-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+    std::cout&lt;&lt;"\nUnesite broj timova: ";
+    std::cin&gt;&gt;brojtimova;
+    try {
+        std::vector&lt;std::set&lt;std::string&gt;&gt;a(Razvrstavanje(djeca,brojtimova));
+        for (int i=0; i&lt;brojtimova; i++) {
+</font>            std::cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+            auto imena(a[i].begin());
+            for (int j=0; j&lt;a[i].size()-1; j++){
+                std::cout&lt;&lt;*imena&lt;&lt;", ";
+                imena++;
+            }
+            std::cout&lt;&lt;*imena&lt;&lt;std::endl;
+        }
+    }
+    catch(std::logic_error a) {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;a.what();
+    }
+	return 0;
+}</pre>
+</body>
+</html>

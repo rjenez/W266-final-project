@@ -1,0 +1,155 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student6995.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student2155.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match131-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+int PotencijalniKrivci(char **&amp;niz,std::vector&lt;std::string&gt; krivci){
+	
+	try{
+		niz = new char*[krivci.size()];
+		try{
+			for(int i(0);i &lt; krivci.size();i++) niz[i] = nullptr;
+			for(int i(0);i &lt; krivci.size();i++)niz[i] = new char[krivci[i].size()+1];
+			for(int i(0);i &lt; krivci.size();i++) strcpy(niz[i],krivci[i].c_str());
+		}catch(std::bad_alloc){
+			for(int i(0);i &lt; krivci.size();i++) delete[] niz[i];
+			delete[] niz;
+			throw;
+		}
+	}catch(std::bad_alloc){
+		throw;	
+	}
+	return krivci.size();
+}
+int OdbaciOptuzbu(char **&amp;niz,int vel,std::string krivac){
+bool greska(true);
+for(int i(0);i &lt; vel;i++){
+	if(niz[i] &amp;&amp; !strcmp(niz[i],krivac.c_str())){
+		greska = false;
+		*niz[i]=0;
+		delete[] niz[i];
+		niz[i]=nullptr;
+		break;
+	}
+}
+if(greska)throw std::domain_error("Osoba sa imenom "+krivac+" nije bila optuzena");
+int brojac(0);
+for(int i(0);i &lt; vel;i++){
+	if(!niz[i])brojac++;
+}
+if(brojac &gt; 10){
+	if(vel-brojac){
+	try{
+		char **tmp(niz);
+		niz = new char*[vel-brojac];
+			int j(0);
+			for(int i(0);i &lt; vel - brojac;i++){
+				if(tmp[j]){
+					niz[i]=tmp[i];
+				}else i--;
+				j++;
+			}
+			delete[] tmp;
+			return vel-brojac;
+	}catch(std::bad_alloc){
+		return vel;
+	}
+}else{
+	delete[] niz;
+	niz = nullptr;
+}
+}
+return vel;
+}
+int DodajOptuzbu(char **&amp;niz,int vel,std::string krivac){
+	char *rijec=nullptr;
+	try{
+		rijec = new char[krivac.size()+1];
+		strcpy(rijec,krivac.c_str());
+	}catch(std::bad_alloc){
+		throw;		
+	}
+	
+	for(int i(0);i &lt; vel;i++){
+		if(!niz[i]){
+			niz[i]=rijec;
+			return vel;
+		}
+	}
+	
+	try{
+		char **tmp(niz);
+		niz = new char*[vel+1];
+	
+			for(int i(0);i &lt; vel;i++)niz[i]=tmp[i];
+			
+			niz[vel]=rijec;
+			
+			delete[] tmp;
+			
+			return vel+1;
+	}catch(std::bad_alloc){
+		delete[] rijec;
+		throw;
+	}
+}
+void IzlistajOptuzbu(char **niz,int vel){
+	for(int i(0);i &lt; vel;i++){
+		if(niz[i]) std::cout &lt;&lt; niz[i] &lt;&lt; std::endl;
+	}
+}
+int main ()
+{
+	int n;
+	char ** niz(nullptr);
+	std::vector&lt;std::string&gt; Krivci;
+	std::string s;
+	std::cout &lt;&lt; "Koliko potencijalnih krivaca zelite unijeti?\n";
+	std::cin &gt;&gt; n;
+	std::cout &lt;&lt; "Unesite potencijalne krivce: \n";
+	for(int i(0);i &lt; n;i++)
+		std::cin &gt;&gt; s,Krivci.push_back(s);
+		
+	int vel(PotencijalniKrivci(niz,Krivci));
+	try{	for(;;){
+		std::cout &lt;&lt; "Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: ";
+		std::cin &gt;&gt; n;
+		if(n == 1){
+			std::cout &lt;&lt; "\nUnesite ime novog optuzenog: \n";
+			std::cin &gt;&gt; s;
+			vel = DodajOptuzbu(niz,vel,s);
+		}else if(n == 2){
+			std::cout &lt;&lt; "\nUnesite ime koje zelite izbaciti: \n";
+			std::cin &gt;&gt; s;
+			vel = OdbaciOptuzbu(niz,vel,s);
+		}else if(n == 3){
+			std::cout &lt;&lt; "\n";
+			IzlistajOptuzbu(niz,vel);
+		}else if(!n){
+			for(int i(0);i &lt; vel;i++)delete[] niz[i];
+			delete[] niz;
+			break;
+		}
+	}
+	}catch(std::domain_error izuzetak){
+		std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what(); 
+		for(int i(0);i &lt; vel;i++)delete[] niz[i];
+			delete[] niz;
+	}catch(std::bad_alloc){
+			std::cout &lt;&lt; "Izuzetak: Neuspjela alokacija";
+		for(int i(0);i &lt; vel;i++)delete[] niz[i];
+			delete[] niz;
+	}
+	return 0;
+</font>}</pre>
+</body>
+</html>

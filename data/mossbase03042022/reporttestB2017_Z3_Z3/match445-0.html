@@ -1,0 +1,355 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z3/student7162.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z3/student7162.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 3
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;new&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+template &lt;typename TipElementa&gt;
+struct Matrica{
+    int br_redova, br_kolona;
+    TipElementa **elementi = nullptr;
+};
+
+// Unistavanje matrice i viska elemenata
+template &lt;typename TipElementa&gt;
+void UnistiMatricu(Matrica&lt;TipElementa&gt; matrica){
+    // ako ne odgovara
+    if(!matrica.elementi){
+        return;
+    }
+    
+    // brisanje elementa i redova
+    for(int i=0; i&lt;matrica.br_redova; i++){
+        delete [] matrica.elementi[i];
+    }
+    
+    // brisanje pokazivaca
+    delete[] matrica.elementi;
+    // osiguravanje
+    matrica.elementi = nullptr;
+}
+
+// Kreiranje matrice
+template &lt;typename TipElementa&gt;
+Matrica&lt;TipElementa&gt; StvoriMatricu(int br_redova, int br_kolona){
+    // inicijalizacija matrice
+    Matrica&lt;TipElementa&gt; mat;
+    mat.br_redova = br_redova;
+    mat.br_kolona = br_kolona;
+    mat.elementi = new TipElementa*[br_redova];
+    
+    // postavljanje svih pokazivaca na nullptr;
+    for(int i=0; i&lt;br_redova; i++){
+        mat.elementi[i] = nullptr;
+    }
+    
+    // pokusavanje alociranja svakog elementa
+    try{
+        for(int i=0; i&lt;br_redova; i++){
+            mat.elementi[i] = new TipElementa[br_kolona];
+        }
+    } catch (...){
+        UnistiMatricu(mat);
+        throw;
+    }
+    return mat;
+}
+
+// Ispis matrice
+template &lt;typename TipElementa&gt;
+void IspisiMatricu(const Matrica&lt;TipElementa&gt; &amp;mat, int sirina_ispisa, int preciznost = 6, bool treba_brisati = false){
+    for(int i=0; i&lt;mat.br_redova; i++){
+        for(int j=0; j&lt;mat.br_kolona; j++){
+            std::cout &lt;&lt; std::setw(sirina_ispisa) &lt;&lt; std::setprecision(preciznost) &lt;&lt; mat.elementi[i][j];
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+    if(treba_brisati == true){
+        UnistiMatricu(mat);
+    }
+}
+
+// Unos matrice
+template &lt;typename TipElementa&gt;
+void UnesitMatricu(char ime_matrice, Matrica&lt;TipElementa&gt; &amp;matrica){
+    for(int i=0; i&lt;matrica.br_redova; i++){
+        for(int j=0; j&lt;matrica.br_kolona; j++){
+            std::cout &lt;&lt; ime_matrice &lt;&lt; "(" &lt;&lt; i+1 &lt;&lt; "," &lt;&lt; j+1 &lt;&lt; ") = ";
+            std::cin &gt;&gt; matrica.elementi[i][j];
+        }
+    }
+}
+
+// Proizvod skalara 1
+<a name="2"></a><font color="#0000FF"><a href="match445-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+template &lt;typename TipElementa&gt;
+void MnozenjeSkalarom_1(Matrica&lt;TipElementa&gt; &amp;matrica, double skalar){
+    for(int i=0; i&lt;matrica.br_redova; i++){
+        for(int j=0; j&lt;matrica.br_kolona; j++){
+            matrica.elementi[i][j] = matrica.elementi[i][j] * skalar;
+        }
+    }
+}
+
+// Proizvod skalara 2
+template &lt;typename TipElementa&gt;
+Matrica&lt;TipElementa&gt; MnozenjeSkalarom_2(const Matrica&lt;TipElementa&gt; &amp;matrica, double skalar){
+</font>    Matrica&lt;TipElementa&gt; tmp = StvoriMatricu&lt;TipElementa&gt;(matrica.br_redova, matrica.br_kolona);
+    for(int i=0; i&lt;matrica.br_redova; i++){
+        for(int j=0; j&lt;matrica.br_kolona; j++){
+<a name="0"></a><font color="#FF0000"><a href="match445-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_9.gif"/></a>
+
+            tmp.elementi[i][j] = matrica.elementi[i][j] * skalar;
+        }
+    }
+    return tmp;
+}
+
+// Zbir matrica
+template &lt;typename TipElementa&gt;
+void ZbirMatrica(Matrica&lt;TipElementa&gt; &amp;matrica_1, const Matrica&lt;TipElementa&gt; &amp;matrica_2){
+    if(matrica_1.br_redova != matrica_2.br_redova || matrica_1.br_kolona != matrica_2.br_kolona){
+        throw std::domain_error ("Matrice nemaju jednake dimenzije!");
+    }
+    for(int i=0; i&lt;matrica_1.br_redova; i++){
+        for(int j=0; j&lt;matrica_1.br_kolona; j++){
+            matrica_1.elementi[i][j] = matrica_1.elementi[i][j] + matrica_2.elementi[i][j];
+        }
+    }
+}
+
+// Produkt dvije matrice
+template &lt;typename TipElementa&gt;
+Matrica&lt;TipElementa&gt; ProduktMatrica (const Matrica&lt;TipElementa&gt; &amp;matrica_1, const Matrica&lt;TipElementa&gt; &amp;matrica_2){
+</font>    // Nisu saglasne za mnozenje
+    if(matrica_1.br_kolona != matrica_2.br_redova){
+        UnistiMatricu(matrica_1);
+        UnistiMatricu(matrica_2);
+        throw std::domain_error ("Matrice nisu saglasne za mnozenje");
+    }
+    
+    auto produkt = StvoriMatricu&lt;TipElementa&gt;(matrica_1.br_redova, matrica_1.br_kolona); // kvadratna pa mogu isti broj redova i kolona
+    
+    for(int i=0; i&lt;matrica_1.br_redova; i++){
+<a name="1"></a><font color="#00FF00"><a href="match445-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+        for(int j=0; j&lt;matrica_1.br_kolona; j++){
+            produkt.elementi[i][j] = 0;
+        }
+    }
+    
+    for(int i=0; i&lt;matrica_1.br_redova; i++){
+        for(int j=0; j&lt;matrica_1.br_kolona; j++){
+            int suma = 0;
+            for(int k=0; k&lt;matrica_1.br_kolona; k++){
+                suma = suma + (matrica_1.elementi[i][k] * matrica_2.elementi[k][j]); 
+            }
+            produkt.elementi[i][j] = suma;
+</font>        }
+    }
+    
+    return produkt;
+}
+
+// Nula matrica
+template &lt;typename TipElementa&gt;
+void NulaMatrica (Matrica&lt;TipElementa&gt; &amp;matrica){
+    for(int i=0; i&lt;matrica.br_redova; i++){
+        for(int j=0; j&lt;matrica.br_kolona; j++){
+            matrica.elementi[i][j] = 0;
+        }
+    }
+}
+
+// Jedinicna
+template &lt;typename TipElementa&gt;
+void JedinicnaMatrica (Matrica&lt;TipElementa&gt; &amp;matrica){
+    for(int i=0; i&lt;matrica.br_redova; i++){
+        for(int j=0; j&lt;matrica.br_kolona; j++){
+            if(i==j){
+                matrica.elementi[i][j] = 1;
+            } else {
+                matrica.elementi[i][j] = 0;
+            }
+        }
+    }
+}
+
+// Matricni Polinom dvije matrice
+template &lt;typename TipElementa, typename pok_it&gt;
+Matrica&lt;TipElementa&gt; MatricniPolinom (const Matrica&lt;TipElementa&gt; &amp;matrica, int n, pok_it slider){
+    // v0
+    
+    // Ako broj koef. nije dobar
+    if(n&lt;0){
+        UnistiMatricu(matrica);
+        throw std::domain_error ("Neispravan stepen polinoma");
+    }
+    
+    // Ako nije kvadratna matrica
+    if(matrica.br_redova != matrica.br_kolona){
+        UnistiMatricu(matrica);
+        throw std::domain_error ("Matrica mora biti kvadratna");
+    }
+    
+    Matrica&lt;TipElementa&gt; kopija_matricana_matrica = StvoriMatricu&lt;TipElementa&gt;(matrica.br_redova, matrica.br_kolona);
+    Matrica&lt;TipElementa&gt; kopija_matrica = kopija_matricana_matrica;
+    
+    // Pretvori u nula matricu
+    NulaMatrica(kopija_matricana_matrica);
+    
+    // Izuzetak
+    if(n == 0){
+        return kopija_matricana_matrica;
+    }
+    
+    // Jedinicna
+    Matrica&lt;TipElementa&gt; jedinicna = StvoriMatricu&lt;TipElementa&gt;(matrica.br_redova, matrica.br_kolona);
+    JedinicnaMatrica(jedinicna);
+    
+    Matrica&lt;TipElementa&gt; mat = StvoriMatricu&lt;TipElementa&gt;(matrica.br_redova, matrica.br_kolona);
+    // Kopiranje
+    for(int i=0; i&lt;matrica.br_redova; i++){
+        for(int j=0; j&lt;matrica.br_kolona; j++){
+            mat.elementi[i][j] = matrica.elementi[i][j];
+        }
+    }
+    
+    try{
+        int brojac = 0;
+        while(brojac &lt;= n){
+            if (brojac&gt;1){
+                Matrica&lt;TipElementa&gt; tmp1;
+                Matrica&lt;TipElementa&gt; tmp2;
+                
+                // Razmjena
+                tmp1 = mat;
+                mat = ProduktMatrica(mat, matrica);
+                tmp2 = MnozenjeSkalarom_2&lt;TipElementa&gt;(mat, *slider);
+                
+                // Saberi
+                ZbirMatrica&lt;TipElementa&gt;(kopija_matricana_matrica, tmp2);
+                
+                // Brisi novonastale
+                UnistiMatricu(tmp1); UnistiMatricu(tmp2);
+                
+            } else if (brojac == 1){
+                kopija_matricana_matrica = MnozenjeSkalarom_2(matrica, *slider);
+            } else if(brojac == 0){
+                MnozenjeSkalarom_1(jedinicna, *slider);
+            }
+            
+            slider++; brojac++;
+        }
+        
+        ZbirMatrica&lt;TipElementa&gt;(kopija_matricana_matrica, jedinicna);
+        
+        // Brisanje 
+        UnistiMatricu(kopija_matrica); UnistiMatricu(jedinicna); UnistiMatricu(mat);
+        return kopija_matricana_matrica;
+    } catch(...){
+        // Brisanje
+        UnistiMatricu(jedinicna); UnistiMatricu(kopija_matricana_matrica); UnistiMatricu(mat);
+        throw;
+    } 
+}
+
+int main (){
+
+    // TEST
+    /* int dimenzija_matrice = 2;
+    
+    Matrica&lt;int&gt; A, B, C, skalar1;
+    Matrica&lt;int&gt; produkt;
+    A = StvoriMatricu&lt;int&gt;(dimenzija_matrice, dimenzija_matrice);
+    B = StvoriMatricu&lt;int&gt;(dimenzija_matrice, dimenzija_matrice);
+    C = StvoriMatricu&lt;int&gt;(dimenzija_matrice, dimenzija_matrice);
+    
+    
+    UnesitMatricu('A', A);
+    UnesitMatricu('B', B);
+    UnesitMatricu('C', C);
+    
+    // for(int i=0; i&lt;dimenzija_matrice; i++){
+    //     for(int j=0; j&lt;dimenzija_matrice; j++){
+    //         A.elementi[i][j] = i+1;
+    //     }
+    // } 
+    
+    IspisiMatricu(A, 10);
+    std::cout &lt;&lt; std::endl &lt;&lt; std::endl;
+    IspisiMatricu(B, 10);
+    std::cout &lt;&lt; std::endl &lt;&lt; std::endl;
+    IspisiMatricu(C, 10);
+    std::cout &lt;&lt; std::endl &lt;&lt; std::endl;
+    
+    skalar1 = ProizvodSkalara(A, 2);
+    IspisiMatricu(skalar1, 10);
+    std::cout &lt;&lt; std::endl &lt;&lt; std::endl;
+    
+    ProizvodSkalaraa(C, 2);
+    IspisiMatricu(C, 10);
+    std::cout &lt;&lt; std::endl &lt;&lt; std::endl;
+    
+    ZbirMatrica(C, A);
+    IspisiMatricu(C, 10);
+    std::cout &lt;&lt; std::endl &lt;&lt; std::endl;
+    
+    produkt = ProduktMatrica(A, B);
+    IspisiMatricu(produkt, 10);
+    std::cout &lt;&lt; std::endl &lt;&lt; std::endl;
+    
+    UnistiMatricu(A);
+    UnistiMatricu(B);
+    UnistiMatricu(C);
+    UnistiMatricu(skalar1);
+    UnistiMatricu(produkt); */
+    
+    // MAIN
+    int dimenzija_matrice;
+    Matrica&lt;int&gt; matrica_1, matrica_2;
+<a name="3"></a><font color="#00FFFF"><a href="match445-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+    std::cout &lt;&lt; "Unesite dimenziju kvadratne matrice: ";
+    std::cin &gt;&gt; dimenzija_matrice;
+    
+    try{
+        matrica_1 = StvoriMatricu&lt;int&gt;(dimenzija_matrice, dimenzija_matrice);
+        std::cout &lt;&lt; "Unesite elemente matrice A: " &lt;&lt; std::endl;
+</font>        UnesitMatricu('A', matrica_1);
+        
+        int red_polinoma;
+        std::cout &lt;&lt; "Unesite red polinoma: ";
+        std::cin &gt;&gt; red_polinoma;
+        
+        std::cout &lt;&lt; "Unesite koeficijente polinoma: ";
+        std::vector&lt;double&gt; koeficijenti;
+        for(int i=0; i&lt;red_polinoma+1; i++){
+            double tmp;
+            std::cin &gt;&gt; tmp;
+            koeficijenti.push_back(tmp);
+        }
+        auto it = koeficijenti.begin();
+        matrica_2 = MatricniPolinom(matrica_1, red_polinoma, it);
+        IspisiMatricu(matrica_2, 10);
+    
+    // paziti na izuzetke
+    } catch(...){
+        UnistiMatricu(matrica_1); UnistiMatricu(matrica_2);
+        std::cout &lt;&lt; "Nema dovoljno memorije" &lt;&lt; std::endl;
+    }
+    
+    UnistiMatricu(matrica_1); UnistiMatricu(matrica_2);
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student6010.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student1044.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 3
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include&lt;iomanip&gt;
+<a name="0"></a><font color="#FF0000"><a href="match8-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+typedef vector&lt;vector&lt;int&gt;&gt;Matrica;
+typedef deque&lt;vector&lt;int&gt;&gt;DekVektora;
+	enum Smjer{Opadajuci, Rastuci};
+
+bool DaLiJeStepenDvojke(int n){
+	if(n&lt;1) return false;
+	if(n==1 || n==2) return true;
+	int pom=1;
+	int proizvod=2;
+	while(pom&lt;n/2){
+		proizvod*=2;
+		pom++;
+		if(proizvod==n)return true;
+	}
+	
+	return false;
+}
+
+
+
+
+vector&lt;vector&lt;int&gt;&gt; OpadajuciPodnizovi (vector&lt;int&gt;v){
+	vector&lt;vector&lt;int&gt;&gt;v1;
+	vector&lt;int&gt;v2;
+	if(v.size()==0) return v1;
+	//int i(0);
+	bool prethodni=0;int brojac=1,pom=0;
+	if(v.at(0)&gt;=v.at(1) &amp;&amp; DaLiJeStepenDvojke(v.at(0)) &amp;&amp; v.size()){ v2.push_back(v.at(0)); prethodni=true;brojac++;}
+	
+	for(int i(1);i&lt;v.size()-1;i++){
+	
+		//////////////////////////////////////////////////////
+		if(v.at(i)&gt;=v.at(i+1) &amp;&amp; (DaLiJeStepenDvojke(v.at(i))==1) ) {
+			v2.push_back(v.at(i)); prethodni=true;
+			brojac++;
+			if(brojac&gt;(v.size()-1)) {v2.push_back(v.at(i+1));v1.push_back(v2); break;}
+			
+		}
+		else if(prethodni){
+			pom=1;
+			brojac--;
+			if(DaLiJeStepenDvojke(v.at(i)))
+		v2.push_back(v.at(i));
+		prethodni=false;
+		v1.push_back(v2);
+		//for(int i(0);i&lt;v2.size();i++)cout&lt;&lt;v2[i]; 12 16 8 4 9 
+		//ne pada kada je zadnji stepen dvojke ali nije opadajuci(16) i kada zadnji nije ni stepen dvoje ni opadajuci(9)
+		//pada kada je zadnji opadajuci ali nije stepen dvojke(3)
+		//(pada kad je zadnji opadajuci  i stepen dvojke (1))
+		v2.resize(0);
+		
+	}
+	
+
+	}
+	if(!pom &amp;&amp; brojac&lt;v.size()-1) { 
+	if(v.at(v.size()-1)&lt;=v.at(v.size()-2) &amp;&amp; DaLiJeStepenDvojke(v.at(v.size()-1))) 
+	v2.push_back(v.at(v.size()-1) );
+	v1.push_back(v2);
+	}
+	return v1;
+	}
+	
+	
+	vector&lt;vector&lt;int&gt;&gt; RastuciPodnizovi (vector&lt;int&gt;v){
+	vector&lt;vector&lt;int&gt;&gt;v1;
+	vector&lt;int&gt;v2;
+	if(v.size()==0) return v1;
+	//int i(0);
+	bool prethodni=0;
+	int brojac=1,pom=0;
+	if(v.at(0)&lt;=v.at(1) &amp;&amp; DaLiJeStepenDvojke(v.at(0)) &amp;&amp; v.size()){ v2.push_back(v.at(0)); prethodni=true; brojac++;}
+	for(int i(1);i&lt;v.size()-1;i++){
+		if(v.at(i)&lt;=v.at(i+1) &amp;&amp; (DaLiJeStepenDvojke(v.at(i))==1) ) {
+			v2.push_back(v.at(i)); prethodni=true;
+			brojac++;
+			if(brojac&gt;(v.size()-1)) {v2.push_back(v.at(i+1));v1.push_back(v2); break;}
+		}
+		else if(prethodni){
+			pom=1;
+			brojac--;
+			if(DaLiJeStepenDvojke(v.at(i)))
+		v2.push_back(v.at(i));
+		prethodni=false;
+		v1.push_back(v2);
+		v2.resize(0);
+		}
+	}
+	if(!pom &amp;&amp; brojac&lt;v.size()-1) { 
+		if(v.at(v.size()-1)&gt;=v.at(v.size()-2) &amp;&amp; DaLiJeStepenDvojke(v.at(v.size()-1)))
+		v2.push_back(v.at(v.size()-1));
+		v1.push_back(v2);
+		}
+	return v1;
+	}
+	
+	
+
+DekVektora MaksimalniPodnizoviStepenaDvojke (vector&lt;int&gt;v, Smjer s){
+	vector&lt;vector&lt;int&gt;&gt;v1;
+	vector&lt;int&gt;v2;
+	deque&lt;vector&lt;int&gt;&gt;d;
+	if(s==Rastuci) v1=RastuciPodnizovi(v);
+	else if(s==Opadajuci)  v1=OpadajuciPodnizovi(v);
+	for(int i(0);i&lt;v1.size();i++){
+		for(int j(0);j&lt;v1.at(i).size();j++){
+		if(v1.at(i).size()!=1) 
+		v2.push_back(v1.at(i).at(j));
+		else continue;
+			}
+			if(v1.at(i).size()!=1) 
+			d.push_back(v2);
+		v2.resize(0);
+	}
+	return d;
+}
+
+
+int main ()
+{ 
+
+	cout&lt;&lt;"Unesite broj elemenata vektora: ";
+	int n;
+	cin&gt;&gt;n;
+	vector&lt;int&gt;v(n);
+	cout&lt;&lt;"Unesite elemente vektora: ";
+	for(int i(0);i&lt;n;i++){
+		cin&gt;&gt;v.at(i);
+	}
+	cout&lt;&lt;"Unesite: 1 - za rastuce podnizove, 2 - za opadajuce podnizove: ";
+	int a;
+	cin&gt;&gt;a;
+	deque&lt;vector&lt;int&gt;&gt; d;
+	if(a==1)
+ d=MaksimalniPodnizoviStepenaDvojke(v, Rastuci );
+	else if (a==2)
+ d=MaksimalniPodnizoviStepenaDvojke(v,Opadajuci);
+	 if(a==1) cout&lt;&lt;"Maksimalni rastuci podnizovi: "&lt;&lt;endl;
+	 		if(a==2) cout&lt;&lt;"Maksimalni opadajuci podnizovi: "&lt;&lt;endl;
+	 for(int i(0);i&lt;d.size();i++){
+	 	for( int j(0);j&lt;d.at(i).size();j++){
+	 		
+	 		cout&lt;&lt;d.at(i).at(j)&lt;&lt;" ";
+	 	}
+	 	cout&lt;&lt;endl;
+</font>	 }
+	
+	 /*provjeraaaa vector&lt;int&gt; brojevi {};
+deque&lt;vector&lt;int&gt;&gt;  d;
+cout&lt;&lt;endl&lt;&lt;"Rastuci: ";
+d=MaksimalniPodnizoviStepenaDvojke(brojevi,rastuci);
+for(int i(0);i&lt;d.size();i++){
+	 	for( int j(0);j&lt;d[i].size();j++){
+	 		
+	 		cout&lt;&lt;d[i][j]&lt;&lt;" ";
+	 	}
+	 	cout&lt;&lt;endl;
+	 }
+d=MaksimalniPodnizoviStepenaDvojke(brojevi,opadajuci);
+cout&lt;&lt;endl&lt;&lt;"Opadajuci: ";
+for(int i(0);i&lt;d.size();i++){
+	 	for( int j(0);j&lt;d[i].size();j++){
+	 		
+	 		cout&lt;&lt;d[i][j]&lt;&lt;" ";
+	 	}
+	 	cout&lt;&lt;endl;
+	 }
+*/
+	return 0;
+}</pre>
+</body>
+</html>

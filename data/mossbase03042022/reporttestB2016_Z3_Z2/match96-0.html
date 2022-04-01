@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student9095.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student9095.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match96-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;map&gt;
+#include &lt;cstring&gt;
+using namespace std;
+
+void smanjirecenicu(string &amp;s)
+{
+    for(int i=0; i&lt;s.length(); i++)
+        if(s[i]&gt;='A'&amp;&amp;s[i]&lt;='Z') s[i]=tolower(s[i]);
+}
+
+bool abcda(char a)
+{
+    if(a&gt;='a'&amp;&amp;a&lt;='z') return true;
+    else return false;
+}
+
+bool brj(char a)
+{
+    if(a&gt;='0'&amp;&amp;a&lt;='9') return true;
+    else return false;
+}
+
+bool pocetak(int n)
+{
+    return n==0;
+}
+
+bool kraj(int j, int n, int d)
+{
+    return j+n==d;
+}
+
+map&lt;string,set&lt;int&gt;&gt; KreirajIndeksPojmova(string s)
+{
+    smanjirecenicu(s);
+    map&lt;string,set&lt;int&gt;&gt; rez;
+    for(int i=0; i&lt;s.length(); i++)
+    {
+        if(abcda(s[i])==true || brj(s[i])==true)
+        {
+            auto marker=i;
+            while((i!=s.length())&amp;&amp;(abcda(s[i])==true || brj(s[i])==true)){ 
+                i++;}
+            string clan;
+            set&lt;int&gt;clandr; 
+            for(int j=marker; j&lt;i; j++) clan+=s[j];
+            for(int j=0; j&lt;s.length(); j++)
+                if(s.substr(j,clan.length())==clan &amp;&amp; (j==0||(!abcda(s[j-1])&amp;&amp;!brj(s[j-1]))) &amp;&amp; (j+clan.length()==s.length()||(!abcda(s[j+clan.size()])&amp;&amp;!brj(s[j+clan.length()]))))
+                {
+                    clandr.insert(j);
+                }
+            pair&lt;string,set&lt;int&gt;&gt; par=make_pair(clan,clandr);
+            rez.insert(par);
+        }
+    }
+    return rez;
+}
+
+void IspisiIndeksPojmova(map&lt;string,set&lt;int&gt;&gt; mapa)
+{
+    for(auto i=mapa.begin(); i!=mapa.end(); i++)
+    {
+        cout&lt;&lt;i-&gt;first&lt;&lt;": ";
+        auto a=i-&gt;second.size();
+        a--;
+        for(auto it: i-&gt;second)
+        {
+            cout&lt;&lt;it;
+            if(a!=0) cout&lt;&lt;",";
+            a--;
+        }
+        cout&lt;&lt;endl;
+    }
+}
+
+set&lt;int&gt; PretraziIndeksPojmova(string rec, map&lt;string,set&lt;int&gt;&gt; mapa)
+{
+    smanjirecenicu(rec);
+    bool ima=false;
+    set&lt;int&gt; rez;
+    for(auto i=mapa.begin(); i!=mapa.end(); i++)
+    {
+        if(rec==i-&gt;first) { ima=true; rez=i-&gt;second;}
+    }
+    if(ima) return rez;
+    else throw logic_error("Pojam nije nadjen");
+}
+
+int main ()
+{
+	
+	cout&lt;&lt;"Unesite tekst: ";
+	string rec; 
+	getline(cin,rec);
+	map&lt;string,set&lt;int&gt;&gt; mapa=KreirajIndeksPojmova(rec);
+	IspisiIndeksPojmova(mapa);
+	for(;;)
+	{
+	    string p;
+	    cout&lt;&lt;"Unesite rijec: ";
+	    getline(cin,p);
+	    if(p!=".")
+	    {
+	        try
+	        {
+	            auto skup=PretraziIndeksPojmova(p,mapa);
+	            for(auto x: skup) cout&lt;&lt;x&lt;&lt;" ";
+	            cout&lt;&lt;endl;
+	        } catch(logic_error) { cout&lt;&lt;"Unesena rijec nije nadjena!"&lt;&lt;endl;}
+	    }
+	    else break;
+</font>	}
+	return 0;
+}</pre>
+</body>
+</html>

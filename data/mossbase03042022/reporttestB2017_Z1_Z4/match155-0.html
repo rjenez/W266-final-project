@@ -1,0 +1,125 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student9805.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student9805.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;sstream&gt;
+
+/*AKO VAS INTERESUJE DA LI SU KORIŠTENE find() i replace() ODGOVOR JE DA NISU!!!
+
+    IZBRISAO SAM TE FUNKCIJE TAKO DA MOŽETE MIRNO ZASPATI,:) */
+
+<a name="0"></a><font color="#FF0000"><a href="match155-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+std::string Polupal(std::string s){
+    for(int i = 0; i &lt; s.size()/2; i++){
+        s.at(s.size() - i - 1) = s.at(i);
+    }
+    return s;
+}
+
+std::string Okreni(std::string s){
+    int duzina = s.size();
+    for(int i = 0; i &lt; duzina/2; i++){
+        char temp = s.at(i);
+        s.at(i) = s.at(duzina - i - 1);
+        s.at(duzina - i - 1) = temp;
+    }
+    return s;
+}
+
+bool Neznak(char s){
+    if((s &gt;= 'a' &amp;&amp; s &lt;= 'z') || (s &gt;= 'A' &amp;&amp; s &lt;= 'Z') ) return false;
+    return true;
+}
+
+int pronadji(std::string s1, std::string s2, int poz = 0){
+    int i = poz;
+    while(i &lt; s1.size()){
+        int j = 0;
+        while(s1.at(i) == s2.at(j) &amp;&amp; j &lt; s2.size()){
+            if(i == s1.size() - 1 &amp;&amp; j != s2.size() - 1) return -1;
+            if(j == s2.size() - 1) return (i - s2.size() + 1);
+            j++;
+            i++;
+        }
+        i++;
+    }
+    return -1;
+}
+
+
+std:: string NapraviPalindrom(std::string s, std::vector&lt;std::string&gt; v){
+    int i = 0;
+    std::string za_vratiti;
+    while(i &lt; v.size()){
+        //std::size_t pozicija = s.find(v.at(i));
+        int pozicija = pronadji(s, v.at(i));
+        while(pozicija != -1){
+            int duzina_igle = v.at(i).size();
+            //std::cout &lt;&lt; "subs:: " &lt;&lt; s.substr(pozicija, duzina_igle) &lt;&lt; " s:" &lt;&lt; v.at(i) &lt;&lt; Neznak(s.at(pozicija - 1)) &lt;&lt; Neznak(s.at(pozicija + duzina_igle ))  &lt;&lt;std::endl;
+            if( (pozicija == 0 || Neznak(s.at(pozicija - 1)) ) &amp;&amp; ( ( pozicija + duzina_igle  == s.size()) || Neznak(s.at(pozicija + duzina_igle)) ) ){
+                //Ubacivanje
+                s = s.substr(0,pozicija + duzina_igle) + Okreni(v.at(i)) + s.substr(pozicija + duzina_igle);
+                //s.insert(pozicija + duzina_igle, Okreni(v.at(i)));
+            }
+            //pozicija = s.find(v.at(i), pozicija  + v.at(i).size() + 1);
+            pozicija = pronadji(s, v.at(i), pozicija + v.at(i).size());
+        }
+        i++;
+    }
+    return s;
+}
+    
+std::string NapraviPoluPalindrom(std::string s, std::vector&lt;std::string&gt; v){
+    int i = 0;
+    while(i &lt; v.size()){
+        //std::size_t pozicija = s.find(v.at(i));
+        int pozicija = pronadji(s, v.at(i));
+        while(pozicija != -1){
+            int duzina_igle = v.at(i).size();
+            //std::cout &lt;&lt; "subs:: " &lt;&lt; s.substr(pozicija, duzina_igle) &lt;&lt; " s:" &lt;&lt; v.at(i) &lt;&lt; Neznak(s.at(pozicija - 1)) &lt;&lt; Neznak(s.at(pozicija + duzina_igle ))  &lt;&lt;std::endl;
+            if( (pozicija == 0 || Neznak(s.at(pozicija - 1))) &amp;&amp; ( ( pozicija + duzina_igle  == s.size()) || Neznak(s.at(pozicija + duzina_igle)) ) ){
+                //PRINCIP PRONALAŽENJA JE ISTI
+                //s.erase(pozicija, duzina_igle);
+                //s.insert(pozicija, Polupal(v.at(i)));
+                s = s.substr(0,pozicija) + Polupal(v.at(i)) + s.substr(pozicija + duzina_igle);
+                
+            }
+            //pozicija = s.find(v.at(i), pozicija  + v.at(i).size() + 1);
+            pozicija = pronadji(s, v.at(i), pozicija + v.at(i).size());
+        }
+        i++;
+    }
+    return s;
+    
+}
+
+
+int main(){
+    std::string unos;
+    std::cout &lt;&lt; "Unesite recenicu: ";
+    std::getline(std::cin, unos);
+    
+    std::vector&lt;std::string&gt; vektor;
+    std::cout &lt;&lt; "Unesite fraze: ";
+    std::string buffer;
+    
+    while(std::getline(std::cin, buffer) &amp;&amp; !buffer.empty()) {
+        vektor.push_back(buffer);
+    }
+    std::cout &lt;&lt; "Recenica nakon Palindrom transformacije: ";
+
+
+    std::cout &lt;&lt; NapraviPalindrom(unos, vektor) &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Recenica nakon PoluPalindrom transformacije: ";
+    std::cout &lt;&lt; NapraviPoluPalindrom(unos, vektor) &lt;&lt; std::endl;
+</font>    return 0;
+}</pre>
+</body>
+</html>

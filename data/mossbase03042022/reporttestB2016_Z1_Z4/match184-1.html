@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student1146.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student6634.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match184-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::string;
+typedef std::vector&lt;string&gt; vs;
+
+void swap(char *a, char *b) {
+	char temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+bool je_slovo(char c) {
+	return ('A' &lt;= c &amp;&amp; c &lt;= 'Z') || ('a' &lt;= c &amp;&amp; c &lt;= 'z');
+}
+
+string ObrniFraze(string s, vs fraze) {
+	for (string f : fraze) {
+		int vel = f.size();
+		if (vel &lt; 2) continue;
+		for (int i = 0; i &lt; s.size(); i++) {
+			if (s.substr(i, vel) != f) continue;
+			
+			for (int j = 0; j &lt; vel/2; j++)
+				swap(&amp;s.at(i + j), &amp;s.at(i + vel - j - 1));
+			
+			// abb fraza ab
+			// bab ili bba
+			// treba bab
+			// ili ipak bba
+			//i += vel;
+		}
+	}
+	return s;
+}
+
+string IzmijeniUPigLatin(string s, vs fraze) {
+	for (string f : fraze)
+		for (char c : f)
+			if (!je_slovo(c))
+				throw std::domain_error("Nekorektan izbor rijeci");
+	
+	for (int i = 0; i &lt; s.size(); i++) {
+		if (!je_slovo(s.at(i))) continue;
+		
+		int poc = i;
+		while (i &lt; s.size() &amp;&amp; je_slovo(s.at(i))) i++;
+		int kraj = i;
+		
+		if (fraze.size() != 0) {
+			bool ima = false;
+			string rijec = s.substr(poc, kraj - poc);
+			for (string f : fraze)
+				if (f == rijec)
+					ima = true;
+			
+			if (!ima) continue;
+		}
+		
+		
+		char c = s.at(poc);
+		for (int j = poc; j+1 &lt; kraj; j++)
+			s.at(j) = s.at(j+1);
+		s.at(kraj - 1) = c;
+		
+		string ostatak = "";
+		if (kraj &lt; s.size()) 
+			ostatak = s.substr(kraj);
+		s = s.substr(0, kraj) + "ay" + ostatak;
+		i = kraj + 1;
+	}
+	
+	return s;
+}
+
+int main() {
+	using std::cout;
+	using std::cin;
+	using std::getline;
+	
+	cout &lt;&lt; "Unesite recenicu: ";
+	string s;
+	getline(cin, s);
+	
+	cout &lt;&lt; "Unesite fraze: ";
+	vs fraze;
+	for (;;) {
+		string f;
+		getline(cin, f);
+		if (f.size() == 0) break;
+		fraze.push_back(f);
+	}
+	
+	try {
+		cout &lt;&lt; "Recenica nakon PigLatin transformacije: " 
+			 &lt;&lt; IzmijeniUPigLatin(s, fraze) &lt;&lt; '\n';
+	} catch (std::domain_error e) {
+		cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what() &lt;&lt; '\n';
+	}
+	
+	cout &lt;&lt; "Recenica nakon obrtanja fraza: "
+		 &lt;&lt; ObrniFraze(s, fraze);
+	
+	return 0;
+</font>}</pre>
+</body>
+</html>

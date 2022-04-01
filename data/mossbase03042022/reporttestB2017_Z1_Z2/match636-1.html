@@ -1,0 +1,172 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student1597.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student7713.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 2
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+const double EPSILON(0.001);
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; matrica;
+
+matrica NajvecaPlaninaMatrice(matrica m)
+{
+	for(int i=0; i&lt;m.size(); i++)
+		if(m.at(0).size()!=m.at(i).size()) throw std::domain_error("Matrica nije korektna");
+	int format(0),x(0),y(0);
+	double max(0);
+<a name="2"></a><font color="#0000FF"><a href="match636-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+	matrica a;
+	if(m.size()==0) return a;
+	for(int i=0;i&lt;m.size();i++)
+	if(m.at(i).size()==0) return a;
+</font>	for(int i=1; i&lt;m.size()-1; i++) {
+		for(int j=1; j&lt;m.at(i).size()-1; j++) {
+			double temp=m.at(i).at(j);
+			int k;
+			for(k=1;; k++) {
+				if(i-k&lt;0 || i+k&gt;m.size()-1 || j-k&lt;0 || j+k&gt;m.at(i).size()-1) break;
+				int suma=0;
+				for(int p=j-k; p&lt;=j+k; p++)
+<a name="3"></a><font color="#00FFFF"><a href="match636-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+					suma+=(m.at(i-k).at(p)+m.at(i+k).at(p));
+				for(int p=i-k; p&lt;=i+k; p++)
+					suma+=(m.at(p).at(j-k)+m.at(p).at(j+k));
+</font>				suma-=(m.at(i-k).at(j-k)+m.at(i-k).at(j+k)+m.at(i+k).at(j-k)+m.at(i+k).at(j+k));
+				if((suma-temp)&gt;-EPSILON) break;
+				temp=suma;
+			}
+			k--;
+			if(k==0 || 2*k+1&lt;format) continue;
+			if(format&lt;2*k+1)  {
+				for(int p=0; p&lt;format; p++)
+					a.erase(a.begin() + 0);
+				format=2*k+1;
+				x=i;
+				y=j;
+				max=m.at(i).at(j);
+				a.resize(format);
+				int t=0;
+<a name="0"></a><font color="#FF0000"><a href="match636-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_2.gif"/></a>
+
+				for(int p=i-k; p&lt;=i+k; p++) {
+					for(int q=j-k; q&lt;=j+k; q++)
+						a.at(t).push_back(m.at(p).at(q));
+</font>					t++;
+				}
+			} else if(format==2*k+1) {
+				if((m.at(i).at(j)-max)&gt;EPSILON) {
+					for(int p=0; p&lt;format; p++)
+						a.erase(a.begin() + 0);
+					format=2*k+1;
+					x=i;
+					y=j;
+					max=m.at(i).at(j);
+					a.resize(format);
+					int t=0;
+<a name="1"></a><font color="#00FF00"><a href="match636-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+					for(int p=i-k; p&lt;=i+k; p++) {
+						for(int q=j-k; q&lt;=j+k; q++)
+							a.at(t).push_back(m.at(p).at(q));
+</font>						t++;
+					}
+				} else if(fabs(m.at(i).at(j)-max)&lt;EPSILON) {
+					if(i&lt;x) {
+						for(int p=0; p&lt;format; p++)
+							a.erase(a.begin() + 0);
+						format=2*k+1;
+						x=i;
+						y=j;
+						max=m.at(i).at(j);
+						a.resize(format);
+						int t=0;
+						for(int p=i-k; p&lt;=i+k; p++) {
+							for(int q=j-k; q&lt;=j+k; q++)
+								a.at(t).push_back(m.at(p).at(q));
+							t++;
+						}
+					} else if(x==i) {
+						if(j&lt;y) {
+							for(int p=0; p&lt;format; p++)
+								a.erase(a.begin() + 0);
+							format=2*k+1;
+							x=i;
+							y=j;
+							max=m.at(i).at(j);
+							a.resize(format);
+							int t=0;
+							for(int p=i-k; p&lt;=i+k; p++) {
+								for(int q=j-k; q&lt;=j+k; q++)
+									a.at(t).push_back(m.at(p).at(q));
+								t++;
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+	if(a.size()==0) {
+		a.resize(1);
+		max=m.at(0).at(0);
+		for(int j=0; j&lt;m.at(0).size(); j++)
+			if((m.at(0).at(j)-max)&gt;EPSILON) max=m.at(0).at(j);
+		for(int i=1; i&lt;m.size()-1; i++) {
+			if((m.at(i).at(0)-max)&gt;EPSILON) max=m.at(i).at(0);
+			if((m.at(i).at(m.at(i).size()-1)-max)&gt;EPSILON) max=m.at(i).at(m.at(i).size()-1);
+		}
+		for(int j=0; j&lt;m.at(0).size(); j++)
+			if((m.at(m.size()-1).at(j)-max)&gt;EPSILON) max=m.at(m.size()-1).at(j);
+		a.at(0).push_back(max);
+	}
+	return a;
+}
+
+int main ()
+{
+	int m,n;
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m i n): ";
+	std::cin&gt;&gt;m&gt;&gt;n;
+	if(m&lt;0 || n&lt;0) {
+		std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+		return 0;
+	}
+	matrica mat(m);
+	std::cout&lt;&lt;"Unesite elemente matrice:"&lt;&lt;std::endl;
+	for(int i=0; i&lt;m; i++)
+		for(int j=0; j&lt;n; j++) {
+			double x;
+			std::cin&gt;&gt;x;
+			mat.at(i).push_back(x);
+		}
+	std::cout&lt;&lt;"Najveca planina unesene matrice je:"&lt;&lt;std::endl;
+	for(int i=0; i&lt;NajvecaPlaninaMatrice(mat).size(); i++) {
+		for(int j=0; j&lt;NajvecaPlaninaMatrice(mat).size(); j++)
+			std::cout&lt;&lt;std::right&lt;&lt;std::setw(6)&lt;&lt;NajvecaPlaninaMatrice(mat).at(i).at(j);
+		std::cout&lt;&lt;std::endl;
+	}
+	return 0;
+}</pre>
+</body>
+</html>

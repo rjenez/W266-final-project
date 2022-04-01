@@ -1,0 +1,197 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student6631.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z2/student4155.cpp<p></p><pre>
+//B 2017/2018, Zadaća 1, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match98-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_95.gif"/></a>
+
+typedef std::vector&lt;double&gt; Vektor;
+typedef std::vector&lt;Vektor&gt; Matrica;
+
+Matrica NajvecaPlaninaMatrice(Matrica mat)
+{
+	Matrica matrica;
+	bool vrh(false);
+	double zbir(0),suma(0),kvadrat(0);
+	int format(1),k(0),l(0);
+	int x(0),y(0);
+	int cif(0);
+	
+	for(int i=0; i&lt;mat.size()-1; i++)
+	{
+		if(mat.size()==0 || mat.at(i).size()==0)
+		{
+			mat.resize(1);
+			mat.at(0).resize(1);
+			mat.at(0).at(0)=0;
+			return mat;
+		}
+	}
+	
+	for(int i=0; i&lt;mat.size()-1; i++)
+		if(mat.at(i).size()!=mat.at(i+1).size())throw std::domain_error("Matrica nije korektna");
+		
+	
+	int najveci(1);		
+	for(int i=1; i&lt;mat.size()-1; i++)
+	{
+		int br(1);
+		for(int j=1; j&lt;mat.at(0).size()-1; j++)
+		{	
+			if( i-br&lt;br-1 || j-br&lt;br-1)continue;
+			suma=-mat.at(i).at(j);
+			for(k=0; k&lt;format+2; k++)
+			{
+				for(l=0; l&lt;format+2; l++)
+				{
+					if(i-br+k&gt;=0 &amp;&amp; j-br+l&gt;=0)
+					{
+						if(br&gt;cif)cif=br;
+						if(i+k-br&lt;mat.size() &amp;&amp; j+l-br&lt;mat.at(0).size())suma=suma+mat.at(i-br+k).at(j-br+l);
+					}
+						
+				} 
+			}
+			kvadrat=suma;
+				if(format&gt;1){
+					zbir=kvadrat-zbir;
+					if(zbir&lt;kvadrat-zbir){
+						vrh=true;
+						format=format+2;
+						br++;
+						if(najveci&lt;format)najveci=format;
+					}
+					else {
+						vrh=false;
+						br=1;
+						format=1;
+					}
+				}
+				if(format==1 &amp;&amp; kvadrat&lt;mat.at(i).at(j))
+				{	
+					zbir=kvadrat;
+					vrh=true;
+					format=format+2;
+					if(najveci&lt;format)
+					{
+						najveci=format;
+						x=i;
+						y=j;
+					}
+					if(najveci==format)
+					{
+						if(i&lt;x)
+						{
+							x=i;y=j;
+						}
+						else if(i&gt;=x &amp;&amp; y&lt;j)
+						{
+							x=i;y=j;
+						}
+					}
+					br++;
+					j--;
+				}	
+				else if(format==1 &amp;&amp; kvadrat&gt;=mat.at(i).at(j)) 
+				{
+					vrh=false;
+					br=1;
+					format=1;
+				}
+				suma=0;
+			
+		}
+		br=1; 
+		format=1;	
+	}
+	
+	if(najveci&gt;1)
+	{
+		matrica.resize(najveci);
+    	for(int i=0; i&lt;najveci; i++)
+		{	
+			matrica.at(i).resize(najveci);
+			for(int j=0; j&lt;najveci; j++)matrica.at(i).at(j)=mat.at(x-cif+i).at(y-cif+j);
+		}
+		return matrica;
+	}
+	
+	else if(mat.size()==0 || mat.at(0).size()==0)
+	{	
+		mat.resize(0);
+		mat.at(0).resize(0);
+		return matrica;
+	}
+	else if((mat.size()&gt;0 &amp;&amp; mat.size()&lt;3) || (mat.at(0).size()&gt;0 &amp;&amp; mat.at(0).size()&lt;3) || vrh==false)
+	{
+		double max(0);
+		for(int i=0; i&lt;mat.size(); i++)
+		{
+			for (int j=0; j&lt;mat.at(0).size(); j++)
+			{
+				if(max&lt;mat.at(i).at(j))max=mat.at(i).at(j);
+			}
+		}
+		mat.resize(1);
+		mat.at(0).resize(1);
+		for(int i=0; i&lt;mat.size(); i++)
+		{
+			for (int j=0; j&lt;mat.at(0).size(); j++)
+			{
+				mat.at(i).at(j)=max;
+			}
+		}
+		
+		return mat;
+	}
+}
+
+int main ()
+{	
+	std::cout &lt;&lt; "Unesite dimenzije matrice (m i n): ";
+	int m(0),n(0);
+	std::cin &gt;&gt; m &gt;&gt; n;
+	if(m&lt;0 || n&lt;0)
+	{
+		std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!";
+		return 0;
+	}
+	
+	std::cout &lt;&lt; "Unesite elemente matrice: " &lt;&lt; std::endl;
+	Matrica mat(m, Vektor(n));
+	for(int i=0; i&lt;m; i++)
+	{
+		for (int j=0; j&lt;n; j++)
+		{
+			std::cin &gt;&gt; mat.at(i).at(j);
+		}
+	}
+	
+	std::cout &lt;&lt; "Najveca planina unesene matrice je: " &lt;&lt; std::endl;
+	try {
+		mat=NajvecaPlaninaMatrice(mat);
+	}
+	catch(std::domain_error izuzetak) {
+ 			std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+	}
+	
+	for(int i=0; i&lt;mat.size(); i++)
+	{
+		for (int j=0; j&lt;mat.at(i).size(); j++)
+</font>		{
+			std::cout &lt;&lt; std::setw(6) &lt;&lt; mat.at(i).at(j);
+		} std::cout &lt;&lt; std::endl;
+	}
+	return 0;
+}</pre>
+</body>
+</html>

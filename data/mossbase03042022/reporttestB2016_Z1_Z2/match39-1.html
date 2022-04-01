@@ -1,0 +1,216 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student5867.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student5304.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+<a name="0"></a><font color="#FF0000"><a href="match39-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_96.gif"/></a>
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+
+Matrica NapraviMatricu (int redovi, int kolone)
+{
+	return Matrica(redovi, std::vector&lt;double&gt;(kolone));
+}
+
+Matrica Unesi (int redovi, int kolone)
+{
+	auto mat(NapraviMatricu(redovi, kolone));
+	for(int i = 0; i &lt; redovi; i++)
+		for(int j = 0; j &lt; kolone; j++)
+			std::cin&gt;&gt;mat[i][j];
+	return mat;
+}
+
+Matrica Horiz (Matrica mat)
+{
+	Matrica hmat (NapraviMatricu(mat.size(), mat[0].size()));
+	for(int i = 0; i &lt; mat.size(); i++)
+		for(int j = 0; j &lt; mat[i].size(); j++)
+			hmat[i][j] = mat[i][mat[i].size()-1-j];
+	return hmat;
+}
+
+Matrica Verti (Matrica mat)
+{
+	Matrica vmat (NapraviMatricu(mat.size(), mat[0].size()));
+	for(int i = 0; i &lt; mat.size(); i++)
+		for(int j = 0; j &lt; mat[i].size(); j++)
+			vmat[i][j] = mat[mat.size()-1-i][j];
+	return vmat;
+	
+}
+
+Matrica HorizVerti (Matrica mat)
+{
+	Matrica hvmat (NapraviMatricu(mat.size(), mat[0].size()));
+	hvmat = Horiz(mat);
+	hvmat = Verti(hvmat);
+	return hvmat;
+}
+
+Matrica Expanzija (int m, int n)
+{
+	m *= 3;
+	n *= 3;
+	auto pom (NapraviMatricu(m, n));
+	return pom;
+}
+
+Matrica OgledaloMatrica (Matrica mat)
+{
+	std::vector&lt;int&gt;v;
+	for(int i = 0; i &lt; mat.size(); i++)
+		v.push_back(mat[i].size());
+		
+	for(int i = 0; i &lt; v.size(); i++)
+		for(int j = 0; j &lt; v.size(); j++)
+			if(i != j &amp;&amp; v[i] != v[j])
+				throw std::domain_error ("Matrica nije korektna");
+	
+				
+	if(mat.size() == 0)
+		return mat;
+		
+	auto mat1(NapraviMatricu(mat.size(), mat[0].size()));
+	auto mat2(NapraviMatricu(mat.size(), mat[0].size()));
+	auto mat3(NapraviMatricu(mat.size(), mat[0].size()));
+	auto mat4(NapraviMatricu(mat.size(), mat[0].size()));
+	mat1 = HorizVerti(mat);
+	mat2 = Horiz(mat);
+	mat3 = Verti(mat);
+	mat4 = mat;
+	int m1 = mat1.size();
+	int n1 = mat1[0].size();
+	mat = Expanzija(mat.size(), mat[0].size());
+	int m = mat.size();
+	int n = mat[0].size();
+	for(int i = 0; i &lt; m; i += m1)
+	{
+		int b = i;
+		for(int j = 0; j &lt; n; j += n1)
+		{
+			int a = j;
+			if((j &gt;= 0 &amp;&amp; j &lt; n1 &amp;&amp; i &gt;= 0 &amp;&amp; i &lt; m1) || (j &gt;= 0 &amp;&amp; j &lt; n1 &amp;&amp; i &lt; m &amp;&amp; i &gt;= m-m1) || (j &lt; n &amp;&amp; j &gt;= n-n1 &amp;&amp; i &gt;= 0 &amp;&amp; i &lt; m1) || (j &lt; n &amp;&amp; j &gt;= n-n1 &amp;&amp; i &gt;= m-m1 &amp;&amp; i &lt; m))
+			{
+				for(int k = 0; k &lt; mat1.size(); k++)
+				{
+					for(int p = 0; p &lt; mat1[0].size(); p++)
+					{
+						mat[i][j] = mat1[k][p];
+						j++;
+					}
+					i++;
+					j = a;
+				}
+			}
+			if (i &gt;= mat.size()/3 &amp;&amp; i &lt; mat.size()-mat1.size() &amp;&amp; ((j &gt;= 0 &amp;&amp; j &lt; mat[0].size()/3) || (j &lt; mat[0].size() &amp;&amp; j &gt;= mat[0].size()-mat1[0].size())))
+			{
+				for(int k = 0; k &lt; mat1.size(); k++)
+				{
+					for(int p = 0; p &lt; mat1[0].size(); p++)
+					{
+						mat[i][j] = mat2[k][p];
+						j++;
+					}
+				i++;
+				j = a;
+				}
+			}
+			if (j &gt;= mat[0].size()/3 &amp;&amp; j &lt; mat[0].size()-mat1[0].size() &amp;&amp; ((i &gt;= 0 &amp;&amp; i &lt; mat.size()/3) || (i &gt;= mat.size()-mat1.size() &amp;&amp; i &lt; mat.size())))
+			{
+				for(int k = 0; k &lt; mat1.size(); k++)
+				{
+					for(int p = 0; p &lt; mat1[0].size(); p++)
+					{
+						mat[i][j] = mat3[k][p];
+						j++;
+					}
+				i++;
+				j = a;
+				}
+			}
+			if(i &gt;= mat1.size() &amp;&amp; i &lt; mat.size()-mat1.size() &amp;&amp; j &gt;= mat1[0].size() &amp;&amp; j &lt; mat[0].size()-mat1[0].size())
+			{
+				for(int k = 0; k &lt; mat1.size(); k++)
+				{
+					for(int p = 0; p &lt; mat1[0].size(); p++)
+					{
+						mat[i][j] = mat4[k][p];
+						j++;
+					}
+				i++;
+				j = a;
+				}
+			}
+			i = b;
+		}
+	//i = b;
+	}
+	
+	
+			
+	return mat;
+}
+
+
+
+
+int main ()
+{
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m n): ";
+	int m, n;
+	std::cin&gt;&gt;m&gt;&gt;n;
+	if(m &lt; 0 || n &lt; 0)
+	{
+		std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+		return 0;
+	}
+	std::cout&lt;&lt;"Unesite elemente matrice: ";
+	auto mat = Unesi(m ,n);
+	std::cout&lt;&lt;std::endl;
+	std::cout&lt;&lt;"Rezultantna matrica: "&lt;&lt;std::endl;
+	/*for(int i = 0; i &lt; 2; i++)
+	{
+		for(int j = 0; j &lt; 4; j++)
+		{
+			mat[i][j] = m[i][4-1-j];
+		}
+	}*/
+	//std::cout&lt;&lt;m.size();
+	try 
+	{
+		mat = OgledaloMatrica(mat);
+	}
+	catch(const char poruka[])
+	{
+		std::cout&lt;&lt;poruka;
+	}
+	//mat = OgledaloMatrica(mat);
+	for(int i = 0; i &lt; mat.size(); i++)
+	{
+		for(int j = 0; j &lt; mat[i].size(); j++)
+</font>		{
+			std::cout&lt;&lt;std::setw(4)&lt;&lt;mat[i][j];
+		}
+		std::cout&lt;&lt;std::endl;
+	}
+	return 0;
+}</pre>
+</body>
+</html>

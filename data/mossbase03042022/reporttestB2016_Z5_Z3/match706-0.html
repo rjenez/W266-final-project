@@ -1,0 +1,281 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student7001.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student7001.cpp<p></p><pre>
+/B16/17 (Zadaća 5, Zadatak 3)
+//Autotestovi by Enil Pajic (mail: epajic1@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+#include &lt;limits&gt;
+
+const long long int M(std::numeric_limits&lt;long long int&gt;::max());
+const long long int m(std::numeric_limits&lt;long long int&gt;::min());
+
+class Razlomak {
+    long long int brojnik, nazivnik;
+    static long long int NZD(long long int a, long long int b) {
+        if (b==0) return a;
+        return NZD(b,a%b);
+    }
+    static bool JesuLiJednaki(long double x, long double y, long double Eps=1e-10) {
+        if ((x&lt;0 &amp;&amp; y&gt;0) || (x&gt;0 &amp;&amp; y&lt;0)) return false;
+        return std::fabs(x-y)&lt;=Eps*(std::fabs(x)+std::fabs(y));
+    }
+    static bool TestPrekoracenjaZaSabiranje(long long int x, long long int y) {
+        if ((y&gt;0 &amp;&amp; x&gt;M-y) || (y&lt;0 &amp;&amp; x&lt;m-y)) return true;
+        return false;
+    }
+    static bool TestPrekoracenjaZaOduzimanje(long long int x, long long int y) {
+        if ((y&gt;0 &amp;&amp; x&lt;m+y) || (y&lt;0 &amp;&amp; x&gt;M+y)) return true;
+        return false;
+    }
+    static bool TestPrekoracenjaZaMnozenje(long long int x, long long int y) {
+        if ((y&gt;0 &amp;&amp; (x&lt;m/y || x&gt;M/y)) || (y&lt;0 &amp;&amp; (x==m || (-x)&gt;M/(-y) || (-x)&lt;m/(-y)))) return true;
+        return false;
+    }
+public:
+<a name="3"></a><font color="#00FFFF"><a href="match706-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+    Razlomak(long long int b=0, long long int n=1);
+    long long int DajBrojnik() const { return brojnik; }
+    long long int DajNazivnik() const { return nazivnik; }
+    friend Razlomak operator +(const Razlomak &amp;r1, const Razlomak &amp;r2);
+</font>    friend Razlomak operator -(const Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend Razlomak operator *(const Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend Razlomak operator /(const Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend Razlomak operator +(const Razlomak &amp;r);
+    friend Razlomak operator -(const Razlomak &amp;r);
+    friend Razlomak &amp;operator +=(Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend Razlomak &amp;operator -=(Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend Razlomak &amp;operator *=(Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend Razlomak &amp;operator /=(Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend Razlomak &amp;operator ++(Razlomak &amp;r);
+    friend Razlomak operator ++(Razlomak &amp;r, int);
+<a name="1"></a><font color="#00FF00"><a href="match706-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+    friend Razlomak &amp;operator --(Razlomak &amp;r);
+    friend Razlomak operator --(Razlomak &amp;r, int);
+    friend bool operator &lt;(const Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend bool operator &gt;(const Razlomak &amp;r1, const Razlomak &amp;r2);
+</font>    friend bool operator &lt;=(const Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend bool operator &gt;=(const Razlomak &amp;r1, const Razlomak &amp;r2);
+<a name="2"></a><font color="#0000FF"><a href="match706-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+    friend bool operator ==(const Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend bool operator !=(const Razlomak &amp;r1, const Razlomak &amp;r2);
+    friend std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, const Razlomak &amp;r);
+</font>    friend std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, Razlomak &amp;r);
+    operator long double() const { return (long double) DajBrojnik()/DajNazivnik(); }
+};
+
+Razlomak::Razlomak(long long int b, long long int n) {
+    if (n==0) throw std::logic_error("Nekorektran razlomak");
+    if ((b&gt;0 &amp;&amp; n&lt;0) || (b&lt;0 &amp;&amp; n&lt;0)) { b*=-1; n*=-1; }
+    long long int nzd=Razlomak::NZD(b,n);
+<a name="4"></a><font color="#FF00FF"><a href="match706-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+    brojnik=b/nzd; nazivnik=n/nzd;
+}
+
+Razlomak operator +(const Razlomak &amp;r1, const Razlomak &amp;r2) {
+    long long int r=Razlomak::NZD(r1.nazivnik,r2.nazivnik);
+</font>    if (Razlomak::TestPrekoracenjaZaMnozenje(r1.brojnik,r2.nazivnik/r))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    else if (Razlomak::TestPrekoracenjaZaMnozenje(r2.brojnik,r1.nazivnik/r))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    else if (Razlomak::TestPrekoracenjaZaSabiranje(r1.brojnik*(r2.nazivnik/r),r2.brojnik*(r1.nazivnik/r)))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    else if (Razlomak::TestPrekoracenjaZaMnozenje(r1.nazivnik,r2.nazivnik/r))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    long long int brojnik=r1.brojnik*(r2.nazivnik/r) + r2.brojnik*(r1.nazivnik/r);
+    long long int nazivnik=r1.nazivnik*(r2.nazivnik/r);
+    Razlomak r3(brojnik,nazivnik);
+    return r3;
+}
+
+Razlomak operator -(const Razlomak &amp;r1, const Razlomak &amp;r2) {
+    long long int r=Razlomak::NZD(r1.nazivnik,r2.nazivnik);
+    if (Razlomak::TestPrekoracenjaZaMnozenje(r1.brojnik,r2.nazivnik/r))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    else if (Razlomak::TestPrekoracenjaZaMnozenje(r2.brojnik,r1.nazivnik/r))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    else if (Razlomak::TestPrekoracenjaZaOduzimanje(r1.brojnik*(r2.nazivnik/r),r2.brojnik*(r1.nazivnik/r)))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    else if (Razlomak::TestPrekoracenjaZaMnozenje(r1.nazivnik,r2.nazivnik/r))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    long long int brojnik=r1.brojnik*(r2.nazivnik/r) - r2.brojnik*(r1.nazivnik/r);
+    long long int nazivnik=r1.nazivnik*(r2.nazivnik/r);
+    Razlomak r3(brojnik,nazivnik);
+    return r3;
+}
+
+Razlomak operator *(const Razlomak &amp;r1, const Razlomak &amp;r2) {
+    long long int s=Razlomak::NZD(r1.brojnik,r2.nazivnik);
+    long long int t=Razlomak::NZD(r2.brojnik,r1.nazivnik);
+    if (Razlomak::TestPrekoracenjaZaMnozenje(r1.brojnik/s,r2.brojnik/t))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    else if (Razlomak::TestPrekoracenjaZaMnozenje(r1.nazivnik/t,r2.nazivnik/s))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    long long int brojnik=(r1.brojnik/s)*(r2.brojnik/t);
+    long long int nazivnik=(r1.nazivnik/t)*(r2.nazivnik/s);
+    Razlomak r3(brojnik,nazivnik);
+    return r3;
+}
+
+Razlomak operator /(const Razlomak &amp;r1, const Razlomak &amp;r2) {
+    long long int u=Razlomak::NZD(r1.brojnik,r2.nazivnik);
+    long long int r=Razlomak::NZD(r1.nazivnik,r2.nazivnik);
+    if (Razlomak::TestPrekoracenjaZaMnozenje(r1.brojnik/u,r2.nazivnik/r))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    else if (Razlomak::TestPrekoracenjaZaMnozenje(r1.nazivnik/r,r2.brojnik/u))
+        throw std::overflow_error("Nemoguce dobiti tacan rezultat");
+    long long int brojnik=(r1.brojnik/u)*(r2.nazivnik/r);
+    long long int nazivnik=(r1.nazivnik/r)*(r2.brojnik/u);
+    Razlomak r3(brojnik,nazivnik);
+    return r3;
+}
+
+Razlomak operator +(const Razlomak &amp;r) { return r; }
+
+Razlomak operator -(const Razlomak &amp;r) {
+    Razlomak r3(r.brojnik*(-1),r.nazivnik);
+    return r3;
+}
+
+Razlomak &amp;operator +=(Razlomak &amp;r1, const Razlomak &amp;r2) {
+    r1=r1+r2;
+    return r1;
+}
+
+Razlomak &amp;operator -=(Razlomak &amp;r1, const Razlomak &amp;r2) {
+    r1=r1-r2;
+    return r1;
+}
+
+Razlomak &amp;operator *=(Razlomak &amp;r1, const Razlomak &amp;r2) {
+    r1=r1*r2;
+    return r1;
+}
+
+Razlomak &amp;operator /=(Razlomak &amp;r1, const Razlomak &amp;r2) {
+    r1=r1/r2;
+    return r1;
+}
+
+Razlomak &amp;operator ++(Razlomak &amp;r) { 
+    r=r+Razlomak(1); 
+    return r; 
+}
+
+Razlomak operator ++(Razlomak &amp;r, int) {
+    Razlomak pomocni(r);
+    r=r+Razlomak(1);
+    return pomocni;
+}
+
+Razlomak &amp;operator --(Razlomak &amp;r) {
+    r=r-Razlomak(1);
+    return r;
+}
+
+Razlomak operator --(Razlomak &amp;r, int) {
+    Razlomak pomocni(r);
+    r=r-Razlomak(1);
+    return pomocni;
+}
+
+bool operator &lt;(const Razlomak &amp;r1, const Razlomak &amp;r2) {
+    if ((long double)r1&lt;(long double)r2 &amp;&amp; r1!=r2) return true;
+    return false;
+}
+
+bool operator &gt;(const Razlomak &amp;r1, const Razlomak &amp;r2) { 
+    if ((long double)r1&gt;(long double)r2 &amp;&amp; r1!=r2) return true;
+    return false;
+}
+
+bool operator &lt;=(const Razlomak &amp;r1, const Razlomak &amp;r2) {
+    if ((long double)r1&lt;=(long double)r2 || r1==r2) return true;
+    return false;
+}
+
+bool operator &gt;=(const Razlomak &amp;r1, const Razlomak &amp;r2) {
+    if ((long double)r1&gt;=(long double)r2 || r1==r2) return true;
+    return false;
+}
+
+bool operator ==(const Razlomak &amp;r1, const Razlomak &amp;r2) {
+    return Razlomak::JesuLiJednaki((long double)r1,(long double)r2);
+}
+
+bool operator !=(const Razlomak &amp;r1, const Razlomak &amp;r2) {
+    return !(r1==r2);
+}
+
+std::ostream &amp;operator &lt;&lt;(std::ostream &amp;tok, const Razlomak &amp;r) {
+    if (r.nazivnik==1) {
+        tok &lt;&lt; r.brojnik;
+        return tok;
+    }
+    tok &lt;&lt; r.brojnik &lt;&lt; "/" &lt;&lt; r.nazivnik;
+    return tok;
+}
+
+std::istream &amp;operator &gt;&gt;(std::istream &amp;tok, Razlomak &amp;r) {
+    char znak;
+    long long int brojnik, nazivnik;
+    tok &gt;&gt; std::ws;
+    if (tok.peek()&gt;='0' &amp;&amp; tok.peek()&lt;='9') tok &gt;&gt; brojnik;
+    else tok.setstate(std::ios::failbit);
+    if (tok.peek()=='/') {
+        tok &gt;&gt; znak;
+        if (tok.peek()&gt;='0' &amp;&amp; tok.peek()&lt;='9') {
+            tok &gt;&gt; nazivnik;
+            if (tok.peek()==' ' || tok.peek()=='\n' || tok.peek()=='\r' ||
+                tok.peek()=='\t' || tok.peek()=='\v' || tok.peek()=='\f' || tok.peek()==EOF) {
+                    long long int nzd=Razlomak::NZD(brojnik,nazivnik);
+                    r.brojnik=brojnik/nzd;
+                    r.nazivnik=nazivnik/nzd;
+                    return tok;
+                }
+            else tok.setstate(std::ios::failbit);
+        }
+        else tok.setstate(std::ios::failbit);
+    }
+    else if (tok.peek()==' ' || tok.peek()=='\n' || tok.peek()=='\r' ||
+        tok.peek()=='\t' || tok.peek()=='\v' || tok.peek()=='\f' || tok.peek()==EOF) {
+            r.brojnik=brojnik;
+            r.nazivnik=1;
+            return tok;
+        }
+    else tok.setstate(std::ios::failbit);
+    return tok;
+}
+
+int main () {
+    Razlomak r1, r2;
+    std::cin &gt;&gt; r1 &gt;&gt; r2;
+<a name="0"></a><font color="#FF0000"><a href="match706-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_4.gif"/></a>
+
+    std::cout &lt;&lt; r1 &lt;&lt; " + " &lt;&lt; r2 &lt;&lt; " = " &lt;&lt; r1+r2 &lt;&lt; std::endl;
+    std::cout &lt;&lt; r1 &lt;&lt; " - " &lt;&lt; r2 &lt;&lt; " = " &lt;&lt; r1-r2 &lt;&lt; std::endl;
+    std::cout &lt;&lt; r1 &lt;&lt; " * " &lt;&lt; r2 &lt;&lt; " = " &lt;&lt; r1*r2 &lt;&lt; std::endl;
+    std::cout &lt;&lt; r1 &lt;&lt; " / " &lt;&lt; r2 &lt;&lt; " = " &lt;&lt; r1/r2 &lt;&lt; std::endl;
+</font>    if (r1+r2&gt;=r1-r2) std::cout &lt;&lt; r1 &lt;&lt; " + " &lt;&lt; r2 &lt;&lt; " &gt;= " &lt;&lt; r1 &lt;&lt; " - " &lt;&lt; r2 &lt;&lt; std::endl;
+    else std::cout &lt;&lt; r1 &lt;&lt; " + " &lt;&lt; r2 &lt;&lt; " &lt;= " &lt;&lt; r1 &lt;&lt; " - " &lt;&lt; r2 &lt;&lt; std::endl;
+    if (r1*r2&lt;=r1/r2) std::cout &lt;&lt; r1 &lt;&lt; " * " &lt;&lt; r2 &lt;&lt; " &lt;= " &lt;&lt; r1 &lt;&lt; " / " &lt;&lt; r2 &lt;&lt; std::endl;
+    else std::cout &lt;&lt; r1 &lt;&lt; " * " &lt;&lt; r2 &lt;&lt; " &gt;= " &lt;&lt; r1 &lt;&lt; " / " &lt;&lt; r2 &lt;&lt; std::endl;
+    if (r1==r2) std::cout &lt;&lt; (long double) r1 &lt;&lt; " = " &lt;&lt; (long double) r2 &lt;&lt; std::endl;
+    else if (r1!=r2) {
+        if (r1&lt;r2) std::cout &lt;&lt; (long double) r1 &lt;&lt; " &lt; "  &lt;&lt; (long double) r2 &lt;&lt; std::endl;
+        else if (r1&gt;r2) std::cout &lt;&lt; (long double) r1 &lt;&lt; " &gt; " &lt;&lt; (long double) r2 &lt;&lt; std::endl;
+    }
+    return 0;
+}</pre>
+</body>
+</html>

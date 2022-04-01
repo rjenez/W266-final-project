@@ -1,0 +1,228 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student5800.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student9823.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+
+void IzlistajOptuzbu(char ** &amp;pokazivac, int n){
+	for(int i=0; i &lt; n; i++){
+		if(pokazivac[i] == nullptr) continue;
+		std::cout &lt;&lt; pokazivac[i];
+		std::cout &lt;&lt; std::endl;
+	}
+}
+
+int PotencijalniKrivci(char ** &amp;pokazivac, std::vector&lt;std::string&gt; &amp;matrica){
+	int brojac(0);
+	pokazivac = nullptr;
+	try{
+<a name="0"></a><font color="#FF0000"><a href="match727-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+		pokazivac = new char *[matrica.size()];
+		for(int i=0; i &lt; matrica.size(); i++) pokazivac[i] = nullptr;
+		for(int i=0; i &lt; matrica.size(); ++i){
+</font>			pokazivac[i] = new char[matrica[i].size()+1];
+			const char *pok = matrica[i].c_str();
+<a name="3"></a><font color="#00FFFF"><a href="match727-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+			for(int j=0; j &lt; matrica[i].size(); j++){
+				pokazivac[i][j] = pok[j];
+			}
+			pokazivac[i][matrica[i].size()] = '\0';
+</font>			brojac++;
+		}
+		
+		
+	}catch(...){
+		for(int i=0; i &lt; matrica.size(); i++) delete[] pokazivac[i];
+		delete [] pokazivac;
+		throw std::bad_alloc();
+	}
+	return brojac;
+}
+
+int OdbaciOptuzbu(char ** &amp;pokazivac, int n, const std::string &amp;string){
+	
+	const char *pok = string.c_str();
+	
+	bool ImalGlavonje=false;
+	for(int i=0; i &lt; n; i++){
+		if(pokazivac[i] != nullptr &amp;&amp; strcmp(pokazivac[i], pok) == 0){
+			ImalGlavonje = true;
+			delete[] pokazivac[i];
+			pokazivac[i] = nullptr;
+			break;
+		}
+	}
+
+	if(!ImalGlavonje) throw std::domain_error("Osoba sa imenom " + string + " nije bila optuzena");
+	int brojac(0);
+	for(int i=0; i &lt; n; i++) if(pokazivac[i] == nullptr) brojac++;
+	
+	int novi(n);
+	if(brojac&gt;10){
+		for(int i=0; i &lt; n; i++) if(pokazivac[i] != nullptr) novi--;
+		
+		char ** noviPokazivac = nullptr;
+		try {
+			int k=0;
+			noviPokazivac = new char *[novi];
+			for(int i=0; i &lt; novi; i++) noviPokazivac[i] = nullptr;
+<a name="4"></a><font color="#FF00FF"><a href="match727-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+			for(int i=0; i &lt; n; i++){
+				if(pokazivac[i] != nullptr){
+					noviPokazivac[k] = pokazivac[i];
+					k++;
+					pokazivac[i] = nullptr;
+</font>				}
+			}
+			delete []pokazivac;
+			pokazivac = nullptr;
+			pokazivac = noviPokazivac;
+			
+		}catch(...){
+			return n;
+		}
+	}
+	return novi;
+}
+
+int DodajOptuzbu(char ** &amp;pokazivac, int n, const std::string &amp;string){
+		
+		char **noviPokazivacMoraSe = nullptr;
+		char *pokazivacNovog = nullptr;
+		
+		try{
+			pokazivacNovog = new char [string.size()+1];
+			strcpy(pokazivacNovog, string.c_str());
+		}catch(...){
+			delete []pokazivacNovog;
+			pokazivacNovog = nullptr;
+			throw std::bad_alloc();
+		}
+		
+		
+		bool ImalGlavonjeZaNullptr = false;
+		for(int i=0; i &lt; n; i++){
+			if(pokazivac[i] == nullptr){
+				ImalGlavonjeZaNullptr = true;
+				pokazivac[i] = pokazivacNovog;
+				pokazivacNovog = nullptr;
+				break;
+			}
+		}
+		
+		try {
+		if(!ImalGlavonjeZaNullptr) {
+			try{
+			noviPokazivacMoraSe = new char *[n+1];
+			for(int i=0; i &lt; n+1; i++) noviPokazivacMoraSe[i] = nullptr;
+			for(int i=0; i &lt; n; i++) noviPokazivacMoraSe[i] = pokazivac[i];
+			noviPokazivacMoraSe[n] = pokazivacNovog;
+			
+			for(int i=0; i &lt; n; i++) pokazivac[i] = nullptr;
+			delete []pokazivac;
+			pokazivac = nullptr;
+			pokazivac = noviPokazivacMoraSe;
+			pokazivacNovog = nullptr;
+			
+			}catch(...){
+				for(int i=0; i &lt; n+1; i++) delete noviPokazivacMoraSe[i];
+				for(int i=0; i &lt; n+1; i++) noviPokazivacMoraSe[i] = nullptr;
+				delete []noviPokazivacMoraSe;
+				noviPokazivacMoraSe = nullptr;
+				delete []pokazivacNovog; // dodano
+				pokazivacNovog = nullptr; // dodano
+				throw std::bad_alloc();
+			}
+		}
+		
+		pokazivacNovog = nullptr;
+		
+		}catch(...){
+			delete []pokazivacNovog;
+			pokazivacNovog = nullptr;
+			throw std::bad_alloc();
+		}
+		if(!ImalGlavonjeZaNullptr) return n+1;
+		else return n;
+}
+
+int main (){
+	std::string string;
+	int broj_pot_krivaca;
+	std::cout &lt;&lt; "Koliko potencijalnih krivaca zelite unijeti? " &lt;&lt; std::endl;
+	std::cin &gt;&gt; broj_pot_krivaca;
+	std::vector&lt;std::string&gt; spisakGlavonja(broj_pot_krivaca);
+	std::cin.ignore(10000, '\n');
+<a name="1"></a><font color="#00FF00"><a href="match727-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_2.gif"/></a>
+
+	std::cout &lt;&lt; "Unesite potencijalne krivce: " &lt;&lt; std::endl;
+	for(int i=0; i &lt; broj_pot_krivaca; i++){
+		std::getline(std::cin, spisakGlavonja[i]);
+</font>	}
+	
+	char **nizPotencijala;
+	int duzina(0);
+	try{
+		duzina = PotencijalniKrivci(nizPotencijala, spisakGlavonja);
+	}catch(...){
+		std::cout &lt;&lt; "Nema dovoljno memorije!" &lt;&lt; std::endl;
+		return 0;
+	}
+	int x;
+	do{
+		std::cout &lt;&lt; "Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: " &lt;&lt; std::endl;
+		std::cin &gt;&gt; x;
+		if(x == 1){
+			
+			std::cout &lt;&lt; "Unesite ime novog optuzenog: " &lt;&lt; std::endl;
+			std::cin.ignore(10000,'\n');
+			std::getline(std::cin, string);
+			try{
+			duzina = DodajOptuzbu(nizPotencijala, duzina, string);
+			}catch(...){
+				std::cout &lt;&lt; "Nema dovoljno memorije!" &lt;&lt; std::endl;
+				return 0;
+			}
+		}else if(x == 2){
+			std::cout &lt;&lt; "Unesite ime koje zelite izbaciti: " &lt;&lt; std::endl;
+<a name="2"></a><font color="#0000FF"><a href="match727-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+			std::cin.ignore(10000,'\n');
+			std::getline(std::cin, string);
+			try{
+			duzina = OdbaciOptuzbu(nizPotencijala, duzina, string);
+			}catch(std::domain_error exec){
+				std::cout &lt;&lt; exec.what() &lt;&lt; std::endl;
+</font>				// return 0;
+			}
+		}else if(x == 3){
+			IzlistajOptuzbu(nizPotencijala, duzina);
+		}
+		
+		
+	}while(x!=0);
+	
+	for(int i=0; i &lt; duzina; i++) delete[] nizPotencijala[i];
+	delete [] nizPotencijala;
+	
+	return 0;
+}</pre>
+</body>
+</html>

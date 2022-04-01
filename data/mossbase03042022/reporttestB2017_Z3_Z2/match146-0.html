@@ -1,0 +1,166 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student6172.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student6172.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;tuple&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iterator&gt;
+typedef std::map&lt;std::string,std::vector&lt;std::string&gt;&gt;Knjiga;
+<a name="0"></a><font color="#FF0000"><a href="match146-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_94.gif"/></a>
+
+typedef std::map&lt;std::string,std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt;&gt; Mapa;
+typedef std::tuple&lt;std::string,int,int&gt;Trojka;
+typedef std::set&lt;std::tuple&lt;std::string,int,int&gt;&gt;Skup;
+Mapa KreirajIndeksPojmova(Knjiga k)
+{
+    Mapa m;
+    //Krecemo se kroz Knjigu k i preko svakog kljucnog polja pristupam vektoru stirngova
+    for(auto it=k.begin(); it!=k.end(); it++) {
+        auto poglavlje(it-&gt;first);
+        auto vstringova(it-&gt;second);//vstringova je vektor pridruzenih vrijednosti
+        for(int i=0; i&lt;vstringova.size(); i++) {
+            //broj stranice je i
+            int strana(i+1);//u mapi mapa u odg elementu skupa indeksacija stranica ide od 1 a ne od nula
+            auto stranica(vstringova.at(i));//element vstringova je string
+            //idemo kroz string stranica,trazimo rijec i pretvaramo je u mala slova
+
+            for(int j=0; j&lt;stranica.size(); j++) {
+                std::string pom,rijec;
+                auto znak(stranica.at(j));//to ce biti jedan char
+                if(j&lt;stranica.size() &amp;&amp;((znak&gt;='A' &amp;&amp; znak&lt;='z') || (znak&gt;='0' &amp;&amp; znak&lt;='9'))) {
+                    int pozicija(j);//pamtimo pocetak rijeci
+                    while(j&lt;stranica.size() &amp;&amp;((znak&gt;='A' &amp;&amp; znak&lt;='z') || (znak&gt;='0' &amp;&amp; znak&lt;='9'))) {
+                        pom+=znak;
+                        j++;
+                        if(j&lt;stranica.size())znak=stranica.at(j);
+                    }
+                    //nasli smo rijec,pretvaramo je u mala slova
+                    for(auto &amp;x:pom) x=tolower(x);
+                    rijec=pom;
+
+                    Trojka trojka=std::make_tuple(poglavlje,strana,pozicija);
+
+                    if(m.begin()==m.end()) m[rijec]=Skup {trojka}; //mapa m je prazna pa odmah ubacujemo elemente u nju
+                    else {
+                        for(auto itm=m.begin(); itm!=m.end(); itm++) {
+                            //prvo provjeravamo da li se rijec nalazi u mapi m
+                            auto itnarijec(m.find(rijec));
+                            if(itnarijec==m.end()) m[rijec]=Skup {trojka}; //Ako se rijec ne nalazi u mapi ubaci je zajedno sa pratecim skupom uredjene trojke
+                            else {
+                                //znaci da se rijec vec nalazi u kljucnom polju mape m pa samo trebamo u skup ubacit tu novu uredjenu trojku
+                                Skup &amp; skup(itnarijec-&gt;second);//dat ce nam bas taj skup koji ima kljucno polje rijec
+                                skup.insert(trojka);//ubacujemo u skup novu uredjenu trojku
+
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    return m;
+}
+Skup PretraziIndeksPojmova(std::string rijec,Mapa m)
+{
+   //pretvaramo rijec u mala slova
+   for(auto &amp;x:rijec) x=tolower(x);
+    auto it(m.find(rijec));
+    if(it==m.end()) throw std::logic_error("Pojam nije nadjen");
+    return it-&gt;second;
+
+}
+void IspisiPozicije(Skup skup)
+{
+    auto kraj=skup.end();
+    for(auto its=skup.begin(); its!=skup.end(); its++) {
+        Trojka trojka=*its;
+        std::string poglavlje;
+        int brojstr,pozicija;
+        std::tie(poglavlje,brojstr,pozicija)=trojka;
+        std::cout&lt;&lt;poglavlje&lt;&lt;"/"&lt;&lt;brojstr&lt;&lt;"/"&lt;&lt;pozicija;
+        //iterator za skupove ne podrzavava operaciju -
+        if(std::distance(its,kraj)&gt;1) std::cout&lt;&lt;" ";
+    }
+
+}
+void IspisiIndeksPojmova( Mapa m)
+{
+
+    for(auto it=m.begin(); it!=m.end(); it++) {
+        Skup skup(it-&gt;second);
+        auto kraj(skup.end());
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        for(auto its=skup.begin(); its!=skup.end(); its++) {
+            Trojka trojka=*its;
+            std::string poglavlje;
+            int brojstr,pozicija;
+            std::tie(poglavlje,brojstr,pozicija)=trojka;
+            std::cout&lt;&lt;poglavlje&lt;&lt;"/"&lt;&lt;brojstr&lt;&lt;"/"&lt;&lt;pozicija;
+            //iterator za skupove ne podrzavava operaciju -
+            if(std::distance(its,kraj)&gt;1) std::cout&lt;&lt;", ";
+        }
+        std::cout&lt;&lt;"\n";
+    }
+
+}
+
+
+int main ()
+{
+
+    Knjiga knjiga;
+    for(;;) {
+        std::string poglavlje;
+        std::cout&lt;&lt;"Unesite naziv poglavlja: ";
+        std::getline(std::cin,poglavlje);
+        if(poglavlje==".") break;
+        int br(1);
+        std::vector&lt;std::string&gt;v;//svaki element vektora v predstavlja sadrzaj stranice
+        for(;;) {
+            std::cout&lt;&lt;"Unesite sadrzaj stranice "&lt;&lt;br&lt;&lt;": ";
+            std::string stranica;
+            std::getline(std::cin,stranica);
+            if(stranica==".") break;
+            v.push_back(stranica);
+            br++;
+        }
+        //ubacujemo poglavlje i v u mapu Knjiga
+        knjiga[poglavlje]=v;
+    }
+    std::cout&lt;&lt;std::endl;
+    auto m(KreirajIndeksPojmova(knjiga));
+    std::cout&lt;&lt;"Kreirani indeks pojmova:\n";
+    IspisiIndeksPojmova(m);
+    for(;;) {
+        std::cout&lt;&lt;"Unesite rijec: ";
+        std::string rijec;
+        std::getline(std::cin,rijec);
+        if(rijec==".") break;
+        for(auto &amp;x:rijec) x=tolower(x);
+        try {
+            auto skup( PretraziIndeksPojmova(rijec,m));
+            IspisiPozicije(skup);
+            std::cout&lt;&lt;std::endl;
+
+        } catch(std::logic_error poruka) {
+            std::cout&lt;&lt;"Unesena rijec nije nadjena!"&lt;&lt;std::endl;
+        }
+    }
+    
+    return 0;
+</font>}
+</pre>
+</body>
+</html>

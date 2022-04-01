@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student9864.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student2645.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match679-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_7.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+enum class Boje {Pik, Tref, Herc, Karo};
+std::vector&lt;std::string&gt; nazivi{"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+</font><a name="3"></a><font color="#00FFFF"><a href="match679-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_4.gif"/></a>
+
+
+std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; KreirajSpil() {
+    std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; spil;
+</font>    for(std::string x : nazivi) {
+        spil.push_back(std::make_pair(Boje::Pik, x));
+    }
+    for(std::string x : nazivi) {
+        spil.push_back(std::make_pair(Boje::Tref, x));
+    }
+    for(std::string x : nazivi) {
+        spil.push_back(std::make_pair(Boje::Herc, x));
+    }
+    for(std::string x : nazivi) {
+        spil.push_back(std::make_pair(Boje::Karo, x));
+    }
+    return spil;
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match679-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_6.gif"/></a>
+
+bool Kriterij(const std::pair&lt;Boje, std::string&gt; &amp;prvi, const std::pair&lt;Boje, std::string&gt; &amp;drugi) {
+    if(prvi.first &gt; drugi.first) return false;
+</font>    if(prvi.first == drugi.first) {
+        int indeksPrvi, indeksDrugi;
+        for(int i(0); i &lt; nazivi.size(); i++) {
+            if(nazivi.at(i) == prvi.second) indeksPrvi = i;
+            if(nazivi.at(i) == drugi.second) indeksDrugi = i;
+        }
+        if(indeksPrvi &gt; indeksDrugi) return false;
+    }
+    return true;
+}
+
+bool ProvjeriSpil(const std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; &amp;spil) {
+    if(spil.size() &gt; 52) return false;
+    for(std::pair&lt;Boje, std::string&gt; par : spil) {
+        bool ok(false);
+        for(auto naziv : nazivi) {
+            if(par.second == naziv) ok = true;
+        }
+        if(ok == false) return false;
+    }
+    std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; spil2 = spil;
+    spil2.sort(Kriterij);
+    auto it2 = spil2.begin();
+    for(auto it(spil.begin()); it != spil.end(); it++) {
+        if(it-&gt;first != it2-&gt;first &amp;&amp; it-&gt;second != it2-&gt;second) return false;
+<a name="4"></a><font color="#FF00FF"><a href="match679-0.html#4" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_4.gif"/></a>
+
+        it2++;
+    }
+    return true;
+}
+
+void IzbaciKarte(std::list&lt;std::pair&lt;Boje, std::string&gt;&gt; &amp;spil, std::multimap&lt;Boje, std::string&gt; &amp;mapa) {
+</font>    if(ProvjeriSpil(spil) == false) throw std::logic_error("Neispravna lista!");
+    for(auto it(mapa.begin()); it != mapa.end();) {
+        std::pair&lt;Boje, std::string&gt; karta = *it;
+<a name="0"></a><font color="#FF0000"><a href="match679-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+        auto itSpil = std::find_if(spil.begin(), spil.end(), [karta] (const std::pair&lt;Boje, std::string&gt; &amp;par) { if(karta.first == par.first &amp;&amp; karta.second == par.second) return true; return false; });
+        if(itSpil == spil.end()) it++;
+</font>        else {
+            spil.erase(itSpil);
+            it = mapa.erase(it);
+        }
+    }
+}
+
+int main () {
+	return 0;
+}
+</pre>
+</body>
+</html>

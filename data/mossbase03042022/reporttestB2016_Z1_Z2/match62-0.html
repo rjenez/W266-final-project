@@ -1,0 +1,154 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student2035.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student2035.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match62-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+bool DaLiJeGrbava(std::vector&lt;std::vector&lt;double&gt;&gt; matrica) {
+	bool t(false); 
+	for(unsigned int i=0; i&lt;matrica.size(); i++) {
+		for(unsigned int j=i+1; j&lt;matrica.size(); j++) {
+			if(matrica[i].size()!=matrica[j].size()) return true;
+			if(j==matrica.size()-1) break;
+		}
+		if(i==matrica.size()-1) break;
+	}
+	return t;
+}
+
+int BrojRedova(std::vector&lt;std::vector&lt;double&gt; &gt; matrica) {
+	
+	return matrica.size();
+}
+
+int BrojKolona(std::vector&lt;std::vector&lt;double&gt; &gt; matrica) {
+	if(matrica.size()==0) return 0;
+	return matrica[0].size();
+	
+}
+
+std::vector&lt;std::vector&lt;double&gt; &gt; KreirajMatricu(int brojredova, int brojkolona) {
+	
+	std::vector&lt;std::vector&lt;double&gt; &gt; matrica(brojredova, std::vector&lt;double&gt;(brojkolona));
+	return matrica;
+	
+}
+
+std::vector&lt;std::vector&lt;double&gt; &gt; UnesiMatricu(int brojredova, int brojkolona) {
+	auto matrica(KreirajMatricu(brojredova, brojkolona));
+	if(DaLiJeGrbava(matrica)) throw std::domain_error("Matrica nije korektna");
+	for(unsigned int i=0; i&lt;brojredova; i++) {
+	for(unsigned int j=0; j&lt;brojkolona; j++) {
+		std::cin &gt;&gt; matrica[i][j];
+		if(j==brojkolona-1) break;
+	} 
+		if(i==brojredova-1) break;
+	} 
+	return matrica;
+}
+
+
+void IspisiMatricu(std::vector&lt;std::vector&lt;double&gt; &gt; matrica) {
+	for(auto red : matrica) {
+		for(auto x : red) {
+			std::cout &lt;&lt; std::setw(4) &lt;&lt; x;
+		}
+		std::cout &lt;&lt; std::endl;
+	}
+}
+
+std::vector&lt;std::vector&lt;double&gt; &gt; hM(std::vector&lt;std::vector&lt;double&gt; &gt; matrica) {
+	auto hM(KreirajMatricu(BrojRedova(matrica), BrojKolona(matrica)));
+	for(unsigned int i=0; i&lt;BrojRedova(hM); i++) {
+		for(unsigned int j=0; j&lt;BrojKolona(hM); j++) {
+			int k;
+			k=BrojKolona(hM)-j-1;
+			hM[i][j]=matrica[i][k];
+			if(j==BrojKolona(hM)-1) break;
+		}
+	if(i==BrojRedova(hM)-1) break;	
+	}
+	return hM;
+}
+
+std::vector&lt;std::vector&lt;double&gt; &gt; vM(std::vector&lt;std::vector&lt;double&gt; &gt; matrica) {
+	auto vM(KreirajMatricu(BrojRedova(matrica), BrojKolona(matrica)));
+	for(unsigned int i=0; i&lt;BrojRedova(vM); i++) {
+		for(unsigned int j=0; j&lt;BrojKolona(vM); j++) {
+			int k;
+			k=BrojRedova(vM)-i-1;
+			vM[i][j]=matrica[k][j];
+			if(j==BrojKolona(vM)-1) break;
+		
+		}
+		if(i==BrojRedova(vM)-1) break;
+	}
+	return vM;
+}
+
+std::vector&lt;std::vector&lt;double&gt; &gt; hvM(std::vector&lt;std::vector&lt;double&gt; &gt; matrica) {
+	auto hvM(hM(matrica));
+	return vM(hvM);
+}
+
+std::vector&lt;double&gt; Spoji(std::vector&lt;double&gt; v1, std::vector&lt;double&gt; v2) {
+	std::vector&lt;double&gt; spojen;
+	for(unsigned int i=0; i&lt;2*v1.size()+v2.size(); i++) {
+		if(i&lt;v1.size()) spojen.push_back(v1[i]);
+		else if(i&gt;=v1.size() &amp;&amp; i&lt;v1.size()+v2.size()) spojen.push_back(v2[i-v1.size()]);
+		else spojen.push_back(v1[i-v1.size()-v2.size()]);
+		if(i==2*v1.size()+v2.size()) break;
+	}
+	return spojen;
+}	
+
+
+std::vector&lt;std::vector&lt;double&gt; &gt; OgledaloMatrica(std::vector&lt;std::vector&lt;double&gt; &gt; matrica) {
+
+		auto a(KreirajMatricu(3*BrojRedova(matrica), 3*BrojKolona(matrica)));
+	
+		for(unsigned int i=0; i&lt;BrojRedova(a); i++) {
+			
+			for(unsigned int j=0; j&lt;BrojRedova(matrica); j++) {
+			if(i&lt;int(BrojRedova(a)/3.+0.5))	a[i]=Spoji(hvM(matrica)[j], vM(matrica)[j]);
+			else if(i&lt;int((2*BrojRedova(a))/3.+0.5)) a[i]=Spoji(hM(matrica)[j], matrica[j]);
+			else a[i]=Spoji(hvM(matrica)[j], vM(matrica)[j]);
+				if(j==BrojRedova(matrica)-1) break;
+				if(i==BrojRedova(a)-1) break;
+				i++;
+				
+			}
+	if(i==BrojRedova(a)-1) break;	}
+	return a;
+}
+	
+	
+	int main ()
+{
+	
+	std::cout &lt;&lt; "Unesite dimenzije matrice (m n): ";
+	int m, n;
+	std::cin &gt;&gt; m &gt;&gt; n;
+	if(m&lt;0 || n&lt;0) {std::cout&lt;&lt; "Dimenzije matrice moraju biti nenegativne!"; return 0;}
+	std::cout &lt;&lt; "Unesite elemente matrice: " ;
+	try {
+	auto a(UnesiMatricu(m, n)); 
+	auto b(OgledaloMatrica(a));
+	std::cout&lt;&lt; std::endl &lt;&lt; "Rezultantna matrica: " &lt;&lt; std::endl;
+	IspisiMatricu(b); }
+	catch(std::domain_error izuzetak) {
+		std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+	}
+  	
+	return 0; 
+</font>} </pre>
+</body>
+</html>

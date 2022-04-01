@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student1303.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student5162.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+// Napravi funkcije koje prave horizontalno i vertikalno ogledalo matrice
+// kombinovano ogledalo ces dobiti tako sto pozoves i horiz i vertik funkciju
+//posto je vektor, mozes mijenjati velicinu
+//probaj sa dekom tako da mozes i push front i push back, ali onda opet na kraju moras prebaciti u vektor
+//
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include&lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match194-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_95.gif"/></a>
+
+std::vector&lt;double&gt; Saberi (std::vector&lt;double&gt; v1, std::vector&lt;double&gt; v2){
+	
+	std::vector&lt;double&gt; novi;
+	for (int i(0); i&lt;v1.size(); i++){
+		novi.push_back(v1.at(i));
+	}
+		for (int i(0); i&lt;v2.size(); i++){
+		novi.push_back(v2.at(i));
+	}
+		for (int i(0); i&lt;v1.size(); i++){
+		novi.push_back(v1.at(i));
+	}
+	return novi;
+}
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+
+Matrica HorizontalnoOgledalo (Matrica m){//obrce redoslijed kolona
+
+	for ( int i(0); i&lt;m.size(); i++){
+		
+		for ( int j(0); j&lt;(m[i].size())/2; j++){
+			
+			double temp;
+			temp=m[i][j];
+			m[i][j]=m[i][ m[i].size() - 1 - j ];
+			m[i][ m[i].size() - 1 - j ] = temp;
+		}
+	}
+	return m;
+}
+Matrica VertikalnoOgledalo (Matrica m){  //obrce redoslijed redova
+	
+	for (int j(0); j&lt;(m[0].size()); j++){
+		for( int i(0); i&lt;(m.size())/2; i++){
+			double temp;
+			temp=m[i][j];
+			m[i][j]=m[m.size()-1-i][j];
+			m[m.size()-1-i][j]=temp;
+			
+		}
+	}
+	return m;
+	
+}
+
+Matrica OgledaloMatrica(Matrica mat){
+	
+	if (mat.size()==0) return mat;
+	for(int i(1); i&lt;mat.size(); i++){
+		if(mat[0].size()!=mat[i].size()) throw std::domain_error ("Matrica nije korektna");
+	}
+	
+	Matrica H, V, HV, nova;
+	
+	H=HorizontalnoOgledalo(mat);
+	V=VertikalnoOgledalo(mat);
+	HV=HorizontalnoOgledalo(VertikalnoOgledalo(mat));
+	if(mat.size()==0) return mat;
+	
+	for (int i(0); i&lt;3*(mat.size()); i++){
+		if(i&lt;mat.size()) nova.push_back( Saberi(HV[i], V[i]) );
+		if(i&gt;=mat.size() &amp;&amp; i&lt;2*mat.size()) nova.push_back( Saberi(H[i-mat.size()], mat[i-mat.size()] ) );
+		if(i&gt;=2*mat.size() &amp;&amp; i&lt;3*mat.size()) nova.push_back( Saberi(HV[i-(2*mat.size())], V[i-(2*mat.size())] ) ) ;
+	}
+	
+	
+	return nova;
+	
+}
+
+int main (){
+	try{
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m n): ";
+	int m, n;
+	std::cin&gt;&gt;m&gt;&gt;n;
+	if (m&lt;0 || n&lt;0) {
+		std::cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!"&lt;&lt;std::endl;
+		return 0;
+	}
+	std::cout&lt;&lt;"Unesite elemente matrice: ";
+	Matrica mat(m, std::vector&lt;double&gt;(n));
+	for(int i(0); i&lt;m; i++){
+		for(int j(0); j&lt;n; j++){
+			double temp;
+			std::cin&gt;&gt;temp;
+			mat[i][j]=temp;
+		}
+	}
+	
+	mat=OgledaloMatrica(mat);
+	std::cout&lt;&lt;"\nRezultantna matrica: "&lt;&lt;std::endl;
+	
+	for(int i(0); i&lt;mat.size(); i++){
+		
+		for (int j(0); j&lt;mat[0].size(); j++){
+			
+		std::cout&lt;&lt;std::setw(4)&lt;&lt;mat[i][j];
+</font>		}
+		
+		std::cout&lt;&lt;std::endl;
+	}
+	}
+	catch(std::domain_error izuzetak){
+		std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+	}
+
+	return 0;
+}</pre>
+</body>
+</html>

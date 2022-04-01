@@ -1,0 +1,250 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student1066.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student9307.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match139-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 4, Zadatak 2 // Kopirao sam kod zadatka 1 u ovaj zadatak
+#include &lt;iostream&gt;
+#include &lt;tuple&gt;
+#include &lt;cmath&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+
+#define PI (atan(1)*4)
+#define EPS 1e-10
+
+
+typedef std::tuple&lt;double, double, double&gt; XYZ;
+
+class NepreklapajucaKugla
+{
+  double x,y,z,r;
+  NepreklapajucaKugla *veza;
+  static NepreklapajucaKugla *posljednji;
+
+  bool DaLiSePreklapaju (const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2) {
+    // preklapaju se akko je rastojanje centara manji od zbira poluprecnika
+    return (RastojanjeCentara(k1,k2) &lt;= (k1.DajPoluprecnik()+k2.DajPoluprecnik()));
+  }// Problem: kad se u nekoj metodi promjeni nesto, promjeni se i this a samim time i veza pa se nece ocuvati ono od ranije
+
+  void Izuzetak (NepreklapajucaKugla *k) {
+    bool nema(true); // pretpostavljam da je k novi element liste
+    for (NepreklapajucaKugla *p=posljednji; p!=nullptr; p=p-&gt;veza ) {
+      if (p==k)  { nema=false;  // ako je pokazivac jednak znaci da je dati element vec u listi mada je sad promjenio vrijednost, zbog kopiranja pokazivaca on p ce vec imati novu vrijesdnot pa nema potrebe praviti novu vezu
+      continue; }
+    if (DaLiSePreklapaju(*p,*k)) 
+    throw std::logic_error ("Nedozvoljeno preklapanje");
+    }
+    if (nema)  // ako nema elementa k u listi onda ga je potrebno uvezati
+    veza=posljednji;  // postavljam vezu na posljednji ili bolje reci prijasnji element
+    posljednji=k; // posljednji tj. sljedeci element jese onaj koji je prosao test i on se uvezuje u listu
+
+  }
+public:
+
+  NepreklapajucaKugla (const NepreklapajucaKugla &amp;k) = delete; // zabrana kopiranja
+   
+  NepreklapajucaKugla &amp;operator = (const NepreklapajucaKugla &amp;k) = delete;  // zabrana dodjele
+
+  explicit NepreklapajucaKugla (double r = 0) {
+    x=0;
+    y=0;
+    z=0;
+    if (r&lt;0) throw std::domain_error ("Ilegalan poluprecnik");
+    NepreklapajucaKugla::r=r;
+    Izuzetak(this);
+  }
+
+  NepreklapajucaKugla (double x, double y, double z, double r=0) {
+    NepreklapajucaKugla::x=x;
+    NepreklapajucaKugla::y=y;
+    NepreklapajucaKugla::z=z;
+    if (r&lt;0) throw std::domain_error ("Ilegalan poluprecnik");
+    NepreklapajucaKugla::r=r;
+    Izuzetak(this);
+  }
+
+  explicit NepreklapajucaKugla (const XYZ &amp;centar, double r = 0) {
+    x=std::get&lt;0&gt;(centar);
+    y=std::get&lt;1&gt;(centar);
+    z=std::get&lt;2&gt;(centar);
+    if (r&lt;0) throw std::domain_error ("Ilegalan poluprecnik");
+    NepreklapajucaKugla::r=r;
+    Izuzetak(this);
+  }
+
+  double DajX () const {
+    return x;
+  }
+
+  double DajY () const {
+    return y;
+  }
+
+  double DajZ () const {
+    return z;
+  }
+
+  XYZ DajCentar () const {
+    XYZ centar(std::tie (x,y,z));
+    return centar;
+  }
+
+  double DajPoluprecnik () const {
+    return r;
+  }
+
+  double DajPovrsinu () const {
+    return 4*r*r*PI;
+  }
+
+  double DajZapreminu () const {
+    return 4*r*r*r*PI/3;
+  }
+
+  NepreklapajucaKugla &amp;PostaviX (double x) {
+    NepreklapajucaKugla::x=x;
+    Izuzetak(this);
+    return *this;
+  }
+
+  NepreklapajucaKugla &amp;PostaviY (double y) {
+    NepreklapajucaKugla::y=y;
+    Izuzetak(this);
+    return *this;
+  }
+
+  NepreklapajucaKugla &amp;PostaviZ (double z) {
+    NepreklapajucaKugla::z=z;
+    Izuzetak(this);
+    return *this;
+  }
+
+  NepreklapajucaKugla &amp;PostaviCentar (double x, double y, double z) {
+    NepreklapajucaKugla::x=x;
+    NepreklapajucaKugla::y=y;
+    NepreklapajucaKugla::z=z;
+    Izuzetak(this);
+    return *this;
+  }
+
+  NepreklapajucaKugla &amp;PostaviCentar(const XYZ &amp;centar) {
+    PostaviCentar(std::get&lt;0&gt;(centar),std::get&lt;1&gt;(centar), std::get&lt;2&gt;(centar));
+    Izuzetak(this);
+    return *this;
+  }
+
+  NepreklapajucaKugla &amp;PostaviPoluprecnik (double r) {
+    if (r&lt;0) throw std::domain_error ("Ilegalan poluprecnik");
+    NepreklapajucaKugla::r=r;
+    Izuzetak(this);
+    return *this;
+  }
+
+  void Ispisi () const {
+    std::cout&lt;&lt;"{("&lt;&lt;DajX()&lt;&lt;","&lt;&lt;DajY()&lt;&lt;","&lt;&lt;DajZ()&lt;&lt;"),"&lt;&lt;DajPoluprecnik()&lt;&lt;"}"&lt;&lt;std::endl;
+  }
+
+  void Transliraj (double delta_x, double delta_y, double delta_z) {
+    PostaviCentar(x+delta_x,y+delta_y, z+delta_z);
+    Izuzetak(this);
+  }
+
+  bool DaLiSadrzi (const NepreklapajucaKugla &amp;k) {
+    return ( (RastojanjeCentara(k,*this) - DajPoluprecnik()) + k.DajPoluprecnik() &lt;= EPS);
+  }
+
+  friend double RastojanjeCentara (const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2);
+};
+NepreklapajucaKugla* NepreklapajucaKugla::posljednji=nullptr;  // postavljam statickii atribut na nullptr
+
+double Kvadrat(double x)
+{
+  return x*x;
+}
+
+double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2)
+{
+  return sqrt( Kvadrat( k1.DajX() - k2.DajX() ) + Kvadrat( k1.DajY() - k2.DajY() ) + Kvadrat ( k1.DajZ() - k2.DajZ() ) );
+}
+
+typedef std::vector&lt;std::shared_ptr&lt;NepreklapajucaKugla&gt;&gt; VektorPametnihKugli;
+typedef std::shared_ptr&lt;NepreklapajucaKugla&gt; PametnaKugla;
+
+int main ()
+{
+  try {
+    int n;
+    std::cout&lt;&lt;"Unesite broj kugli: ";
+    while(1) {
+      std::cin&gt;&gt;n;
+      if (n&lt;=0 || !std::cin || std::cin.peek()!='\n') {
+        std::cout&lt;&lt;"Neispravan broj kugli, unesite ponovo!"&lt;&lt;std::endl;
+        std::cin.clear();
+        std::cin.ignore(10000,'\n');
+      } else break;
+    }
+    VektorPametnihKugli kugle (n,nullptr);
+
+    for (int i = 0; i&lt;n; i++) {
+      double x,y,z,r;
+
+      std::cout&lt;&lt;"Unesite centar za "&lt;&lt;i+1&lt;&lt;". kuglu: ";
+      while (1) {
+        std::cin&gt;&gt;x&gt;&gt;y&gt;&gt;z;
+        if (!std::cin){
+        std::cin.clear();
+        std::cin.ignore(10000,'\n');
+        std::cout&lt;&lt;"Neispravan centar, unesite ponovo: \n";}
+        else break;
+      }
+
+      try {
+        std::cout&lt;&lt;"Unesite poluprecnik: ";
+        while (1) {
+          std::cin&gt;&gt;r;
+          if (!std::cin || r&lt;0){
+          std::cin.clear();
+          std::cin.ignore(10000,'\n');
+          std::cout&lt;&lt;"Neispravan poluprecnik, unesite ponovo: \n";
+          }
+          else break;
+        }
+        kugle.at(i) = PametnaKugla (new NepreklapajucaKugla(x,y,z,r));
+      } catch (std::domain_error izuzetak) {
+        std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+        i--;
+      }
+      catch (std::logic_error izuzetak) {
+        std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+        i--;
+      }
+    }
+
+    VektorPametnihKugli::iterator it(kugle.begin()); // postavljam iterator na pocetak vektora pametnih kugli
+
+    std::sort (it, it+n, [] (PametnaKugla k1, PametnaKugla k2) {
+      return k1-&gt;DajPovrsinu()&lt;k2-&gt;DajPovrsinu();
+    });
+
+    std::cout&lt;&lt;"\nKugle nakon obavljenog sortiranja: \n";
+    std::for_each (it, it+n, [] (PametnaKugla k) {
+      k-&gt;Ispisi();
+    });
+  } catch (std::domain_error izuzetak) {
+    std::cout&lt;&lt;izuzetak.what();
+  }
+  catch (std::logic_error izuzetak){
+    std::cout&lt;&lt;izuzetak.what();
+</font>  }
+  return 0;
+}</pre>
+</body>
+</html>

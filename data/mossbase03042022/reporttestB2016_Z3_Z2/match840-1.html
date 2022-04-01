@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student4526.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student1981.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match840-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::string;
+using std::map;
+using std::vector;
+using std::set;
+using std::make_pair;
+</font>
+
+map&lt;string, set&lt;int&gt;&gt; KreirajIndeksPojmova(string s) {
+    vector&lt;string&gt; v;
+    map&lt;string, set&lt;int&gt;&gt; mapa;
+    int br(0);
+    string n;
+    s+=" ";
+    for(int i=0; i&lt;s.size(); i++) {
+        
+        if( (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9') || isalpha(s[i])  ) n.push_back(s[i]);
+      else  if(n.size()!=0)
+           { v.push_back(n);
+           n.clear();
+            
+        }
+    }
+
+    for(int k=0; k&lt;v.size(); k++) {
+     
+    for(int i=0; i&lt;s.size(); i++) {
+        int j(0);
+        int f=i;
+        while(s[i]==v[k][j] ) {
+            if(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') s[i]=s[i]+32; 
+            if(v[k][j]&gt;='A' &amp;&amp; v[k][j]&lt;='Z') v[k][j]=v[k][j]+32; 
+            i++;
+            j++;
+        }
+        
+        if( isalpha(s[i])==false &amp;&amp; j==v[k].size() &amp;&amp; (f==0 || isalpha(s[f-1])==false )) {
+            
+            br=i-j;
+            mapa[v[k]].insert(br);
+            
+        }
+    }
+    
+    }
+    
+    return mapa;
+}
+
+
+set&lt;int&gt; PretraziIndeksPojmova(string s, map&lt;string, set&lt;int&gt;&gt; mapa) {
+    
+    set&lt;int&gt; skup;
+<a name="2"></a><font color="#0000FF"><a href="match840-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+    for(int i=0; i&lt;s.size(); i++) if(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') s[i]=s[i]+32;
+</font>    
+    int br(0);
+    for(auto it=mapa.begin(); it!=mapa.end(); it++) 
+        
+        if(s==it-&gt;first) {
+            skup=it-&gt;second;
+            br++;
+        }
+        
+
+    if(br==0) throw std::logic_error("Unesena rijec nije nadjena!");
+    
+<a name="1"></a><font color="#00FF00"><a href="match840-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+    return skup;
+    
+}
+
+
+void IspisiIndeksPojmova (map&lt;string,set&lt;int&gt;&gt; mapa) {
+    for(auto it=mapa.begin(); it!=mapa.end(); it++) {
+        cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        int br(0);
+</font>        for(int x: it-&gt;second) {
+            if(br==(it-&gt;second).size()-1) cout&lt;&lt;x;
+            else cout&lt;&lt;x&lt;&lt;",";
+            
+            br++;
+        }
+        cout&lt;&lt;endl;
+    }
+}
+
+
+int main ()
+{
+    string s;
+    
+    cout&lt;&lt;"Unesite tekst: ";
+    
+    std::getline(cin,s);
+    
+    map&lt;string, set&lt;int&gt;&gt; mapa;
+    mapa=KreirajIndeksPojmova(s);
+    IspisiIndeksPojmova(mapa);
+    
+    string rijec,znak(".");
+    
+    for(;;){
+    try{
+    cout&lt;&lt;"Unesite rijec: ";
+    std::getline(cin,rijec);
+    
+    if(rijec==znak) break;
+    set&lt;int&gt; skup;
+    skup=PretraziIndeksPojmova(rijec,mapa);
+    for(int x: skup) cout&lt;&lt;x&lt;&lt;" ";
+    cout&lt;&lt;endl;
+    }
+    catch(std::logic_error i) {
+        cout&lt;&lt;i.what()&lt;&lt;endl;
+    }
+    }
+
+    
+	return 0;
+}
+
+
+
+
+</pre>
+</body>
+</html>

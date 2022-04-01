@@ -1,0 +1,113 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student4290.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student8387.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+#include &lt;functional&gt;
+#include &lt;vector&gt;
+#include &lt;iterator&gt;
+<a name="0"></a><font color="#FF0000"><a href="match92-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+class Manji {
+    const int n;  
+    public:
+        Manji(int n) : n(n) {}
+        bool operator ()(int x) { return x &lt; n; }
+};
+class Veci{
+    const int n;
+    public:
+        Veci(int n) : n(n) {}
+        bool operator ()(int x) { return x &gt; n; }  
+};
+class Temperature{
+    static int max_d;
+    static int min_d;
+    std::list&lt;int&gt; mini;
+    std::list&lt;int&gt; maxi;
+    public:
+        Temperature(int a,int b);
+        void RegistrirajTemperature(std::pair&lt;int,int&gt; p);
+        void BrisiSve(){mini.resize(0);maxi.resize(0);}
+        void BrisiNegativneTemperature();
+        int  DajBrojRegistriranihTemperatura()const {return mini.size();}
+        int DajMinimalnuTemperaturu() const;
+        int DajMaksimalnuTemperaturu() const;
+        int DajBrojTemperaturaVecihOd(int n) const;
+        int DajBrojTemperaturaManjihOd(int n) const;
+        friend bool operator!(const Temperature &amp;t);
+        friend std::vector&lt;int&gt; operator*(const Temperature &amp;t);
+        std::pair&lt;int,int&gt; operator[](int i);
+        friend bool operator==(const Temperature &amp;t1,const Temperature &amp;t2);
+        inline friend bool operator!=(const Temperature &amp;t1,const Temperature &amp;t2){return !(t1==t2);}
+};
+int Temperature::min_d=0;
+int Temperature::max_d=0;
+Temperature::Temperature(int a,int b){
+    if(a&gt;b)throw std::range_error("Nekorektne temperature");
+    min_d=a;
+    max_d=b;
+}
+void Temperature::RegistrirajTemperature(std::pair&lt;int,int&gt; p){
+    if(p.first&lt;min_d || p.second&gt;max_d ||p.first&gt;p.second)throw std::range_error("Nekorektne temperature");
+    mini.push_back(p.first);
+    maxi.push_back(p.second);
+}
+void Temperature::BrisiNegativneTemperature(){
+    std::remove_if(mini.begin(),mini.end(),Manji(0));
+}
+int Temperature::DajMinimalnuTemperaturu() const{
+    if(maxi.size()&lt;=0 || mini.size()&lt;=0)throw std::logic_error("Nema registriranih temperatura");
+    return *(min_element(mini.begin(),mini.end()));
+}
+int  Temperature::DajMaksimalnuTemperaturu() const{
+    if(maxi.size()&lt;=0 || mini.size()&lt;=0)throw std::logic_error("Nema registriranih temperatura");
+    return *(max_element(maxi.begin(),maxi.end()));
+}
+int Temperature::DajBrojTemperaturaVecihOd(int n) const{
+    if(maxi.size()&lt;=0 || mini.size()&lt;=0)throw std::logic_error("Nema registriranih temperatura");
+    int broj=count_if(mini.begin(),mini.end(),Veci(n));
+    broj+=count_if(maxi.begin(),maxi.end(),Veci(n));
+    return broj;
+}
+int Temperature::DajBrojTemperaturaManjihOd(int n) const{
+    if(maxi.size()&lt;=0 || mini.size()&lt;=0)throw std::logic_error("Nema registriranih temperatura");
+    int broj=count_if(mini.begin(),mini.end(),Manji(n));
+    broj+=count_if(maxi.begin(),maxi.end(),Manji(n));
+    return broj;
+}
+bool operator!(const Temperature &amp;t){
+    return (t.maxi.size()==0 || t.mini.size()==0);
+}
+std::vector&lt;int&gt; operator*(const Temperature &amp;t){
+    std::vector&lt;int&gt; vrati(t.maxi.size());
+    std::transform(t.maxi.begin(),t.maxi.end(),t.mini.begin(),vrati.begin(),std::minus&lt;int&gt;{});
+    return vrati;
+}
+std::pair&lt;int,int&gt; Temperature::operator[](int i){
+    if(i&lt;0 || i&gt;maxi.size() || mini.size())throw std::range_error("Neispravan indeks");
+    auto it1=maxi.begin();
+    auto it2=mini.begin();
+    std::advance(it1,i-1);
+    std::advance(it2,i-1);
+    return std::make_pair(*it1,*it2);
+}
+bool operator==(const Temperature &amp;t1,const Temperature &amp;t2){
+    return (t1.maxi.size()==t2.maxi.size() &amp;&amp; t1.mini.size()==t2.mini.size() &amp;&amp; std::equal(t1.maxi.begin(),t1.maxi.end(),t2.maxi.begin()) &amp;&amp; std::equal(t1.mini.begin(),t1.mini.end(),t2.mini.begin()));
+}
+int main (){
+    Temperature s(-20,20);
+    s.RegistrirajTemperature(std::make_pair(-12,13));
+    s.RegistrirajTemperature(std::make_pair(-6,7));
+    std::cout&lt;&lt;s.DajBrojTemperaturaManjihOd(20);
+	return 0;
+</font>}</pre>
+</body>
+</html>

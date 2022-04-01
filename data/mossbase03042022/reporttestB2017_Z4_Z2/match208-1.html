@@ -1,0 +1,305 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student5562.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z2/student6594.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match208-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+/B2017/2018: Zadaća 4, Zadatak 1
+
+#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;initializer_list&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;tuple&gt;
+#include &lt;memory&gt;
+#include &lt;cmath&gt;
+/*
+class Tim
+{
+     char ime_tima[20];
+     int broj_odigranih;
+     int broj_pobjeda;
+     int broj_nerijesenih;
+     int broj_poraza;
+     int broj_datih;
+     int broj_primljenih;
+     int broj_poena;
+public:
+     Tim(const char ime[]) : broj_odigranih(0), broj_pobjeda(0), broj_nerijesenih(0), broj_poraza(0),
+          broj_datih(0), broj_primljenih(0), broj_poena(0) {
+          if (std::strlen(ime)&gt;19) throw std::range_error("Predugacko ime tima");
+          std::strcpy(ime_tima,ime);
+     }
+     void ObradiUtakmicu(int broj_datih, int broj_primljenih);
+     const char *DajImeTima() const {
+          return ime_tima;
+     }
+     int DajBrojPoena() const {
+          return broj_poena;
+     }
+     int DajGolRazliku() const {
+          return broj_datih-broj_primljenih;
+     }
+     void IspisiPodatke() const;
+};
+
+void Tim::ObradiUtakmicu(int broj_datih, int broj_primljenih)
+{
+     if (broj_datih&lt;0 || broj_primljenih&lt;0) throw std::range_error("Neispravan broj golova");
+     broj_odigranih++;
+     Tim::broj_datih+=broj_datih;
+     Tim::broj_primljenih+=broj_primljenih;
+     if (broj_datih&gt;broj_primljenih) {
+          broj_pobjeda++;
+          broj_poena+=3;
+     } else if (broj_datih==broj_primljenih) {
+          broj_nerijesenih++;
+          broj_poena+=1;
+     } else broj_poraza++;
+}
+
+void Tim::IspisiPodatke() const
+{
+     std::cout &lt;&lt; std::setw(20) &lt;&lt; std::left &lt;&lt; ime_tima &lt;&lt; std::setw(4) &lt;&lt; std::right &lt;&lt; broj_odigranih &lt;&lt; std::setw(4) &lt;&lt; std::right &lt;&lt; broj_pobjeda
+               &lt;&lt; std::setw(4) &lt;&lt; std::right &lt;&lt; broj_nerijesenih &lt;&lt; std::setw(4) &lt;&lt; std::right &lt;&lt; broj_poraza &lt;&lt; std::setw(4) &lt;&lt; std::right &lt;&lt; broj_datih
+               &lt;&lt; std::setw(4) &lt;&lt; std::right &lt;&lt; broj_primljenih &lt;&lt; std::setw(4) &lt;&lt; std::right &lt;&lt; broj_poena &lt;&lt; std::endl;
+}
+
+class Liga
+{
+     std::vector&lt;std::shared_ptr&lt;Tim&gt;&gt; timovi;
+public:
+     explicit Liga()=default;
+     explicit Liga(std::initializer_list&lt;Tim&gt; lista_timova);
+     ~Liga();
+     Liga(const Liga &amp;l);
+     Liga(Liga &amp;&amp;l);
+     Liga &amp;operator =(const Liga &amp;l);
+     Liga &amp;operator =(Liga &amp;&amp;l);
+     void DodajNoviTim(const char ime_tima[]);
+     void RegistrirajUtakmicu(const char tim1[], const char tim2[], int rez_1, int rez_2);
+     void IspisiTabelu();
+};
+
+Liga::Liga(std::initializer_list&lt;Tim&gt; lista_timova)
+{
+     for (auto it=lista_timova.begin(); it!=lista_timova.end(); it++) {
+          try {
+               std::shared_ptr&lt;Tim&gt; p(new Tim(*it));
+               timovi.push_back(p);
+          } catch(std::bad_alloc) {
+               for (int i=0; i&lt;lista_timova.size(); i++)
+                    timovi[i]=nullptr;
+               throw;
+          }
+     }
+}
+
+Liga::~Liga()
+{
+     for (int i=0; i&lt;timovi.size(); i++)
+          timovi[i]=nullptr;
+}
+
+Liga::Liga(const Liga &amp;l)
+{
+     try {
+          timovi.resize(l.timovi.size());
+          for (int i=0; i&lt;l.timovi.size(); i++) {
+               std::shared_ptr&lt;Tim&gt; p(new Tim(*l.timovi[i]));
+               timovi[i]=p;
+          }
+     } catch(std::bad_alloc) {
+          for (int i=0; i&lt;l.timovi.size(); i++)
+               timovi[i]=nullptr;
+          throw;
+     }
+}
+
+Liga::Liga(Liga &amp;&amp;l)
+{
+     timovi=std::move(l.timovi);
+}
+
+Liga &amp;Liga::operator =(const Liga &amp;l)
+{
+     int stara_duzina=timovi.size();
+     if (l.timovi.size()&gt;timovi.size()) {
+          try {
+               for (int i=timovi.size(); i&lt;l.timovi.size(); i++) {
+                    std::shared_ptr&lt;Tim&gt; p(new Tim(*l.timovi[i]));
+                    timovi.push_back(p);
+               }
+          } catch(std::bad_alloc) {
+               for (int i=timovi.size(); i&lt;l.timovi.size(); i++)
+                    timovi[i]=nullptr;
+               timovi.resize(stara_duzina);
+               throw;
+          }
+     }
+     timovi.resize(l.timovi.size());
+     for (int i=0; i&lt;timovi.size(); i++) *timovi[i]=*l.timovi[i];
+     return *this;
+}
+
+Liga &amp;Liga::operator =(Liga &amp;&amp;l)
+{
+     timovi=std::move(l.timovi);
+     return *this;
+}
+
+void Liga::DodajNoviTim(const char ime_tima[])
+{
+     for (int i=0; i&lt;timovi.size(); i++)
+          if (std::strcmp(timovi[i]-&gt;DajImeTima(),ime_tima)==0)
+               throw std::logic_error("Tim vec postoji");
+     std::shared_ptr&lt;Tim&gt; p(new Tim(ime_tima));
+     timovi.push_back(p);
+}
+
+void Liga::RegistrirajUtakmicu(const char tim1[], const char tim2[], int rezultat_1, int rezultat_2)
+{
+     if (rezultat_1&lt;0 || rezultat_2&lt;0) throw std::range_error("Neispravan broj golova");
+     bool pronadjen1(false), pronadjen2(false);
+     for (int i=0; i&lt;timovi.size(); i++) {
+          if (std::strcmp(timovi[i]-&gt;DajImeTima(),tim1)==0) pronadjen1=true;
+          if (std::strcmp(timovi[i]-&gt;DajImeTima(),tim2)==0) pronadjen2=true;
+     }
+     if (!(pronadjen1 &amp;&amp; pronadjen2))
+          throw std::logic_error("Tim nije nadjen");
+     for (int i=0; i&lt;timovi.size(); i++) {
+          if (std::strcmp(timovi[i]-&gt;DajImeTima(),tim1)==0)
+               timovi[i]-&gt;ObradiUtakmicu(rezultat_1,rezultat_2);
+          else if (std::strcmp(timovi[i]-&gt;DajImeTima(),tim2)==0)
+               timovi[i]-&gt;ObradiUtakmicu(rezultat_2,rezultat_1);
+     }
+}
+
+void Liga::IspisiTabelu()
+{
+     std::sort(timovi.begin(),timovi.end(),[](std::shared_ptr&lt;Tim&gt; p_tim1, std::shared_ptr&lt;Tim&gt; p_tim2) {
+          if (p_tim1-&gt;DajBrojPoena()!=p_tim2-&gt;DajBrojPoena()) return p_tim1-&gt;DajBrojPoena()&gt;p_tim2-&gt;DajBrojPoena();
+          else if (p_tim1-&gt;DajBrojPoena()==p_tim2-&gt;DajBrojPoena() &amp;&amp; p_tim1-&gt;DajGolRazliku()!=p_tim2-&gt;DajGolRazliku()) return p_tim1-&gt;DajGolRazliku()&gt;p_tim2-&gt;DajGolRazliku();
+          else if (p_tim1-&gt;DajBrojPoena()==p_tim2-&gt;DajBrojPoena() &amp;&amp; p_tim1-&gt;DajGolRazliku()==p_tim2-&gt;DajGolRazliku()) return std::strcmp(p_tim1-&gt;DajImeTima(),p_tim2-&gt;DajImeTima())&lt;0;
+     });
+     for (int i=0; i&lt;timovi.size(); i++)
+          timovi[i]-&gt;IspisiPodatke();
+} */
+using namespace std;
+double eps=0.00000000001;
+double pi=atan(1)*4;
+</font>
+bool jednako(double x, double y){
+     return (fabs(x-y)&lt;eps*(fabs(x)+fabs(y)));
+}
+
+class NepreklapajucaKugla{
+private:
+<a name="0"></a><font color="#FF0000"><a href="match208-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_72.gif"/></a>
+
+     double xx,yy,zz,cc;
+public:
+     explicit NepreklapajucaKugla(double r = 0){
+         
+          if(r&lt;0) throw domain_error("Ilegalan poluprecnik");
+          cc=r; xx=0; yy=0; zz=0;
+     }
+     NepreklapajucaKugla(double x, double y, double z, double r = 0){
+        
+          if(r&lt;0) throw domain_error("Ilegalan poluprecnik");
+          cc=r; xx=x; yy=y; zz=z;
+     }
+     explicit NepreklapajucaKugla(const std::tuple&lt;double, double, double&gt; &amp;centar, double r = 0){
+          
+          if(r&lt;0) throw domain_error("Ilegalan poluprecnik");
+          cc=r;
+          xx=get&lt;0&gt;(centar);
+          yy=get&lt;1&gt;(centar);
+          zz=get&lt;2&gt;(centar);
+     }
+     double DajX() const { return xx;}
+     double DajY() const {return yy;}
+     double DajZ() const {return zz;}
+     std::tuple&lt;double, double, double&gt; DajCentar() const{
+          return make_tuple(xx,yy,zz);
+     }
+     double DajPoluprecnik() const {
+          return cc;
+     }
+     double DajPovrsinu() const{
+          return 4*pi*cc*cc;
+     }
+     double DajZapreminu() const{return (4*pi*cc*cc*cc)/3;}
+     NepreklapajucaKugla &amp;PostaviX(double x) {
+           xx=x; return *this;
+     }
+     NepreklapajucaKugla &amp;PostaviY(double y) { yy=y; return *this;}
+     NepreklapajucaKugla &amp;PostaviZ(double z) { zz=z; return *this;}
+     NepreklapajucaKugla &amp;PostaviCentar(double x, double y, double z){
+          xx=x; yy=y; zz=z; return *this;
+     }
+     NepreklapajucaKugla &amp;PostaviCentar(const std::tuple&lt;double, double, double&gt; &amp;centar){
+          xx=get&lt;0&gt;(centar);;
+          yy=get&lt;1&gt;(centar);;
+          zz=get&lt;2&gt;(centar);;
+          return *this;
+     }
+    
+     NepreklapajucaKugla &amp;PostaviPoluprecnik(double r) { 
+          
+          if(r&lt;0) throw domain_error("Ilegalan poluprecnik");cc=r;return *this;}
+     void Ispisi() const{
+          cout&lt;&lt;"{("&lt;&lt;xx&lt;&lt;","&lt;&lt;yy&lt;&lt;","&lt;&lt;zz&lt;&lt;"),"&lt;&lt;cc&lt;&lt;"}"&lt;&lt;endl;
+     }
+     void Transliraj(double delta_x, double delta_y, double delta_z){
+          xx+=delta_x; yy+=delta_y; zz+=delta_z;
+</font>     }
+     bool DaLiSadrzi(const NepreklapajucaKugla &amp;k) const{
+         // return DaLiSePreklapaju(*this,k);
+     }
+     friend double RastojanjeCentara(const NepreklapajucaKugla &amp;k1, const NepreklapajucaKugla &amp;k2){
+          return sqrt((k1.DajX()-k2.DajX())*(k1.DajX()-k2.DajX())+(k1.DajY()-k2.DajY())*(k1.DajY()-k2.DajY())+(k1.DajZ()-k2.DajZ())*(k1.DajZ()-k2.DajZ()));
+     }
+
+};
+
+int main()
+{
+    /* try {
+          Liga liga {"Borac","Celik","Jedinstvo","Sarajevo","Zeljeznicar","Zrinjski"};
+          do {
+               liga.IspisiTabelu();
+               char unos1[20], unos2[20];
+               std::cout &lt;&lt; std::endl &lt;&lt; "Unesite ime prvog tima (ENTER za kraj): ";
+               if (std::cin.peek()=='\n') return 0;
+               std::cin.getline(unos1,sizeof unos1);
+               std::cout &lt;&lt; "Unesite ime drugog tima: ";
+               std::cin.getline(unos2,sizeof unos2);
+               int golovi1,golovi2;
+               std::cout &lt;&lt; "Unesite broj postignutih golova za oba tima: ";
+               std::cin &gt;&gt; golovi1 &gt;&gt; golovi2;
+               try {
+                    liga.RegistrirajUtakmicu(unos1,unos2,golovi1,golovi2);
+               } catch(std::logic_error izuzetak) {
+                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+               } catch(std::range_error izuzetak) {
+                    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+               }
+               std::cout &lt;&lt; std::endl;
+               std::cin.ignore(10000,'\n');
+          } while(1);
+     } catch(std::bad_alloc) {
+          std::cout &lt;&lt; "Problemi sa memorijom!" &lt;&lt; std::endl;
+     } */
+    
+     return 0;
+}
+</pre>
+</body>
+</html>

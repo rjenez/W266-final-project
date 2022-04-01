@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student9945.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student9945.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+<a name="0"></a><font color="#FF0000"><a href="match5-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+
+vector&lt;vector&lt;double&gt;&gt; unesi(vector&lt;vector&lt;double&gt;&gt; mat)
+{
+    for(int i=0;i&lt;mat.size();i++)
+    {for(int j=0;j&lt;mat[i].size();j++)
+        cin &gt;&gt; mat[i][j];
+        }
+        return mat;
+}
+void ispisi (vector&lt;vector&lt;double&gt;&gt; mat)
+{
+    for(int i=0;i&lt;mat.size();i++)
+    {for(int j=0;j&lt;mat[i].size();j++) 
+          cout &lt;&lt; setfill(' ') &lt;&lt; setw(4)&lt;&lt; mat[i][j];
+        cout&lt;&lt;endl; } 
+}
+vector&lt;vector&lt;double&gt;&gt; HorizontalnoOgledalo(vector&lt;vector&lt;double&gt;&gt; m)
+{
+
+	double pom;
+	if(m.size()==0 || m[0].size()==0 ) return m;
+	for(int i=0;i&lt;m.size();i++)
+	{
+		if(m[i].size()%2!=0){
+		for(int j=m[i].size()-1;j&gt;m[i].size()/2;j--)
+		{
+			pom=m[i][m[i].size()-1-j];	
+			m[i][m[i].size()-1-j]=m[i][j];
+			m[i][j]=pom;
+		} }
+		else {
+				for(int j=m[i].size()-1;j&gt;=m[i].size()/2;j--)
+		{
+			pom=m[i][m[i].size()-1-j];	
+			m[i][m[i].size()-1-j]=m[i][j];
+			m[i][j]=pom;
+		} 
+		}
+		
+	}
+	return m;
+}
+vector&lt;vector&lt;double&gt;&gt; VertikalnoOgledalo(vector&lt;vector&lt;double&gt;&gt; m)
+{
+	double pom;
+	if(m.size()==0 || m[0].size()==0 ) return m;
+	else if(m.size()%2!=0) {
+	for(int i=m.size()-1;i&gt;m.size()/2;i--)
+	{
+		for(int j=0;j&lt;m[i].size();j++)
+		{
+			pom=m[m.size()-1-i][j];
+			m[m.size()-1-i][j]=m[i][j];
+			m[i][j]=pom;
+		}
+	} }
+	else {
+	for(int i=m.size()-1;i&gt;=m.size()/2;i--)
+	{
+		for(int j=0;j&lt;m[i].size();j++)
+		{
+			pom=m[m.size()-1-i][j];
+			m[m.size()-1-i][j]=m[i][j];
+			m[i][j]=pom;
+		}
+	} }
+	return m;
+}
+vector&lt;vector&lt;double&gt;&gt; OgledaloMatrica(vector&lt;vector&lt;double&gt;&gt;m)
+{
+	for(int i=0;i&lt;m.size();i++) {
+	if(m[0].size()!=m[i].size()) throw domain_error("Matrica nije korektna"); }
+	if(m.size()==0) return m;
+	vector&lt;vector&lt;double&gt;&gt; mat(3*m.size(), vector&lt;double&gt; (3*m[0].size()));
+	vector&lt;vector&lt;double&gt;&gt; mhv(m.size(),vector&lt;double&gt;(m[0].size()));
+	mhv=HorizontalnoOgledalo(m);
+	mhv=VertikalnoOgledalo(mhv);
+	vector&lt;vector&lt;double&gt;&gt; mv(m.size(),vector&lt;double&gt;(m[0].size()));
+	mv=VertikalnoOgledalo(m);
+	vector&lt;vector&lt;double&gt;&gt; mh(m.size(),vector&lt;double&gt;(m[0].size()));
+	mh=HorizontalnoOgledalo(m);
+	
+	for(int i=0;i&lt;mat.size();i++)
+	{
+		for(int j=0;j&lt;mat[i].size();j++)
+		{
+			if(i&lt;m.size() &amp;&amp; j&lt;m[i].size()) mat[i][j]=mhv[i][j];
+			else if(i&lt;m.size() &amp;&amp; j&lt;2*m[i].size()) mat[i][j]=mv[i][j-m[i].size()];
+			else if(i&lt;m.size() &amp;&amp; j&lt;3*m[i].size()) mat[i][j]=mhv[i][j-2*m[i].size()];
+			else if(i&lt;2*m.size() &amp;&amp; j&lt;m[i-m.size()].size()) mat[i][j]=mh[i-m.size()][j];
+			else if(i&lt;2*m.size() &amp;&amp; j&lt;2*m[i-m.size()].size()) mat[i][j]=m[i-m.size()][j-m[i-m.size()].size()];
+			else if(i&lt;2*m.size() &amp;&amp; j&lt;3*m[i-m.size()].size()) mat[i][j]=mh[i-m.size()][j-2*m[i-m.size()].size()];
+			else if(i&lt;3*m.size() &amp;&amp; j&lt;m[i-2*m.size()].size()) mat[i][j]=mhv[i-2*m.size()][j];
+			else if(i&lt;3*m.size() &amp;&amp; j&lt;2*m[i-2*m.size()].size()) mat[i][j]=mv[i-2*m.size()][j-m[i-2*m.size()].size()];
+			else if(i&lt;3*m.size() &amp;&amp; j&lt;3*m[i-2*m.size()].size()) mat[i][j]=mhv[i-2*m.size()][j-2*m[i-2*m.size()].size()]; 
+		}
+	}
+	return mat;
+}
+
+int main ()
+{
+	try {
+	int r,k;
+	cout&lt;&lt;"Unesite dimenzije matrice (m n): ";
+	cin&gt;&gt;r&gt;&gt;k;
+	if(r&lt;0 || k&lt;0) cout&lt;&lt;"Dimenzije matrice moraju biti nenegativne!";
+	else {
+	vector&lt;vector&lt;double&gt;&gt;m(r, vector&lt;double&gt;(k));
+	cout&lt;&lt;"Unesite elemente matrice: "&lt;&lt;endl;
+	m=unesi(m);
+	m=OgledaloMatrica(m);
+	cout&lt;&lt;"Rezultantna matrica: "&lt;&lt;endl;
+	ispisi(m);
+} }
+catch(domain_error izuzetak) {
+	cout&lt;&lt;izuzetak.what()&lt;&lt;endl;
+</font>}
+
+	
+	return 0;
+}</pre>
+</body>
+</html>

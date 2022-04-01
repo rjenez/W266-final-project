@@ -1,0 +1,143 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student4495.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student4495.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;stdexcept&gt;
+
+
+
+
+
+<a name="0"></a><font color="#FF0000"><a href="match90-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_97.gif"/></a>
+
+std::vector&lt;std::vector&lt;double&gt;&gt; Horizontalnaf(std::vector&lt;std::vector&lt;double&gt;&gt; Osnovna){
+	for(int i=0; i&lt;Osnovna.size();i++){
+		for(int j=0; j&lt;Osnovna[i].size()/2;j++){
+			double element(Osnovna[i][j]);
+			Osnovna[i][j]=Osnovna[i][Osnovna[i].size()-j-1];
+			Osnovna[i][Osnovna[i].size()-j-1]=element;
+		}
+	}
+	return Osnovna;
+}
+
+std::vector&lt;std::vector&lt;double&gt;&gt; Vertikalnaf(std::vector&lt;std::vector&lt;double&gt;&gt; Osnovna){
+	for(int i=0; i&lt;Osnovna.size()/2;i++){
+		for(int j=0;j&lt;Osnovna[i].size();j++){
+			double element(Osnovna[i][j]);
+			Osnovna[i][j]=Osnovna[Osnovna.size()-1-i][j];
+			Osnovna[Osnovna.size()-1-i][j]=element;
+		}
+	}
+	return Osnovna;
+}
+
+std::vector&lt;std::vector&lt;double&gt;&gt; OgledaloMatrica (std::vector&lt;std::vector&lt;double&gt;&gt; Osnovna){
+	
+	std::vector&lt;std::vector&lt;double&gt;&gt; Ogledalo;
+	if(Osnovna.size()==0) 
+		return Ogledalo;
+	if(Osnovna.size()!=0 &amp;&amp; Osnovna[0].size()==0) {
+		Ogledalo.resize(3*Osnovna.size());
+		return Ogledalo;
+		
+	}
+	
+	
+	if(Osnovna.size()!=0 &amp;&amp;Osnovna.size()!=1 ){
+		int sirina(Osnovna[0].size());
+		for(int i=0; i&lt;Osnovna.size(); i++)
+		if(Osnovna[i].size()!=sirina ) throw std::domain_error ("Matrica nije korektna");
+	}
+	std::vector&lt;std::vector&lt;double&gt;&gt; Horizontalna(Horizontalnaf(Osnovna));
+	std::vector&lt;std::vector&lt;double&gt;&gt; Vertikalna(Vertikalnaf(Osnovna));
+	std::vector&lt;std::vector&lt;double&gt;&gt; VertikalnaIHorizontalna(Vertikalnaf(Horizontalnaf(Osnovna)));
+	int m(Osnovna.size());
+	int n(Osnovna[0].size());
+	
+	
+	Ogledalo.resize(3*m);
+	
+	for(int i=0;i&lt;m;i++){
+		for(int j=0;j&lt;n;j++){
+			Ogledalo[i].push_back(VertikalnaIHorizontalna[i][j]);
+		}
+		for(int j=0;j&lt;n;j++){
+				Ogledalo[i].push_back(Vertikalna[i][j]);
+		}
+		for(int j=0;j&lt;n;j++){
+				Ogledalo[i].push_back(VertikalnaIHorizontalna[i][j]);
+		}
+	}
+	for(int i=m;i&lt;2*m;i++){
+		for(int j=0;j&lt;n;j++){
+			Ogledalo[i].push_back(Horizontalna[i-m][j]);
+		}
+		for(int j=0;j&lt;n;j++){
+				Ogledalo[i].push_back(Osnovna[i-m][j]);
+		}
+		for(int j=0;j&lt;n;j++){
+				Ogledalo[i].push_back(Horizontalna[i-m][j]);
+		}
+	}
+	for(int i=2*m;i&lt;3*m;i++){
+	for(int j=0;j&lt;n;j++){
+			Ogledalo[i].push_back(VertikalnaIHorizontalna[i-2*m][j]);
+		}
+		for(int j=0;j&lt;n;j++){
+				Ogledalo[i].push_back(Vertikalna[i-2*m][j]);
+		}
+		for(int j=0;j&lt;n;j++){
+				Ogledalo[i].push_back(VertikalnaIHorizontalna[i-2*m][j]);
+		}
+	}
+	
+	return Ogledalo;
+}
+int main ()
+{
+	try{
+		int m,n;
+		std::cout &lt;&lt; "Unesite dimenzije matrice (m n): ";
+		std::cin &gt;&gt; m &gt;&gt; n;
+		if(m&lt;0 || n&lt;0){
+			std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!" &lt;&lt; std::endl;
+			return 0;
+		}
+		
+		std::cout &lt;&lt; "Unesite elemente matrice: ";
+		std::vector&lt;std::vector&lt;double&gt;&gt; matrica (m,std::vector&lt;double&gt;());
+	
+		for(int i=0;i&lt;m;i++){
+			for(int j=0;j&lt;n;j++){
+				double element;
+				std::cin &gt;&gt; element ;
+				matrica[i].push_back(element);
+			}
+		}
+		
+
+		std::cout &lt;&lt; std::endl &lt;&lt;"Rezultantna matrica:"&lt;&lt; std::endl;
+		std::vector&lt;std::vector&lt;double&gt;&gt; Ogledalo (OgledaloMatrica(matrica));
+		for(int i=0;i&lt;Ogledalo.size();i++){
+			for(int j=0;j&lt;Ogledalo[i].size();j++){
+				std::cout &lt;&lt; std::right &lt;&lt; std::setw(4) &lt;&lt; Ogledalo[i][j];
+			}
+			std::cout&lt;&lt; std::endl;
+</font>		}
+
+	}
+	catch(std::domain_error exception){
+		std::cout &lt;&lt; exception.what() ;
+	}
+	
+	return 0;
+}</pre>
+</body>
+</html>

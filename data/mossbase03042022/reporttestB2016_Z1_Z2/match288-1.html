@@ -1,0 +1,194 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student5636.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student8337.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 2
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;iomanip&gt;
+#include&lt;stdexcept&gt;
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+
+Matrica KreirajMatricu(int br_redova, int br_kolona){
+	return Matrica(br_redova, std::vector&lt;double&gt; (br_kolona));
+}
+
+int BrojRedova(Matrica m){
+	return m.size();
+}
+
+int BrojKolona(Matrica m){
+	if (BrojRedova(m) == 0) return 0;
+	return m[0].size();
+}
+
+// Horizontalno ogledalo
+Matrica h(Matrica mat){
+	int br_redova(BrojRedova(mat));
+	int br_kolona(BrojKolona(mat));
+	Matrica m(KreirajMatricu(br_redova, br_kolona));
+	
+	for(int i=0; i&lt;br_redova; i++){
+		for(int j=0; j&lt;br_kolona; j++){
+			m[i][j] = mat[i][br_kolona-1-j];
+		}
+	}
+	return m;
+}
+
+// Vertikalno ogledalo
+Matrica v(Matrica mat){
+	int br_redova(BrojRedova(mat));
+	int br_kolona(BrojKolona(mat));
+	Matrica m(KreirajMatricu(br_redova, br_kolona));
+	for(int i=0; i&lt;br_redova; i++){
+		for(int j=0; j&lt;br_kolona; j++){
+			m[i][j] = mat[br_redova-i-1][j];
+		}
+	}
+	return m;
+}
+
+// Kombinovana ogledala
+Matrica hv(Matrica mat){
+	int br_redova(BrojRedova(mat));
+	int br_kolona(BrojKolona(mat));
+	Matrica m(KreirajMatricu(br_redova, br_kolona));
+	for(int i=0; i&lt;br_redova; i++){
+		for(int j=0; j&lt;br_kolona; j++){
+			m[i][j] = mat[br_redova-i-1][br_kolona-j-1];
+		}
+	}
+	return m; 
+}
+
+Matrica OgledaloMatrica(Matrica mat){
+	int br_redova(BrojRedova(mat));
+	int br_kolona(BrojKolona(mat));
+	
+	for(int i=1; i&lt;br_redova; i++){
+		if(br_kolona != mat[i].size()) {
+			throw std::domain_error("Matrica nije korektna");
+		}
+	}
+	
+	// Horizontalno ogledalo
+	Matrica m1(h(mat));
+	
+	// Vertikalo ogledalo
+	Matrica m2(v(mat));
+	
+	// Kombinovano ogledalo
+	Matrica m3(hv(mat));
+	
+	// Kreiranje povratne matrice
+	Matrica matrica(KreirajMatricu(3*br_redova, 3*br_kolona));
+	
+	//Prva kolona
+	for(int i=0; i&lt;br_redova; i++){
+<a name="0"></a><font color="#FF0000"><a href="match288-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_43.gif"/></a>
+
+		for(int j=0; j&lt;br_kolona; j++){
+			matrica[i][j] = m3[i][j];
+		}
+	}
+	for(int i=br_redova; i&lt; 2*br_redova; i++){
+		for(int j=0; j&lt;br_kolona; j++){
+			matrica[i][j] = m1[i-br_redova][j];
+		}
+	}
+	for(int i= 2*br_redova; i&lt; 3*br_redova; i++){
+		for(int j=0; j&lt;br_kolona; j++){
+			matrica[i][j] = m3[i-2*br_redova][j];
+		}
+	}
+	
+	//Druga kolona
+	for(int i=0; i&lt;br_redova; i++){
+		for(int j=br_kolona; j&lt;2*br_kolona; j++){
+			matrica[i][j] = m2[i][j-br_kolona];
+		}
+	}
+	for(int i=br_redova; i&lt;2*br_redova; i++){
+		for(int j=br_kolona; j&lt;2*br_kolona; j++){
+			matrica[i][j] = mat[i-br_redova][j-br_kolona];
+		}
+	}
+	for(int i=2*br_redova; i&lt;3*br_redova; i++){
+		for(int j=br_kolona; j&lt;2*br_kolona; j++){
+			matrica[i][j] = m2[i-2*br_redova][j-br_kolona];
+		}
+	}
+	
+	//Treca kolona
+	for(int i=0; i&lt;br_redova; i++){
+		for(int j=2*br_kolona; j&lt;3*br_kolona; j++){
+			matrica[i][j] = m3[i][j-2*br_kolona];
+		}
+	}
+	for(int i=br_redova; i&lt; 2*br_redova; i++){
+		for(int j=2*br_kolona; j&lt;3*br_kolona; j++){
+			matrica[i][j] = m1[i-br_redova][j-2*br_kolona];
+		}
+	}
+	for(int i=2*br_redova; i&lt; 3*br_redova; i++){
+		for(int j=2*br_kolona; j&lt;3*br_kolona; j++){
+			matrica[i][j] = m3[i-2*br_redova][j-2*br_kolona];
+</font>		}
+	}
+	return matrica;
+}
+
+// Ispis matrice
+void IspisiMatricu(Matrica matrica){
+	for(int i=0; i&lt;BrojRedova(matrica); i++){
+		for(int j=0; j&lt;BrojKolona(matrica); j++){
+			std::cout &lt;&lt; std::setw(4) &lt;&lt; matrica[i][j];
+		}
+		std::cout &lt;&lt; std::endl;
+	}
+}
+
+int main ()
+{
+	std::cout &lt;&lt; "Unesite dimenzije matrice (m n): ";
+	int m,n;
+	std::cin &gt;&gt; m &gt;&gt; n;
+	
+	if(m&lt;0 || n&lt;0){
+		std::cout &lt;&lt; "Dimenzije matrice moraju biti nenegativne!";
+	}else{
+		
+	Matrica mat(KreirajMatricu(m, n));
+	std::cout &lt;&lt; "Unesite elemente matrice: " &lt;&lt; std::endl;
+	for(int i=0; i&lt;m; i++){
+		for(int j=0; j&lt;n; j++){
+			std::cin &gt;&gt; mat[i][j];
+		}
+	}
+	
+	std::cout &lt;&lt; "Rezultantna matrica: " &lt;&lt; std::endl;
+	try{
+   		IspisiMatricu(OgledaloMatrica(mat));
+	}catch(std::domain_error izuzetak){
+		std::cout &lt;&lt; izuzetak.what();
+	}
+	
+	}
+	return 0;
+}</pre>
+</body>
+</html>

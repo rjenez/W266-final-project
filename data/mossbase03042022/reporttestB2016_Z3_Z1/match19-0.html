@@ -1,0 +1,195 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student7755.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z1/student7755.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match19-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_22.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 1
+//Autotestovi by Enil Pajic (epajic1@etf.unsa.ba)
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+
+double f (double x) {
+    return x * x + std::sin(x); 
+}
+
+int MaxElement(int a, int b) {
+    if(a==b) {
+        return a;
+    }
+    else if(a&lt;b) {
+        return b;
+    }
+    else if(a&gt;b) {
+        return a;
+    }
+}
+
+int MinElement(int a, int b) {
+    if(a==b) {
+        return a;
+    }
+    else if(a&lt;b) {
+        return a;
+    }
+    else {
+        return b;
+    }
+}
+double TezinskiKoeficijenti(int i,int d,int n,std::vector&lt;std::pair&lt;double,double&gt;&gt;v) {
+    double rezultat(0);
+    int  kraj=MinElement(i,v.size()-d);
+    //std::cout&lt;&lt;"Kraj je: "&lt;&lt;kraj&lt;&lt;std::endl;
+    int pocetak=MaxElement(1,(i-d));
+    //std::cout&lt;&lt;"Pocetak je: "&lt;&lt;pocetak&lt;&lt;std::endl;
+    for(int k=pocetak;k&lt;=kraj;k++) {
+        double rezultat1(1);
+    for(int j=k;j&lt;=k+d;j++) {
+        if(i!=j) 
+        rezultat1*=(1/(v[i-1].first-v[j-1].first));
+    }
+    rezultat+=std::pow(-1,k-1)*rezultat1;
+    }
+    return rezultat;
+}
+std::function&lt;double(double)&gt; BaricentricnaInterpolacija(std::vector&lt;std::pair&lt;double,double&gt;&gt;v,int d) {
+</font><a name="2"></a><font color="#0000FF"><a href="match19-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_22.gif"/></a>
+
+    if(d&lt;0 || d&gt;v.size()) {
+        throw std::domain_error("Nedozvoljen red");
+    }
+    for(int i=0;i&lt;v.size();i++) {
+        for(int j=0;j&lt;i;j++) {
+            if(v[i].first==v[j].first) {
+                throw std::domain_error("Neispravni cvorovi");
+            }
+        }
+    }
+    
+    return [v,d] (double x) {
+        for(int i=1;i&lt;=v.size()-1;i++) {
+            if(x==v[i-1].first)
+            return v[i-1].second;
+        }
+        double rez1(0);
+        double rez2(0);
+        double rez;
+   
+   for(int i=1;i&lt;=v.size();i++) {
+        rez1+=((TezinskiKoeficijenti(i,d,v.size(),v)*v[i-1].second)/(x-v[i-1].first));
+    
+    }
+    for(int i=1;i&lt;=v.size();i++) {
+        rez2+=(TezinskiKoeficijenti(i,d,v.size(),v)/(x-v[i-1].first));
+    
+    }
+    rez=rez1/rez2;
+    return rez;
+    };
+}
+
+std::function&lt;double(double)&gt; BaricentricnaInterpolacija(double fun(double),double xmin, double xmax, double deltax,int d) {
+    if(xmin&gt;xmax || deltax&lt;=0) {
+</font>        throw std::domain_error("Nekorektni parametri");
+    }
+<a name="0"></a><font color="#FF0000"><a href="match19-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_51.gif"/></a>
+
+    std::vector&lt;std::pair&lt;double,double&gt;&gt; v;
+        for(double i=xmin;i&lt;=xmax;i+=deltax) {
+            std::pair&lt;double,double&gt; cvor;
+            cvor.first=i;
+            cvor.second=fun(cvor.first);
+            v.push_back(cvor);
+        }
+    return [v,d] (double x) {
+         for(int i=1;i&lt;=v.size()-1;i++) {
+            if(x==v[i-1].first)
+            return v[i-1].second;
+        }
+        double rez1(0);
+        double rez2(0);
+        double rez;
+        for(int j=1;j&lt;=v.size();j++) {
+        rez1+=((TezinskiKoeficijenti(j,d,v.size(),v)*v[j-1].second)/(x-v[j-1].first));
+    
+    }
+    for(int j=1;j&lt;=v.size();j++) {
+        rez2+=(TezinskiKoeficijenti(j,d,v.size(),v)/(x-v[j-1].first));
+    
+    }
+    rez=rez1/rez2;
+    return rez;
+    };
+    
+}
+
+
+int main ()
+{
+   std::cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+   int opcija;
+   std::cin&gt;&gt;opcija;
+   if(opcija==1) {
+   //auto fun1 = BaricentricnaInterpolacija(f, 0, 1, 0.1, 2);
+    //std::cout &lt;&lt; "fun (0.3) = " &lt;&lt; fun1 (.3);
+    int n;
+    std::cout&lt;&lt;"Unesite broj cvorova: ";
+    std::cin&gt;&gt;n;
+    std::cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+    std::vector&lt;std::pair&lt;double,double&gt;&gt; v;
+    for(int i=0;i&lt;n;i++) {
+        double x,y;
+        std::cin&gt;&gt;x&gt;&gt;y;
+        v.push_back(std::make_pair(x,y));
+    }
+    int d;
+    std::cout&lt;&lt;"Unesite red interpolacije: ";
+    std::cin&gt;&gt;d;
+    std::string s("kraj");
+    double x=1;
+    while(x!=0) {
+    std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+    std::cin&gt;&gt;x;
+    if(x==0) {
+        return 0;
+    }
+    std::function&lt;double(double)&gt; fun(BaricentricnaInterpolacija(v,d));
+    std::cout&lt;&lt;"f"&lt;&lt;"("&lt;&lt;x&lt;&lt;")"&lt;&lt;" ="&lt;&lt;" "&lt;&lt;fun(x)&lt;&lt;std::endl;
+    }
+   }
+   else {
+       std::cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+       double prvi,drugi;
+       double korak;
+       std::cin&gt;&gt;prvi&gt;&gt;drugi&gt;&gt;korak;
+       std::cout&lt;&lt;"Unesite red interpolacije: ";
+       int d;
+       std::cin&gt;&gt;d;
+       std::string s;
+       double x=1;
+       while(x!=0) {
+           std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+           std::cin&gt;&gt;x;
+           if(x==0) {
+               return 0;
+           }
+           //std::function&lt;double(double)&gt; fun(BaricentricnaInterpolacija(v,d));
+           std::cout&lt;&lt;"f("&lt;&lt;x&lt;&lt;") "&lt;&lt;"= "&lt;&lt;f(x)&lt;&lt;" ";
+           std::function&lt;double(double)&gt; fun2(BaricentricnaInterpolacija(f,prvi,drugi,korak,d));
+           std::cout&lt;&lt;"fapprox("&lt;&lt;x&lt;&lt;") "&lt;&lt;"= "&lt;&lt;fun2(x)&lt;&lt;std::endl;
+</font>           
+       }
+       
+       
+   }
+	return 0;
+}</pre>
+</body>
+</html>

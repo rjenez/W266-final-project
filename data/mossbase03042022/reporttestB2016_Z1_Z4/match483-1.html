@@ -1,0 +1,166 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student8480.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student5771.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+*/
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include&lt;stdexcept&gt;
+#include&lt;cmath&gt;
+using namespace std;
+string ObrniAkoImaFraza(string recenica, string fraza)
+{
+	int j=0,brojacznakova=0;
+	for(int i=0; i&lt;recenica.length(); i++) {
+		int k=i;
+		brojacznakova=0;
+		j=0;
+		while(k&lt;recenica.length() &amp;&amp; j&lt;fraza.length() &amp;&amp; recenica[k]==fraza[j]) {
+			brojacznakova++;
+			j++;
+			k++;
+		}
+		if(brojacznakova==fraza.length()) {
+			k=i;
+			j=0;
+			while(k&lt;(i+fraza.length()))	{
+				recenica[k]=fraza[fraza.length()-j-1];
+				j++;
+				k++;
+			}
+			brojacznakova=0;
+		}
+
+		if(recenica[i]!=fraza[j]) {
+			brojacznakova=0;
+			j=0;
+		}
+	}
+	return recenica;
+}
+string ObrniFraze(string recenica, vector&lt;string&gt; nizrijeci)
+{
+	if(recenica.size()==0)return recenica;
+	for(int j=0; j&lt;nizrijeci.size(); j++) {
+		recenica=ObrniAkoImaFraza(recenica, nizrijeci[j]);
+	}
+	return recenica;
+}
+string PiglatajNekako(string recenica, string fraza)
+{
+	int j=0,brojacznakova=0;
+	for(int i=0; i&lt;recenica.length(); i++) {
+		int k=i;
+		brojacznakova=0;
+		j=0;
+<a name="2"></a><font color="#0000FF"><a href="match483-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+		while(k&lt;recenica.length() &amp;&amp; j&lt;fraza.length() &amp;&amp; ((fraza[j]&gt;='A' &amp;&amp; fraza[j]&lt;='Z') || (fraza[j]&gt;='a' &amp;&amp; fraza[j]&lt;='z')) &amp;&amp; recenica[k]==fraza[j]) {
+</font>			brojacznakova++;
+			j++;
+			k++;
+		}
+		if(brojacznakova==fraza.length() &amp;&amp; (k+1)&lt;recenica.size() &amp;&amp; !((recenica[k+1]&gt;='a' &amp;&amp; recenica[k+1]&lt;='z') || (recenica[k+1]&gt;='A' &amp;&amp; recenica[k+1]&lt;='Z'))) {
+			k=i;
+			j=0;
+
+			recenica.insert(recenica.begin()+k+fraza.length(), recenica[k]);
+			recenica.insert(recenica.begin()+(k+fraza.length()+1), 'a');
+			recenica.insert(recenica.begin()+(k+fraza.length()+2),'y' );
+			recenica.erase(recenica.begin()+k);
+
+			brojacznakova=0;
+		}
+
+		if(recenica[i]!=fraza[j]) {
+			brojacznakova=0;
+			j=0;
+		}
+	}
+	return recenica;
+}
+string PiglatajNekakoCijelu(string recenica)
+{
+	int brojacznakova=0;
+<a name="1"></a><font color="#00FF00"><a href="match483-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+	for(int i=0; i&lt;recenica.length(); i++) {
+		if(!((recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z') || (recenica[i]&gt;='A' &amp;&amp; recenica[i]&lt;='Z')))continue;
+</font>		int k=i;
+		int pocetno=i;
+		while((recenica[k]&gt;='a' &amp;&amp; recenica[k]&lt;='z') || (recenica[k]&gt;='A' &amp;&amp; recenica[k]&lt;='Z')) {
+			brojacznakova++;
+			k++;
+		}
+		recenica.insert(recenica.begin()+pocetno+brojacznakova, recenica[pocetno]);
+		recenica.insert(recenica.begin()+(pocetno+brojacznakova+1), 'a');
+		recenica.insert(recenica.begin()+(pocetno+brojacznakova+2),'y' );
+		recenica.erase(recenica.begin()+pocetno);
+		i=pocetno+1+brojacznakova;
+		brojacznakova=0;
+	}
+	return recenica;
+}
+string IzmijeniUPigLatin(string recenica, vector&lt;string&gt; nizrijeci)
+{
+	for(int i=0; i&lt;nizrijeci.size(); i++) {
+<a name="0"></a><font color="#FF0000"><a href="match483-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+		for(int j=0; j&lt;nizrijeci[i].size(); j++) {
+			if(!((nizrijeci[i][j]&gt;='a' &amp;&amp; nizrijeci[i][j]&lt;='z') || (nizrijeci[i][j]&gt;='A' &amp;&amp; nizrijeci[i][j]&lt;='Z')))
+				throw std::domain_error ("Nekorektan izbor rijeci");
+</font>		}
+	}
+	if(recenica.size()==0)return recenica;
+	if(nizrijeci.size()==0) {
+		recenica=PiglatajNekakoCijelu(recenica);
+		return recenica;
+	}
+	for(int j=0; j&lt;nizrijeci.size(); j++) {
+		recenica=PiglatajNekako(recenica, nizrijeci[j]);
+	}
+
+	return recenica;
+}
+int main ()
+{
+	string recenica,fraza;
+	vector&lt;string&gt; fraze;
+	cout&lt;&lt;"Unesite recenicu: ";
+	getline (cin,recenica);
+	cout&lt;&lt;"Unesite fraze: ";
+	do {
+		getline (cin,fraza);
+		if(fraza.length()&gt;0)
+			fraze.push_back(fraza);
+		else break;
+	} while(true);
+
+
+	try {
+		cout&lt;&lt;"Recenica nakon PigLatin transformacije: "&lt;&lt;IzmijeniUPigLatin(recenica,fraze)&lt;&lt;endl;
+	} catch(std::domain_error izuzetak) {
+		cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what()&lt;&lt;endl;
+	}
+
+	cout&lt;&lt;"Recenica nakon obrtanja fraza: "&lt;&lt;ObrniFraze(recenica,fraze)&lt;&lt;endl;
+	return 0;
+}
+
+</pre>
+</body>
+</html>

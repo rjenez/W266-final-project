@@ -1,0 +1,227 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student2111.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student2111.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+
+
+bool ista_osim_engleskog_alafabeta(std::vector&lt;std::string&gt; provjera)
+{
+	for(int i=0;i&lt;provjera.size();i++)
+	{
+		std::string temp;
+		temp=provjera[i];
+		for(int j=0;j&lt;temp.length();j++)
+		if(temp[j]!='\n')
+		if(temp[j]&lt;'A' || (temp[j]&gt;'Z' &amp;&amp; temp[j]&lt;'a') || temp[j]&gt;'z')
+		return true;
+
+	}
+	return false;
+}
+
+
+
+std::vector&lt;std::string&gt; Unos_fraza()
+{
+	std::vector&lt;std::string &gt;vrati ;
+	char znak1,znak2;
+	int i=0;
+	std::string temp;
+	while (1) {
+		znak1=std::cin.get();
+		
+		if(znak1=='\n')
+		{	znak2=std::cin.get();
+			vrati.resize(i+1);
+			vrati[i]=temp;
+			i++;
+			temp.resize(0);
+			if(znak2=='\n')
+			break;
+			temp.push_back(znak2);
+		}
+		if(znak1!='\n')
+		temp.push_back(znak1);
+	}
+	if(vrati.size()==1 &amp;&amp; vrati[0].length()==0)
+	vrati.resize(0);
+	
+	return vrati;
+}
+
+
+bool da_li_je_alfabet_slovo(char s)
+{
+	
+	if(s&lt;'A' || (s&gt;'Z' &amp;&amp; s&lt;'a') || s&gt;'z')
+	return false;
+	return true;
+	
+}
+
+
+std::string IzmijeniUPigLatin(std::string s, std::vector&lt;std::string&gt;popis)
+{
+	if(popis.size()==0)
+	{
+		for(int i=0;i&lt;s.size();i++)
+		{
+		if(i==0 || (da_li_je_alfabet_slovo(s[i-1])==false &amp;&amp; da_li_je_alfabet_slovo(s[i])==true) )
+		{
+			
+			char slovo(s[i]);
+			s.erase(s.begin()+i);
+			while (da_li_je_alfabet_slovo(s[i])==true &amp;&amp; i&lt;s.size()) 
+			{
+				i++;
+			}
+			s.insert(s.begin()+i,slovo);
+			s.insert(s.begin()+i+1,'a');
+			s.insert(s.begin()+i+2,'y');
+		}
+	}
+	
+	return s;
+	
+	}
+	
+	if(ista_osim_engleskog_alafabeta(popis)==true)
+		{
+			throw std::domain_error("Nekorektan izbor rijeci");
+		
+		}
+		
+	int poklapa=1;
+	std::string temp_string;
+	int temp_broj;
+	for(int i=0;i&lt;s.length();i++)
+	{
+		for(int j=0;j&lt;popis.size();j++)
+		{	temp_string=popis[j];
+			
+			if(s[i]==temp_string[0] &amp;&amp;(i==0 || da_li_je_alfabet_slovo(s[i-1])==false))
+			{	poklapa=1;
+				temp_broj=i;
+				for(int k=0;k&lt;temp_string.length();k++)
+				{
+					if(s[temp_broj]!=temp_string[k])
+					poklapa=0;
+					if(temp_broj&lt;s.length())
+					temp_broj++;
+				}
+				
+				if(poklapa==1)
+				{
+					char slovo;
+					slovo=s[i];
+					s.insert(s.begin()+temp_broj,slovo);
+<a name="1"></a><font color="#00FF00"><a href="match751-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+					s.insert(s.begin()+temp_broj+1,'a');
+					s.insert(s.begin()+temp_broj+2,'y');
+					s.erase(s.begin()+i);
+</font>					i--;
+				}
+			}
+		}
+	}
+	
+	return s;
+}
+
+std::string ObrniFraze(std::string s, std::vector&lt;std::string&gt;popis)
+{
+	int poklapa=1;
+	std::string temp_string;
+	int temp_broj;
+	
+	
+		for(int j=0;j&lt;popis.size();j++)
+		{	temp_string=popis[j];
+			
+			for(int i=0;i&lt;s.size();i++)	
+			{
+				
+				if(s[i]==temp_string[0])
+				{
+					poklapa=1;
+					temp_broj=i;
+					for(int k=0;k&lt;temp_string.length();k++)
+					{
+						if(s[temp_broj]!=temp_string[k])
+						poklapa=0;
+						if(temp_broj&lt;s.length())
+						temp_broj++;
+					}
+				
+					if(poklapa==1)
+					{
+					temp_broj--;
+					while (i&lt;=temp_broj) 
+					{
+						char slovo;
+						slovo=s[i];
+						s[i]=s[temp_broj];
+						s[temp_broj]=slovo;
+						i++;
+						temp_broj--;
+						
+					}
+				}
+				
+				}
+			}	
+	   }
+	return s;
+}
+
+
+int main ()
+{
+
+	std::string tekst;
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	std::getline(std::cin,tekst);
+	std::cout&lt;&lt;"Unesite fraze: ";
+	auto fraze=Unos_fraza();
+    try{
+<a name="0"></a><font color="#FF0000"><a href="match751-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+   	auto ispis2=IzmijeniUPigLatin(tekst,fraze);
+  	std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: ";
+	for(int i=0;i&lt;ispis2.size();i++)
+	std::cout&lt;&lt;ispis2[i];
+    }
+    catch(std::domain_error izuzetak){
+    	std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();
+    }
+	std::cout&lt;&lt;"\n";
+</font>	std::cout&lt;&lt;"Recenica nakon obrtanja fraza: ";
+<a name="2"></a><font color="#0000FF"><a href="match751-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+	auto ispis=ObrniFraze(tekst,fraze);
+	for(int i=0;i&lt;tekst.size();i++)
+	std::cout&lt;&lt;ispis[i];
+	
+	return 0;
+</font>	
+}</pre>
+</body>
+</html>

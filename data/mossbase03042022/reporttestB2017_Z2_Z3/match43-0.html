@@ -1,0 +1,250 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student5804.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student5804.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match43-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+template &lt;typename Tip&gt;
+bool TestPerioda (std::vector&lt;Tip&gt; V,int p)
+{
+    int i;
+    if (p&lt;1) return false;
+    if (p&gt;=V.size() || V.size()==1) return false;
+    for (i=0; i&lt;V.size()-p; i++) {
+        if(int(V[i]-V[i+p])!=0)
+            return false;
+    }
+    return true;
+}
+
+template &lt;typename Tip&gt;
+Tip NajveciElement(std::vector&lt;Tip&gt; vektor)
+{
+    Tip naj(vektor.at(0));
+    for (int i=0; i&lt;vektor.size(); i++) {
+        if (vektor.at(i)&gt;naj)
+            naj=vektor.at(i);
+
+    }
+    return naj;
+}
+
+template &lt;typename Tip&gt;
+int SumaPerioda(std::vector&lt;Tip&gt; vektor,int p)
+{
+    int suma(0);
+    for (int i=0; i&lt;p; i++) {
+        suma+=vektor.at(i);
+    }
+    return suma;
+}
+
+template &lt;typename Tip&gt;
+Tip **AlocirajFragmentalno (const std::vector&lt;Tip&gt; &amp;vektor, int &amp;koliko_puta)
+{
+    if (vektor.size()==0) throw ("Prazan vektor!");
+    for (int i=0; i&lt;vektor.size(); i++) {
+        if (vektor.at(i)&lt;=0) throw std::domain_error("Neispravan vektor!");
+    }
+    koliko_puta=1;
+    int period(vektor.size());
+    bool pronadjen(false);
+    for (int i=0; i&lt;vektor.size(); i++) {
+        if (TestPerioda(vektor,i)) {
+            period=i;
+            if (vektor.size()%i==0) {
+                int j(0);
+                while (vektor.at(j)==vektor.at(j+i)) {
+                    j+=i;
+                    koliko_puta++;
+                    pronadjen=true;
+                    if (j+i==vektor.size()) break;
+                }
+            } else {
+                if (vektor.size()%i!=0) {
+                    int j(0);
+                    while (vektor.at(j)==vektor.at(j+i)) {
+                        j+=i;
+                        koliko_puta++;
+                        pronadjen=true;
+                        if (j+i&gt;vektor.size()) break;
+                    }
+                }
+            }
+        } else if (i==vektor.size()-1) {
+            koliko_puta=2;
+            break;
+        }
+        if (pronadjen) break;
+    }
+    int naj(NajveciElement(vektor));
+    try {
+        Tip **dinamicka(new Tip*[koliko_puta*period]);
+        try {
+            for (int i=0; i&lt;koliko_puta*period; i++) {
+                int pom(i);
+                while (pom&gt;=period) pom-=period;
+                dinamicka[i]=new Tip[*(vektor.begin()+pom)];
+                for (int j=0; j&lt;*(vektor.begin()+pom); j++) {
+                    dinamicka[i][(*vektor.begin()+pom)-1-j]=naj-j;
+                }
+            }
+            return dinamicka;
+        } catch(std::bad_alloc) {
+            for (int i=0; i&lt;koliko_puta*period; i++) delete[] dinamicka[i];
+            delete[] dinamicka;
+            throw;
+        }
+    } catch (std::bad_alloc) {
+        throw;
+    }
+}
+
+template &lt;typename Tip&gt;
+Tip **AlocirajKontinualno (const std::vector&lt;Tip&gt; &amp;vektor, int &amp;koliko_puta)
+{
+    if (vektor.size()==0) throw ("Prazan vektor!");
+    for (int i=0; i&lt;vektor.size(); i++) {
+        if (vektor.at(i)&lt;=0) throw std::domain_error("Neispravan vektor!");
+    }
+    koliko_puta=1;
+    int period(vektor.size());
+    bool pronadjen(false);
+    for (int i=0; i&lt;vektor.size(); i++) {
+        if (TestPerioda(vektor,i)) {
+            period=i;
+            if (vektor.size()%i==0) {
+                int j(0);
+                while (vektor.at(j)==vektor.at(j+i)) {
+                    j+=i;
+                    koliko_puta++;
+                    pronadjen=true;
+                    if (j+i==vektor.size()) break;
+                }
+            } else {
+                if (vektor.size()%i!=0) {
+                    int j(0);
+                    while (vektor.at(j)==vektor.at(j+i)) {
+                        j+=i;
+                        koliko_puta++;
+                        pronadjen=true;
+                        if (j+i&gt;vektor.size()) break;
+                    }
+                }
+            }
+        } else if (i==vektor.size()-1) {
+            koliko_puta=2;
+            break;
+        }
+        if (pronadjen) break;
+    }
+    Tip **dinamicka(nullptr);
+    int zbir(SumaPerioda(vektor,period));
+    try {
+        dinamicka=new Tip*[koliko_puta*period];
+        *dinamicka=new Tip[zbir*koliko_puta];
+        for (int i=0; i&lt;vektor.at(0); i++) dinamicka[0][i]=vektor.at(0)-i;
+        for (int i=1; i&lt;koliko_puta*period; i++) {
+            int pom(i-1);
+            while (pom&gt;=period) pom-=period;
+            dinamicka[i]=dinamicka[i-1]+*(vektor.begin()+pom);
+            pom++;
+            while (pom&gt;=period) pom-=period;
+            for (int j=0; j&lt;*(vektor.begin()+pom); j++) {
+                dinamicka[i][j]=*(vektor.begin()+pom)-j;
+            }
+        }
+        return dinamicka;
+    } catch(std::bad_alloc) {
+        delete[] dinamicka;
+        throw;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+int main ()
+{
+    std::cout&lt;&lt;"Unesite broj elemenata vektora: ";
+    int n;
+    std::cin&gt;&gt;n;
+    std::cout&lt;&lt;"Unesite elemente vektora: ";
+    try {
+        std::vector&lt;int&gt; vektor;
+        while (vektor.size()!=n) {
+            int broj;
+            std::cin&gt;&gt;broj;
+            vektor.push_back(broj);
+        }
+        std::cout&lt;&lt;"Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+        int alokacija,koliko;
+        std::cin&gt;&gt;alokacija;
+        if (alokacija==1) {
+            int** dinamicka(AlocirajFragmentalno(vektor,koliko));
+            std::cout&lt;&lt;"Dinamicki alocirana matrica: "&lt;&lt;std::endl;
+            int period(vektor.size());
+            for (int i=0; i&lt;vektor.size(); i++) {
+                if (TestPerioda(vektor,i)) {
+                    period=i;
+                    break;
+                }
+            }
+            int vel=koliko*period;
+            for (int i=0; i&lt;vel; i++) {
+                int pom(i);
+                while (pom&gt;=period) pom-=period;
+                for (int j=0; j&lt;*(vektor.begin()+pom); j++) {
+                    std::cout&lt;&lt;std::left&lt;&lt;std::setw(3)&lt;&lt;dinamicka[i][j];
+                }
+                std::cout&lt;&lt;std::endl;
+            }
+            for (int i=0; i&lt;vel; i++) delete[] dinamicka[i];
+            delete[] dinamicka;
+        } else if (alokacija==0) {
+            int** dinamicka(AlocirajKontinualno(vektor,koliko));
+            std::cout&lt;&lt;"Dinamicki alocirana matrica: "&lt;&lt;std::endl;
+            int period(vektor.size());
+            for (int i=0; i&lt;vektor.size(); i++) {
+                if (TestPerioda(vektor,i)) {
+                    period=i;
+                    break;
+                }
+            }
+            int vel=koliko*period;
+            for (int i=0; i&lt;vel; i++) {
+                int pom(i);
+                while (pom&gt;=period) pom-=period;
+                for (int j=0; j&lt;*(vektor.begin()+pom); j++) {
+                    std::cout&lt;&lt;std::left&lt;&lt;std::setw(3)&lt;&lt;dinamicka[i][j];
+                }
+                std::cout&lt;&lt;std::endl;
+            }
+            delete[] *dinamicka;
+            delete[] dinamicka;
+        }
+    } catch (std::domain_error d) {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;d.what();
+    } catch(std::bad_alloc) {
+    } catch (const char izuzetak[]) {
+        std::cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak;
+</font>    }
+    return 0;
+}</pre>
+</body>
+</html>

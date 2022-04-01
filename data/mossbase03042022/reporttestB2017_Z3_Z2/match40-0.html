@@ -1,0 +1,139 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student3631.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z2/student3631.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match40-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_92.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;tuple&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+
+bool JeLiSlovo(char c)
+{
+    return ((c&gt;='A' &amp;&amp; c&lt;='Z') || (c&gt;='a' &amp;&amp; c&lt;='z') || (c&gt;='0' &amp;&amp; c&lt;='9'));
+}
+
+typedef std::map&lt;std::string, std::vector&lt;std::string&gt;&gt; Knjiga;
+
+std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; KreirajIndeksPojmova(Knjiga &amp;knjiga)
+{
+    std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; vracamo;
+
+    for(Knjiga::iterator it_m=knjiga.begin(); it_m!=knjiga.end(); it_m++) {
+        std::string poglavlje(it_m-&gt;first);
+        for(int i=0; i&lt;knjiga[poglavlje].size(); i++) {
+            std::string Stranica(knjiga[poglavlje][i]);
+            
+             int broj_stranice=i+1;
+            std::string trenutna_rijec="";
+            int indeks_rijeci=0;
+            for(int j=0; j&lt;Stranica.length(); j++) {
+                
+                if(JeLiSlovo(Stranica[j])) {
+                    if(trenutna_rijec=="") indeks_rijeci=j;
+                    trenutna_rijec+=tolower(Stranica[j]);
+                } else if(!JeLiSlovo(Stranica[j])){
+                    if(trenutna_rijec!="") {
+                        vracamo[trenutna_rijec].insert(std::tuple&lt;std::string, int, int&gt;(poglavlje, broj_stranice, indeks_rijeci));
+                    }
+                    trenutna_rijec="";
+                }
+            }
+            vracamo[trenutna_rijec].insert(std::tuple&lt;std::string, int, int&gt;(poglavlje, broj_stranice, indeks_rijeci));
+            
+        }
+    }
+  //  std::cout&lt;&lt;vracamo.size();
+    return vracamo;
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; &amp;mapa)
+{
+   // std::cout&lt;&lt;"Usli smo: "&lt;&lt;mapa.size();
+    for(auto it(mapa.begin()); it!=mapa.end(); it++) {
+        std::cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;::iterator it_t;
+        for(it_t=mapa[it-&gt;first].begin(); it_t!=mapa[it-&gt;first].end(); it_t++) {
+            std::cout&lt;&lt;std::get&lt;0&gt;(*it_t)&lt;&lt;"/"&lt;&lt;std::get&lt;1&gt;(*it_t)&lt;&lt;"/"&lt;&lt;std::get&lt;2&gt;(*it_t);
+            auto pred_kraj(mapa[it-&gt;first].end());
+            pred_kraj--;
+            if(it_t!=pred_kraj) std::cout&lt;&lt;", "; //ispraviti
+            else std::cout&lt;&lt;std::endl;
+        }
+    }
+}
+
+std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; PretraziIndeksPojmova(std::string &amp;s, std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; &amp;mapa)
+{
+    std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; indeks;
+    for(auto it(mapa[s].begin()); it!=mapa[s].end(); it++) {
+        indeks.insert(*it);
+    }
+    if(indeks.size()==0) throw std::logic_error("Unesena rijec nije nadjena!");
+    return indeks;
+}
+
+int main ()
+{
+    Knjiga knjiga;
+    while(1) {
+        int i(0);
+        std::cout&lt;&lt;"Unesite naziv poglavlja: ";
+        std::string poglavlje;
+        std::cin&gt;&gt;poglavlje;std::cin.clear();
+        std::cin.ignore(10000, '\n');
+        if((poglavlje[i]=='.' &amp;&amp; poglavlje[i+1]==' ' &amp;&amp; i+1&lt;poglavlje.length() )|| (poglavlje[i]=='.' &amp;&amp; i+1==poglavlje.length())) break;
+        
+        std::vector&lt;std::string&gt; stranice;
+        int brojac(0);
+        while(1) {
+            std::cout&lt;&lt;"Unesite sadrzaj stranice "&lt;&lt;brojac+1&lt;&lt;": ";
+            std::string stranica;
+            std::getline(std::cin, stranica);
+            
+            if((stranica[0]=='.' &amp;&amp; stranica[1]==' ' &amp;&amp; 1&lt;stranica.length()) || (stranica[0]=='.' &amp;&amp; 1==stranica.length())) break;
+            
+          //  std::cout&lt;&lt;stranica;
+            stranice.push_back(stranica);
+           // std::cout&lt;&lt;stranice[i];
+            brojac++;
+        }
+        i++;
+        knjiga.insert(std::make_pair(poglavlje, stranice));
+    }
+    std::cout&lt;&lt;std::endl&lt;&lt;"Kreirani indeks pojmova:"&lt;&lt;std::endl;
+    std::map&lt;std::string, std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;&gt; indeks_pojmova(KreirajIndeksPojmova(knjiga));
+    IspisiIndeksPojmova(indeks_pojmova);
+    
+    while(1){
+        std::string rijec;
+        std::cout&lt;&lt;"Unesite rijec: ";
+        std::getline(std::cin, rijec);
+       // if((rijec[i]=='.' &amp;&amp; rijec[i+1]==' ' &amp;&amp; i+1&lt;rijec.length()) || (rijec[i]=='.' &amp;&amp; i+1==rijec.length())) break;
+        if((rijec[0]=='.' &amp;&amp; rijec[1]==' ' &amp;&amp; 1&lt;rijec.length()) || (rijec[0]=='.' &amp;&amp; 1==rijec.length())) break;
+        try{
+            std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt; nadjena(PretraziIndeksPojmova(rijec, indeks_pojmova));
+            //std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;::iterator pok(nadjena.begin());
+            for(std::set&lt;std::tuple&lt;std::string, int, int&gt;&gt;::iterator pok(nadjena.begin()); pok!=nadjena.end(); pok++)
+                std::cout&lt;&lt;std::get&lt;0&gt;(*pok)&lt;&lt;"/"&lt;&lt;std::get&lt;1&gt;(*pok)&lt;&lt;"/"&lt;&lt;std::get&lt;2&gt;(*pok)&lt;&lt;" ";
+</font><a name="1"></a><font color="#00FF00"><a href="match40-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+            std::cout&lt;&lt;std::endl;
+        }
+        catch(std::logic_error izuzetak){
+            std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+        }
+    }
+    
+    return 0;
+</font>}
+</pre>
+</body>
+</html>

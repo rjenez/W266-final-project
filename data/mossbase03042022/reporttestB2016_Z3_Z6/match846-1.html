@@ -1,0 +1,123 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student4473.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student2155.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;stdexcept&gt;
+#include &lt;memory&gt; 
+struct Dijete{
+  std::string ime;
+  std::shared_ptr&lt;Dijete&gt; sljedeci;
+};
+int BrojSlovaiCifara(std::string s){
+  int brojac(0);
+  for(int i(0);i &lt; s.length();i++){
+    if(s[i] &gt;= 'a' &amp;&amp; s[i] &lt;= 'z' || s[i] &gt;= 'A' &amp;&amp; s[i] &lt;= 'Z' || s[i] &gt;= '0' &amp;&amp; s[i] &lt;= '9')brojac++;
+  }
+  return brojac;
+}
+int BrojDjece(std::shared_ptr&lt;Dijete&gt; pocetak){
+  std::shared_ptr&lt;Dijete&gt; p(pocetak);
+  int brojac(1);
+  while(p-&gt;sljedeci != pocetak)brojac++,p=p-&gt;sljedeci;
+  return brojac;
+}
+void IzbrisiPocetak(std::shared_ptr&lt;Dijete&gt; &amp;p){
+  if(!p){p = nullptr;return;}
+  std::shared_ptr&lt;Dijete&gt; tmp(p-&gt;sljedeci);
+  if(p==p-&gt;sljedeci){
+    p-&gt;sljedeci = nullptr;
+    p=nullptr;
+    return;
+  }
+  while(tmp-&gt;sljedeci != p){
+    tmp=tmp-&gt;sljedeci;
+  }
+  tmp-&gt;sljedeci=p-&gt;sljedeci;
+  p = nullptr;
+  p = tmp-&gt;sljedeci;
+}
+<a name="0"></a><font color="#FF0000"><a href="match846-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+std::vector&lt;std::set&lt;std::string&gt;&gt; Razvrstavanje(std::vector&lt;std::string&gt; v,int k){
+    std::vector&lt;std::set&lt;std::string&gt;&gt; timovi(k);
+    if(k &lt; 1 || k &gt; v.size())throw std::logic_error("Razvrstavanje nemoguce");
+</font>//Stvaranje kruzne liste
+    std::shared_ptr&lt;Dijete&gt; pocetak(nullptr),prethodni(nullptr);
+<a name="1"></a><font color="#00FF00"><a href="match846-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_6.gif"/></a>
+
+    for(int i(0);i &lt; v.size();i++){
+      std::shared_ptr&lt;Dijete&gt; novi = std::make_shared&lt;Dijete&gt;();
+      novi-&gt;ime=v[i];novi-&gt;sljedeci = nullptr;
+      if(!pocetak) pocetak = novi;
+      else prethodni-&gt;sljedeci = novi;
+</font>      prethodni = novi;
+    }
+    if(prethodni)
+      prethodni-&gt;sljedeci=pocetak;
+    
+    int tmp(BrojDjece(pocetak));
+    int mod(tmp%k);
+    for(int i(0);i &lt; k;i++){
+      int djece_u_timu;
+      if(tmp%k != 0 &amp;&amp; mod){djece_u_timu=tmp/k+1;mod--;}
+      else djece_u_timu=tmp/k;
+      for(int j(0);j &lt; djece_u_timu;j++){
+        int broj(BrojSlovaiCifara(pocetak-&gt;ime)-1);
+        timovi[i].insert(pocetak-&gt;ime);
+        IzbrisiPocetak(pocetak);
+        if(!pocetak)break;
+        while(broj){
+          pocetak=pocetak-&gt;sljedeci;
+          broj--;
+        }
+      }
+      
+    }
+    return timovi;
+}
+
+int main ()
+{
+  int k,broj_djece;
+  std::vector&lt;std::string&gt; djeca;
+  std::vector&lt;std::set&lt;std::string&gt;&gt; timovi;
+  std::cout &lt;&lt; "Unesite broj djece: ";
+  std::cin &gt;&gt; broj_djece;
+  std::cin.ignore(10000,'\n');
+  std::cout &lt;&lt; "Unesite imena djece: ";
+  for(int i(0);i &lt; broj_djece;i++){
+    std::string s;
+    std::getline(std::cin,s);
+    djeca.push_back(s);
+  }
+  std::cout &lt;&lt; "\nUnesite broj timova: ";
+<a name="2"></a><font color="#0000FF"><a href="match846-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+  std::cin &gt;&gt; k;
+  try{
+    timovi = Razvrstavanje(djeca,k);
+  }catch(std::logic_error izuzetak){
+    std::cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what();
+</font>    return 0;
+  }catch(std::bad_alloc){
+    return 0;
+  }
+    for(int i(0);i &lt; timovi.size();i++){
+      std::cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+      auto it(timovi[i].begin());
+      std::cout &lt;&lt; *it++;
+      while(it != timovi[i].end())std::cout &lt;&lt;", " &lt;&lt; *it++;
+      std::cout &lt;&lt; std::endl;
+    }
+  
+	return 0;
+}</pre>
+</body>
+</html>

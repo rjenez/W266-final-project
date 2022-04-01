@@ -1,0 +1,156 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student3807.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z6/student4526.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match115-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_20.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;mutex&gt;
+#include&lt;memory&gt;
+#include&lt;stdexcept&gt;
+using std::cout;
+using std::cin;
+using std::endl;
+using std::vector;
+using std::set;
+using std::string;
+using std::shared_ptr;
+using std::make_shared;
+using std::logic_error;
+struct Dijete {
+    string ime;
+      shared_ptr&lt;Dijete&gt; sljedeci;
+    
+};
+
+
+int ProvjeriBroj(int bd,int bt)
+{
+    int ostatak=bd%bt;
+    int rez=bd/bt;
+    if(ostatak!=0)rez++;
+    return rez;
+
+
+}//provjeravamo broj timova
+int BrojSlova(string ime)
+{
+    int brojac(0);
+    for(int j(0); j&lt;ime.size(); j++) {
+        if((ime[j]&gt;='A' &amp;&amp; ime[j]&lt;='Z') || (ime[j]&gt;='a' &amp;&amp; ime[j]&lt;='z') || (ime[j]&gt;='0' &amp;&amp; ime[j]&lt;='9'))brojac++;
+</font><a name="0"></a><font color="#FF0000"><a href="match115-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_76.gif"/></a>
+
+    }
+    return brojac;
+}///broj slova
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector &lt;string&gt; imena,int brojtimova)
+{
+    if(brojtimova&lt;1 || brojtimova&gt;imena.size())throw logic_error("Razvrstavanje nemoguce");
+    int brojdjece=imena.size();
+
+    vector &lt;set&lt;string&gt;&gt; povratni;
+      shared_ptr&lt;Dijete&gt;pokazi(nullptr), prethodni;
+    try {
+        
+           
+            for(int i(0); i&lt;imena.size(); i++) {//kreiranje kruzne
+
+                 shared_ptr&lt;Dijete&gt; novi(make_shared&lt;Dijete&gt;());
+                novi-&gt;ime=imena[i];
+                novi-&gt;sljedeci=nullptr;
+                if(!pokazi)pokazi=novi;
+                else prethodni-&gt;sljedeci=novi;
+                prethodni=novi;
+
+            }
+            prethodni-&gt;sljedeci=pokazi;
+        
+
+        }
+     catch(...) {
+        while(pokazi!=nullptr) {
+            shared_ptr&lt;Dijete&gt;pok=pokazi;
+            pokazi=pokazi-&gt;sljedeci;
+            pok=nullptr;
+        }throw;}
+
+        set &lt;string&gt; pomozimi;
+        auto it=pokazi;
+        int slovo(0),ubacila(0);
+        for(int i(0); i&lt;brojtimova; i++) {
+            int brdjeteta=ProvjeriBroj(brojdjece,brojtimova-i);
+            brojdjece-=brdjeteta;
+            for(int j(0); j&lt;brdjeteta; j++) {
+                int broj(0);
+
+                while(broj&lt;slovo) {
+                   //ako je iterator na kraju liste mora se postaviti na pocetak jer se radi o kruzenju
+                    broj++;
+                   // if(broj==slovo)break;
+                    it=it-&gt;sljedeci;
+                }
+              
+                pomozimi.insert((*it).ime);
+                ubacila++;//brojim koliko sam ih ubacila
+                
+                slovo=(BrojSlova((*it).ime))-1;
+                auto help=it;
+                while(help-&gt;sljedeci!=it)help=help-&gt;sljedeci;
+                help-&gt;sljedeci=it-&gt;sljedeci;
+                
+                
+               if(ubacila!=imena.size()) it=help-&gt;sljedeci;//osiguram se od memorijske greske
+else it-&gt;sljedeci=nullptr;
+              
+
+            }
+            povratni.push_back(pomozimi);
+            pomozimi.clear();//ocistimo pomocni string
+        }
+
+        return povratni;//povratna vrijednost
+    }
+
+    int main () {
+        try{
+        cout&lt;&lt;"Unesite broj djece: ";
+    int brojdjece;
+    cin&gt;&gt;brojdjece;
+    cin.ignore(10000,'\n');
+    cout&lt;&lt;"Unesite imena djece: "&lt;&lt;endl;//unos
+    vector &lt;string&gt; imena;
+    for(int i(0); i&lt;brojdjece; i++) {
+        string s;
+        getline(cin,s);
+        imena.push_back(s);
+    }
+    cout&lt;&lt;"Unesite broj timova: ";
+    int brojtimova;
+    cin&gt;&gt;brojtimova;
+    vector&lt;set&lt;string&gt;&gt; timovi;
+    timovi=Razvrstavanje(imena, brojtimova);
+    for(int i(0); i&lt;brojtimova; i++) {
+        cout&lt;&lt;"Tim "&lt;&lt;i+1&lt;&lt;": ";
+        for(auto j=timovi[i].begin(); j!=timovi[i].end(); j++) {
+            auto pomoc=timovi[i].end();
+            pomoc--;
+            cout&lt;&lt;*j;
+            if(pomoc!=j)cout&lt;&lt;", ";
+
+        }
+        cout&lt;&lt;endl;
+    }}catch(logic_error izuzetak){
+        cout&lt;&lt;"Izuzetak: "&lt;&lt;izuzetak.what();}
+        catch(...){
+        return 0;}
+        return 0;
+</font>    }</pre>
+</body>
+</html>

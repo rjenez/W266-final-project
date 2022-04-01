@@ -1,0 +1,100 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student3666.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student3666.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;stdexcept&gt;
+
+enum class SmjerKretanja {NaprijedNazad, NazadNaprijed, GoreDolje, DoljeGore, LijevoDesno, DesnoLijevo};
+
+<a name="0"></a><font color="#FF0000"><a href="match970-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+template &lt;typename T&gt;
+auto IzdvojiDijagonale3D (T kont, SmjerKretanja smjer) -&gt; typename std::remove_reference&lt;decltype (kont.at(0))&gt;::type
+    {
+        typename std::remove_reference&lt;decltype (kont.at(0))&gt;::type rez;
+</font>        size_t x = kont.size(), y = 0, z = 0;
+        if (x) y = kont.at(0).size();
+        if (y) z = kont.at(0).at(0).size();
+        for (size_t i = 0; i &lt; x; ++i)
+            {
+                for (size_t j = 0; j &lt; kont.at(i).size(); ++j)
+                    if (kont.at(i).at(j).size() != z)
+                        throw std::domain_error ("Redovi nemaju isti broj elemenata");
+                if (kont.at(i).size() != y)
+                    throw std::domain_error ("Plohe nemaju isti broj redova");
+            }
+        size_t sk = (size_t)smjer, mat[][3] = {
+                {x, y, z}, //NaprijedNazad, NazadNaprijed
+                {y, x, z}, //GoreDolje, DoljeGore
+                {z, y, x}  //LijevoDesno, DesnoLijevo
+            }, dim = std::min(mat[sk / 2][1], mat[sk / 2][2]);
+        for (size_t i = 0; i &lt; mat[sk / 2][0]; ++i)
+            {
+                typename std::remove_reference&lt;decltype (kont.at(0).at(0))&gt;::type dijagonala;
+                bool ima = false;
+                for (size_t j = 0; j &lt; dim; ++j)
+                    {
+                        ima = true;;
+                        size_t m[][3] = {
+                            {i, j, j},
+                            {x - i - 1, j, z - j - 1},
+                            {x - j - 1, i, j},
+                            {x - j - 1, y - i - 1, z - j - 1},
+                            {x - j - 1, j, i},
+                            {j, j, z - i - 1},
+                        }, i1 = m[sk][0], i2 = m[sk][1], i3 = m[sk][2];
+                        dijagonala.push_back (kont.at(i1).at(i2).at(i3));
+                    }
+                if (ima)
+                    rez.push_back (dijagonala);
+            }
+        return rez;
+    }
+int main()
+{
+<a name="2"></a><font color="#0000FF"><a href="match970-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_4.gif"/></a>
+
+    std::cout &lt;&lt; "Unesite dimenzije (x y z): ";
+    int x, y, z; std::cin &gt;&gt; x &gt;&gt; y &gt;&gt; z;
+    if (x &lt; 0 || y &lt; 0 || z &lt; 0)
+</font>        return std::cout &lt;&lt; "Neispravne dimenzije kontejnera!" &lt;&lt; std::endl, 1;
+    std::cout &lt;&lt; "Unesite elemente kontejnera: " &lt;&lt; std::endl;
+<a name="1"></a><font color="#00FF00"><a href="match970-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+    std::vector&lt;std::deque&lt;std::deque&lt;int&gt;&gt;&gt; kont (x,
+                std::deque&lt;std::deque&lt;int&gt;&gt; (y, std::deque&lt;int&gt; (z)));
+</font>    for (auto &amp;m : kont)
+        for (auto &amp;v : m)
+            for (auto &amp;e : v)
+                std::cin &gt;&gt; e;
+<a name="3"></a><font color="#00FFFF"><a href="match970-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_4.gif"/></a>
+
+    std::cout &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+    int s; std::cin &gt;&gt; s;
+    if (s &lt; 0 || s &gt; 5)
+    {
+        std::cout &lt;&lt; "Smjer kretanja nije ispravan!" &lt;&lt; std::endl;;
+        return 0;
+</font>    }
+    std::deque&lt;std::deque&lt;int&gt;&gt; m;
+    try {m = IzdvojiDijagonale3D(kont, (SmjerKretanja)s);}
+    catch (const std::domain_error &amp;e) {std::cout &lt;&lt; "Izuzetak: " &lt;&lt; e.what(); return 1;}
+    const char *n[] = {"NaprijedNazad", "NazadNaprijed", "GoreDolje", "DoljeGore", "LijevoDesno", "DesnoLijevo"};
+    std::cout &lt;&lt; n[s] &lt;&lt; ": " &lt;&lt; std::endl;
+    for (const auto &amp;red : m)
+    {
+        for (const auto &amp;x : red)
+            std::cout.width (4), std::cout &lt;&lt; x;
+        std::cout &lt;&lt; std::endl;
+    }
+    return 0;
+}
+</pre>
+</body>
+</html>

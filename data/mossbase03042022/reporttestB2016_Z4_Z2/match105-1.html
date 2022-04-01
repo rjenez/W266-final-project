@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student8521.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student3673.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match105-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_35.gif"/></a>
+
+/B 2016/2017, Zadaća 4, Zadatak 2
+//Napomena: testovi ce biti dostupni dan pred rok!
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+
+using namespace std;
+
+ enum Pol {Musko,Zensko};
+ 
+class GradjaninBiH {
+    string ime_i_prezime;
+    int niz_jmbg[13];
+    long long int jmbg;
+    int dan_rodjenja,mjesec_rodjenja,godina_rodjenja,sifra_regije;
+    //long long int KreirajJMBG(int d,int m,int g,int s,Pol p);
+    Pol pol;
+    GradjaninBiH *sljedeci=nullptr;
+    public:
+    GradjaninBiH(string ime_i_prezime,long long int jmbg);
+    GradjaninBiH(string ime_i_prezime,int dan_rodjenja,int mjesec_rodjenja,int godina_rodjenja,int sifra_regije,Pol pol);
+    //~GradjaninBiH();
+    string DajImeIprezime() const {return ime_i_prezime;}
+    long long int DajJMBG() const {return jmbg;}
+    int DajDanRodjenja() const {return dan_rodjenja;}
+    int DajMjesecRodjenja() const {return mjesec_rodjenja;}
+    int DajGodinuRodjenja() const {return godina_rodjenja;}
+    int DajSifruRegije() const {return sifra_regije;}
+    Pol DajPol() const {return pol;}
+    void PromijeniImeIPrezime(string novo_ime);
+    GradjaninBiH(const GradjaninBiH &amp;g)=delete;
+    GradjaninBiH &amp;operator =(const GradjaninBiH &amp;g)=delete;
+};
+ GradjaninBiH:: GradjaninBiH(string ime_i_prezime,long long int jmbg){
+     int dan,mjesec,godina,sifra;
+     int cifre[13];
+     long long int br(jmbg);
+     int i=12;
+     while(br!=0){
+         int cifra=br%10;
+         cifre[i]=cifra;
+         i--;
+         br/=10;
+     }
+     dan=cifre[0]*10+cifre[1];
+     mjesec=cifre[2]*10+cifre[3];
+     if(cifre[4]==0)godina=2*1000+cifre[4]*100+cifre[5]*10+cifre[6];
+     else godina=1000+cifre[4]*100+cifre[5]*10+cifre[6];
+     sifra=cifre[7]*10+cifre[8];
+     if(sifra&lt;0 || sifra&gt;99)throw logic_error("JMBG nije validan");
+     int p=cifre[9]*100+cifre[10]*10+cifre[11],c13;
+     if(p&lt;0 || p&gt;999) throw logic_error ("JMBG nije validan");
+     c13=11-(7*(cifre[0]+cifre[6])+ 6*(cifre[1]+cifre[7])+ 5*(cifre[2]+cifre[8]) + 4*(cifre[3]+cifre[9]) + 3*(cifre[4]+cifre[10])+ 2*(cifre[5]+cifre[11]))%11;
+</font><a name="3"></a><font color="#00FFFF"><a href="match105-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_5.gif"/></a>
+
+     if(c13==11)c13=0;
+     if(c13==10 || c13!=cifre[12])throw logic_error("JMBG nije validan");
+     int broj_dana[] {31,28,31,30,31,30,31,31,30,31,30,31};
+</font>     if(godina % 4 ==0 &amp;&amp; godina % 100!=0 || godina % 400==0)broj_dana[1]++;
+<a name="1"></a><font color="#00FF00"><a href="match105-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_32.gif"/></a>
+
+     if(godina&lt;1 || mjesec&lt;1 || mjesec&gt;12 || dan&lt;1 || dan&gt;broj_dana[mjesec-1])throw logic_error("JMBG nije validan");
+     GradjaninBiH::ime_i_prezime=ime_i_prezime;GradjaninBiH::jmbg=jmbg;
+     dan_rodjenja=dan;
+     mjesec_rodjenja=mjesec;
+     godina_rodjenja=godina;
+     sifra_regije=sifra;
+     if(p&gt;=0 &amp;&amp; p&lt;=499)pol=Musko;
+     else pol=Zensko;
+     for(int i=0;i&lt;13;i++){
+      if(dan&gt;0 &amp;&amp; dan&lt;10)niz_jmbg[0]=0;
+      niz_jmbg[i]=cifre[i];
+     }
+ }
+long long int GradjaninBiH::KreirajJMBG(int d,int m,int g,int s,Pol p){
+ long long int jmbg;
+ if(d&gt;0 &amp;&amp; d&lt;10){niz_jmbg[0]=0;niz_jmbg[1]=d;}
+ else {
+  niz_jmbg[1]=d%10;
+  d=d/10;
+  niz_jmbg[0]=d%10;
+ }
+if(m&gt;0 &amp;&amp; m&lt;10){niz_jmbg[2]=0;niz_jmbg[3]=m;}
+else {
+ niz_jmbg[3]=m%10;
+ m=m/10;
+ niz_jmbg[2]=m%10;
+}
+niz_jmbg[6]=g%10;
+g=g/10;
+niz_jmbg[5]=g%10;
+g=g/10;
+niz_jmbg[4]=g%10;
+if(s&gt;0 &amp;&amp; s&lt;10){niz_jmbg[7]=0;niz_jmbg[8]=s;}
+else{
+ niz_jmbg[8]=s%10;
+ s=s/10; 
+ niz_jmbg[7]=s%10;
+}
+}
+GradjaninBiH:: GradjaninBiH(string ime_i_prezime,int dan_rodjenja,int mjesec_rodjenja,int godina_rodjenja,int sifra_regije,Pol pol){
+ GradjaninBiH::ime_i_prezime=ime_i_prezime;
+ int broj_dana[] {31,28,31,30,31,30,31,31,30,31,30,31};
+</font> if(godina_rodjenja % 4 ==0 &amp;&amp; godina_rodjenja % 100!=0 || godina_rodjenja % 400==0)broj_dana[1]++;
+<a name="2"></a><font color="#0000FF"><a href="match105-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_14.gif"/></a>
+
+ if(godina_rodjenja&lt;1 || mjesec_rodjenja&lt;1 || mjesec_rodjenja&gt;12 || dan_rodjenja&lt;1 || dan_rodjenja&gt;broj_dana[mjesec_rodjenja-1])throw logic_error("Neispravni podaci");
+ if(sifra_regije&lt;0 || sifra_regije&gt;99)throw logic_error("Neispravni podaci");
+ if(pol!=Musko &amp;&amp; pol!=Zensko)throw logic_error ("Neispravni podaci");
+ GradjaninBiH::dan_rodjenja=dan_rodjenja;GradjaninBiH::mjesec_rodjenja=mjesec_rodjenja;GradjaninBiH::godina_rodjenja=godina_rodjenja;
+ GradjaninBiH::sifra_regije=sifra_regije;GradjaninBiH::pol=pol;
+ //GradjaninBiH::jmbg=KreirajJMBG(dan_rodjenja,mjesec_rodjenja,godina_rodjenja,sifra_regije,pol);
+
+ 
+}
+inline void GradjaninBiH::PromijeniImeIPrezime(string novo_ime){
+ ime_i_prezime=novo_ime;
+}
+
+int main ()
+{
+ try{
+ 
+ GradjaninBiH /*g1("Rambo Sulejmanovic", 1305956175002),*/g2("Rambo Sulejmanovic",13,5,1956,17,Musko);
+//cout&lt;&lt;g1.DajImeIprezime()&lt;&lt;" "&lt;&lt;g1.DajDanRodjenja()&lt;&lt;"."&lt;&lt;g1.DajMjesecRodjenja()&lt;&lt;"."&lt;&lt;g1.DajGodinuRodjenja()&lt;&lt;"."&lt;&lt;g1.DajSifruRegije()&lt;&lt;" "&lt;&lt;g1.DajPol()&lt;&lt;endl;
+cout&lt;&lt;g2.DajImeIprezime()&lt;&lt;" "&lt;&lt;g2.DajDanRodjenja()&lt;&lt;"."&lt;&lt;g2.DajMjesecRodjenja()&lt;&lt;"."&lt;&lt;g2.DajGodinuRodjenja()&lt;&lt;"."&lt;&lt;g2.DajSifruRegije()&lt;&lt;" "&lt;&lt;g2.DajPol();
+
+}
+catch(logic_error l){
+    cout&lt;&lt;l.what();
+</font>}
+	return 0;
+}</pre>
+</body>
+</html>

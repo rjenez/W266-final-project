@@ -1,0 +1,215 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student3350.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z4/student4290.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 4
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;utility&gt;
+#include &lt;map&gt;
+#include &lt;queue&gt;
+#include &lt;stdexcept&gt;
+enum class Boje
+{
+<a name="0"></a><font color="#FF0000"><a href="match137-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_98.gif"/></a>
+
+    Pik,Tref,Herc,Karo
+};
+typedef std::list&lt;std::pair&lt;Boje,std::string&gt;&gt;Spil;
+Spil KreirajSpil()
+{
+    Boje b;
+    Spil s;
+    std::pair&lt;Boje,std::string&gt;Par;
+    for(int j(0);j&lt;4;j++)
+    {
+        if(j==0) b=Boje::Pik;
+        if(j==1) b=Boje::Tref;
+        if(j==2) b=Boje::Herc;
+        if(j==3) b=Boje::Karo;
+        for(int i(2); i&lt;=14; i++) {
+            if(i&lt;10) {
+                Par=std::make_pair(b,'0'+i);
+                s.push_back(Par);
+            }
+            if(i==10) Par=std::make_pair(b,"10"), s.push_back(Par);
+            if(i==11) Par=std::make_pair(b,"J"), s.push_back(Par);
+            if(i==12) Par=std::make_pair(b,"Q"), s.push_back(Par);
+            if(i==13) Par=std::make_pair(b,"K"), s.push_back(Par);
+            if(i==14) Par=std::make_pair(b,"A"), s.push_back(Par);
+        }
+    }
+    return s;
+}
+void IzbaciKarte(Spil &amp;spil,std::multimap&lt;Boje,std::string&gt;&amp;mapa)
+{
+    Spil spil1=spil;
+    std::multimap&lt;Boje,std::string&gt;mapa1=mapa;
+    if(spil.size()&gt;52) throw std::logic_error("Neispravna lista!");
+    auto p(mapa.begin());
+   for(auto it=spil.begin();it!=spil.end();it++)
+   {
+
+       for(auto it1=mapa.begin();it1!=mapa.end();it1++)
+       {
+           p=it1;
+           std::pair&lt;Boje,std::string&gt;Par=*it;
+          if(it1-&gt;first==Par.first&amp;&amp;it1-&gt;second==Par.second) 
+          {
+
+              it=spil.erase(it);
+              it--;
+          }
+       }
+
+   }
+
+}
+std::queue&lt;std::pair&lt;std::string,std::string&gt;&gt;IzbaciKarteRazbrajanjem(Spil &amp;spil,short int &amp;r,int &amp;b)
+{
+    if(r&lt;1||r&gt;52||b&lt;1) throw std::logic_error("Izuzetak: Neispravni elementi za izbacivanje!");
+    int brojac(0),br(0);
+    std::pair&lt;Boje,std::string&gt;Par;
+    std::pair&lt;std::string,std::string&gt;Umetac;
+    std::queue&lt;std::pair&lt;std::string,std::string&gt;&gt;Red;
+    std::string s1("Pik"),s2("Tref"),s3("Herc"),s4("Karo"),s;
+    auto it=spil.begin();
+    while (it!=spil.end()) {
+        brojac++;
+        if(brojac==r)
+        {
+            br++;
+            if((*it).first==Boje::Pik) s=s1;
+            if((*it).first==Boje::Tref) s=s2;
+            if((*it).first==Boje::Herc) s=s3;
+            if((*it).first==Boje::Karo) s=s4;
+            Umetac.first=s;
+            Umetac.second=(*it).second;
+            Red.push(Umetac);
+            it=spil.erase(it);
+            it--;
+            brojac=0;
+        }
+        it++;
+        if(it==spil.end()) it=spil.begin();
+        if(br==b) break;
+    }
+    return Red;
+}
+void VratiPrvihNKarata(Spil &amp;spil,std::queue&lt;std::pair&lt;std::string,std::string&gt;&gt;&amp;red ,int n)
+{
+    spil=KreirajSpil( );
+    if(n&gt;red.size()&amp;&amp;n&gt;0) throw std::range_error("Izuzetak: Nedovoljno karata u redu!");
+    if(n&lt;0) throw std::domain_error("Izuzetak: Broj n je besmislen!");
+    if(spil.size()&gt;52) throw std::logic_error("Izuzetak: Neispravna lista!");
+    std::multimap&lt;Boje,std::string&gt;mp;
+    std::pair&lt;std::string,std::string&gt; par;
+    std::string s1("Pik"),s2("Tref"),s3("Herc"),s4("Karo"),str;
+    Boje boja;
+    for(int i(0);i&lt;n;i++)
+        red.pop();
+    //for (int i(0);i&lt;n;i++)
+    while(!red.empty())
+    {
+        par=red.front();
+        if(par.first==s1) boja=Boje::Pik;
+        if(par.first==s2) boja=Boje::Tref;
+        if(par.first==s3) boja=Boje::Herc;
+        if(par.first==s4) boja=Boje::Karo;
+        mp.insert({boja,par.second});
+        red.pop();
+    }  
+   /* for(auto it=mp.begin();it!=mp.end();it++)
+    {
+        std::cout &lt;&lt; it-&gt;first&lt;&lt;" - "&lt;&lt;it-&gt;second &lt;&lt; std::endl;
+    }  */
+    IzbaciKarte(spil,mp);
+}    
+
+int main ()
+{
+    std::cout &lt;&lt; "Unesite korak razbrajanja: ";
+    short int korak;
+    std::cin &gt;&gt; korak;
+    int br_karata;
+    std::cout &lt;&lt; "Unesite broj karata koje zelite izbaciti: ";
+    std::cin &gt;&gt; br_karata; 
+    Spil s(KreirajSpil());
+    std::string s1("Pik"),s2("Tref"),s3("Herc"),s4("Karo"),str,s5("A");
+    std::multimap&lt;Boje,std::string&gt;m;
+    std::queue&lt;std::pair&lt;std::string,std::string&gt;&gt;red;
+    Boje b;
+    b=Boje::Pik;
+    try
+    {
+    red = IzbaciKarteRazbrajanjem(s,korak,br_karata);
+    std::cout &lt;&lt; "U spilu trenutno ima "&lt;&lt;s.size()&lt;&lt;" karata, i to:";
+    int t(1);
+    std::string ref{};
+    for(auto x : s)
+    {
+        b=x.first;
+        if(b==Boje::Pik) { str=s1 ; if(ref!=str) t=1; }  
+        if(b==Boje::Tref) { str=s2; if(ref!=str) t=1; }
+        if(b==Boje::Herc) {str=s3; if(ref!=str) t=1;}
+        if(b==Boje::Karo) {str=s4; if(ref!=str) t=1;}
+        ref=str;
+        if(str==ref&amp;&amp;t==1)
+        {
+            std::cout &lt;&lt;"\n" &lt;&lt;str&lt;&lt;": ";
+            t++;
+        }    
+            std::cout &lt;&lt;x.second&lt;&lt;" ";
+    }  
+    }
+    catch(std::logic_error &amp;i)
+    {
+        std::cout &lt;&lt; i.what() &lt;&lt; std::endl;
+        return 0;
+    }
+    std::cout &lt;&lt; "\nUnesite broj karata koje zelite vratiti u spil: ";
+    int vrati;
+    std::cin &gt;&gt; vrati;
+
+    int t=1;
+    std::string ref1{};
+    try
+    {
+    VratiPrvihNKarata(s,red,vrati);
+    std::cout &lt;&lt; "U spilu trenutno ima "&lt;&lt;s.size()&lt;&lt;" karata, i to:";
+    for(auto x : s)
+    {
+        b=x.first;
+        if(b==Boje::Pik) { str=s1; if(ref1!=str) t=1;}
+        if(b==Boje::Tref) {str=s2; if(ref1!=str) t=1; }
+        if(b==Boje::Herc) { str=s3; if(ref1!=str) t=1; }
+        if(b==Boje::Karo) {str=s4; if(ref1!=str) t=1; }
+        ref1=str;
+        if(str==ref1&amp;&amp;t==1)
+        {
+            std::cout &lt;&lt; "\n"&lt;&lt;str &lt;&lt;": ";
+            t++;
+        }
+        std::cout &lt;&lt; x.second&lt;&lt;" ";
+    }
+    }
+    catch(std::range_error &amp;i)
+    {
+        std::cout &lt;&lt; i.what() &lt;&lt; std::endl;
+    }
+    catch(std::domain_error &amp;i)
+    {
+        std::cout &lt;&lt; i.what() &lt;&lt; std::endl;
+    }
+    catch(std::logic_error &amp;i)
+    {
+        std::cout &lt;&lt; i.what() &lt;&lt; std::endl;
+</font>    }
+    return 0;
+}
+</pre>
+</body>
+</html>

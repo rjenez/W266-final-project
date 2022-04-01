@@ -1,0 +1,248 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student4128.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student2478.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;limits&gt;
+
+class Razlomak
+    {
+        typedef long long int Long;
+        Long b, n;
+        static constexpr Long MAX = std::numeric_limits&lt;Long&gt;::max();
+        static constexpr Long MIN = std::numeric_limits&lt;Long&gt;::min();
+        enum class TipOF {Plus, Minus, Puta};
+        static void ProvjeriOverflow (Long x, Long y, TipOF t)
+        {
+            if (
+                (t == TipOF::Plus &amp;&amp; (y &gt; 0 &amp;&amp; x &gt; MAX - y || y &lt; 0 &amp;&amp; x &lt; MIN - y)) ||
+                (t == TipOF::Minus &amp;&amp; (y &lt; 0 &amp;&amp; x &gt; MAX + y || y &gt; 0 &amp;&amp; x &lt; MIN + y)) ||
+                (t == TipOF::Puta &amp;&amp; ((y &gt; 0 &amp;&amp; (x &lt; MIN / y || x &gt; MAX / y)) || (y &lt; 0 &amp;&amp; (x &lt; MAX / y || x &gt; MIN / y))))
+               )
+            throw std::overflow_error ("Nemoguce dobiti tacan rezultat");
+        }
+        Long NZD (Long p, Long q) {return !q ? p : NZD (q, p % q);}
+    public:
+        Razlomak (Long b = 0LL, Long n = 1LL)
+        {
+            if (!n) throw std::logic_error ("Nekorektan razlomak");
+            Long nzd = NZD (b, n);
+            n /= nzd; b /= nzd;
+            if (n &lt; 0) n = -n, b = -b;
+            this-&gt;b = b; this-&gt;n = n;
+        }
+        Long DajBrojnik() const {return b;}
+        Long DajNazivnik() const {return n;}
+        friend std::ostream &amp;operator &lt;&lt; (std::ostream &amp;x, const Razlomak &amp;r)
+            {
+                x &lt;&lt; r.DajBrojnik();
+                if (r.DajNazivnik() != 1LL)
+                    x &lt;&lt; "/" &lt;&lt; r.DajNazivnik();
+                return x;
+            }
+        friend std::istream &amp;operator &gt;&gt; (std::istream &amp;x, Razlomak &amp;r)
+            {
+                Long b = 0LL, n = 1LL;
+                auto isws = [](const char c) {return c == ' ' || c == '\t' || c == '\n' || c == '\f' || c == '\r' || c == '\v';};
+                x &gt;&gt; std::ws &gt;&gt; b;
+                if (!x) return x;
+                if (x.peek() == '/') {x.get(); x &gt;&gt; n;}
+                if (!x || !isws(x.peek()))
+                    x.setstate (std::ios::failbit);
+                r = Razlomak (b, n);
+                return x;
+            }
+        Razlomak operator - () const {return Razlomak (-b, n);}
+        Razlomak operator + () const {return *this;}
+        Razlomak &amp;operator += (const Razlomak &amp;raz)
+        {
+            Long r = NZD (n, raz.n);
+            ProvjeriOverflow(b, raz.n / r, TipOF::Puta);
+            ProvjeriOverflow(raz.b, n / r, TipOF::Puta);
+            ProvjeriOverflow(n, raz.n / r, TipOF::Puta);
+            Long p1q2 = b * (raz.n / r), p2q1 = raz.b * (n / r), q1q2 = n * (raz.n / r);
+            ProvjeriOverflow(p1q2, p2q1, TipOF::Plus);
+            return *this = Razlomak (p1q2 + p2q1, q1q2);
+        }
+        Razlomak &amp;operator -= (const Razlomak &amp;r) {return *this += -r;}
+        friend Razlomak operator + (Razlomak A, const Razlomak &amp;B) {return A += B;}
+        friend Razlomak operator - (Razlomak A, const Razlomak &amp;B) {return A -= B;}
+        Razlomak &amp;operator ++ () {return *this += 1;}
+        Razlomak operator ++ (int) {Razlomak k = *this; ++*this; return k;}
+        Razlomak &amp;operator -- () {return *this -= 1;}
+        Razlomak operator -- (int) {Razlomak k = *this; --*this; return k;}
+        Razlomak &amp;operator *= (const Razlomak &amp;r)
+            {
+                Long s = NZD (b, r.n), t = NZD (r.b, n);
+                ProvjeriOverflow(b / s, r.b / t, TipOF::Puta);
+                ProvjeriOverflow(n / t, r.n / s, TipOF::Puta);
+                return *this = Razlomak ((b / s) * (r.b / t), (n / t) * (r.n / s));
+            }
+        friend Razlomak operator * (Razlomak A, const Razlomak &amp;B) {return A *= B;}
+        Razlomak &amp;operator /= (const Razlomak &amp;raz)
+            {
+                Long r = NZD (n, raz.n), u = NZD (b, raz.b);
+                ProvjeriOverflow(b / u, raz.n / r, TipOF::Puta);
+                ProvjeriOverflow(n / r, raz.b / u, TipOF::Puta);
+                return *this = Razlomak ((b / u) * (raz.n / r), (n / r) * (raz.b / u));
+            }
+        friend Razlomak operator / (Razlomak A, const Razlomak &amp;B) {return A /= B;}
+        operator long double () const {return (long double)b / (long double)n;}
+        friend bool operator == (const Razlomak &amp;A, const Razlomak &amp;B) {return A.b == B.b &amp;&amp; A.n == B.n;}
+        friend bool operator != (const Razlomak &amp;A, const Razlomak &amp;B) {return !(A == B);}
+        friend bool operator &lt;  (const Razlomak &amp;A, const Razlomak &amp;B) {return (long double)A &lt; (long double)B;}
+        friend bool operator &gt;  (const Razlomak &amp;A, const Razlomak &amp;B) {return (long double)A &gt; (long double)B;}
+        friend bool operator &lt;= (const Razlomak &amp;A, const Razlomak &amp;B) {return A &lt; B || A == B;}
+        friend bool operator &gt;= (const Razlomak &amp;A, const Razlomak &amp;B) {return A &gt; B || A == B;}
+    };
+int main() {}
+#if 0
+#include &lt;sstream&gt;
+//da se malo igramo, da razlomke zadajemo u formatu: a / b.
+//da bude moguce 'Razlomak r = a / b', gdje su 'a' i 'b' specijalni 'brojevi'
+//mozemo nauciti 'user-defined' literale iako se na predavanjima ne rade
+
+struct RazlomakBroj {long long int x; RazlomakBroj (long long int x) : x(x) {}};
+Razlomak operator / (const RazlomakBroj &amp;b, const RazlomakBroj &amp;n) { return {b.x, n.x};}
+RazlomakBroj operator "" _r (unsigned long long int x) { return RazlomakBroj(x);}
+
+
+int main()
+    {
+        {//AT7 (c9): op-, op/, op konverzije, kracenje
+         //za _r pogledati 'globalni opseg' komentar i AT6
+         std::cout &lt;&lt; 10_r / 7_r - 6_r / 11_r; // 10/7 - 6/11
+         std::cout &lt;&lt; std::endl;
+         std::cout &lt;&lt; (10_r / 7_r) / (6_r / 11_r); // 10/7 / 6/11
+         std::cout &lt;&lt; std::endl;
+         Razlomak r = 124_r / 4_r;
+         std::cout &lt;&lt; r;
+         r = r - 11_r / 77_r;
+         std::cout &lt;&lt; std::endl;
+         std::cout &lt;&lt; r &lt;&lt; " je priblizno " &lt;&lt; static_cast&lt;long double&gt;(r);
+        }
+        return 7;
+        {//AT6 (c9): [poucan]: op+, op*
+            Razlomak r = 10_r / 3_r; // 10/3
+            Razlomak v = 10_r / 7_r; //10/7
+            std::cout &lt;&lt; r * v &lt;&lt; std::endl &lt;&lt; r + v; //isti rezultat, mnozenje, sbairanje
+        }
+        return 6;
+    {//AT5 (c9): operator + (primjer iz postavke)
+        Razlomak r(2337, 3740), q (4014, 5225);
+        std::cout &lt;&lt; r &lt;&lt; " + " &lt;&lt; q &lt;&lt; " = " &lt;&lt; r + q;
+    }
+        return 5;
+    {//AT4 (c9): operator &gt;&gt; (2/3) (direktno iz std::cin)
+     //NAPOMENA: pogledati AT3 za detaljna objasnjenja
+        Razlomak r, p, q;
+        std::cin &gt;&gt; r; //5/17
+        std::cout &lt;&lt; r &lt;&lt; std::endl;
+        std::cin.clear(); std::cin.ignore (100, '\n');
+        //tri zaredom
+        std::cin &gt;&gt; r &gt;&gt; p &gt;&gt; q; //10 20 30 -&gt; 10/1 20/1 30/1
+        std::cout &lt;&lt; r &lt;&lt; " " &lt;&lt; p &lt;&lt; " " &lt;&lt; q&lt;&lt; std::endl;
+    }
+    return 4;
+    {//AT3 (c9): operator &gt;&gt; (1/3)
+     //NAPOMENA: najlogicnija izvedba op&gt;&gt; ce proci
+     //ove ATove. Dodatne izvedbe su nelogicne i nisu u skladu
+     //sa ostaim tipovima...
+
+     //ovdje cu koristiti specijalnu klasu (ne radi se naB
+     //da preko stringa simuliram ulaz
+     //cisto da se vide viska razmaci
+
+     //NAPOMENA: pod "razmakom" se smatra SVAKI znak koji je bjelina
+     //odnosno ovih 6 u en-US: \n, \t, \v, \f, \r, ' '
+
+<a name="0"></a><font color="#FF0000"><a href="match608-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_14.gif"/></a>
+
+     Razlomak r, q, t;
+     std::istringstream is ("10/20"); //ne mora sa \n zavrsiti
+     is &gt;&gt; r;
+     std::cout &lt;&lt; r &lt;&lt; std::endl;
+
+     is.str ("173"); //samo jedan broj, 173/1
+     is.clear(); //mora, radi EOF
+     is &gt;&gt; r;
+     std::cout &lt;&lt; r &lt;&lt; std::endl;
+
+     is.str ("               173/50"); //ispravno, razmaci prije
+     is.clear();
+     is &gt;&gt; r;
+     std::cout &lt;&lt; r &lt;&lt; std::endl;
+
+     is.str ("               173/50       "); //ispravno, razmaci prije, poslije
+     is.clear();
+     is &gt;&gt; r;
+     std::cout &lt;&lt; r &lt;&lt; std::endl;
+
+
+     is.str ("173/51  ne zanima nas sta je nakon     "); //ispravno
+     is.clear();
+     is &gt;&gt; r;
+     std::cout &lt;&lt; r &lt;&lt; std::endl;
+
+     is.str ("17/33e ali je vazno da nakon razlomka ide BJELINA"); //neispravno
+     is.clear();
+     is &gt;&gt; r;
+     if (is.fail()) std::cout &lt;&lt; "OK, neispravno!" &lt;&lt; std::endl;
+     else std::cout &lt;&lt; "Nije OK! Ovo nije ispravan unos!" &lt;&lt; std::endl;
+
+     //nije ispravno ni npr. 10b/20, ni 10/ 20 ni a20/5
+     //necu sve testirati (barem ne u javnim :troll:)
+
+     is.str ("a17/33"); //neispravno
+     is.clear();
+     is &gt;&gt; r;
+     if (is.fail()) std::cout &lt;&lt; "OK, neispravno!" &lt;&lt; std::endl;
+     else std::cout &lt;&lt; "Nije OK! Ovo nije ispravan unos!" &lt;&lt; std::endl;
+
+     std::cout &lt;&lt; "VEOMA VAZNO: " &lt;&lt; std::endl;
+     //treba biti MOGUCE unijeti vise razlomaka odjednom! (pazite na std::ws)
+     is.str (" 1/3   5/7  4/2    nebitno"); //neispravno
+     is.clear();
+     is &gt;&gt; r &gt;&gt; q &gt;&gt; t;
+     std::cout &lt;&lt; "r = " &lt;&lt; r &lt;&lt; ", q = " &lt;&lt; q &lt;&lt; ", t = " &lt;&lt; t;
+</font>
+     //dosta testova :whew:
+    }
+        return 3;
+        {//AT2 (c9): operator &lt;&lt; + sva tri konstruktora
+            Razlomak r (17, 18), t (21), v;
+            std::cout &lt;&lt; "r = " &lt;&lt; r &lt;&lt; ", t = " &lt;&lt; t &lt;&lt; ", v = " &lt;&lt; v;
+        }
+        return 2;
+        {//AT1 (c9): trivijalan AT
+            Razlomak r (10, 17);
+            std::cout &lt;&lt; "Brojnik: " &lt;&lt; r.DajBrojnik() &lt;&lt; std::endl
+                      &lt;&lt; "Nazivnik: " &lt;&lt; r.DajNazivnik();
+        }
+        return 1;
+        Razlomak r(2337, 3740), q (4014, 5225);
+        std::cout &lt;&lt; r + q;
+        while (7)
+        {
+            Razlomak r;
+            std::cin &gt;&gt; r;
+            if (!std::cin) {std::cout &lt;&lt; "Neispravan unos, ponovo: "; std::cin.clear(); std::cin.ignore (100000, '\n');}
+            else std::cout &lt;&lt; "Razlomak: " &lt;&lt; r &lt;&lt; std::endl;
+        }
+        Razlomak(6, 2);
+        Razlomak(6LL, -2LL);Razlomak(-6LL, 2LL);Razlomak(-6LL, -2LL);
+        Razlomak (); Razlomak (5LL);
+        /*
+        std::cout &lt;&lt; Razlomak::MAX &lt;&lt; std::endl;
+        std::cout &lt;&lt; Razlomak::MIN &lt;&lt; std::endl;
+        std::cout &lt;&lt; (long long int)((long long int)Razlomak::MIN / (-1)) &lt;&lt; std::endl;
+        try {Razlomak::ProvjeriOverflow(9223372036854775807LL, -1, Razlomak::TipOF::Puta); std::cout &lt;&lt; "Nema izuzetka!\n";}
+        catch (...) {std::cout &lt;&lt; "Izuzetak\n";}
+        */
+    }
+#endif</pre>
+</body>
+</html>

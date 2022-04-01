@@ -1,0 +1,124 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student7597.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student7597.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match238-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;functional&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+
+using std::vector;
+using std::pair;
+
+void IspravnostCvorova(vector&lt;pair&lt;double,double&gt;&gt; cvorovi) {
+    for(int i=0;i&lt;cvorovi.size();i++) {
+        for(int j=i+1;j&lt;cvorovi.size();j++) 
+            if(fabs(cvorovi.at(j).first - cvorovi.at(i).first)&lt;=1e-10)
+                throw std::domain_error("Neispravni cvorovi");
+    }
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(vector&lt;pair&lt;double,double&gt;&gt; cvorovi) {
+    IspravnostCvorova(cvorovi);
+    std::sort(cvorovi.begin(),cvorovi.end());
+    return [cvorovi](double x) {
+        if(fabs(x-cvorovi.front().first)&lt;=1e-10) 
+            return cvorovi.front().second;
+        if(fabs(x-cvorovi.back().first)&lt;=1e-10) 
+            return cvorovi.back().second;
+        if(x&lt;cvorovi.front().first || x&gt;cvorovi.back().first)
+            throw std::range_error("Argument izvan opsega");
+        pair&lt;double,double&gt; test = {x,0}; // {x,0} stavljeno samo jer lower_bound ocekuje par double-ova kao treci parametar a ne double.
+        auto it2 = std::lower_bound(cvorovi.begin(),cvorovi.end(),test);
+        auto it1 = it2-1;
+        // Zbog preglednosti deklarisao sam posebno varijable 
+        auto x1 = it1-&gt;first;
+        auto y1 = it1-&gt;second;
+        auto x2 = it2-&gt;first;
+        auto y2 = it2-&gt;second;
+        return y1 + ((y2-y1)/(x2-x1))*(x-x1);
+    };
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::function&lt;double(double)&gt; f , double xmin , double xmax , double deltax) {
+    if(xmin&gt;xmax || deltax &lt;=0 )
+        throw std::domain_error("Nekorektni parametri");
+    vector&lt;pair&lt;double,double&gt;&gt; cvorovi;
+    for(double i=xmin;i&lt;=xmax+1e-15;i+=deltax) {
+        cvorovi.push_back({i,f(i)});
+    }
+    return LinearnaInterpolacija(cvorovi);
+}
+
+double testFunkcija(double x) {
+    return x*x + std::sin(x);
+}
+
+int main ()
+{
+    try {
+        std::cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+        int izbor;
+        std::cin&gt;&gt;izbor;
+        if(izbor==1) {
+            std::cout&lt;&lt;"Unesite broj cvorova: ";
+            int n;
+            std::cin&gt;&gt;n;
+            std::cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+            vector&lt;pair&lt;double,double&gt;&gt; cvorovi(n);
+            for(int i=0;i&lt;n;i++)
+                std::cin&gt;&gt;cvorovi.at(i).first&gt;&gt;cvorovi.at(i).second;
+            
+            auto f = LinearnaInterpolacija(cvorovi);
+            while(true) {
+                std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+                double arg;
+                std::cin&gt;&gt;arg;
+                if(!std::cin) break;
+                try {
+                    std::cout&lt;&lt;"f("&lt;&lt;arg&lt;&lt;") = "&lt;&lt;f(arg)&lt;&lt;"\n";
+                }
+                catch(std::range_error e) {
+                    std::cout&lt;&lt;e.what()&lt;&lt;"\n";
+                }
+            }
+        }
+        else if(izbor == 2) {
+            std::cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+            double poc,kraj,korak;
+            std::cin&gt;&gt;poc&gt;&gt;kraj&gt;&gt;korak;
+            auto g = LinearnaInterpolacija(testFunkcija,poc,kraj,korak);
+            while(true) {
+                std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+                double arg;
+                std::cin&gt;&gt;arg;
+                if(!std::cin) break;
+                try {
+                    std::cout&lt;&lt;"f("&lt;&lt;arg&lt;&lt;") = "&lt;&lt;testFunkcija(arg)&lt;&lt;" fapprox("&lt;&lt;arg&lt;&lt;") = "&lt;&lt;g(arg)&lt;&lt;"\n";
+                }
+                catch(std::range_error e) {
+                    std::cout&lt;&lt;e.what()&lt;&lt;"\n";
+                }
+            }
+        }
+    }
+    catch(std::domain_error e) {
+        std::cout&lt;&lt;e.what();
+    }
+    catch(std::range_error e) {
+        std::cout&lt;&lt;e.what();
+</font>    }
+	return 0;
+}
+</pre>
+</body>
+</html>

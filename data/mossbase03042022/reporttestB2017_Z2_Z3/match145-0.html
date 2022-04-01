@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student6363.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z2/Z3/student6363.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;exception&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;algorithm&gt;
+<a name="0"></a><font color="#FF0000"><a href="match145-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::vector;
+using std::string;
+int velicina_matrice {0};
+int period {0};
+void Podesi(int &amp;x, int &amp;y, int &amp;z, int size) {
+    if(x==0) {
+        x=size;
+        z=2;
+        y=size*2;
+    } else {
+        y=size;
+        while((y%x)!=0) y++;
+        z=y/x;
+    }
+}
+template &lt;typename Tip&gt;
+int OdrediOsnovniPeriod(vector&lt;Tip&gt;x) { 
+    vector&lt;Tip&gt; z(x.size());
+    if(x.size()==1) return 0;
+    /* Z algoritam - https://goo.gl/U5ykZd */
+    int L = 0, R = 0;
+    for (int i = 1; i &lt; x.size(); i++) {
+        if (i &gt; R) {
+            L = R = i;
+            while (R &lt; x.size() &amp;&amp; x.at(R-L)==x.at(R)) R++;
+            z.at(i) = R-L;
+            R--;
+        } else {
+            int k = i-L;
+            if (z.at(k) &lt; R-i+1) z.at(i) = z.at(k);
+            else {
+                L = i;
+                while (R &lt; x.size() &amp;&amp; x.at(R-L)==x.at(R)) R++;
+                z.at(i) = R-L;
+                R--;
+            }
+        }
+    }
+    for(int j=0; j&lt;x.size(); j++)
+        if(z.at(j)!=0 &amp;&amp; j+z.at(j)==x.size()) {
+            return j;
+        }
+    return 0;
+}
+template &lt;typename Tip1&gt;
+int **AlocirajFragmentirano(const vector&lt;Tip1&gt; &amp;v, int &amp;koliko_puta) {
+    if(v.empty()) throw "Prazan vektor!";
+    for(int i=0; i&lt;v.size(); i++) if(v.at(i)&lt;=0) throw std::domain_error("Neispravan vektor!");
+    int **x {nullptr};
+    period=OdrediOsnovniPeriod(v);
+    Podesi(period,velicina_matrice,koliko_puta,v.size());
+
+    try {
+        x=new int*[velicina_matrice]{};
+        try {
+            for(int i=0,j=0; i&lt;velicina_matrice; i++,j++) {
+                if(j==period) j=0;
+                x[i]=new int[v.at(j)];
+            }
+        } catch(...) {
+            for(int i=0; i&lt;velicina_matrice; i++) delete[] x[i];
+            delete[] x;
+            throw;
+        }
+        for(int i=0,k=0; i&lt;velicina_matrice; i++,k++) {
+            int temp=*(std::max_element(v.begin(),v.end()));
+            if(k==period) k=0;
+            for(int j=v.at(k)-1; j&gt;=0; j--) {
+                x[i][j]=temp--;
+            }
+        }
+    } catch(...) {
+        delete[] x;
+        throw;
+    }
+
+    return x;
+}
+template &lt;typename Tip1&gt;
+int **AlocirajKontinualno(const vector&lt;Tip1&gt; &amp;v, int &amp;koliko_puta) {
+    if(v.empty()) throw "Prazan vektor!";
+    for(int i=0; i&lt;v.size(); i++) if(v.at(i)&lt;=0) throw std::domain_error("Neispravan vektor!");
+    int **x {nullptr};
+    period=OdrediOsnovniPeriod(v);
+    Podesi(period,velicina_matrice,koliko_puta,v.size());
+
+    try {
+        x=new int*[velicina_matrice]{};
+        int suma {0};
+        for(int i=0; i&lt;period; i++) suma+=v.at(i);
+        try {
+            x[0] = new int[suma*period];
+            for(int i=1,j=0; i&lt;velicina_matrice; i++,j++) {
+                if(j==period) j=0;
+                x[i]= x[i-1] + v.at(j);
+            }
+        } catch(...) {
+            throw;
+        }
+
+        for(int i=0,j=0; i&lt;suma*period; i++,j++) {
+            if(j==period) j=0;
+            int temp=v.at(j);
+            while(temp!=0) x[0][i++]=temp--;
+            i--;
+        }
+    } catch(...) {
+        delete[] x;
+        throw;
+    }
+
+    return x;
+}
+int main () {
+    int n;
+    cout &lt;&lt; "Unesite broj elemenata vektora: ";
+    cin &gt;&gt; n;
+    vector&lt;int&gt; x(n);
+    cout &lt;&lt; "Unesite elemente vektora: ";
+    std::for_each(x.begin(),x.end(),[](int &amp;a) {
+        cin&gt;&gt;a;
+    });
+    int izbor;
+    cout &lt;&lt; "Odaberite alokaciju: 1 - fragmentirana, 0 - kontinualna: ";
+    cin &gt;&gt; izbor;
+    int **MAT;
+    int koliko_puta;
+    try {
+        if(izbor) MAT=AlocirajFragmentirano(x,koliko_puta);
+        else MAT=AlocirajKontinualno(x,koliko_puta);
+        cout &lt;&lt; "Dinamicki alocirana matrica: " &lt;&lt; endl;
+
+        for(int i=0; i&lt;velicina_matrice; i++) {
+            for(int j=0; j&lt;x.at(i%period); j++)
+                cout &lt;&lt; std::left &lt;&lt; std::setw(3) &lt;&lt; MAT[i][j];
+            cout &lt;&lt; endl;
+        }
+
+        if(izbor) for(int i=0; i&lt;velicina_matrice; i++) delete[] MAT[i];
+        else delete[] MAT[0];
+        delete[] MAT;
+    } catch(const char* &amp;ex) {
+        cout &lt;&lt; "Izuzetak: " &lt;&lt; ex;
+    } catch(std::exception &amp;ex) {
+        cout &lt;&lt; "Izuzetak: " &lt;&lt; ex.what();
+</font>    }
+
+    return 0;
+}</pre>
+</body>
+</html>

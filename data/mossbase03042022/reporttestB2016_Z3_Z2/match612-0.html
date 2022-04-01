@@ -1,0 +1,123 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student6706.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student6706.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;map&gt;
+#include&lt;cstring&gt;
+#include&lt;set&gt;
+#include&lt;stdexcept&gt;
+using namespace std;
+map&lt;string,set&lt;int&gt;&gt; KreirajIndeksPojmova(string s){
+    int i=0;
+    map&lt;string,set&lt;int&gt;&gt; m;
+    while(i!=s.length()){
+        if(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') s[i]=s[i]+'a'-'A';
+        i++;
+    }
+    i=0;
+    while(i&lt;s.length()){
+        set&lt;int&gt; c;
+        string pomocni;
+        pair&lt;string,set&lt;int&gt;&gt; p;
+<a name="2"></a><font color="#0000FF"><a href="match612-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+        if(i==0 || (!((s[i-1]&gt;='a' &amp;&amp; s[i-1]&lt;='z')||(s[i-1]&gt;='0' &amp;&amp; s[i-1]&lt;='9')) &amp;&amp; ((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')||(s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')))){
+            int pozicija=i;
+</font>            pomocni.push_back(s[i]);
+            i++;
+            while(((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')||(s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')) &amp;&amp; i&lt;s.length()){ 
+                pomocni.push_back (s[i]);
+                i++;
+            }
+            c.insert(pozicija);
+            int pomocna=i;
+            while(pomocna&lt;s.length()){
+                int j=0;
+<a name="0"></a><font color="#FF0000"><a href="match612-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+                if(s[pomocna]==pomocni[j] &amp;&amp; !((s[pomocna-1]&gt;='a' &amp;&amp; s[pomocna-1]&lt;='z')||(s[pomocna-1]&gt;='0' &amp;&amp; s[pomocna-1]&lt;='9'))){
+                    int poz=pomocna;
+                    while(j&lt;pomocni.length() &amp;&amp; pomocna&lt;s.length()){
+</font>                        j++;
+                        pomocna++;
+                        if(s[pomocna]!=pomocni[j]) break;
+                    }
+<a name="1"></a><font color="#00FF00"><a href="match612-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+                    if(j==pomocni.length() &amp;&amp; (!((s[pomocna]&gt;='a' &amp;&amp; s[pomocna]&lt;='z')||(s[pomocna]&gt;='0' &amp;&amp; s[pomocna]&lt;='9')) || pomocna==s.length())){ c.insert(poz);}
+</font><a name="1"></a><font color="#00FF00"><a href="match612-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+                }
+</font>                if(pomocna==s.length()-1) break;
+                pomocna++;
+            }
+        }
+       if(pomocni.length()!=0){ p=make_pair(pomocni,c);
+        m.insert(p);}
+        i++;
+    }
+    return m;
+}
+
+set&lt;int&gt; PretraziIndeksPojmova(string s,map&lt;string,set&lt;int&gt;&gt; m){
+    auto it=m.begin();
+    set&lt;int&gt;a;
+    for(it=m.begin(); it!=m.end(); it++){
+        if(it-&gt;first==s){
+            auto i=it-&gt;second.begin();
+            while(i!=it-&gt;second.end()){
+                a.insert(*i);
+                i++;
+            }
+            break;
+        }
+    }
+    if(it==m.end()) throw logic_error("Unesena rijec nije nadjena!");
+    return a;
+}
+void IspisiIndeksPojmova(map&lt;string,set&lt;int&gt;&gt; m){
+    auto it=m.begin();
+    while(it!=m.end()){
+        cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        auto i=it-&gt;second.begin();
+        int brojac=0;
+        while(i!=it-&gt;second.end()){
+            if(brojac==it-&gt;second.size()-1) cout&lt;&lt;*i;
+            else cout&lt;&lt;*i&lt;&lt;",";
+            i++;
+            brojac++;
+        }
+        cout&lt;&lt;endl;
+        it++;
+    }
+}
+int main (){
+    string s;
+    cout&lt;&lt;"Unesite tekst: ";
+    getline(cin,s);
+    map&lt;string,set&lt;int&gt;&gt; m=KreirajIndeksPojmova(s);
+    IspisiIndeksPojmova(m);
+    while(1){
+        cout&lt;&lt;"Unesite rijec: ";
+        string q;
+        getline(cin,q);
+        if(q==".") break;
+        try{
+        set&lt;int&gt; a=PretraziIndeksPojmova(q,m);
+        for(auto i=a.begin(); i!=a.end(); i++) cout&lt;&lt;*i&lt;&lt;" ";
+        }
+        catch(logic_error izuzetak){
+        cout&lt;&lt;izuzetak.what();
+    }
+        cout &lt;&lt;endl;
+    }
+	return 0;
+}
+</pre>
+</body>
+</html>

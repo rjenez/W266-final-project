@@ -1,0 +1,180 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student5744.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z2/student5744.cpp<p></p><pre>
+// B 16/17, Zadaća 2, Zadatak 2
+//	Autotestovi by Enil Pajic (epajic1@etf.unsa.ba | @eon : etf.ba)
+//	NAPOMENA: i javni ATo-vi su dio postavke!	
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt; 
+#include &lt;deque&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;list&gt;
+
+
+enum class SmjerKretanja {
+ NaprijedNazad=0, NazadNaprijed=1, GoreDolje=2, DoljeGore=3, LijevoDesno=4, DesnoLijevo=5
+};
+
+typedef std::deque&lt;std::deque&lt;int&gt;&gt; Matrica;
+
+Matrica KreirajMatricu(int br_redova, int br_kolona)
+{
+	return Matrica(br_redova, std::deque&lt;int&gt;(br_kolona));
+}
+
+template &lt;typename IterTip&gt;
+ auto IzdvojiDijagonale3D(IterTip kont, SmjerKretanja s) -&gt; typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type
+ {
+     if(kont.size()==0) return typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type (kont.size());
+<a name="0"></a><font color="#FF0000"><a href="match340-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+     for(int i=0;i&lt;kont.size();i++)
+        for(int j=0;j&lt;kont.at(i).size();j++)
+            if(kont.at(0).at(0).size()!=kont.at(i).at(j).size()) throw std::domain_error("Redovi nemaju isti broj elemenata");
+     for(int i=1;i&lt;kont.size();i++)
+         if(kont.at(0).size()!=kont.at(i).size()) throw std::domain_error("Plohe nemaju isti broj redova");
+</font>     if(kont.at(0).size()==0) 
+     {
+         return typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type (0);
+     }
+     if(kont.at(0).at(0).size()==0)
+     {
+         return typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type (0);
+     }
+     switch(s)
+     {
+        case SmjerKretanja::NaprijedNazad:
+        {
+            typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type d2d(kont.size());
+            for(int i=0;i&lt;kont.size();i++)
+                for(int j=0;j&lt;std::min(kont.at(i).size(),kont.at(i).at(0).size());j++)
+                    d2d.at(i).push_back(kont.at(i).at(j).at(j));
+            return d2d;
+            break;
+        }
+        case SmjerKretanja::NazadNaprijed:
+        {
+            typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type d2d(kont.size());
+            for(int i=kont.size()-1;i&gt;=0;i--)
+                for(int j=0;j&lt;std::min(kont.at(i).size(),kont.at(i).at(0).size());j++)
+<a name="3"></a><font color="#00FFFF"><a href="match340-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+                    d2d.at(kont.size()-1-i).push_back(kont.at(i).at(j).at(kont.at(0).at(0).size()-1-j));
+</font>            return d2d;
+            break;
+            }
+        case SmjerKretanja::GoreDolje:
+        {
+            typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type d2d(kont.at(0).size());
+            for(int j=0;j&lt;kont.at(0).size();j++)
+                for(int i=0;i&lt;kont.at(0).at(0).size()&amp;&amp;i&lt;kont.size();i++)
+                    d2d.at(j).push_back(kont.at(kont.size()-1-i).at(j).at(i));
+            return d2d;
+            break;
+        }
+        case SmjerKretanja::DoljeGore:
+        {
+<a name="4"></a><font color="#FF00FF"><a href="match340-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_2.gif"/></a>
+
+            typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type d2d(kont.at(0).size());
+            for(int j=kont.at(0).size()-1;j&gt;=0;j--)
+                for(int i=0;i&lt;kont.at(0).at(0).size()&amp;&amp;i&lt;kont.size();i++)
+</font><a name="1"></a><font color="#00FF00"><a href="match340-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+                    d2d.at(kont.at(0).size()-1-j).push_back(kont.at(kont.size()-1-i).at(j).at(kont.at(0).at(0).size()-1-i));
+</font>            return d2d;
+            break;
+        }
+        case SmjerKretanja::LijevoDesno:
+        {
+            typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type d2d(kont.at(0).at(0).size());
+            for(int j=0;j&lt;kont.at(0).at(0).size();j++)
+                for(int i=0;i&lt;std::min(kont.at(0).size(),kont.size());i++) 
+                    d2d.at(j).push_back(kont.at(kont.size()-1-i).at(i).at(j));
+            return d2d;
+            break;
+        }
+        case SmjerKretanja::DesnoLijevo:
+        {
+<a name="2"></a><font color="#0000FF"><a href="match340-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+            typename std::remove_reference&lt;decltype(kont.at(0))&gt;::type d2d(kont.at(0).at(0).size());
+            for(int j=kont.at(0).at(0).size()-1;j&gt;=0;j--)
+                for(int i=0;i&lt;kont.at(0).size()&amp;&amp;i&lt;kont.size();i++)
+</font>                    d2d.at(kont.at(0).at(0).size()-j-1).push_back(kont.at(i).at(i).at(j));
+            return d2d;
+            break;
+        }
+     }
+ }
+
+int main ()
+{
+	int x,y,z;
+	std::cout &lt;&lt; "Unesite dimenzije (x y z): ";
+	std::cin &gt;&gt; x &gt;&gt; y &gt;&gt;z;
+	if(x&lt;0 ||y&lt;0||z&lt;0)
+	{
+	    std::cout &lt;&lt; "Neispravne dimenzije kontejnera!";
+	    return 0;
+	}
+	try
+	{
+    	std::vector&lt;Matrica&gt; mat3d(x,KreirajMatricu(y,z));
+    	std::cout &lt;&lt; "Unesite elemente kontejnera: \n";
+    	for(std::deque&lt;std::deque&lt;int&gt;&gt; &amp;a:mat3d)
+    	    for(std::deque&lt;int&gt; &amp;b:a)
+    	        for(int &amp;c:b) std::cin &gt;&gt; c;
+    	int smkr;
+    	std::cout &lt;&lt; "Unesite smjer kretanja [0 - 5]: ";
+    	std::cin &gt;&gt; smkr;
+    	switch(smkr)
+    	{
+    	    case 0:
+                std::cout &lt;&lt; "NaprijedNazad: \n";
+                break;
+            case 1:
+                std::cout &lt;&lt; "NazadNaprijed: \n";
+                break;
+            case 2:
+                std::cout &lt;&lt; "GoreDolje: \n";
+                break;
+            case 3:
+                std::cout &lt;&lt; "DoljeGore: \n";
+                break;
+            case 4:
+                std::cout &lt;&lt; "LijevoDesno: \n";
+                break;
+            case 5:
+                std::cout &lt;&lt; "DesnoLijevo: \n";
+                break;
+            default:
+                std::cout &lt;&lt; "Smjer kretanja nije ispravan!\n";
+                return 0;
+                break;
+    	}
+    	Matrica dij=IzdvojiDijagonale3D(mat3d,SmjerKretanja(smkr));
+    	for(std::deque&lt;int&gt; a:dij)
+    	{
+    	    for(int b:a) std::cout &lt;&lt; std::setw(4) &lt;&lt; b;
+    	    std::cout &lt;&lt; "\n";
+    	}
+	}
+	catch(std::bad_alloc x)
+	{
+	    std::cout &lt;&lt; "Nije alocirano dovoljno memorije";
+	}
+	catch(std::domain_error x)
+	{
+	    std::cout &lt;&lt; x.what();
+	}
+	return 0;
+}</pre>
+</body>
+</html>

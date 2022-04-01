@@ -1,0 +1,267 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student3899.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z4/student3899.cpp<p></p><pre>
+/*B 2016/2017, Zadaća 1, Zadatak 4
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+	
+*/
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;vector&gt;
+#include&lt;stdexcept&gt;
+
+
+
+
+<a name="0"></a><font color="#FF0000"><a href="match24-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+std::string ObrniFraze(std::string recenica,std::vector&lt;std::string&gt; fraza){
+	
+	
+		
+	
+	for(int i=0;i&lt;fraza.size();i++){
+		
+		
+		if(recenica.length()&lt;fraza[i].length()) continue;
+		
+		for(int j=0;j&lt;=(recenica.length()-fraza[i].length());j++){
+			
+		
+			
+			if(recenica.substr(j,fraza[i].length())==fraza[i]){
+			//	std::cout&lt;&lt;j&lt;&lt;std::endl;
+				
+		
+				
+				std::string pomocna;
+				
+				for(int z=fraza[i].length()-1;z&gt;=0;z--){
+				
+					pomocna.push_back(fraza[i][z]);
+					
+					
+					
+				}
+				
+			
+			
+				int p(0);
+				for(int z=j;z&lt;j+fraza[i].length();z++){
+					recenica[z]=pomocna[p];
+					p++;
+					
+				}
+				
+				
+
+				
+				
+			}
+		
+		}
+		
+	
+	}
+	return recenica;
+
+
+}
+
+std::string IzmijeniUPigLatin(std::string recenica,std::vector&lt;std::string&gt; rijeci){
+	
+	bool p(false);
+	int k(1);
+	if(rijeci.size()==0){
+		
+		for(int j=0;j&lt;recenica.length();){
+			
+			
+			if((recenica[j]&gt;='A' &amp;&amp; recenica[j]&lt;='Z')|| (recenica[j]&gt;='a' &amp;&amp; recenica[j]&lt;='z')){
+		//	if(recenica[j]!=' ' &amp;&amp; recenica[j]!='\n' &amp;&amp; recenica[j]!='\t' &amp;&amp; recenica[j]!='.' &amp;&amp; recenica[j]!=',' &amp;&amp; recenica[j]!='!' &amp;&amp; recenica[j]!='?'){
+			if(rijeci.size()==0){
+					rijeci.resize(1);
+			
+			}
+			
+			if(p){
+				k++;
+				rijeci.resize(k);
+				p=false;
+			}
+			
+				rijeci[k-1].push_back(recenica[j]);
+				j++;
+				
+			}else{
+				if(rijeci.size()==0) {
+					j++;
+					continue;
+				}
+				
+				p=true;
+				j++;
+				
+				
+			}
+			
+		
+
+		}
+		
+	}
+	
+	for(int i=0;i&lt;rijeci.size();i++){
+		for(int j=0;j&lt;rijeci[i].size();j++){
+			if(rijeci[i][j]&lt;'A' || (rijeci[i][j]&gt;'Z' &amp;&amp; rijeci[i][j]&lt;'a') || rijeci[i][j]&gt;'z'){
+				
+				throw std::domain_error("Nekorektan izbor rijeci");
+			}
+		
+			
+		}
+
+	}
+	
+	
+	
+	
+	
+	for(int i=0;i&lt;rijeci.size();i++){
+		
+		if(recenica.length()&lt;rijeci[i].length()) continue;
+		
+		
+		
+		for(int j=0;j&lt;=(recenica.length()-rijeci[i].length());j++){
+			
+			if(recenica.substr(j,rijeci[i].length())==rijeci[i])
+			{
+			if(j==0 &amp;&amp;
+			
+			(recenica[rijeci[i].length()]==' ' || recenica[rijeci[i].length()]=='.' || recenica[rijeci[i].length()]==',' || recenica[rijeci[i].length()]=='\t' 
+			|| recenica[rijeci[i].length()]=='!' || recenica[rijeci[i].length()]=='?' || recenica[rijeci[i].length()]==';' || recenica[rijeci[i].length()]==':'
+			|| rijeci[i].length()==recenica.length()) ) goto pocetak;
+				
+				
+				
+				
+				
+			
+			if(j!=0 &amp;&amp; (recenica[j-1]==' ' || recenica[j-1]=='\t' || recenica[j-1]=='.' || recenica[j-1]==',' || recenica[j-1]=='(')   &amp;&amp; 
+			((recenica[j+rijeci[i].length()]==' ' || recenica[j+rijeci[i].length()]=='.' || recenica[j+rijeci[i].length()]==',' || recenica[j+rijeci[i].length()]=='\t' 
+			|| recenica[j+rijeci[i].length()]==')' || recenica[j+rijeci[i].length()]=='!' || recenica[j+rijeci[i].length()]=='?' || recenica[j+rijeci[i].length()]==':' || recenica[j+rijeci[i].length()]==';') || 
+			(j==(recenica.length()-rijeci[i].length()))) )            
+			{
+			
+		
+			pocetak:
+			
+				
+				char pomocna(recenica[j]);
+				
+				for(int k=j;k&lt;j+rijeci[i].length()-1;k++){
+					recenica[k]=recenica[k+1];
+					
+				}
+				
+				recenica[j+rijeci[i].length()-1]=pomocna;
+				
+				std::string ay("ay");
+				
+				recenica.insert(recenica.begin()+(j+rijeci[i].length()),ay[0]);
+				recenica.insert(recenica.begin()+(j+rijeci[i].length()+1),ay[1]);
+				
+			
+				
+				j=j+2-1;
+			}
+			
+			
+		}
+
+		
+		
+		}	
+	
+	
+	}
+		
+	
+	return recenica;
+	
+	
+	
+}
+
+
+int main ()
+
+
+{
+	  
+	
+	std::cout&lt;&lt;"Unesite recenicu: ";
+	
+	std::string recenica;
+	
+	std::getline(std::cin,recenica);
+	
+	std::vector&lt;std::string&gt;  fraze;
+	std::string r;
+	
+	std::cout&lt;&lt;"Unesite fraze: ";
+	for(;;)
+	{
+		std::getline(std::cin,r);
+		if(r!=""){
+		fraze.push_back(r);
+		
+			
+		}else break;
+		
+		
+	}
+	
+
+
+try{	
+		
+	
+	
+	
+std::string	pigulatin{IzmijeniUPigLatin(recenica,fraze)};
+	
+	std::cout&lt;&lt;"Recenica nakon PigLatin transformacije: "&lt;&lt;pigulatin;
+	
+	
+	}catch(std::domain_error poruka){
+		
+		std::cout&lt;&lt;"Izuzetak: "&lt;&lt;poruka.what();
+	}
+	
+	
+	
+	  
+	
+  std::cout&lt;&lt;"\nRecenica nakon obrtanja fraza: ";
+	
+	std::cout&lt;&lt;ObrniFraze(recenica,fraze);
+</font>
+   
+ return 0;   
+ 
+
+}</pre>
+</body>
+</html>

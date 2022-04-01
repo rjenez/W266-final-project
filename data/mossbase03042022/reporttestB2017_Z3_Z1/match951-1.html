@@ -1,0 +1,195 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student5789.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z3/Z1/student6156.cpp<p></p><pre>
+/B2017/2018: Zadaća 3, Zadatak 1
+#include &lt;cmath&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+#include &lt;functional&gt;
+
+std::pair&lt;int, int&gt; binarna_pretraga_okolnih_cvorova( std::vector&lt; std::pair&lt; double,  double&gt; &gt; ,double);
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::function&lt;double(double)&gt;,double,double,double);
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::vector&lt;std::pair&lt;double,double&gt;&gt; );
+void LIUnosCvorova(void);
+void LIAproksimacija(void);
+
+int main ()
+{
+    std::cout&lt;&lt;"Odaberite opciju (1 - unos cvorova, 2 - aproksimacija): ";
+    int opcija;
+    std::cin&gt;&gt;opcija;
+    if(opcija==1)
+        LIUnosCvorova();
+    else if (opcija==2)
+        LIAproksimacija();
+    return 0;
+}
+
+void LIAproksimacija(void)
+{
+    std::cout&lt;&lt;"Unesite krajeve intervala i korak: ";
+    double x_min,x_max,dx;
+    std::cin&gt;&gt;x_min&gt;&gt;x_max&gt;&gt;dx;
+    try
+    {
+        double x;
+        auto f(LinearnaInterpolacija([](double x)
+        {
+            return x*x+std::sin(x);
+        },x_min,x_max,dx));
+        for(;;)
+        {
+            std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+            std::cin&gt;&gt;x;
+            if(!std::cin)break;
+            try
+            {
+                std::cout&lt;&lt;"f("&lt;&lt;x&lt;&lt;") = "&lt;&lt;x*x+std::sin(x)&lt;&lt;" fapprox("&lt;&lt;x&lt;&lt;") = "&lt;&lt;f(x)&lt;&lt;std::endl;
+            }
+            catch(std::range_error izuzetak)
+            {
+                std::cout&lt;&lt;izuzetak.what();
+            }
+        }
+    }
+    catch(std::domain_error izuzetak)
+    {
+        std::cout&lt;&lt;izuzetak.what();
+    }
+}
+
+void LIUnosCvorova(void)
+{
+<a name="0"></a><font color="#FF0000"><a href="match951-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_8.gif"/></a>
+
+    std::cout&lt;&lt;"Unesite broj cvorova: ";
+    int n;
+    std::cin&gt;&gt;n;
+    std::cout&lt;&lt;"Unesite cvorove kao parove x y: ";
+    std::vector&lt;std::pair&lt;double,double&gt;&gt; cvorovi;
+    double x,y;
+    for(int i = 0; i &lt; n; i++)
+    {
+        std::cin&gt;&gt;x&gt;&gt;y;
+        cvorovi.push_back(std::make_pair(x,y));
+</font>    }
+    try
+    {
+        auto f(LinearnaInterpolacija(cvorovi));
+        for(;;)
+        {
+            std::cout&lt;&lt;"Unesite argument (ili \"kraj\" za kraj): ";
+            std::cin&gt;&gt;x;
+            if(!std::cin)break;
+            try
+            {
+                std::cout&lt;&lt;"f("&lt;&lt;x&lt;&lt;") = "&lt;&lt;f(x)&lt;&lt;std::endl;
+            }
+            catch(std::range_error izuzetak)
+            {
+                std::cout&lt;&lt;izuzetak.what()&lt;&lt;std::endl;
+            }
+        }
+    }
+    catch(std::domain_error izuzetak)
+    {
+        std::cout&lt;&lt;izuzetak.what();
+    }
+    return;
+}
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::function&lt;double(double)&gt; f, double x_min, double x_max, double dx)
+{
+    std::vector&lt;std::pair&lt;double,double&gt;&gt; cvorovi;
+    constexpr double eps(1e-9);
+    for(int i = 0;x_min+ dx*i&lt;x_max &amp;&amp; !(std::fabs(dx*i+x_min - x_max) &lt; eps); i++)
+    {
+        cvorovi.push_back( std::make_pair(x_min+dx*i,f(x_min+dx*i)) );
+       
+    }
+    cvorovi.push_back(std::make_pair(x_max,f(x_max)));
+
+    return LinearnaInterpolacija(cvorovi);
+}
+
+<a name="1"></a><font color="#00FF00"><a href="match951-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+std::function&lt;double(double)&gt; LinearnaInterpolacija(std::vector&lt;std::pair&lt;double,double&gt;&gt; cvorovi)
+{
+    //sortiranje cvorova
+    std::sort(cvorovi.begin(),cvorovi.end(),
+              [](std::pair&lt;double,double&gt; a ,std::pair&lt;double,double&gt; b )
+</font>    {
+        return a.first&lt;b.first;
+    });
+    //sortiranje zavrseno
+
+    //provjera jedinstvenosti x koordinata
+    constexpr double eps(0.00000000001);
+    //std::cout&lt;&lt; cvorovi.size();
+    for(int i = 1; i &lt; cvorovi.size() ; i++ )
+    {
+       // std::cout&lt;&lt;"\nprvi "&lt;&lt;cvorovi.at(i-1).first&lt;&lt;" drugi "&lt;&lt;cvorovi.at(i).first;
+<a name="2"></a><font color="#0000FF"><a href="match951-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+        if ( std::fabs( cvorovi.at(i-1).first - cvorovi.at(i).first) &lt; eps )
+            throw std::domain_error("Neispravni cvorovi\n");
+    }
+    //provjera jedinstvenosti zavrsena
+
+    //definisanje i vracanje funkcije
+
+    //funkcija treba da sa sobom ponese cvorove
+    return [cvorovi](double x)
+    {
+
+        //ako se cvor nalazi van domena argumenta
+        if(x &lt; cvorovi.at(0).first || x &gt; cvorovi.at(cvorovi.size()-1).first )
+</font>            throw std::range_error("Argument izvan opsega\n");
+        //provjera gotova
+
+        //potraga za okolnim cvorovima(x koordinatama istih)
+        std::pair&lt;int, int&gt; susjedni_cvorovi(binarna_pretraga_okolnih_cvorova(cvorovi,x));
+        //potraga zavrsena
+
+        //formula i zavrsetak
+        return ( cvorovi.at(susjedni_cvorovi.first).second +
+                 (
+                     (x - cvorovi.at(susjedni_cvorovi.first).first)
+                     *( cvorovi.at(susjedni_cvorovi.second).second
+                        - cvorovi.at(susjedni_cvorovi.first).second  ) /
+                     ( cvorovi.at(susjedni_cvorovi.second).first
+                       - cvorovi.at( susjedni_cvorovi.first).first   )
+                 )
+               );
+        //zavrseno
+    };
+    //kraj ove funkcije
+}
+
+std::pair&lt; int, int&gt; binarna_pretraga_okolnih_cvorova( std::vector&lt;std::pair&lt;double,double&gt;&gt; cvorovi, double x)
+{
+    int lijevi(0),desni(cvorovi.size()-1),sredina(0);
+    for(; desni-lijevi&gt;1;)
+    {
+        sredina=(desni+lijevi)/2;
+        if( cvorovi.at(sredina).first &gt; x)
+        {
+            desni=sredina;
+        }
+        else
+        {
+            lijevi=sredina;
+        }
+    }
+    return std::make_pair(lijevi,desni);
+}</pre>
+</body>
+</html>

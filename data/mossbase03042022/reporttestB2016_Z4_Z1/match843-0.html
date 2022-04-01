@@ -1,0 +1,483 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z1/student4016.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z1/student4016.cpp<p></p><pre>
+/B 2016/2017, Zadaća 4, Zadatak 1
+//Napomena: testovi ce biti dostupni dan pred rok!
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+#include &lt;map&gt;
+using namespace std;
+typedef pair&lt;double, double&gt; Tacka;
+double duz (Tacka t1, Tacka t2)
+{
+    return sqrt(pow(t2.second-t1.second, 2)+pow(t1.first-t2.first, 2));
+}
+bool Jednako(double a, double b){ if(fabs(a-b)&lt;1E-10) return true; else return false; }
+class Trougao
+{
+    Tacka a,b,c;
+    public:
+    Trougao(const Tacka &amp;t1, const Tacka &amp;t2, const Tacka &amp;t3)
+    {
+        if( Jednako(t1.first*(t2.second - t3.second)+t2.first*(t3.second - t1.second)+t3.first*(t1.second - t2.second), 0) ) throw domain_error("Nekorektne pozicije tjemena");
+        Trougao::a = t1; Trougao::b= t2; Trougao::c=t3;
+    }
+    void Postavi (const Tacka &amp;t1, const Tacka &amp;t2, const Tacka &amp;t3)
+    {
+        if( Jednako(t1.first*(t2.second - t3.second )+t2.first*(t3.second - t1.second)+t3.first*(t1.second - t2.second), 0) ) throw domain_error("Nekorektne pozicije tjemena");
+        a=t1; b = t2; c=t3;
+    }    
+    void Postavi ( int indeks, const Tacka &amp;t)
+    {
+        if (indeks &gt; 3 || indeks &lt;1) throw range_error("Nekorektan indeks");
+        if(indeks == 1 ) Postavi(t, b,c); 
+        if (indeks == 2) Postavi(a,t,c);
+        if(indeks == 3) Postavi(a,b,t);
+    }
+    static int Orijentacija(const Tacka &amp;t1, const Tacka &amp;t2, const Tacka &amp;t3)
+    {
+        if(Jednako(t1.first*(t2.second-t3.second)+t2.first*(t3.second-t1.second)+t3.first*(t1.second-t2.second),0)) return 0;
+        else if (t1.first*(t2.second-t3.second)+t2.first*(t3.second-t1.second)+t3.first*(t1.second-t2.second)&gt;0) return 1;
+        else return -1;
+    }
+    Tacka DajTjeme (int indeks) const
+    {
+        if(indeks &gt; 3 || indeks &lt; 1) throw range_error("Nekorektan indeks");
+        if(indeks == 1) return a;
+        if(indeks == 2) return b;
+        if(indeks == 3) return c;
+    }
+    double DajStranicu(int indeks) const
+    {
+        if(indeks &gt; 3 || indeks &lt; 1) throw range_error("Nekorektan indeks");
+        if(indeks==1) return duz(b,c);
+        if(indeks==2) return duz(a,c);
+        if(indeks==3) return duz(b,a);
+    }
+    double DajUgao(int indeks)
+    {
+        if(indeks&gt;3||indeks&lt;1) throw range_error("Nekorektan indeks");
+        double a1=sqrt(pow(b.first-a.first, 2) + pow(b.second-a.second, 2));
+        double b1=sqrt(pow(c.first-b.first, 2) + pow(c.second-b.second, 2));
+        double c1=sqrt(pow(c.first-a.first, 2) + pow(c.second-a.second, 2));
+        if(indeks==1) return acos((b1*b1+c1*c1-a1*a1)/(2*b1*c1));
+        if(indeks==2) return acos((a1*a1+c1*c1-b1*b1)/(2*a1*c1));
+        if(indeks==3) return acos((a1*a1+b1*b1-c1*c1)/(2*a1*b1));
+    }
+    Tacka DajCentar()const
+    {
+        return{(a.first+b.first+c.first)/3,(a.second+b.second+c.second)/3};
+    }
+    double DajObim()const
+    {
+        return DajStranicu(1)+DajStranicu(2)+DajStranicu(3);
+    }
+    double DajPovrsinu()
+    {
+        double s = DajStranicu(1)+DajStranicu(2)+DajStranicu(3);
+        s=s/2;
+        return sqrt(s*(s-DajStranicu(1))*(s-DajStranicu(2))*(s-DajStranicu(3)));
+    }
+    bool DaLiJePozitivnoOrijentiran() const
+    {
+         return Orijentacija(a,b,c); 
+    }
+    bool DaLiJeUnutra(const Tacka &amp;t) const    
+    {
+        if(Orijentacija(a,b,c)==Orijentacija(a,b,t)
+        &amp;&amp; Orijentacija(a,b,c)==Orijentacija(b,c,t)
+        &amp;&amp; Orijentacija(a,b,c)==Orijentacija(c,a,t)
+        ) return true;
+        else return false;
+    }    
+    void Transliraj(double delta_x, double delta_y)
+    {
+        a.first+=delta_x;
+        b.first+=delta_x;
+        c.first+=delta_x;
+        a.second+=delta_y;
+        b.second+=delta_y;
+        c.second+=delta_y;
+    }
+    void Centriraj(const Tacka &amp;t)
+    {
+        double dx,dy;
+        dx=t.first-this-&gt;DajCentar().first;
+        dy=t.second-this-&gt;DajCentar().second;
+        Transliraj(dx,dy);
+    }
+    void Rotiraj(const Tacka &amp;t, double ugao)
+    {
+        Tacka pomA=a, pomB=b, pomC=c ;
+        a.first=t.first+(pomA.first-t.first)*cos(ugao)-(pomA.second-t.second)*sin(ugao);
+        b.first=t.first+(pomB.first-t.first)*cos(ugao)-(pomB.second-t.second)*sin(ugao);
+        c.first=t.first+(pomC.first-t.first)*cos(ugao)-(pomC.second-t.second)*sin(ugao);
+        a.second=t.second+(pomA.first-t.first)*sin(ugao)+(pomA.second-t.second)*cos(ugao);
+        b.second=t.second+(pomB.first-t.first)*sin(ugao)+(pomB.second-t.second)*cos(ugao);
+        c.second=t.second+(pomC.first-t.first)*sin(ugao)+(pomC.second-t.second)*cos(ugao);
+    }
+    void Skaliraj(const Tacka &amp;t, double k){
+        if(Jednako(k,0)) throw domain_error ("Nekorektan faktor skaliranja");
+        a.first=t.first+k*(a.first-t.first);
+        a.second=t.second+k*(a.second-t.second);
+        b.first=t.first+k*(b.first-t.first);
+        b.second=t.second+k*(b.second-t.second);
+        c.first=t.first+k*(c.first-t.first);
+        c.second=t.second+k*(c.second-t.second);
+    }
+    void Skaliraj(double k){
+        Skaliraj(DajCentar(), k);
+    }
+    void Rotiraj(double ugao){
+        Rotiraj(DajCentar(),ugao);
+    }
+    friend bool DaLiSuIdenticni(const Trougao &amp;trou1, const Trougao &amp;trou2){
+        if((Jednako(trou1.a.first,trou2.a.first) &amp;&amp; Jednako(trou1.a.second,trou2.a.second)
+        &amp;&amp;  Jednako(trou1.b.first,trou2.b.first) &amp;&amp; Jednako(trou1.b.second,trou2.b.second)
+        &amp;&amp;  Jednako(trou1.c.first,trou2.c.first) &amp;&amp; Jednako(trou1.c.second,trou2.c.second))
+        || (Jednako(trou1.a.first,trou2.b.first) &amp;&amp; Jednako(trou1.a.second,trou2.b.second)
+        &amp;&amp;  Jednako(trou1.b.first,trou2.a.first) &amp;&amp; Jednako(trou1.b.second,trou2.a.second)
+        &amp;&amp;  Jednako(trou1.c.first,trou2.c.first) &amp;&amp; Jednako(trou1.c.second,trou2.c.second))
+        || (Jednako(trou1.a.first,trou2.c.first) &amp;&amp; Jednako(trou1.a.second,trou2.c.second)
+        &amp;&amp;  Jednako(trou1.b.first,trou2.b.first) &amp;&amp; Jednako(trou1.b.second,trou2.b.second)
+        &amp;&amp;  Jednako(trou1.c.first,trou2.a.first) &amp;&amp; Jednako(trou1.c.second,trou2.a.second))
+        || (Jednako(trou1.a.first,trou2.b.first) &amp;&amp; Jednako(trou1.a.second,trou2.b.second)
+        &amp;&amp;  Jednako(trou1.b.first,trou2.c.first) &amp;&amp; Jednako(trou1.b.second,trou2.c.second)
+        &amp;&amp;  Jednako(trou1.c.first,trou2.a.first) &amp;&amp; Jednako(trou1.c.second,trou2.a.second))
+        || (Jednako(trou1.a.first,trou2.c.first) &amp;&amp; Jednako(trou1.a.second,trou2.c.second)
+        &amp;&amp;  Jednako(trou1.b.first,trou2.a.first) &amp;&amp; Jednako(trou1.b.second,trou2.a.second)
+        &amp;&amp;  Jednako(trou1.c.first,trou2.b.first) &amp;&amp; Jednako(trou1.c.second,trou2.b.second))
+        || (Jednako(trou1.a.first,trou2.a.first) &amp;&amp; Jednako(trou1.a.second,trou2.a.second)
+        &amp;&amp;  Jednako(trou1.b.first,trou2.c.first) &amp;&amp; Jednako(trou1.b.second,trou2.c.second)
+        &amp;&amp;  Jednako(trou1.c.first,trou2.b.first) &amp;&amp; Jednako(trou1.c.second,trou2.b.second))
+        ) return true;
+        else return false;
+    }
+    friend bool DaLiSuPodudarni(const Trougao &amp;trou1, const Trougao &amp;trou2){
+<a name="0"></a><font color="#FF0000"><a href="match843-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+       double c1=sqrt(pow(trou1.b.first-trou1.a.first, 2) + pow(trou1.b.second-trou1.a.second, 2));
+</font><a name="1"></a><font color="#00FF00"><a href="match843-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+       double a1=sqrt(pow(trou1.c.first-trou1.b.first, 2) + pow(trou1.c.second-trou1.b.second, 2));
+</font><a name="2"></a><font color="#0000FF"><a href="match843-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+       double b1=sqrt(pow(trou1.c.first-trou1.a.first, 2) + pow(trou1.c.second-trou1.a.second, 2));
+</font><a name="3"></a><font color="#00FFFF"><a href="match843-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+       double c2=sqrt(pow(trou2.b.first-trou2.a.first, 2) + pow(trou2.b.second-trou2.a.second, 2));
+</font><a name="4"></a><font color="#FF00FF"><a href="match843-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+       double a2=sqrt(pow(trou2.c.first-trou2.b.first, 2) + pow(trou2.c.second-trou2.b.second, 2));
+</font><a name="5"></a><font color="#FF0000"><a href="match843-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+       double b2=sqrt(pow(trou2.c.first-trou2.a.first, 2) + pow(trou2.c.second-trou2.a.second, 2));
+</font>       double alfa1=acos((b1*b1+c1*c1-a1*a1)/(2*b1*c1));
+       double beta1=acos((a1*a1+c1*c1-b1*b1)/(2*a1*c1));
+       double gama1=acos((a1*a1+b1*b1-c1*c1)/(2*a1*b1));
+       double alfa2=acos((b2*b2+c2*c2-a2*a2)/(2*b2*c2));
+       double beta2=acos((a2*a2+c2*c2-b2*b2)/(2*a2*c2));
+       double gama2=acos((a2*a2+b2*b2-c2*c2)/(2*a2*b2));
+       //if(trou1.Orijentacija(trou1.a, trou1.b, trou1.c)!=trou2.Orijentacija(trou2.a,trou2.b,trou2.c)) return false;
+       double ref_M_str_1, ref_M_str_2, ref_s_str_1, ref_s_str_2, ref_m_str_1, ref_m_str_2, ref_M_ugao_1, ref_M_ugao_2, ref_s_ugao_1, ref_s_ugao_2, ref_m_ugao_1, ref_m_ugao_2;
+       Tacka ar1,br1,cr1,ar2,br2,cr2;
+       if(a1&gt;=b1 &amp;&amp; a1&gt;=c1) { 
+            ref_M_str_1=a1;  ref_M_ugao_1=alfa1; ar1 = trou1.a;
+           if(b1&gt;=c1){
+                ref_s_str_1=b1;  ref_s_ugao_1=beta1;  ref_m_str_1=c1; ref_m_ugao_1=gama1; br1=trou1.b; cr1=trou1.c;
+           } else {
+                ref_s_str_1=c1;  ref_s_ugao_1=gama1;  ref_m_str_1=b1;  ref_m_ugao_1=beta1; br1=trou1.c; cr1=trou1.b;
+           }
+           }
+        if(b1&gt;=a1 &amp;&amp; b1&gt;=c1) {
+            ref_M_str_1=b1;  ref_M_ugao_1=beta1; ar1=trou1.b;
+            if(a1&gt;=c1){
+                 ref_s_str_1=a1;  ref_s_ugao_1=alfa1;  ref_m_str_1=c1;  ref_m_ugao_1=gama1; br1=trou1.a; cr1=trou1.c;
+            } else {
+                 ref_s_str_1=c1;  ref_s_ugao_1=gama1;  ref_m_str_1=a1; ref_m_ugao_1=alfa1; br1=trou1.c; cr1=trou1.a;
+            }
+        }
+       if(c1&gt;=a1 &amp;&amp; c1&gt;=b1){
+            ref_M_str_1=c1;  ref_M_ugao_1=gama1; ar1=trou1.c;
+           if(a1&gt;=b1){
+                ref_s_str_1=a1; ref_s_ugao_1=alfa1;  ref_m_str_1=b1;  ref_m_ugao_1=beta1; br1=trou1.a; cr1=trou1.b;
+       } else {
+                ref_s_str_1=b1; ref_s_ugao_1=beta1;  ref_m_str_1=a1;  ref_m_ugao_1=alfa1; br1=trou1.b; cr1=trou1.a;
+       }
+       }
+       if(a2&gt;=b2 &amp;&amp; a2&gt;=c2){
+           ref_M_str_2=a2;  ref_M_ugao_2=alfa2; ar2 = trou2.a;
+           if(b2&gt;=c2){
+                ref_s_str_2=b2;  ref_s_ugao_2=beta2;  ref_m_str_2=c2; ref_m_ugao_2=gama2; br2=trou2.b; cr2=trou2.c;
+           }
+           else {
+                ref_s_str_2=c2;  ref_s_ugao_2=gama2; ref_m_str_2=b2;  ref_m_ugao_2=beta2; br2=trou2.c; cr2=trou2.b;
+           }
+       }
+       if(b2&gt;=a2 &amp;&amp; b2&gt;=c2){
+            ref_M_str_2=b2;  ref_M_ugao_2=beta2; ar2= trou2.b;
+           if(a2&gt;=c2){
+                ref_s_str_2=a2;  ref_s_ugao_2=alfa2;  ref_m_str_2=c2; ref_m_ugao_2=gama2; br2=trou2.a; cr2=trou2.c;
+           } else {
+               ref_s_str_2=c2; ref_s_ugao_2=gama2;  ref_m_str_2=a2; ref_m_ugao_2=alfa1; br2=trou2.c; cr2=trou2.a;
+           }
+       }
+       if(c2&gt;=a2 &amp;&amp; c2&gt;b2){
+            ref_M_str_2=c2;  ref_M_ugao_2=gama2; ar2=trou2.c;
+           if(a2&gt;=b2){
+                ref_s_str_2=a2; ref_s_ugao_2=alfa2; ref_m_str_2=b2;  ref_m_ugao_2=beta2; br2=trou2.a; cr2=trou2.b;
+           } else {
+              ref_s_str_2=b2; ref_s_ugao_2=beta2;  ref_m_str_2=a2;  ref_m_ugao_2=alfa2; br2= trou2.b; cr2 = trou2.a;
+           }
+       }
+       if(Jednako(ref_M_str_1,ref_M_str_2) &amp;&amp; Jednako(ref_s_str_1,ref_s_str_2) &amp;&amp; Jednako(ref_m_str_1,ref_m_str_2) &amp;&amp; Orijentacija(ar1,br1,cr1)==Orijentacija(ar2,br2,cr2) ) return true; 
+       else return false;
+       
+       
+       
+       /*
+        if( (a1,a2) &amp;&amp; Jednako(b1,b2) &amp;&amp; Jednako(c1,c2) 
+    
+        
+        || ( b1&gt;c1 &amp;&amp; Jednako(b1,b2) &amp;&amp; Jednako(c1,c2) &amp;&amp; Jednako(beta1,beta2))
+        || ( c1&gt;b1 &amp;&amp; Jednako(b1,b2) &amp;&amp; Jednako(c1,c2) &amp;&amp; Jednako(gama1,gama2))
+        || ( a1&gt;a2 &amp;&amp; Jednako(a1,a2) &amp;&amp; Jednako(b1,b2) &amp;&amp; Jednako(alfa1,alfa2))
+        || ( b1&gt;a1 &amp;&amp; Jednako(a1,a2) &amp;&amp; Jednako(b1,b2) &amp;&amp; Jednako(beta1,beta2))
+        || ( a1&gt;c1 &amp;&amp; Jednako(a1,a2) &amp;&amp; Jednako(c1,c2) &amp;&amp; Jednako(alfa1,alfa2))
+        || ( c1&gt;c2 &amp;&amp; Jednako(a1,a2) &amp;&amp; Jednako(c1,c2) &amp;&amp; Jednako(gama2,gama1))
+        
+        || ( (alfa1,alfa2) &amp;&amp; Jednako(beta1,beta2) &amp;&amp; Jednako(c1,c2))
+        || ( (alfa1,alfa2) &amp;&amp; Jednako(gama1,gama2) &amp;&amp; Jednako(b1,b2))
+        || ( (beta1,beta2) &amp;&amp; Jednako(gama1,gama2) &amp;&amp; Jednako(a1,a2))
+        
+        || ( (a1,a2) &amp;&amp; Jednako(c1,c2) &amp;&amp; Jednako(beta1,beta2))
+        || ( (a1,a2) &amp;&amp; Jednako(b1,b2) &amp;&amp; Jednako(gama1,gama2))
+        || ((b1,b2) &amp;&amp; Jednako(c1,c2) &amp;&amp; Jednako(alfa1,alfa2)))
+        return true;
+        else return false;
+        */
+    }
+    friend bool DaLiSuSlicni(const Trougao &amp;trou1, const Trougao &amp;trou2){
+<a name="6"></a><font color="#00FF00"><a href="match843-1.html#6" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+       double c1=sqrt(pow(trou1.b.first-trou1.a.first, 2) + pow(trou1.b.second-trou1.a.second, 2));
+</font><a name="7"></a><font color="#0000FF"><a href="match843-1.html#7" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+       double a1=sqrt(pow(trou1.c.first-trou1.b.first, 2) + pow(trou1.c.second-trou1.b.second, 2));
+</font><a name="8"></a><font color="#00FFFF"><a href="match843-1.html#8" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+       double b1=sqrt(pow(trou1.c.first-trou1.a.first, 2) + pow(trou1.c.second-trou1.a.second, 2));
+</font><a name="9"></a><font color="#FF00FF"><a href="match843-1.html#9" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+       double c2=sqrt(pow(trou2.b.first-trou2.a.first, 2) + pow(trou2.b.second-trou2.a.second, 2));
+</font><a name="10"></a><font color="#FF0000"><a href="match843-1.html#10" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+       double a2=sqrt(pow(trou2.c.first-trou2.b.first, 2) + pow(trou2.c.second-trou2.b.second, 2));
+</font><a name="11"></a><font color="#00FF00"><a href="match843-1.html#11" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+       double b2=sqrt(pow(trou2.c.first-trou2.a.first, 2) + pow(trou2.c.second-trou2.a.second, 2));
+</font><a name="11"></a><font color="#00FF00"><a href="match843-1.html#11" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+       double alfa1=acos((b1*b1+c1*c1-a1*a1)/(2*b1*c1));
+</font>       double beta1=acos((a1*a1+c1*c1-b1*b1)/(2*a1*c1));
+       double gama1=acos((a1*a1+b1*b1-c1*c1)/(2*a1*b1));
+       double alfa2=acos((b2*b2+c2*c2-a2*a2)/(2*b2*c2));
+       double beta2=acos((a2*a2+c2*c2-b2*b2)/(2*a2*c2));
+       double gama2=acos((a2*a2+b2*b2-c2*c2)/(2*a2*b2));
+       double ax1,bx1,cx1,ax2,bx2,cx2; Tacka ar1,ar2,br1,br2,cr1,cr2; 
+       
+       if(a1&gt;=b1 &amp;&amp; a1&gt;=c1){
+           ax1=a1; ar1=trou1.a;
+           if(b1&gt;=c1){
+               bx1=b1; cx1=c1; br1=trou1.b; cr1=trou1.c;
+           } else {
+               bx1=c1; cx1=b1; br1=trou1.c; cr1=trou1.b;
+           }
+       }
+       if(b1&gt;=a1 &amp;&amp; b1&gt;=c1){
+           ax1=b1; ar1=trou1.b;
+           if(a1&gt;=c1){
+               bx1=a1; cx1=c1; br1=trou1.a; cr1=trou1.c;
+           } else {
+               bx1=c1; cx1=a1; br1=trou1.c; cr1=trou1.a;
+           }
+       }
+       if(c1&gt;=b1 &amp;&amp; c1&gt;=a1){
+           ax1=c1; ar1=trou1.c;
+           if(b1&gt;=a1){
+               bx1=b1; cx1=a1; br1=trou1.b; cr1=trou1.a;
+           } else {
+               bx1=a1; cx1=b1; br1=trou1.a; cr1=trou1.b;
+           }
+       }
+       if(a2&gt;=b2 &amp;&amp; a2&gt;=c2){
+           ax2=a2; ar2=trou2.a;
+           if(b2&gt;=c2){
+               bx2=b2; cx2=c2; br2=trou2.b; cr2=trou2.c;
+           } else {
+               bx2=c2; cx2=b2; br2=trou2.c; cr2=trou2.b;
+           }
+       }
+       if(b2&gt;=a2 &amp;&amp; b2&gt;=c2){
+           ax2=b2; ar2=trou2.b;
+           if(a2&gt;=c2){
+               bx2=a2; cx2=c2; br2=trou2.a; cr2=trou2.c;
+           } else {
+               bx2=c2; cx2=a2; br2=trou2.c; cr2=trou2.a;
+           }
+       }
+       if(c2&gt;=b2 &amp;&amp; c2&gt;=a2){
+           ax2=c2; ar2=trou2.c;
+           if(b2&gt;=a2){
+               bx2=b2; cx2=a2; br2=trou2.b; cr2=trou2.a;
+           } else {
+               bx2=a2; cx2=b2; br2=trou2.a; cr2=trou2.b;
+           }
+       }
+       
+       
+       double k = ax1/ax2, l=bx1/bx2, m=cx1/cx2;
+       if(Jednako(k,l) &amp;&amp; Jednako(l,m) &amp;&amp; Jednako(k,m) &amp;&amp; Orijentacija(ar1,br1,cr1)==Orijentacija(ar2,br2,cr2)) return true;
+       else return false;
+       
+       /*
+        if(((Jednako((a1/a2),(b1/b2)) &amp;&amp; Jednako((a1/a2),(c1/c2)))
+        || (Jednako(alfa1,alfa2) &amp;&amp; Jednako(beta1,beta2) &amp;&amp; Jednako(gama1,gama2))
+        || (Jednako((a1/a2),(b1/b2)) &amp;&amp; Jednako(gama1,gama2))
+        || (Jednako((a1/a2),(c1/c2)) &amp;&amp; Jednako(beta1,beta2))
+        || (Jednako((b1/b2),(c1/c2)) &amp;&amp; Jednako(alfa1,alfa2))
+        || (c1&gt;b1 &amp;&amp; Jednako((b1/b2),(c1/c2)) &amp;&amp; Jednako(gama1,gama2))
+        || (a1&gt;b1 &amp;&amp; Jednako((a1/a2),(b1/b2)) &amp;&amp; Jednako(alfa1,alfa2))
+        || (b1&gt;a1 &amp;&amp; Jednako((a1/a2),(b1/b2)) &amp;&amp; Jednako(beta1,beta2))
+        || (b1&gt;c1 &amp;&amp; Jednako((b1/b2),(c1/c2)) &amp;&amp; Jednako(beta1,beta2))
+        || (c1&gt;a1 &amp;&amp; Jednako((c1/c2),(a1/a2)) &amp;&amp; Jednako(gama1,gama2))
+        || (a1&gt;c1 &amp;&amp; Jednako((a1/a2),(c1/c2)) &amp;&amp; Jednako(alfa1,alfa2))) &amp;&amp; trou1.Orijentacija(trou1.a, trou1.b, trou1.c)==trou2.Orijentacija(trou2.a, trou2.b, trou2.c)
+        )return true;
+        else return false;
+        */
+    }
+    void Ispisi()const{
+        cout &lt;&lt; "(("&lt;&lt;a.first&lt;&lt;","&lt;&lt;a.second&lt;&lt;"),("&lt;&lt;b.first&lt;&lt;","&lt;&lt;b.second&lt;&lt;"),("&lt;&lt;c.first&lt;&lt;","&lt;&lt;c.second&lt;&lt;"))";
+    }
+};
+int main ()
+{
+    int n;
+    cout&lt;&lt;"Koliko zelite kreirati trouglova: ";
+    cin&gt;&gt;n;
+    vector &lt;shared_ptr&lt;Trougao&gt;&gt; v(n);
+    for(int i=0; i&lt;n; i++){
+        try{
+            Tacka a,b,c;
+            cout &lt;&lt; "Unesite podatke za "&lt;&lt;i+1&lt;&lt;". trougao (x1 y1 x2 y2 x3 y3): ";
+            cin &gt;&gt; a.first&gt;&gt;a.second&gt;&gt;b.first&gt;&gt;b.second&gt;&gt;c.first&gt;&gt;c.second;
+            shared_ptr&lt;Trougao&gt; pom = make_shared&lt;Trougao&gt;(a,b,c);
+            
+            v[i] = pom;
+        }catch(domain_error e){
+            cout &lt;&lt;e.what() &lt;&lt;", ponovite unos!"&lt;&lt;endl;
+            i--;
+        }
+    }
+    cout &lt;&lt; "Unesite vektor translacije (dx dy): ";
+    double delta_x, delta_y;
+    cin &gt;&gt; delta_x&gt;&gt;delta_y;
+    cout &lt;&lt; "Unesite ugao rotacije: ";
+    double ugao;
+    cin&gt;&gt;ugao;
+    cout &lt;&lt; "Unesite faktor skaliranja: ";
+    double faktor;
+    cin &gt;&gt; faktor;
+    
+    transform(begin(v), end(v),begin(v), [=](shared_ptr&lt;Trougao&gt; pok_trougao){
+    pok_trougao-&gt;Transliraj(delta_x,delta_y);
+    pok_trougao-&gt;Rotiraj(pok_trougao-&gt;DajCentar(), ugao);
+    pok_trougao-&gt;Skaliraj(pok_trougao-&gt;DajTjeme(1),faktor);
+    return pok_trougao;
+    });
+    sort(begin(v), end(v), [](shared_ptr&lt;Trougao&gt; tro1, shared_ptr&lt;Trougao&gt; tro2){
+        return tro1-&gt;DajPovrsinu()&lt;tro2-&gt;DajPovrsinu();
+    });
+    cout &lt;&lt; "Trouglovi nakon obavljenih transformacija:"&lt;&lt;endl;
+    for_each(begin(v), end(v), [](shared_ptr&lt;Trougao&gt; trouglic){ trouglic-&gt;Ispisi(); cout &lt;&lt;endl; });
+    cout &lt;&lt; "Trougao sa najmanjim obimom: ";
+    (*(min_element(begin(v), end(v), [](shared_ptr&lt;Trougao&gt; trouglic_1, shared_ptr&lt;Trougao&gt; trouglic_2){
+       return trouglic_2-&gt;DajObim()&gt;trouglic_1-&gt;DajObim(); 
+    })))-&gt;Ispisi();
+    cout &lt;&lt;endl;
+    vector&lt;pair&lt;Trougao, Trougao&gt;&gt; ident_vec_par;
+    vector&lt;bool&gt; marker(n,false);
+    for(int i=0; i&lt; n-1; i++){
+        for(int j=i+1; j&lt;n; j++){
+            if(DaLiSuIdenticni( *v[i], *v[j] )){
+                if(marker[j]==true) continue;
+                ident_vec_par.push_back(make_pair(*v[i], *v[j]));
+               // marker(i)=true;
+               // marker[j]=true;
+                
+            }
+        } 
+    }
+    if(ident_vec_par.size()==0) cout &lt;&lt; "Nema identicnih trouglova!"&lt;&lt;endl; else 
+    cout &lt;&lt; "Parovi identicnih trouglova:"&lt;&lt;endl;
+    for_each(ident_vec_par.begin(), ident_vec_par.end(), [](pair&lt;Trougao,Trougao&gt; par){ par.first.Ispisi(); cout &lt;&lt; " i "; par.second.Ispisi(); cout &lt;&lt;endl; });
+    //for(int i=0; i&lt;ident_vec_par.size(); i++) {ident_vec_par[i].first.Ispisi(); cout&lt;&lt;" i ";ident_vec_par[i].second.Ispisi();cout &lt;&lt;endl;}
+    vector&lt;pair&lt;Trougao, Trougao&gt;&gt; podudarni_vec_par;
+    vector&lt;bool&gt; markerP(n,false);
+    for(int i=0; i&lt;n-1; i++){
+        for(int j=i+1; j&lt;n; j++){
+          //  cout &lt;&lt; "Sad testiramo: ";v[i]-&gt;Ispisi();cout &lt;&lt; " i ";v[j]-&gt;Ispisi();
+            if(DaLiSuPodudarni(*v[i], *v[j])){
+              //  cout &lt;&lt; "Sad testiramo: ";v[i]-&gt;Ispisi();cout &lt;&lt; " i ";v[j]-&gt;Ispisi();cout &lt;&lt; "Rezultat je ";
+                if(markerP[j]==true) continue;
+                podudarni_vec_par.push_back(make_pair(*v[i],*v[j]));
+               // markerP[j]=true;
+            
+        }
+    }
+    
+    }
+    if(podudarni_vec_par.size()==0) cout &lt;&lt; "Nema podudarnih trouglova!"&lt;&lt;endl; else
+    cout &lt;&lt; "Parovi podudarnih trouglova:"&lt;&lt;endl;
+    for_each(podudarni_vec_par.begin(), podudarni_vec_par.end(), [](pair&lt;Trougao, Trougao&gt; par){ par.first.Ispisi(); cout &lt;&lt; " i "; par.second.Ispisi(); cout &lt;&lt; endl; });
+   // for(int i=0; i&lt;podudarni_vec_par.size(); i++) {podudarni_vec_par[i].first.Ispisi(); cout&lt;&lt;" i ";podudarni_vec_par[i].second.Ispisi(); cout&lt;&lt;endl;}
+    vector&lt;pair&lt;Trougao,Trougao&gt;&gt; slicni_vec_par;
+    vector&lt;bool&gt; markerS(n,false);
+    for(int i=0; i&lt;n-1; i++){
+        for(int j=i+1; j&lt;n; j++){
+            if(DaLiSuSlicni(*v[i], *v[j])){
+                if(markerS[j]==true) continue;
+                slicni_vec_par.push_back(make_pair(*v[i], *v[j]));
+               // markerS[j]=true;
+            }
+        }
+    }
+    if(slicni_vec_par.size()==0) cout &lt;&lt; "Nema slicnih trouglova!"; else
+    cout&lt;&lt; "Parovi slicnih trouglova:"&lt;&lt;endl;
+    for_each(slicni_vec_par.begin(), slicni_vec_par.end(), [](pair&lt;Trougao, Trougao&gt; par){ par.first.Ispisi(); cout &lt;&lt; " i "; par.second.Ispisi(); cout &lt;&lt; endl; });
+    //for(int i=0; i&lt;slicni_vec_par.size(); i++) {slicni_vec_par[i].first.Ispisi();cout &lt;&lt;" i "; slicni_vec_par[i].second.Ispisi(); cout&lt;&lt;endl;}
+    
+      
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+</pre>
+</body>
+</html>

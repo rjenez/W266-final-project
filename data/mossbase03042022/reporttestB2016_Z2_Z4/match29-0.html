@@ -1,0 +1,266 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8794.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student8794.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;algorithm&gt;
+#include&lt;string&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match29-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+int PotencijalniKrivci(char**&amp;p,std::vector&lt;std::string&gt; imena)
+{
+	int velicina1=imena.size();
+	try
+	{
+		//ovdje treba bti niz pokazivača;
+		p=new char*[imena.size()];
+		int brojZnakova=0;
+		for(int i=0;i&lt;imena.size();i++)
+		{
+			brojZnakova=imena[i].length();
+			std::string trenutni=imena[i];
+			p[i]=new char[brojZnakova+1];
+			for(int j=0;j&lt;brojZnakova;j++) 
+			{
+				p[i][j]=trenutni[j];
+				
+			}
+			p[i][brojZnakova]='\0';
+		}
+	}
+	catch(...)
+	{
+		for(int i=0;i&lt;velicina1;i++)
+		delete p[i];
+		delete p;
+		throw std::bad_alloc();
+	}
+	return velicina1;
+}
+int OdbaciOptuzbu(char**&amp;p,int velicina, std::string ime)
+{
+	bool postojiOsoba=false;
+	for(int i=0;i&lt;velicina;i++)
+	{
+		if(p[i]!=0)
+		{
+			bool rijeciPodudarne=true;
+			for(int j=0;j&lt;ime.length();j++)
+			{
+				if(p[i][j]!='\0')
+				{
+					if(j==(ime.length()-1))
+					{
+						if(p[i][j+1]!='\0') rijeciPodudarne=false;
+					}
+					if(p[i][j]!=ime[j]) rijeciPodudarne=false;
+				}
+				else 
+				{
+					if(j!=(ime.length()-1)) rijeciPodudarne=false;
+				}
+			}
+			if(rijeciPodudarne)
+			{
+				postojiOsoba=true;
+				delete [] p[i];
+				p[i]=0;
+			}
+		}
+	}
+	if(!postojiOsoba)
+	{
+		std::string pom="Osoba sa imenom "+ime+" nije bila optuzena";
+		throw std::domain_error(pom);
+	}
+	int brojNul=0;
+	for(int i=0;i&lt;velicina;i++)
+	if(p[i]==0) brojNul++;
+	if(brojNul&gt;10)
+	{
+		char** p1;
+		try
+		{
+			
+			p1=new char*[brojNul];
+			int brojac=0;
+			for(int i=0;i&lt;velicina;i++)
+			{
+				if(p[i]!=0)
+				{
+					p1[brojac]=p[i];
+					brojac++;
+				}
+			}
+			delete p;
+			p=p1;
+		}
+		catch(...)
+		{
+			for(int i=0;i&lt;brojNul;i++) delete p1[i];
+			delete p1;
+		}
+		return brojNul;
+	}
+	else return velicina;
+}
+int DodajOptuzbu(char**&amp;p,int velicina, std::string ime)
+{
+	
+			bool podudaraSe=true;
+	//prvo vidi je li ima na jednom mjestu
+	for(int i=0;i&lt;velicina;i++)
+	{
+		char*pomocna=p[i];
+		if(pomocna!=0)
+		{
+			int j=0;
+			while(pomocna[j]!='\0')
+			{
+				j++;
+			}
+			if(j==ime.length())
+			{
+				for(j=0;j&lt;ime.length();j++)
+				if(pomocna[j]!=ime[j]) podudaraSe=false;
+			} else podudaraSe=false;
+		}
+	}
+	if(!podudaraSe)
+	{
+	int vel=ime.length();
+	char*p1=new char[vel+1];
+	for(int i=0;i&lt;vel;i++)
+	p1[i]=ime[i];
+	p1[vel]='\0';
+	for(int i=0;i&lt;velicina;i++)
+	if(p[i]==0)
+	{
+		p[i]=p1; 
+		return velicina;
+	}
+	char**pom;
+	try
+	{
+	 pom=new char*[velicina+1];
+	 for(int i=0;i&lt;velicina;i++)
+	 pom[i]=p[i];
+	 pom[velicina]=p1;
+	 delete[] p ;
+	 p=pom;
+	 velicina++;
+	 return velicina;
+	 
+	}
+	catch(...)
+	{
+		for(int i=0;i&lt;velicina+1;i++) delete pom[i];
+			delete pom;
+			throw std::bad_alloc();
+	}
+	}
+	else return velicina;
+}
+void IzlistajOptuzbu(char **&amp;p,int velicina)
+{
+	
+	for(int i=0;i&lt;velicina;i++)
+	{
+		
+		if(p[i]!=0)
+		{
+			char*pom=p[i];
+			int j=0;
+			while(pom[j]!='\0')
+			{
+			std::cout&lt;&lt;pom[j];
+			j++;
+			}
+			if(i&lt;(velicina-1))
+			std::cout&lt;&lt;std::endl;
+		}
+	}
+}
+
+int main ()
+{
+	std::cout&lt;&lt;"Koliko potencijalnih krivaca zelite unijeti? ";
+	int n;
+	std::cin&gt;&gt;n;
+	char**listaKrivaca;
+	int velicina;
+	std::vector&lt;std::string&gt; lista1;
+	if(n&gt;0)
+	{
+	std::cout&lt;&lt;std::endl&lt;&lt;"Unesite potencijalne krivce: ";
+	while(n&gt;0)
+	{
+		std::string krivac;
+		std::cin&gt;&gt;krivac;
+		lista1.push_back(krivac);
+		n--;
+	}
+	velicina=PotencijalniKrivci(listaKrivaca, lista1);
+	int k=1;
+		while(k!=0)
+		{
+			std::cout&lt;&lt;std::endl&lt;&lt;"Odaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: ";
+			std::cin&gt;&gt;k;
+			if(k==0 ) break;
+			else if(k==1)
+			{
+				try
+				{
+				std::cout&lt;&lt;std::endl&lt;&lt;"Unesite ime novog optuzenog: ";
+				std::string krivac;
+				std::cin&gt;&gt;krivac;
+				velicina=DodajOptuzbu(listaKrivaca,velicina,krivac);
+				}
+				catch(std::bad_alloc)
+				{
+					std::cout&lt;&lt;"Nema memorije!"&lt;&lt;std::endl;
+				}
+				
+			}
+			else if(k==2)
+			{
+			
+			try
+			{
+				std::cout&lt;&lt;std::endl&lt;&lt;"Unesite ime koje zelite izbaciti: ";
+				std::string nevin;
+				std::cin&gt;&gt;nevin;
+				velicina=OdbaciOptuzbu(listaKrivaca,velicina,nevin);
+			}
+			catch(std::domain_error e)
+			{
+				std::cout&lt;&lt;e.what()&lt;&lt;std::endl;
+			}	
+			}
+			else if(k==3)
+			{
+				std::cout&lt;&lt;std::endl;
+				IzlistajOptuzbu(listaKrivaca,velicina);
+			}
+		}
+		for(int i=0;i&lt;velicina;i++)
+		delete [] listaKrivaca[i];
+		delete [] listaKrivaca;
+</font>	}
+	return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z1/student5619.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z1/student5619.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 1
+	
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+	
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti 
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za 
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.	
+*/
+#include &lt;iostream&gt;
+
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;cstring&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;initializer_list&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match3-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+class Tim
+{
+	char ime_tima[20];
+	int bo,bn,bp; //broj odigranih, broj nerijesenih, broj pobjeda
+	int bpor, bdat, bprim, bpoena; // brojporaza, brojdatih, brojprimljenih, broj poena
+
+public:
+	Tim (const char ime []) {
+		int brojac=std::strlen(ime);
+		if(brojac&gt;20) throw std::range_error("Predugacko ime tima");
+		std::strcpy(ime_tima, ime);
+		bo=0;
+		bn=0;
+		bp=0;
+		bpor=0;
+		bdat=0;
+		bprim=0;
+		bpoena=0;
+	}
+	void ObradiUtakmicu(int brojdat, int brojprim) {
+		if(brojdat&lt;0 || brojprim&lt;0) throw std::range_error("Neispravan broj golova");
+
+		bo++;
+		bdat+=brojdat;
+		bprim+=brojprim;
+		if(brojdat&lt;brojprim) bpor++;
+		else if(brojdat==brojprim) {
+			bn++;
+			bpoena+=1;
+		} else {
+			bp++;
+			bpoena+=3;
+
+		}
+	}
+		const char *DajImeTima() const {
+			return ime_tima;
+		}
+		int DajBrojPoena() const {
+			return bpoena;
+		}
+		int DajGolRazliku() const {
+			return (bdat-bprim);
+		}
+		void IspisiPodatke() const {
+			std::cout &lt;&lt; std::setw(20)&lt;&lt;std::left&lt;&lt;ime_tima&lt;&lt; std::setw(4)&lt;&lt;std::right&lt;&lt;
+			          bo&lt;&lt;std::setw(4)&lt;&lt;std::right&lt;&lt; bp&lt;&lt;std::setw(4)&lt;&lt;std::right&lt;&lt; bn&lt;&lt; std::setw(4)&lt;&lt;std::right&lt;&lt;bpor&lt;&lt;
+			          std::setw(4)&lt;&lt;std::right&lt;&lt; bdat&lt;&lt;std::setw(4)&lt;&lt;std::right&lt;&lt; bprim&lt;&lt; std::setw(4)&lt;&lt;std::right&lt;&lt;bpoena&lt;&lt; std::endl;
+		}
+	};
+
+class Liga {
+	int brt;
+	const int maxbrt;
+	Tim **timo;
+public:
+	explicit Liga(int velicina_lige);
+	explicit Liga(std::initializer_list&lt;Tim&gt; lista_timova);
+	~Liga(){
+		for(int i(0);i&lt;brt;i++) delete timo[i];
+		delete [] timo;
+	}
+	Liga (const Liga &amp;l);
+	Liga (Liga &amp;&amp;l);
+	Liga &amp;operator = (const Liga &amp;l);
+	Liga &amp;operator = (Liga &amp;&amp; l);
+	void DodajNoviTim(const char ime_tima []);
+	void RegistrirajUtakmicu (const char tim1[], const char tim2[], int rez1, int rez2);
+	void IspisiTabelu();
+	static bool Kriterij(const Tim *tim1, const Tim *tim2);
+};
+
+
+int main ()
+{
+	Liga l1{"Celik", "Borac", "Jedinstvo", "Zeljeznicar", "Zrinjski", "Sarajevo"};
+	l1.RegistrirajUtakmicu("Sarajevo", "Zeljeznicar", 5, 0);
+	Liga l2(l1);
+	std::cout &lt;&lt; "Liga 1: " &lt;&lt; std::endl;
+	l1.IspisiTabelu();
+	std::cout &lt;&lt; "Liga 2(kopija l1): " &lt;&lt; std::endl;
+	l2.IspisiTabelu();
+	Liga l3{"Celik", "Borac", "Jedinstvo", "Zeljeznicar", "Zrinjski", "Sarajevo"};
+	Liga l4{"barca", "real", "iuventus", "chelsea", "manchester", "liverpool"};
+	l3.RegistrirajUtakmicu("Sarajevo", "Zeljeznicar", 3,1);
+	l3.RegistrirajUtakmicu("Sarajevo", "Jedinstvo", 3,0);
+	l3.RegistrirajUtakmicu("Borac", "Jedinstvo", 1,2);
+	l3.RegistrirajUtakmicu("Zrinjski", "Borac",0,2);
+	
+	std::cout &lt;&lt; "Liga l3: " &lt;&lt; std::endl;
+	l3.IspisiTabelu();
+	std::cout &lt;&lt; "Liga l4: " &lt;&lt; std::endl;
+	l4.IspisiTabelu();
+	l4=l3;
+	std::cout &lt;&lt; "Liga l4 sada je (kopija l3): " &lt;&lt; std::endl;
+	l4.IspisiTabelu();
+	
+	return 0;
+}
+
+
+
+Liga::Liga(int velicina_lige):maxbrt(velicina_lige), brt(0), timo(new Tim*[velicina_lige]){
+	for(int i(0);i&lt;maxbrt;i++) timo[i]=nullptr;
+}
+Liga::Liga(std::initializer_list&lt;Tim&gt; lista_timova):maxbrt(lista_timova.size()), brt(lista_timova.size()){
+		timo=new Tim *[lista_timova.size()];
+		int br(0);
+		for(auto i=lista_timova.begin(); i!=lista_timova.end();i++){
+			timo[br]=new Tim(*i);
+			br++;
+		}
+}
+
+Liga::Liga (const Liga &amp;l): maxbrt(l.maxbrt), brt(l.brt), timo(new Tim*[l.maxbrt]){
+	for(int i(0);i&lt;l.brt;i++) timo[i]=new Tim (*l.timo[i]);
+}
+
+Liga::Liga(Liga &amp;&amp;l): maxbrt(l.maxbrt), brt(l.brt){
+	timo=l.timo;
+	l.brt=0;
+	l.timo=nullptr;
+}
+Liga &amp;Liga::operator = (const Liga &amp;l){
+	if(l.maxbrt!=maxbrt) throw std::logic_error("Nesaglasni kapaciteti liga");
+	if(&amp;l!=this){
+		for(int i(0);i&lt;brt;i++) delete timo[i];
+		for(int i(0);i&lt;l.brt;i++) timo[i]=new Tim(*l.timo[i]);
+		brt=l.brt;
+	}
+	
+	return *this;
+}
+
+Liga &amp;Liga::operator= (Liga &amp;&amp;l){
+	if(l.maxbrt!=maxbrt) throw std::domain_error("Nesaglasni kapaciteti liga");
+	if(&amp;l != this){
+		for(int i(0);i&lt;brt;i++) delete timo[i];
+		timo=l.timo;
+		brt=l.brt;
+		l.timo=nullptr;
+		l.brt=0;
+	}
+	return *this;
+}
+
+void Liga::DodajNoviTim(const char ime_tima[]){
+	if(brt==maxbrt) throw std::range_error("Liga popunjena");
+	timo[brt++]=new Tim(ime_tima);
+}
+
+void Liga::RegistrirajUtakmicu(const char tim1[], const char tim2[], int rez1, int rez2){
+	if(rez1&lt;0 || rez2&lt;0) throw std::range_error("Neispravan broj golova");
+	int p1(-1), p2(-1);
+	
+	
+	for(int i(0);i&lt;brt;i++) {
+		if(strcmp(tim1, timo[i]-&gt;DajImeTima())==0) p1=i;
+		if(strcmp(tim2,timo[i]-&gt;DajImeTima())==0) p2=i;
+	}
+	
+	if(p2&gt;-1 &amp;&amp; p1&gt;-1) {
+		timo[p1]-&gt;ObradiUtakmicu(rez1,rez2);
+		timo[p2]-&gt;ObradiUtakmicu(rez2,rez1);
+	}
+	else throw std::logic_error("Tim nije nadjen");
+}
+
+void Liga::IspisiTabelu(){
+	std::sort(timo, timo+brt, Kriterij);
+	for(int i(0); i&lt;brt;i++) timo[i]-&gt;IspisiPodatke();
+}
+
+bool Liga::Kriterij(const Tim *tim1, const Tim *tim2){
+	if(tim1-&gt;DajBrojPoena()== tim2-&gt;DajBrojPoena()) return tim1-&gt;DajGolRazliku() &gt; tim2-&gt;DajGolRazliku();
+	return tim1-&gt;DajBrojPoena() &gt; tim2-&gt;DajBrojPoena();
+
+int main ()
+</font>{
+	return 0;
+}</pre>
+</body>
+</html>

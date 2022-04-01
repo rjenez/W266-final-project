@@ -1,0 +1,157 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z5/student1597.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z5/Z5/student1597.cpp<p></p><pre>
+/B2017/2018: Zadaća 5, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;initializer_list&gt;
+#include &lt;functional&gt;
+#include &lt;cmath&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+
+class FourierovRed {
+    std::vector&lt;double&gt; vektor_a;
+    std::vector&lt;double&gt; vektor_b;
+    double period;
+    int stepen;
+    static constexpr double PI=4*std::atan(1);
+<a name="0"></a><font color="#FF0000"><a href="match323-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_7.gif"/></a>
+
+public:
+    FourierovRed(double T, std::initializer_list&lt;double&gt; a_ovi, std::initializer_list&lt;double&gt; b_ovi);
+    FourierovRed(int N, double T, std::function&lt;double(int)&gt; f1, std::function&lt;double(int)&gt; f2);
+    FourierovRed(int N, double p, double q, std::function&lt;double(double)&gt; f, int M);
+    double operator ()(double x) const;
+</font><a name="3"></a><font color="#00FFFF"><a href="match323-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_2.gif"/></a>
+
+    std::pair&lt;double, double&gt; operator [](int k) const;
+    std::pair&lt;double &amp;, double &amp;&gt; operator [](int k);
+</font>    ~FourierovRed()=default;
+    FourierovRed(const FourierovRed &amp;fr)=default;
+    FourierovRed(FourierovRed &amp;&amp;fr)=default;
+    FourierovRed &amp;operator =(const FourierovRed &amp;fr);
+    FourierovRed &amp;operator =(FourierovRed &amp;&amp;fr)=default;
+};
+
+FourierovRed::FourierovRed(double T, std::initializer_list&lt;double&gt; a_ovi, std::initializer_list&lt;double&gt; b_ovi) : 
+period(T) {
+    int velicina_a(a_ovi.size()); int velicina_b(b_ovi.size()+1);
+    if (velicina_a==velicina_b) {
+        for (auto iter=a_ovi.begin(); iter!=a_ovi.end(); iter++) {
+            vektor_a.push_back(*iter);
+        }
+        vektor_b.push_back(0);
+        for (auto iter=b_ovi.begin(); iter!=b_ovi.end(); iter++) {
+            vektor_b.push_back(*iter);
+        }
+    }
+    else if (velicina_a&lt;velicina_b) {
+        vektor_b.push_back(0);
+        for (auto iter=b_ovi.begin(); iter!=b_ovi.end(); iter++) {
+            vektor_b.push_back(*iter);
+        }
+        for (auto iter=a_ovi.begin(); iter!=a_ovi.end(); iter++) {
+            vektor_a.push_back(*iter);
+        }
+        while (velicina_a&lt;velicina_b) {
+            vektor_a.push_back(0);
+            velicina_a++;
+        }
+    }
+    else if (velicina_a&gt;velicina_b) {
+        for (auto iter=a_ovi.begin(); iter!=a_ovi.end(); iter++) {
+            vektor_a.push_back(*iter);
+        }
+        vektor_b.push_back(0);
+        for (auto iter=b_ovi.begin(); iter!=b_ovi.end(); iter++) {
+            vektor_b.push_back(*iter);
+        }
+        while (velicina_b&lt;velicina_a) {
+            vektor_b.push_back(0);
+            velicina_b++;
+        }
+    }
+    stepen=velicina_b-1;
+}
+
+FourierovRed::FourierovRed(int N, double T, std::function&lt;double(int)&gt; f1, std::function&lt;double(int)&gt; f2) : 
+period(T), stepen(N) {
+    if (N&lt;=0) throw std::domain_error("Stepen mora biti pozitivan");
+    int velicina_a(N+1); int velicina_b(N+1);
+    vektor_a.resize(velicina_a); vektor_b.resize(velicina_b);
+    for (int i=0; i&lt;velicina_a; i++) {
+        vektor_a[i]=f1(i);
+    }
+    vektor_b[0]=0;
+    for (int i=1; i&lt;velicina_b; i++) {
+        vektor_b[i]=f2(i);
+    }
+}
+
+FourierovRed::FourierovRed(int N, double p, double q, std::function&lt;double(double)&gt; f, int M) : 
+stepen(N), period(q-p) {
+    if (N&lt;=0) throw std::domain_error("Stepen mora biti pozitivan");
+    if (M&lt;=0) throw std::domain_error("Broj podintervala mora biti pozitivan");
+    if (p&gt;=q) throw std::range_error("Neispravan interval");
+    int velicina_a(N+1); int velicina_b(N+1);
+    vektor_a.resize(velicina_a); vektor_b.resize(velicina_b);
+    for (int k=0; k&lt;velicina_a; k++) {
+        double suma(0);
+        for (int i=1; i&lt;=M-1; i++) {
+            suma+=f(p+(i*period/M))*std::cos(2*k*PI*(p/period+1.*i/M));
+        }
+        suma*=2./M;
+        vektor_a[k]=suma+((f(p)+f(q))/M)*std::cos((2*k*PI*p)/period);
+    }
+    vektor_b[0]=0;
+    for (int k=1; k&lt;velicina_b; k++) {
+        double suma(0);
+        for (int i=1; i&lt;=M-1; i++) {
+            suma+=f(p+(i*period/M))*std::sin(2*k*PI*(p/period+1.*i/M));
+        }
+        suma*=2./M;
+        vektor_b[k]=suma+((f(p)+f(q))/M)*std::sin((2*k*PI*p)/period);
+    }
+}
+
+double FourierovRed::operator ()(double x) const {
+    double suma(0);
+    suma=vektor_a[0]/2;
+    for (int k=1; k&lt;=stepen; k++) {
+<a name="1"></a><font color="#00FF00"><a href="match323-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+        suma+=vektor_a[k]*std::cos(2*k*PI*x/period)+vektor_b[k]*std::sin(2*k*PI*x/period);
+</font>    }
+    return suma;
+}
+
+std::pair&lt;double, double&gt; FourierovRed::operator [](int k) const {
+    if (k&lt;0 || k&gt;stepen) throw std::range_error("Neispravan indeks");
+    return std::make_pair(vektor_a[k], vektor_b[k]);
+}
+
+<a name="2"></a><font color="#0000FF"><a href="match323-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_2.gif"/></a>
+
+std::pair&lt;double &amp;, double &amp;&gt; FourierovRed::operator [](int k) {
+    if (k&lt;0 || k&gt;stepen) throw std::range_error("Neispravan indeks");
+</font>    return {vektor_a[k], vektor_b[k]};
+}
+
+FourierovRed &amp;FourierovRed::operator =(const FourierovRed &amp;fr) {
+    if (&amp;fr==this) return *this;
+    vektor_a=fr.vektor_a; vektor_b=fr.vektor_b;
+    stepen=fr.stepen; period=fr.period;
+    return *this;
+}
+
+int main ()
+{
+	return 0;
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student3546.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student3546.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;utility&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+
+using std::cin;
+using std::cout;
+
+std::map&lt;std::string,std::set&lt;int&gt;&gt; KreirajIndeksPojmova(std::string s){
+    std::map&lt;std::string,std::set&lt;int&gt;&gt; indeksi;
+    bool novarijec(true);
+    int brojac(0);
+    for(int i=0;i&lt;s.length();i++)
+    if(s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') s[i]+=32;
+    for(int i=0;i&lt;s.length();i++){
+        if((s[i]&lt;'a' || s[i]&gt;'z') &amp;&amp; (s[i]&lt;'0' || s[i]&gt;'9'))
+        novarijec=false;
+        else{
+            if(novarijec==false){
+            novarijec=true;
+            brojac=0;
+            }
+<a name="1"></a><font color="#00FF00"><a href="match801-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_5.gif"/></a>
+
+            while((s[i]&gt;='a' &amp;&amp; s[i]&lt;='z') || (s[i]&gt;='0' &amp;&amp; s[i]&lt;='9')){
+                brojac++;
+                i++;
+</font>            }
+            std::string pojam=s.substr(i-brojac,brojac);
+            if(indeksi.count(pojam))
+            indeksi[pojam].insert(i-brojac);
+            else{
+                indeksi.insert(std::make_pair(pojam,std::set&lt;int&gt;{i-brojac}));
+            }
+            i--;
+        }
+    }
+    return indeksi;
+}
+
+<a name="0"></a><font color="#FF0000"><a href="match801-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_12.gif"/></a>
+
+std::set&lt;int&gt; PretraziIndeksPojmova(std::string pojam,std::map&lt;std::string,std::set&lt;int&gt;&gt; indeksi){
+    if(indeksi.count(pojam))
+    return indeksi[pojam];
+    else
+    throw std::logic_error("Pojam nije nadjen");
+}
+
+void IspisiIndeksPojmova(std::map&lt;std::string,std::set&lt;int&gt;&gt; indeksi){
+    for(auto it=indeksi.begin();it!=indeksi.end();it++){
+</font>        cout&lt;&lt;it-&gt;first&lt;&lt;": ";
+        auto kraj(it-&gt;second.end());
+        kraj--;
+        for(auto it2=it-&gt;second.begin();it2!=it-&gt;second.end();it2++){
+            if(it2==kraj)
+            cout&lt;&lt;*it2;
+            else
+            cout&lt;&lt;*it2&lt;&lt;",";
+        }
+        cout&lt;&lt;"\n";
+    }
+}
+
+int main ()
+{
+    std::string s;
+    cout&lt;&lt;"Unesite tekst: ";
+<a name="2"></a><font color="#0000FF"><a href="match801-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_5.gif"/></a>
+
+    std::getline(cin,s);
+    std::map&lt;std::string,std::set&lt;int&gt;&gt; mapa;
+    mapa=KreirajIndeksPojmova(s);
+    IspisiIndeksPojmova(mapa);
+    for(;;){
+</font>        cout&lt;&lt;"Unesite rijec: ";
+        std::string rijec;
+        std::getline(cin,rijec);
+        if(rijec==".") break;
+        else{
+            std::set&lt;int&gt; skup;
+            try{
+            skup=PretraziIndeksPojmova(rijec,mapa);
+            for(auto x:skup)
+            cout&lt;&lt;x&lt;&lt;" ";
+            cout&lt;&lt;"\n";
+            }
+            catch(std::logic_error){
+                cout&lt;&lt;"Unesena rijec nije nadjena!"&lt;&lt;std::endl;
+            }
+        }
+    }
+	return 0;
+}</pre>
+</body>
+</html>

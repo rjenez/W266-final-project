@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student4647.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z1/Z2/student6790.cpp<p></p><pre>
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match107-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+typedef std::vector&lt;std::vector&lt;double&gt;&gt; Matrica;
+
+Matrica OgledaloMatrica (Matrica m) {
+	int red=m.size();
+	int kol;
+	if(m.size()==0) kol=0;
+	else kol=m[0].size();
+	for (int i=0; i&lt;m.size(); i++) {
+		if (m[i].size()!=m[0].size()) {
+			throw std::domain_error("Matrica nije korektna");
+			break;
+		}
+	}
+
+	Matrica hm(red, std::vector&lt;double&gt;(kol));     //horizontalno ogledalo
+	for(int i=0; i&lt;red; i++) {
+		int k=kol-1;
+		for(int j=0; j&lt;kol; j++) {
+			hm[i][j]=m[i][j+k];
+			k=k-2;
+		}
+	}
+	
+	Matrica vm(red, std::vector&lt;double&gt;(kol));     //vertikalno ogledalo
+	for(int j=0; j&lt;kol; j++) {
+		int r=red-1;
+		for(int i=0; i&lt;red; i++) {
+			vm[i][j]=m[i+r][j];
+			r=r-2;
+		}
+	}
+	
+	Matrica hvm(red,std::vector&lt;double&gt;(kol));     //kombinovano ogledalo
+	for(int i=0; i&lt;red; i++) {
+		int k=kol-1;
+		for(int j=0; j&lt;kol; j++) {
+			hvm[i][j]=vm[i][j+k];
+			k=k-2;
+		}
+	}
+	
+	Matrica matrica(red*3, std::vector&lt;double&gt;(kol*3));
+	
+	for(int i=0; i&lt;red; i++) for(int j=0; j&lt;kol; j++) matrica[i][j]=hvm[i][j];
+	for(int i=0; i&lt;red; i++) for(int j=kol; j&lt;kol*2; j++) matrica[i][j]=vm[i][j-kol];
+ 	for(int i=0; i&lt;red; i++) for(int j=kol*2; j&lt;kol*3; j++) matrica[i][j]=hvm[i][j-kol*2];
+ 	
+	for(int i=red; i&lt;red*2; i++) for(int j=0; j&lt;kol; j++) matrica[i][j]=hm[i-red][j];
+	for(int i=red; i&lt;red*2; i++) for(int j=kol; j&lt;kol*2; j++)	matrica[i][j]=m[i-red][j-kol];
+ 	for(int i=red; i&lt;red*2; i++) for(int j=kol*2; j&lt;kol*3; j++)	matrica[i][j]=hm[i-red][j-kol*2];
+ 	
+	for(int i=red*2; i&lt;red*3; i++) for(int j=0; j&lt;kol; j++) matrica[i][j]=hvm[i-red*2][j];
+	for(int i=red*2; i&lt;red*3; i++) for(int j=kol; j&lt;kol*2; j++)	matrica[i][j]=vm[i-red*2][j-kol];
+ 	for(int i=red*2; i&lt;red*3; i++) for(int j=kol*2; j&lt;kol*3; j++) matrica[i][j]=hvm[i-red*2][j-kol*2];
+ 	
+ 	return matrica;
+}
+
+int main ()
+{
+	int m, n;
+	std::cout&lt;&lt;"Unesite dimenzije matrice (m n): ";
+	
+	try {
+	std::cin&gt;&gt;m&gt;&gt;n;
+	if (m&lt;0 || n&lt;0) throw "Dimenzije matrice moraju biti nenegativne!";
+
+	Matrica matr(m, std::vector&lt;double&gt;(n));
+	std::cout&lt;&lt;"Unesite elemente matrice: ";
+	for(int i=0; i&lt;m; i++) 
+		for(int j=0; j&lt;n; j++) {
+			std::cin&gt;&gt;matr[i][j];
+		}
+	std::cout&lt;&lt;std::endl&lt;&lt;"Rezultantna matrica:"&lt;&lt;std::endl;;
+	for(int i=0; i&lt;m*3; i++)  {
+		for(int j=0; j&lt;n*3; j++) {
+			std::cout&lt;&lt;std::setw(4)&lt;&lt;OgledaloMatrica(matr)[i][j];
+		}
+		std::cout&lt;&lt;std::endl;
+	}
+	}
+	catch (const char poruka[]) {
+		std::cout&lt;&lt;poruka;
+	}
+	
+	return 0;
+</font>}</pre>
+</body>
+</html>

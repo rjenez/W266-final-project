@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z4/Z4/student2142.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z4/Z4/student5863.c<p></p><pre>
+#include &lt;stdio.h&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match186-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_98.gif"/></a>
+
+int ukrstanje(char *poc, char *kraj){
+	int br1 = 0, br2 = 0;
+	while(poc &lt;= kraj){
+		if(*poc == '&lt;'){
+			if(*(poc+1) == '/') br2++;
+			else br1++;
+		}
+		poc++;
+	}
+	if(br1 == br2) return br1;
+	else return 0;
+}
+
+int provjeri(char *s)
+{
+	char naziv[100];
+      char *poc_tag,*kraj_tag;
+      char *pom = s;
+      char *p1,*p2;
+      int broj_tag, nasao_tag = 0, duzina, nasli = 1, ukrsta, poceo = 0;
+      p2 = pom;
+      while(*p2 != '\0') p2++;
+      broj_tag = ukrstanje(pom,p2);
+      while (*pom != '\0'){
+      	if(*pom == '&lt;' &amp;&amp; *(pom+1) != '/' &amp;&amp; nasli == 1){
+      		poceo = 1;
+      		poc_tag = pom;
+      		nasli = 0;
+      		duzina = 0;
+      		p1 = pom + 1;
+      		p2 = naziv;
+      		while(*p1 != ' ' &amp;&amp; *p1 != '&gt;'){
+      			duzina++;
+      			*p2 = *p1;
+      			p1++;
+      			p2++;
+      		}
+      		*p2 = '\0';
+      	}
+      	if(*pom == '&lt;' &amp;&amp; *(pom+1) == '/' &amp;&amp; poceo == 1){
+      		nasli = 1;
+      		p2 = naziv;
+      		pom+=2;
+      		while(*p2 != '\0'){
+      			if(*p2 != *pom){
+      				nasli = 0;
+      			}
+      			p2++;
+      			pom++;
+      		}
+      	}
+      	if(nasli == 1 &amp;&amp; poceo == 1){
+      		if(*pom != '&gt;') return 0;
+      		kraj_tag = pom - 2 - duzina;
+      		ukrsta = ukrstanje(poc_tag,kraj_tag);
+      		if(ukrsta == 0) return 0;
+      		pom = poc_tag + duzina;
+      		poceo = 0;
+      		nasao_tag++;
+      		if(nasao_tag == broj_tag) return 1;
+      	}
+      	pom++;
+      }
+      return 0;
+}
+
+int main() {
+	
+	char tekst1[] = "&lt;div id=\"tekst\"&gt;&lt;h2&gt;Naslov&lt;/h2&gt;&lt;p&gt;Ovo je &lt;b&gt;cetvrti&lt;/b&gt; i &lt;i&gt;posljednji&lt;/i&gt; zadatak iz &lt;a href=\"zadaca4\"&gt;zadace 4&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;";
+	char tekst2[] = "&lt;div&gt;&lt;h4&gt;Naslov&lt;/h4&gt;&lt;p&gt;Danasnja vijest&lt;/p&gt;&lt;/div&gt;";
+	//printf("%d ", provjeri(tekst1));
+	printf("\n%d ", provjeri(tekst2));
+</font>	return 0;
+}
+</pre>
+</body>
+</html>

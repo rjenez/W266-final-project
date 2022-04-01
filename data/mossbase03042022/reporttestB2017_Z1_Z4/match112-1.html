@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student7582.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z4/student3288.cpp<p></p><pre>
+/*B 2017/2018, Zadaća 1, Zadatak 4
+
+	NAPOMENA: ulaz/izlaz za zadatke je specificiran
+	javnim autotestovima. Zalbe za ne analiziranje testova
+	se ne uvazavaju!
+
+	NAPOMENA: nece svi (javni) testovi sa zamgera biti
+	dostupni na c9.
+
+	Za sva ostala pitanja i nedoumice vezane za
+	autotestove javiti se na email: bcocalic1@etf.unsa.ba.
+*/
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match112-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+using namespace std;
+int paran(int x)
+{
+	if(x%2==0) return 1;
+	else return 0;
+}
+int pozicija(string s, string r, int j)
+{
+	bool neslovo(true);
+	string rijec;
+	if(s.length()&lt;r.length()) return 0;
+	for(int i=j; i&lt;=s.length()-r.length(); i++) {
+		if(!(s[i]&gt;='a'&amp;&amp; s[i]&lt;='z' || s[i]&gt;='A'&amp;&amp; s[i]&lt;='Z')) neslovo=true;
+		else if(neslovo) {
+			neslovo=false;
+			rijec=s.substr(i,r.length());
+			if(rijec==r &amp;&amp; (i+r.length()==s.length() || !(s[i+r.length()]&gt;='a'&amp;&amp; s[i+r.length()]&lt;='z' || s[i+r.length()]&gt;='A'&amp;&amp; s[i+r.length()]&lt;='Z'))) return i+r.length();
+		}
+	}
+	return 0;
+}
+string rijecnaopako(string r)
+{
+	string rij;
+	for(int i=r.length()-1; i&gt;=0; i--) {
+		rij.push_back(r[i]);
+	}
+	return rij;
+}
+string palindrom(string s, string r)
+{
+	if(!s.length()) return "";
+	int poz=pozicija(s,r,0);
+	while(poz) {
+		string za_ubaciti=rijecnaopako(r);
+		s.resize(s.length()+r.length());
+		for(int i=s.length()-1; i&gt;=poz+r.length(); i--) {
+			s[i]=s[i-r.length()];
+		}
+		for(int i=poz; i&lt;poz+r.length(); i++) {
+			s[i]=za_ubaciti[i-poz];
+		}
+		poz=pozicija(s,r,poz);
+	}
+	return s;
+}
+string NapraviPalindrom(string s, vector&lt;string&gt; v)
+{
+	for(int i=0; i&lt;v.size(); i++) {
+		s=palindrom(s,v.at(i));
+	}
+	return s;
+}
+string polupalindrom(string s, string r)
+{
+	if(paran(r.length())) {
+		int poz=pozicija(s,r,0)-r.length()/2;
+		while(poz&gt;0) {
+			string za_ubaciti=rijecnaopako(r);
+			for(int i=poz; i&lt;poz+r.length()/2; i++) {
+				s[i]=za_ubaciti[r.length()/2+i-poz];
+			}
+			poz=pozicija(s,r,poz)-r.length()/2;;
+		}
+	} else {
+		int poz=pozicija(s,r,0)-(r.length()+1)/2;
+		while(poz&gt;0) {
+			string za_ubaciti=rijecnaopako(r);
+			for(int i=poz+1; i&lt;=poz+(r.length()-1)/2; i++) {
+				s[i]=za_ubaciti[(r.length()+1)/2+i-poz-1];
+			}
+			poz=pozicija(s,r,poz)-(r.length()+1)/2;
+		}
+	}
+	return s;
+}
+string NapraviPoluPalindrom(string s, vector&lt;string&gt; v)
+{
+	for(int i=0; i&lt;v.size(); i++) {
+		s=polupalindrom(s,v.at(i));
+	}
+	return s;
+}
+int main ()
+{
+	cout&lt;&lt;"Unesite recenicu: ";
+	string recenica;
+	getline(cin,recenica);
+	cout&lt;&lt;"Unesite fraze: ";
+	vector&lt;string&gt; v;
+	string rijec;
+	getline(cin,rijec);
+	do {
+		v.push_back(rijec);
+		getline(cin,rijec);
+	} while(rijec.length());
+	cout&lt;&lt;"Recenica nakon Palindrom transformacije: ";
+	cout&lt;&lt;NapraviPalindrom(recenica,v)&lt;&lt;endl;
+	cout&lt;&lt;"Recenica nakon PoluPalindrom transformacije: ";
+	cout&lt;&lt;NapraviPoluPalindrom(recenica,v);
+	return 0;
+</font>}</pre>
+</body>
+</html>

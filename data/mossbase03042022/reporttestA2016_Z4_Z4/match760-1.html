@@ -1,0 +1,198 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z4/student3442.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2016/Z4/Z4/student3517.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+#define E 0.0001
+
+void unesi(char*s, int duzina)
+{
+
+    int i = 0;
+    char znak = getchar();
+    if (znak == '\n') znak = getchar();
+
+    while (znak != '\n' &amp;&amp; i &lt; duzina - 1) {
+
+        s[i] = znak;
+        i++;
+        znak = getchar();
+    }
+    s[i] = '\0';
+
+}
+
+int pravilan(char*unos)
+{
+
+    int lijevih = 0, desnih = 0, zareza = 0;
+    char * p = unos;
+
+    if (*unos == '\0')
+        return 1;
+
+    while(*p != '\0') {
+
+        if (((int)*p &lt; 48 || (int)*p &gt;57) &amp;&amp; *p != '(' &amp;&amp; *p != ')' &amp;&amp; *p != ',' &amp;&amp; *p != '-' &amp;&amp; *p != '.')
+            return 0;
+
+        if (p == unos &amp;&amp; *p != '(')
+            return 0;
+
+        if (*(p + 1) == '\0' &amp;&amp; *p != ')')
+            return 0;
+
+        if (*p == '(') {
+            lijevih++;
+            if ((p &gt; unos &amp;&amp; *(p - 1) != ',') || (*(p + 1) != '-' &amp;&amp; ((int)*(p + 1) &lt; 48 || (int)*(p + 1) &gt; 57) &amp;&amp; *(p + 1) != '\0'))
+                return 0;
+        }
+        if (*p == ')') {
+            desnih++;
+            if ((((int)*(p - 1) &lt; 48 || (int)*(p - 1) &gt;57) &amp;&amp; *(p - 1) != '.') || (*(p + 1) != ',' &amp;&amp; *(p + 1) != '\0'))
+                return 0;
+        }
+
+        if (*p == ',') {
+            zareza++;
+            if (*(p - 1) == '(' || *(p - 1) == '-' || *(p + 1) == ',' || *(p + 1) == '.' || *(p + 1) == ')')
+                return 0;
+        }
+
+        if (*p == '.')
+            if (*(p + 1) == '.' || *(p - 1) == '.' || *(p + 1) == '-' || *(p - 1) == '-')
+                return 0;
+
+        if (*p == '-')
+            if (*(p + 1) == '-' || *(p - 1) == '-')
+                return 0;
+
+        if(*p &gt;= 48 &amp;&amp; *p &lt;= 57)
+            if (*(p + 1) == '.' &amp;&amp; *(p - 1) == '.')
+                return 0;
+        p++;
+
+    }
+
+    if (desnih + lijevih - zareza != 1)
+        return 0;
+
+<a name="0"></a><font color="#FF0000"><a href="match760-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_3.gif"/></a>
+
+    return 1;
+}
+
+char* obuhvat(char*unos, int x1,int y1,int x2,int y2)
+{
+    if(pravilan(unos)==0)
+        return 0;
+</font>
+    char*p=unos, *ppoc, *p2;
+    float koord[100];
+    float cijeli=0, decimala=0;
+    int br_decimala=0;
+    int i=0,j=0,m,minus=0,br_koor=0,unutar;
+    float xT, yT;
+    char*pok[100];
+
+    while(*p!='\0') {
+        if(*p=='-')
+            minus=1;
+        if((*p&gt;=48 &amp;&amp; *p&lt;=57)) {
+            ppoc=p;
+            while(*p!='(')
+                p--;
+            pok[i]=p;
+            p=ppoc;
+            while(*p&gt;=48 &amp;&amp; *p&lt;=57) {
+                cijeli=cijeli*10+(float)*p-48;
+                p++;
+            }
+            if(*p=='.') {
+                p++;
+                while(*p&gt;=48 &amp;&amp; *p&lt;=57) {
+                    decimala=decimala*10+(float)*p-48;
+                    br_decimala++;
+                    p++;
+                }
+                decimala/=pow(10,br_decimala);
+            }
+            koord[i]=cijeli+decimala;
+            br_koor++;
+            if(minus==1)
+                koord[i]=-koord[i];
+            cijeli=0;
+            decimala=0;
+            br_decimala=0;
+            minus=0;
+            i++;
+        }
+        p++;
+    }
+    br_koor=i;
+    p=unos;
+
+    for (i = 0; i &lt; br_koor; i = i + 2) {
+        xT = koord[i];
+        yT = koord[i + 1];
+
+        if (x1 &gt; x2 || y1 &gt; y2 || xT &lt; x1 || xT &gt; x2 || yT &lt; y1 || yT &gt; y2)
+            unutar = 0;
+        else
+            unutar = 1;
+      //  printf("%d ", unutar);
+
+        if (unutar == 0) {
+
+            p = pok[i];
+            ppoc = p;
+
+            while (*p != ')' &amp;&amp; *p != '\0')
+                p++;
+            p2 = p;
+            p = ppoc;
+
+            for (j = 0; j &lt;= p2 - p + 1; j++) {
+
+                while (*p != '\0') {
+
+                    *p = *(p + 1);
+
+                    p++;
+                }
+
+                for (m = 0; m &lt; br_koor; m++) {
+                    pok[m]--;
+                }
+
+                p = ppoc;
+
+            }
+
+        }
+
+    }
+
+    p=unos;
+    while(*p!='\0') {
+        if(*p==',' &amp;&amp; *(p+1)=='\0')
+            *p=*(p+1);
+        p++;
+    }
+    return unos;
+}
+
+int main()
+{
+    char unos[100];
+    unesi(unos,1000);
+    obuhvat(unos, 3, 3, 1, 7);
+    //printf("Zadaća 4, Zadatak 4");
+    return 0;
+}</pre>
+</body>
+</html>

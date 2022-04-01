@@ -1,0 +1,226 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student3736.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z5/student3736.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match82-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 5)
+//Autotestovi by Berina Cocalic (mail: bcocalic1@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;list&gt; 
+#include &lt;utility&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+
+using namespace std;
+
+class Temperature
+{
+    int minMogucaTemp;
+    int maksMogucaTemp;
+    list&lt;int&gt; minTemperature;
+    list&lt;int&gt; maksTemperature;
+    
+    void TestirajTemperature(int manja, int veca)
+    {
+        if(manja&gt;veca)
+        {
+            throw range_error("Nekorektne temperature");
+        }
+    }
+    
+    void TestirajOpseg(int manja, int veca)
+    {
+        if(manja &lt; minMogucaTemp || veca &gt; maksMogucaTemp)
+        {
+            throw range_error("Nekorektne temperature");
+        }
+    }
+    
+  public:
+    Temperature(int minTemp, int maksTemp)
+    {
+        TestirajTemperature(minTemp, maksTemp);
+        maksMogucaTemp = maksTemp;
+        minMogucaTemp = minTemp;
+    }
+    
+    void RegistrirajTemperature(pair&lt;int,int&gt; ekstremi)
+    {
+        int minimalnaTemp = ekstremi.first;
+        int maksimalnaTemp = ekstremi.second;
+        TestirajTemperature(minimalnaTemp, maksimalnaTemp);
+        TestirajOpseg(minimalnaTemp, maksimalnaTemp);
+        minTemperature.push_back(minimalnaTemp);
+        maksTemperature.push_back(maksimalnaTemp);
+    }
+    
+    void BrisiSve()
+    {
+        minTemperature.clear();
+        maksTemperature.clear();
+    }
+    
+    void BrisiTemperature(pair&lt;int, int&gt; uneseniPar)
+    {
+        int brojac{0};
+        auto itMax = maksTemperature.begin();
+        for(auto itMin=minTemperature.begin() ; itMin != minTemperature.end() ; itMin++ , itMax++ )
+        {
+            if(*itMin==uneseniPar.first &amp;&amp; *itMax==uneseniPar.second)
+            {
+                brojac++;
+                minTemperature.erase(itMin);
+                maksTemperature.erase(itMax);
+            }
+        }
+        
+        if(brojac==0)   throw logic_error("Takve temperature nisu registrirane");
+    }
+    
+    int DajBrojRegistriranihTemperatura() const { return minTemperature.size(); }  
+    
+    int DajMinimalnuTemperaturu() const
+    {
+        auto najmanjaTemperatura = min_element(minTemperature.begin(), minTemperature.end() );
+        return *najmanjaTemperatura;
+    }
+    
+    int DajMaksimalnuTemperaturu() const
+    {
+        auto najvecaTemperatura =  max_element(maksTemperature.begin(), maksTemperature.end());
+        return *najvecaTemperatura;
+    }
+    
+    int DajBrojTemperaturaVecihOd(int temperatura)
+    {
+        return count_if(maksTemperature.begin(), maksTemperature.end(),   bind( greater&lt;int&gt;(), placeholders::_1, temperatura)  );
+    }
+    
+    int DajBrojTemperaturaManjihOd(int temperatura)
+    {
+        return count_if(minTemperature.begin(),minTemperature.end(),   bind(less&lt;int&gt;(), placeholders::_1, temperatura)  );
+    }
+    
+    bool operator !() 
+    {
+        return (this-&gt;maksTemperature.size()==0) ;
+    }
+    
+    Temperature &amp;operator ++() 
+    {
+        for_each(minTemperature.begin(), minTemperature.end(), bind( plus&lt;int&gt;(), placeholders::_1, 1) );
+        
+        list&lt;int&gt; razlikaMaksMinusMin(maksTemperature);
+        transform( razlikaMaksMinusMin.begin(), razlikaMaksMinusMin.end(), minTemperature.begin(), razlikaMaksMinusMin.begin(), minus&lt;int&gt;() );
+        if( any_of( razlikaMaksMinusMin.begin(), razlikaMaksMinusMin.end(), bind( less&lt;int&gt;(), placeholders::_1, 0 ) )  )
+        {
+            for_each( minTemperature.begin(), minTemperature.end(), bind( minus&lt;int&gt;(), placeholders::_1, 1)  );
+            throw logic_error("Ilegalna operacija");
+        }
+        
+        return *this;        
+    }
+    
+    Temperature &amp;operator --() 
+    {
+        for_each(maksTemperature.begin(), maksTemperature.end(), bind( minus&lt;int&gt;(), placeholders::_1,1));
+        
+        list&lt;int&gt; razlikaMaksMinusMin(maksTemperature);
+        transform( razlikaMaksMinusMin.begin(), razlikaMaksMinusMin.end(), minTemperature.begin(), razlikaMaksMinusMin.begin(), minus&lt;int&gt;() );
+        if( any_of( razlikaMaksMinusMin.begin(), razlikaMaksMinusMin.end(), bind( less&lt;int&gt;(), placeholders::_1, 0 ) ) )
+        {
+            for_each( minTemperature.begin(), minTemperature.end(), bind( plus&lt;int&gt;(), placeholders::_1, 1 ) );
+            throw logic_error("Ilegalna operacija");
+        }
+        
+        return *this;
+    }
+    
+    pair&lt;int,int&gt; operator [](int indeks)
+    {
+        if(indeks&lt;0 || indeks&gt;=minTemperature.size())    
+        {
+            throw range_error("Neispravan indeks");
+        }
+        
+        auto itMin = minTemperature.begin();
+        auto itMax = maksTemperature.begin();
+        
+        for(int i=0; i&lt;indeks;i++ )
+        {
+            itMin++;
+            itMax++;
+        }
+        
+        return make_pair(*itMin, *itMax );
+    }
+    
+    Temperature operator +(int promjena)
+    {
+        Temperature noveTemperature(*this);
+        for_each(noveTemperature.minTemperature.begin(), noveTemperature.minTemperature.end(), bind( plus&lt;int&gt;(), placeholders::_1, promjena ) );
+        for_each(noveTemperature.maksTemperature.begin(), noveTemperature.maksTemperature.end(), bind( plus&lt;int&gt;(), placeholders::_1, promjena ) );
+        return noveTemperature;
+    }
+    
+    Temperature operator -(int promjena)
+    {
+        Temperature noveTemperature( *this );
+        noveTemperature = noveTemperature + (-promjena);
+        return noveTemperature;
+    }
+    
+    friend Temperature operator +(int promjena, Temperature temper)
+    {
+        return (temper+promjena);
+    }
+    
+    friend Temperature operator -(int promjena, Temperature temper)
+    {
+        return (temper-promjena);
+    }
+    
+    Temperature  &amp;operator +=(int promjena)
+    {
+        *this = *this + promjena;
+        return *this;
+    }
+    
+    Temperature &amp;operator -=(int promjena)
+    {
+        *this = *this - promjena;
+        return *this;
+    }
+    
+    bool operator ==(Temperature drugaTemper)
+    {
+        return (this-&gt;minTemperature==drugaTemper.minTemperature &amp;&amp; this-&gt;maksTemperature==drugaTemper.maksTemperature);
+    }
+    
+    bool operator !=(Temperature drugaTemper)
+    {
+        return !(*this==drugaTemper);
+    }
+    
+    friend ostream &amp;operator &lt;&lt;(ostream &amp;tok, Temperature temper)
+    {
+        for_each(temper.minTemperature.begin(), temper.minTemperature.end(), [&amp;tok ](int i){ tok&lt;&lt;i&lt;&lt;" "; });
+        tok&lt;&lt;endl;
+        for_each(temper.maksTemperature.begin(), temper.maksTemperature.end(), [&amp;tok ](int i){ tok&lt;&lt;i&lt;&lt;" "; });
+        return tok;
+</font>    }
+    
+};
+
+int main ()
+{
+	return 0;
+}</pre>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student4057.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z5/Z3/student4057.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match152-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B16/17 (Zadaća 5, Zadatak 3)
+//Autotestovi by Enil Pajic (mail: epajic1@etf.unsa.ba)
+//Za autotestove se obracati *iskljucivo* osobi koja ih pise
+#include &lt;iostream&gt;
+#include &lt;limits&gt;
+#include &lt;stdexcept&gt;
+#include &lt;cctype&gt;
+using namespace std;
+#define M numeric_limits&lt;long long&gt;::max()
+#define m numeric_limits&lt;long long&gt;::min()
+class Razlomak
+{
+    long long int naz,br;
+    static long long int sadr(long long int a, long long int b){ if(b==0) return a; return sadr(b,a%b); }
+public:
+    Razlomak(long long b=0, long long n=1)
+    {
+        if(n==0) throw logic_error("Nekorektan razlomak");
+        if(n&lt;0) { n-=2*n; b*=-1; }
+        long long int pom=b;
+        b/=sadr(b,n); n/=sadr(pom,n);
+        naz=n; br=b;
+    }
+    friend ostream &amp;operator&lt;&lt;(ostream &amp;cout,Razlomak r)
+    {
+        if(r.naz!=1 &amp;&amp; r.br!=0)
+            cout&lt;&lt;r.DajBrojnik()&lt;&lt;"/"&lt;&lt;r.DajNazivnik();
+        else cout&lt;&lt;r.DajBrojnik();
+        return cout;
+    }
+    long long int DajBrojnik() const { return br;}
+    long long int DajNazivnik() const { return naz;}
+    operator long double() const { long double a=(long double)br/naz; return a;}
+    friend Razlomak &amp;operator + (Razlomak &amp;r) { return r;}
+    friend Razlomak &amp;operator - (Razlomak &amp;r)
+    {
+        Razlomak pom(-r.br, r.naz);
+        r.br=pom.br; r.naz=pom.naz;
+        if(r.br&gt;m &amp;&amp; r.br&lt;M &amp;&amp; r.naz&lt;M &amp;&amp; r.naz&gt;m)
+            return r;
+        else throw overflow_error("Nemoguce dobiti tacan rezultat");
+    }
+    friend Razlomak operator + (Razlomak r1, Razlomak r2)
+    {
+        long long int a=r1.br*(r2.naz/sadr(r1.naz,r2.naz))+r2.br*(r1.naz/sadr(r1.naz,r2.naz));
+        long long int b=r1.naz*(r2.naz/sadr(r1.naz,r2.naz));
+        if(a&gt;m &amp;&amp; b&gt;m &amp;&amp; a&lt;M &amp;&amp; b&lt;M) {
+             Razlomak rez(a,b);
+             return rez;
+        }
+        else throw overflow_error("Nemoguce dobiti tacan rezultat");
+    }
+    friend Razlomak operator - (Razlomak r1, Razlomak r2)
+    {
+        Razlomak rez=r1+(-r2);
+        return rez;
+    }
+    friend Razlomak &amp;operator +=(Razlomak &amp;r1, Razlomak r2)
+    {
+        r1=r1+r2;
+        return r1;
+    }
+    friend Razlomak &amp;operator -=(Razlomak &amp;r1, Razlomak r2)
+    {
+        r1+=-r2;
+        return r1;
+    }
+     friend Razlomak &amp;operator++(Razlomak &amp;r)
+    {
+        Razlomak a(1,1);
+        r=r+a;
+        return r;
+    }
+    friend Razlomak &amp;operator--(Razlomak &amp;r)
+    {
+        Razlomak a(1,1);
+        r=r-a;
+        return r;
+    }
+    friend Razlomak operator++(Razlomak &amp;r1,int)
+    {   
+        Razlomak r(r1.br,r1.naz), a(1,1);
+        r1+=a;
+        return r;
+    }
+    friend Razlomak operator--(Razlomak &amp;r1,int)
+    {
+        Razlomak r(r1.br,r1.naz), a(1,1);
+        r1-=a;
+        return r;
+    }
+    friend Razlomak operator *(Razlomak r1, Razlomak r2)
+    {
+        long long int a=(r1.br/sadr(r1.br,r2.naz))*(r2.br/sadr(r1.naz,r2.br));
+        long long int b=(r1.naz/sadr(r1.naz,r2.br))*(r2.naz/sadr(r1.br,r2.naz));
+        if(a&gt;m &amp;&amp; b&gt;m &amp;&amp; a&lt;M &amp;&amp; b&lt;M) {
+            Razlomak rez(a,b);
+            return rez;
+        }
+        else throw overflow_error("Nemoguce dobiti tacan rezultat");
+    }
+    friend Razlomak &amp;operator *=(Razlomak &amp;r1, Razlomak r2)
+    {
+        r1=r1*r2;
+        return r1;
+    }
+    friend Razlomak operator/(Razlomak r1,Razlomak r2)
+    {
+        long long int a=(r1.br/sadr(r1.br,r2.br))*(r2.naz/sadr(r1.naz,r2.naz));
+        long long int b=(r1.naz/sadr(r1.naz,r2.naz))*(r2.br/sadr(r1.br,r2.br));
+        if(a&gt;m &amp;&amp; b&gt;m &amp;&amp; a&lt;M &amp;&amp; b&lt;M) {
+            Razlomak rez(a,b); return rez;
+        }
+        else throw overflow_error("Nemoguce dobiti tacan rezultat");
+    }
+    friend Razlomak &amp;operator /=(Razlomak &amp;r1, Razlomak r2)
+    {
+        r1=r1/r2;
+        return r1;
+    }
+    friend istream &amp;operator&gt;&gt;(istream &amp;cin,Razlomak &amp;r)
+    {
+        Razlomak pom;
+        r=pom;
+        cin&gt;&gt;r.br;
+        if(cin.peek()!='\n' &amp;&amp; cin.peek()!=' ')
+        {
+            char p;
+            cin&gt;&gt;p&gt;&gt;r.naz;
+            
+        }
+        Razlomak pom1(r.br,r.naz);
+        r=pom1;
+        return cin;
+    }
+};
+
+int main ()
+</font>{
+	return 0;
+}</pre>
+</body>
+</html>

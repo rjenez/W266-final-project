@@ -1,0 +1,188 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student1608.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z4/student1608.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 4
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match106-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+int PotencijalniKrivci(char **&amp;alociraniSpisakKrivaca, std::vector&lt;std::string&gt; spisakKrivaca) {
+	//char **alociraniSpisak(new char*[spisakKrivaca.size()]{nullptr});
+	alociraniSpisakKrivaca = new char*[spisakKrivaca.size()]{nullptr};
+	int brojAlociranih(0);
+	try {
+		for (int i = 0; i &lt; spisakKrivaca.size(); i++) {
+			alociraniSpisakKrivaca[i] = new char[spisakKrivaca[i].size() + 1];
+			brojAlociranih++;
+			for (int j = 0; j &lt; spisakKrivaca[i].size(); j++)
+				alociraniSpisakKrivaca[i][j] = spisakKrivaca[i][j];
+			alociraniSpisakKrivaca[i][spisakKrivaca[i].size()] = '\0';
+		}
+	//	alociraniSpisakKrivaca = alociraniSpisak;
+		return brojAlociranih;
+	}
+	catch(...) {
+		for (int i = 0; i &lt; brojAlociranih; i++)
+			delete[] alociraniSpisakKrivaca[i];
+		delete[] alociraniSpisakKrivaca;
+		throw;
+	}
+	return -1;
+}
+
+int OdbaciOptuzbu(char **&amp;spisakKrivaca, int n, std::string imeOptuzenog) {
+	bool jednaki(true);
+	for (int i = 0; i &lt; n; i++) {
+		jednaki = true;
+		if (spisakKrivaca[i] == nullptr) continue;
+		for (int j = 0; spisakKrivaca[i][j] != '\0'; j++) {
+			if (spisakKrivaca[i][j] != imeOptuzenog[j]) {
+				jednaki = false;
+				break;
+			}
+		}
+		if (jednaki) {
+			delete [] spisakKrivaca[i];
+			spisakKrivaca[i] = nullptr;
+			break;
+		}
+	}
+	if (!jednaki) {
+		throw std::domain_error("Osoba sa imenom " + imeOptuzenog + " nije bila optuzena\n");
+	}
+	int broj(0);
+	for (int i = 0; i &lt; n; i++)
+		if (spisakKrivaca[i] == nullptr) broj++;
+	if (broj &gt; 10) {
+		try {
+			char **noviSpisak(new char* [n - broj]{nullptr});
+			int tmp(0);
+			for (int i = 0; i &lt; n; i++) 	
+				if (spisakKrivaca[i] != nullptr) noviSpisak[tmp++] = spisakKrivaca[i];
+				else delete[] spisakKrivaca[i];
+			delete [] spisakKrivaca;
+			spisakKrivaca = noviSpisak;
+		}
+		catch(...){}
+		return n - broj;
+	}
+	return n;
+}
+
+int DodajOptuzbu(char **&amp;spisakKrivaca, int n, std::string imeOptuzenog) {
+	try {
+		char *alociranoIme(new char[imeOptuzenog.size() + 1]);
+		for (int i = 0; i &lt; imeOptuzenog.size(); i++) 
+			alociranoIme[i] = imeOptuzenog[i];
+		alociranoIme[imeOptuzenog.size()] = '\0';
+		for (int i = 0; i &lt; n; i++) 
+			if (spisakKrivaca[i] == nullptr) {
+				spisakKrivaca[i] = alociranoIme;
+				return n;
+			}
+		try {
+				
+			char **noviSpisak(new char* [n + 1] {nullptr});
+			for (int i = 0; i &lt; n; i++) 
+				noviSpisak[i] = spisakKrivaca[i];
+			noviSpisak[n] = alociranoIme;
+			delete [] spisakKrivaca;
+			spisakKrivaca = noviSpisak;
+			return n + 1;
+		}
+		catch (...) {
+			delete alociranoIme;
+			throw;
+		}
+	}
+	catch (...) {
+		throw;
+	}
+}
+
+void IzlistajOptuzbu(char **spisakKrivaca, int n) {
+	for (int i = 0; i &lt; n; i++) {
+		if (spisakKrivaca[i] != nullptr) 
+			for (int j = 0; spisakKrivaca[i][j] != '\0'; j++) 
+				std::cout &lt;&lt; spisakKrivaca[i][j];
+		else continue;
+		if (i != n - 1)
+			std::cout &lt;&lt; "\n";
+	}
+}
+
+int main () {
+	std::cout &lt;&lt; "Koliko potencijalnih krivaca zelite unijeti? ";
+	int n;
+	std::cin &gt;&gt; n;
+	std::cin.ignore(10000, '\n');
+	std::vector&lt;std::string&gt; krivciKont;
+	std::cout &lt;&lt; "\nUnesite potencijalne krivce: ";
+	for (int i = 0; i &lt; n; i++) {
+		std::string tmp;
+		std::getline(std::cin, tmp);
+		krivciKont.push_back(tmp);
+	}
+	char **krivci(nullptr);
+	try {
+		n = PotencijalniKrivci(krivci, krivciKont);
+	}
+	catch (std::bad_alloc e) {
+		std::cout &lt;&lt; e.what();
+	}
+	int unos;
+	do {
+		std::cout &lt;&lt; "\nOdaberite opciju: 1 za unos novog optuzenog, 2 za brisanje nekog optuzenog 3 za izlistavanje optuzenih, 0 za kraj: \n";
+		std::cin &gt;&gt; unos;
+		std::cin.ignore(10000, '\n');
+		std::string tmp;
+		switch (unos) {
+			case 1:
+				std::cout &lt;&lt; "Unesite ime novog optuzenog: ";
+				std::getline(std::cin, tmp);
+				try {
+					n = DodajOptuzbu(krivci, n, tmp);
+				}
+				catch (...) {
+					continue;
+				}
+				break;
+			case 2:
+				std::cout &lt;&lt; "Unesite ime koje zelite izbaciti: ";
+				std::getline(std::cin, tmp);
+				try {
+					n = OdbaciOptuzbu(krivci, n, tmp);
+				}
+				catch (std::domain_error e) {
+					std::cout &lt;&lt; e.what();
+				}
+				break;
+			case 3:
+				IzlistajOptuzbu(krivci, n);
+				break;
+			case 0:
+				break;
+			default:
+				break;
+		}
+	} while (unos != 0);
+	for (int i = 0; i &lt; n; i++)
+		delete[] krivci[i];
+	delete[] krivci;
+</font>	return 0;
+}</pre>
+</body>
+</html>

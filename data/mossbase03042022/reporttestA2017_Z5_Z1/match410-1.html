@@ -1,0 +1,151 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z5/Z1/student1704.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z5/Z1/student2208.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+
+struct Datum {
+	int dan, mjesec, godina;
+};
+
+void unesite (char niz[], int velicina)
+{
+	char znak = getchar();
+	if (znak == '\n') znak = getchar();
+	int i = 0;
+<a name="2"></a><font color="#0000FF"><a href="match410-0.html#2" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+	while (i&lt; velicina-1 &amp;&amp; znak != '\n') {
+		niz[i]=znak;
+		i++;
+		znak = getchar();
+	}
+	niz[i]='\0';
+}
+
+struct Uposlenik {
+</font><a name="0"></a><font color="#FF0000"><a href="match410-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_5.gif"/></a>
+
+	char ime_prezime [50];
+	struct Datum datum_rodjenja;
+};
+
+struct Datum unos_datuma ()
+{
+
+	struct Datum d;
+	scanf ("%d%d%d", &amp;d.dan, &amp;d.mjesec, &amp;d.godina);
+	return d;
+}
+
+struct Uposlenik unos_kandidata ()
+{
+
+	struct Uposlenik kandidati;
+</font>	unesite(kandidati.ime_prezime,50);
+	kandidati.datum_rodjenja=unos_datuma();
+
+}
+
+
+struct Uposlenik unos_direktora ()
+{
+
+	struct Uposlenik direktor;
+	unesite(direktor.ime_prezime,50);
+	direktor.datum_rodjenja=unos_datuma();
+
+}
+int suzi_listu (struct Uposlenik* kandidati, int vel, struct Uposlenik direktor, int broj_dana)
+{
+	int i=0, j=0;
+	int broj_dana_direktora=0, broj_dana_kandidata=0, razlika=0;
+
+	
+	if (direktor.datum_rodjenja.godina % 4==0 &amp;&amp; direktor.datum_rodjenja.godina % 100!=0 &amp;&amp; direktor.datum_rodjenja.godina % 400==0) {
+<a name="1"></a><font color="#00FF00"><a href="match410-0.html#1" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_4.gif"/></a>
+
+		int mjeseci [12] = {31,29,31,30,31,30,31,31,30,31,30,31};
+		//odredujemo koliko dana treba proci od pocetka godine do direktorovog rodendana
+		for (i=1; i&lt;direktor.datum_rodjenja.mjesec; i++) {
+</font>			broj_dana_direktora=broj_dana_direktora+mjeseci[i-1];
+		}
+		broj_dana_direktora=broj_dana_direktora+direktor.datum_rodjenja.dan;
+	}
+
+	else {
+		int mjeseci [12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+<a name="3"></a><font color="#00FFFF"><a href="match410-0.html#3" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_3.gif"/></a>
+
+		for (i=1; i&lt;direktor.datum_rodjenja.mjesec; i++) {
+			broj_dana_direktora=broj_dana_direktora+mjeseci[i];
+		}
+		broj_dana_direktora=broj_dana_direktora+direktor.datum_rodjenja.dan;
+</font>	}
+
+	for (i=0; i&lt;vel; i++) {
+
+		if (kandidati[i].datum_rodjenja.godina % 4==0 &amp;&amp; kandidati[i].datum_rodjenja.godina % 100!=0 &amp;&amp; kandidati[i].datum_rodjenja.godina % 400==0) {
+			if (kandidati[i].datum_rodjenja.godina&gt;direktor.datum_rodjenja.godina) continue;
+			else {
+				int mjeseci [12] = {31,29,31,30,31,30,31,31,30,31,30,31};
+				//odredujemo koliko dana treba proci od pocetka godine do kandidatovog rodendana
+				for (j=1; j&lt;kandidati[i].datum_rodjenja.mjesec; j++) {
+					broj_dana_kandidata=broj_dana_kandidata+mjeseci[j-1];
+				}
+				broj_dana_kandidata=broj_dana_kandidata+kandidati[i].datum_rodjenja.dan;
+
+			}
+		} else {
+			if (kandidati[i].datum_rodjenja.godina&gt;direktor.datum_rodjenja.godina) continue;
+			else {
+				int mjeseci [12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+				int mjesec_kadidata=kandidati[i].datum_rodjenja.mjesec;
+				for (j=1; j&lt;mjesec_kadidata; j++) {
+					broj_dana_kandidata=broj_dana_kandidata+mjeseci[j-1];
+				}
+				broj_dana_kandidata=broj_dana_kandidata+kandidati[i].datum_rodjenja.dan;
+			}
+		}
+
+		//racunamo koliko se razlikuju dani rodenja
+		razlika=broj_dana_kandidata-broj_dana_direktora;
+		if (razlika&gt;0 &amp;&amp; razlika&gt;fabs(broj_dana)) {
+			for (j=i; j&lt;vel-1; j++) {
+				kandidati[j]=kandidati[j+1];
+			}
+			i--;
+			vel--;
+		}
+	}
+	return vel;
+}
+int main()
+{
+	int i=0, razlika_dana=0;
+	struct Uposlenik kandidati[1000];
+	struct Uposlenik direktor;
+
+	int broj;
+	direktor=unos_direktora();
+	printf ("Unesite broj kandidata: ");
+	scanf ("%d", &amp;broj);
+	for (i=0; i&lt;broj; i++) {
+		kandidati[i]=unos_kandidata();
+		if (i==broj) break;
+	}
+	printf ("Unesite razliku dana: ");
+	scanf ("%d", &amp;razlika_dana);
+	int novi_br = suzi_listu (kandidati, broj, direktor, razlika_dana);
+	printf("Nakon suzenja liste:\n");
+	for (i=0; i&lt;novi_br; i++)
+		printf ("%s\n", kandidati[i].ime_prezime);
+	return 0;
+}
+</pre>
+</body>
+</html>

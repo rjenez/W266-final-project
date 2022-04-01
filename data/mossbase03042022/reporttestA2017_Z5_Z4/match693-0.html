@@ -1,0 +1,83 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z5/Z4/student2830.c</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/A2017/Z5/Z4/student2830.c<p></p><pre>
+#include &lt;stdio.h&gt;
+#include&lt;string.h&gt;
+#include&lt;stdlib.h&gt;
+FILE* ar;
+FILE* prod;
+struct Artikal {
+char naziv[100];
+double cijena;
+int prodavnica;
+};
+struct Prodavnica {
+char naziv[100];
+int ID;
+};
+int ucitaj_artikle(struct Artikal *niz, int kapacitet)
+{
+<a name="1"></a><font color="#00FF00"><a href="match693-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_11.gif"/></a>
+
+int artikli;
+ar=fopen("artikli.bin","rb");
+//ukoliko dodje do greske pri otvaranju
+if(ar==NULL) exit(1);
+artikli=fread(niz,sizeof(struct Artikal),kapacitet,ar);
+fclose(ar);
+//vraca broj uspjesno ucitanih artikla
+return artikli;
+}
+int ucitaj_prodavnice (struct Prodavnica *niz, int kap)
+</font>{
+	int i=0,j=-1;
+	prod=fopen("prodavnice.txt","r");
+	
+	if(prod==NULL) exit(1); //ukoliko dodje do greske pri otvaranju
+	do{
+<a name="0"></a><font color="#FF0000"><a href="match693-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_23.gif"/></a>
+
+		j=-1;
+		do{
+			
+		if(j&lt;99) j++;
+		niz[i].naziv[j]=fgetc(prod);
+		
+	} while(niz[i].naziv[j]!=',' &amp;&amp; niz[i].naziv[j]!=EOF);
+	
+	
+	niz[i].naziv[j]='\0';
+	if(fscanf(prod,"%d\n",&amp;niz[i].ID)==0) break;
+</font>	i++;
+	} while(feof(prod)!=1 &amp;&amp; i&lt;kap);
+	fclose(prod);
+	return i;
+	}
+
+int sacuvaj (struct Prodavnica *p, int n, const char *ime_datoteke)
+{
+	ar=fopen(ime_datoteke,"wb");
+	if(ar==NULL) return 0;
+	fwrite(p,sizeof(struct Prodavnica),n,ar);
+	if (ferror(ar)) return 0;
+	fclose(ar);
+	return 1;
+	
+}
+int main() {
+
+struct Artikal a[50];
+int n = ucitaj_artikle(a, 50), i;
+for (i = 0; i &lt; n; ++i)
+	printf ("%s (cijena: %g, prodavnica: %d)\n", a[i].naziv, a[i].cijena, a[i].prodavnica);
+
+
+	return 0;
+}
+</pre>
+</body>
+</html>

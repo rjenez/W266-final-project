@@ -1,0 +1,555 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z3/student4896.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z4/Z3/student4896.cpp<p></p><pre>
+/B2017/2018: Zadaća 4, Zadatak 3
+#include &lt;iostream&gt;
+#include &lt;tuple&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+#include &lt;string&gt;
+#include &lt;initializer_list&gt;
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+
+class Datum
+{
+private:
+    int dan, mjesec, godina;
+public:
+    Datum (int d, int m, int g) {
+        int br_dana[12]= {31,28,31,30,31,30,31,31,30,31,30,31};
+        if((g%4==0 &amp;&amp; g%100!=0) || g%400==0) br_dana[1]++;
+        if(g&lt;1 || m&lt;1 || d&lt;1 || m&gt;12 || d&gt;br_dana[m-1]) throw std::domain_error("Neispravan datum");
+        dan=d;
+        mjesec=m;
+        godina=g;
+    }
+    void Postavi(int d, int m, int g) {
+        int br_dana[12]= {31,28,31,30,31,30,31,31,30,31,30,31};
+        if((g%4==0 &amp;&amp; g%100!=0) || g%400==0) br_dana[1]++;
+        if(g&lt;1 || m&lt;1 || d&lt;1 || m&gt;12 || d&gt;br_dana[m-1]) throw std::domain_error("Neispravan datum");
+        dan=d;
+        mjesec=m;
+        godina=g;
+    }
+    std::tuple&lt;int,int,int&gt; Ocitaj() const {
+        return std::make_tuple(dan,mjesec,godina);
+    }
+    void Ispisi() const {
+        std::cout &lt;&lt; dan &lt;&lt; "/" &lt;&lt; mjesec &lt;&lt; "/" &lt;&lt; godina;
+    }
+};
+
+class Vrijeme
+{
+private:
+    int sati, minute;
+public:
+    Vrijeme(int h, int min) {
+        if(h&lt;0 || h&gt;23 || min&lt;0 || min&gt;59) throw std::domain_error("Neispravno vrijeme");
+        sati=h;
+        minute=min;
+    }
+    void Postavi(int h, int min) {
+        if(h&lt;0 || h&gt;23 || min&lt;0 || min&gt;59) throw std::domain_error("Neispravno vrijeme");
+        sati=h;
+<a name="5"></a><font color="#FF0000"><a href="match797-1.html#5" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+        minute=min;
+    }
+    std::pair&lt;int, int&gt; Ocitaj() const {
+        return std::make_pair(sati,minute);
+    }
+    void Ispisi() const {
+        std::cout &lt;&lt; std::setw(2) &lt;&lt; std::setfill('0') &lt;&lt; std::right &lt;&lt; sati &lt;&lt; ":" &lt;&lt; std::setw(2) &lt;&lt; std::setfill('0') &lt;&lt; std::right &lt;&lt;  minute;
+</font>    }
+};
+
+class Pregled
+{
+private:
+    std::string ime_pacijenta;
+    Datum datum_pregleda {1,1,2000};
+    Vrijeme vrijeme_pregleda {0,0};
+    int PomjeranjeDana(int mj, int god);
+public:
+    Pregled(const std::string &amp;ime_pac, const Datum &amp;datum_pregl, const Vrijeme &amp;vrijeme_pregl) {
+        ime_pacijenta=ime_pac;
+        datum_pregleda=datum_pregl;
+        vrijeme_pregleda=vrijeme_pregl;
+    }
+    Pregled(const std::string &amp;ime_pac, int dan_pregl, int mjesec_pregl,
+            int god_pregl, int sat_pregl, int min_pregl):datum_pregleda(dan_pregl,mjesec_pregl,god_pregl), vrijeme_pregleda(sat_pregl,min_pregl) {
+        ime_pacijenta=ime_pac;
+    }
+    void PromijeniPacijenta(const std::string &amp;ime_pac) {
+<a name="2"></a><font color="#0000FF"><a href="match797-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_1.gif"/></a>
+
+        ime_pacijenta=ime_pac;
+    }
+    void PromijeniDatum(const Datum &amp;novi_datum) {
+        datum_pregleda=novi_datum;
+    }
+    void PromijeniVrijeme(const Vrijeme &amp;novo_vrijeme) {
+        vrijeme_pregleda=novo_vrijeme;
+    }
+    void PomjeriDanUnaprijed();
+
+    void PomjeriDanUnazad();
+
+    std::string DajImePacijenta() const {
+        return ime_pacijenta;
+    }
+    Datum DajDatumPregleda() const {
+        return datum_pregleda;
+    }
+    Vrijeme DajVrijemePregleda() const {
+        return vrijeme_pregleda;
+</font>    }
+
+    static bool DolaziPrije(const Pregled &amp;P1, const Pregled &amp;P2) {
+        if(std::get&lt;2&gt;(P1.DajDatumPregleda().Ocitaj())&lt;std::get&lt;2&gt;(P2.DajDatumPregleda().Ocitaj())) return true;
+
+        if(std::get&lt;2&gt;(P1.DajDatumPregleda().Ocitaj())==std::get&lt;2&gt;(P2.DajDatumPregleda().Ocitaj()) &amp;&amp;
+                (std::get&lt;1&gt;(P1.DajDatumPregleda().Ocitaj())&lt;std::get&lt;1&gt;(P2.DajDatumPregleda().Ocitaj()))) return true;
+
+        if(std::get&lt;2&gt;(P1.DajDatumPregleda().Ocitaj())==std::get&lt;2&gt;(P2.DajDatumPregleda().Ocitaj()) &amp;&amp;
+                std::get&lt;1&gt;(P1.DajDatumPregleda().Ocitaj())==std::get&lt;1&gt;(P2.DajDatumPregleda().Ocitaj()) &amp;&amp;
+                std::get&lt;0&gt;(P1.DajDatumPregleda().Ocitaj())&lt;std::get&lt;0&gt;(P2.DajDatumPregleda().Ocitaj())) return true;
+
+        if(std::get&lt;2&gt;(P1.DajDatumPregleda().Ocitaj())==std::get&lt;2&gt;(P2.DajDatumPregleda().Ocitaj()) &amp;&amp;
+                std::get&lt;1&gt;(P1.DajDatumPregleda().Ocitaj())==std::get&lt;1&gt;(P2.DajDatumPregleda().Ocitaj()) &amp;&amp;
+                std::get&lt;0&gt;(P1.DajDatumPregleda().Ocitaj())==std::get&lt;0&gt;(P2.DajDatumPregleda().Ocitaj()) &amp;&amp;
+                std::get&lt;0&gt;(P1.DajVrijemePregleda().Ocitaj())&lt;std::get&lt;0&gt;(P2.DajVrijemePregleda().Ocitaj())) return true;
+
+        if(std::get&lt;2&gt;(P1.DajDatumPregleda().Ocitaj())==std::get&lt;2&gt;(P2.DajDatumPregleda().Ocitaj()) &amp;&amp;
+                std::get&lt;1&gt;(P1.DajDatumPregleda().Ocitaj())==std::get&lt;1&gt;(P2.DajDatumPregleda().Ocitaj()) &amp;&amp;
+                std::get&lt;0&gt;(P1.DajDatumPregleda().Ocitaj())==std::get&lt;0&gt;(P2.DajDatumPregleda().Ocitaj()) &amp;&amp;
+                std::get&lt;0&gt;(P1.DajVrijemePregleda().Ocitaj())==std::get&lt;0&gt;(P2.DajVrijemePregleda().Ocitaj()) &amp;&amp;
+                std::get&lt;1&gt;(P1.DajVrijemePregleda().Ocitaj())&lt;std::get&lt;1&gt;(P2.DajVrijemePregleda().Ocitaj())) return true;
+        return false;
+    }
+
+    void Ispisi() const {
+        std::cout &lt;&lt; std::setw(30) &lt;&lt; std::setfill(' ') &lt;&lt; std::left &lt;&lt; ime_pacijenta;
+        datum_pregleda.Ispisi();
+        std::cout &lt;&lt; " ";
+        vrijeme_pregleda.Ispisi();
+        std::cout &lt;&lt; std::endl;
+    }
+};
+
+int Pregled::PomjeranjeDana(int mj, int god)
+{
+    int br_dana[12]= {31,28,31,30,31,30,31,31,30,31,30,31};
+    if((god%4==0 &amp;&amp; god%100!=0) || god%400==0) br_dana[1]++;
+    return br_dana[mj-1];
+}
+
+void Pregled::PomjeriDanUnaprijed()
+{
+    int Dan=std::get&lt;0&gt;(DajDatumPregleda().Ocitaj());
+    int Mjesec=std::get&lt;1&gt;(DajDatumPregleda().Ocitaj());
+    int Godina=std::get&lt;2&gt;(DajDatumPregleda().Ocitaj());
+    Dan++;
+    if(Dan&gt;PomjeranjeDana(Mjesec,Godina)) {
+        Dan=1;
+        Mjesec++;
+    }
+    if(Mjesec&gt;12) {
+        Mjesec=1;
+        Godina++;
+    }
+    datum_pregleda.Postavi(Dan,Mjesec,Godina);
+}
+
+void Pregled::PomjeriDanUnazad()
+{
+    int Dan=std::get&lt;0&gt;(DajDatumPregleda().Ocitaj());
+    int Mjesec=std::get&lt;1&gt;(DajDatumPregleda().Ocitaj());
+    int Godina=std::get&lt;2&gt;(DajDatumPregleda().Ocitaj());
+    Dan--;
+    if(Dan&lt;1) {
+        Mjesec--;
+        if(Mjesec&lt;1) {
+            Mjesec=12;
+            Godina--;
+        }
+        Dan=PomjeranjeDana(Mjesec,Godina);
+    }
+    datum_pregleda.Postavi(Dan,Mjesec,Godina);
+}
+
+class Pregledi
+{
+private:
+    Pregled **pok=nullptr;
+    const int max_broj_pregleda;
+    int broj_pregleda;
+
+public:
+    explicit Pregledi(int max_broj_pregl): max_broj_pregleda(max_broj_pregl), broj_pregleda(0), pok(new Pregled*[max_broj_pregl] {}) {}
+
+    Pregledi(std::initializer_list&lt;Pregled&gt; spisak_pregleda): max_broj_pregleda(spisak_pregleda.size()), broj_pregleda(spisak_pregleda.size()),
+        pok(new Pregled*[spisak_pregleda.size()] {}) {
+        try {
+            auto it(spisak_pregleda.begin());
+            for(auto i=0; i&lt;max_broj_pregleda; i++) {
+                pok[i]=new Pregled(*it);
+                it++;
+            }
+        } catch(...) {
+            for(int i=0; i&lt;broj_pregleda; i++) {
+                delete pok[i];
+            }
+            delete[] pok;
+            throw;
+        }
+    }
+
+    ~Pregledi() {
+        for(int i=0; i&lt;broj_pregleda; i++) {
+            delete pok[i];
+        }
+        delete[] pok;
+    }
+
+    Pregledi (const Pregledi &amp;pregledi): max_broj_pregleda(pregledi.max_broj_pregleda), broj_pregleda(pregledi.max_broj_pregleda),
+        pok(new Pregled*[pregledi.max_broj_pregleda] {}) {
+        try {
+            for(int i=0; i&lt;pregledi.max_broj_pregleda; i++) {
+<a name="4"></a><font color="#FF00FF"><a href="match797-1.html#4" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_1.gif"/></a>
+
+                pok[i]=new Pregled(*pregledi.pok[i]);
+            }
+        } catch(...) {
+            for(int i=0; i&lt;broj_pregleda; i++) {
+                delete pok[i];
+            }
+            delete[] pok;
+            throw;
+        }
+    }
+
+    Pregledi(Pregledi &amp;&amp;pregledi): max_broj_pregleda(pregledi.max_broj_pregleda), broj_pregleda(pregledi.broj_pregleda),
+</font>        pok(pregledi.pok) {
+        pregledi.broj_pregleda=0;
+        pregledi.pok=nullptr;
+    }
+
+    Pregledi &amp;operator = (const Pregledi &amp;pregledi) {
+        if(broj_pregleda&gt;pregledi.broj_pregleda) {
+            for(int i=pregledi.broj_pregleda; i&lt;broj_pregleda; i++) {
+                delete pok[i];
+                pok[i]=nullptr;
+            }
+        } else {
+            try {
+                Pregled **pok1(new Pregled*[pregledi.broj_pregleda]);
+                for(int i=0; i&lt;broj_pregleda; i++) {
+                    delete pok[i];
+                }
+                delete[] pok;
+                pok=pok1;
+            } catch(...) {
+
+                throw;
+            }
+        }
+        broj_pregleda=pregledi.broj_pregleda;
+
+        for(int i=0; i&lt;pregledi.broj_pregleda; i++) {
+            *(pok[i])=*(pregledi.pok[i]);
+        }
+        return *this;
+    }
+
+    Pregledi &amp;operator = (Pregledi &amp;&amp; pregledi) {
+        std::swap(broj_pregleda,pregledi.broj_pregleda);
+        std::swap(pok,pregledi.pok);
+        return *this;
+    }
+    void RegistrirajPregled(const std::string &amp;ime_pacijenta, const Datum &amp;datum_pregleda, const Vrijeme &amp;vrijeme_pregleda) {
+        if(broj_pregleda==max_broj_pregleda) throw std::range_error("Dostignut maksimalni broj pregleda");
+        pok[broj_pregleda]=new Pregled(ime_pacijenta,datum_pregleda,vrijeme_pregleda);
+        broj_pregleda++;
+    }
+
+    void RegistrirajPregled(const std::string &amp;ime_pacijenta, int dan_pregleda, int mjesec_pregleda, int godina_pregleda,
+                            int sati_pregleda, int minute_pregleda) {
+        if(broj_pregleda==max_broj_pregleda) throw std::range_error("Dostignut maksimalni broj pregleda");
+        pok[broj_pregleda]=new Pregled(ime_pacijenta,dan_pregleda,mjesec_pregleda,godina_pregleda,sati_pregleda,minute_pregleda);
+        broj_pregleda++;
+    }
+
+    void RegistrirajPregled(Pregled *pregled) {
+        if(broj_pregleda==max_broj_pregleda) throw std::range_error("Dostignut maksimalni broj pregled");
+        pok[broj_pregleda]=pregled;
+        broj_pregleda++;
+    }
+
+    int DajBrojPregleda() const {
+        return broj_pregleda;
+    }
+
+    int DajBrojPregledaNaDatum(const Datum &amp;datum) const;
+
+    Pregled &amp;DajNajranijiPregled();
+
+    Pregled DajNajranijiPregled() const {
+        if(broj_pregleda==0) throw std::domain_error("Nema registriranih pregleda");
+        return **std::min_element(pok,pok+broj_pregleda,[](Pregled *p1,Pregled *p2) {
+            return Pregled::DolaziPrije(*p1,*p2);
+        });
+    }
+
+    void IsprazniKolekciju() {
+        for(int i=0; i&lt;broj_pregleda; i++) {
+            delete pok[i];
+            pok[i]=nullptr;
+        }
+        broj_pregleda=0;
+    }
+
+    void ObrisiNajranijiPregled() {
+        if(broj_pregleda==0) throw std::range_error("Prazna kolekcija");
+        for(int i=0; i&lt;broj_pregleda; i++) {
+            if(pok[i]==&amp;DajNajranijiPregled()) {
+                delete pok[i];
+                pok[i]=nullptr;
+                break;
+            }
+        }
+        Pregled **pok1=new Pregled*[broj_pregleda];
+        int k(0);
+        for(int i=0; i&lt;broj_pregleda; i++) {
+            if(pok[i]!=nullptr) {
+                pok1[k]=new Pregled(*pok[i]);
+                k++;
+            }
+        }
+        std::swap(pok,pok1);
+        for(int i=0; i&lt;broj_pregleda; i++) {
+            delete pok1[i];
+        }
+        delete[] pok1;
+        broj_pregleda=k;
+    }
+
+    void ObrisiPregledePacijenta(const std::string &amp;ime_pacijenta);
+    void IspisiPregledeNaDatum(const Datum &amp;datum) const;
+    void IspisiSvePreglede() const;
+};
+
+int Pregledi::DajBrojPregledaNaDatum(const Datum &amp;datum) const
+{
+    int broj_istih_datuma=std::count_if(pok,pok+broj_pregleda,[datum](Pregled *pok) {
+        if (std::get&lt;0&gt;(pok-&gt;DajDatumPregleda().Ocitaj())==std::get&lt;0&gt;(datum.Ocitaj()) &amp;&amp;
+                std::get&lt;1&gt;(pok-&gt;DajDatumPregleda().Ocitaj())==std::get&lt;1&gt;(datum.Ocitaj()) &amp;&amp;
+                std::get&lt;2&gt;(pok-&gt;DajDatumPregleda().Ocitaj())==std::get&lt;2&gt;(datum.Ocitaj())) return true;
+        return false;
+    });
+    return broj_istih_datuma;
+}
+
+Pregled &amp;Pregledi::DajNajranijiPregled()
+{
+    if(broj_pregleda==0) throw std::domain_error("Nema registriranih pregleda");
+    return **std::min_element(pok,pok+broj_pregleda,[](Pregled *p1,Pregled *p2) {
+        if(Pregled::DolaziPrije(*p1,*p2)) return true;
+<a name="1"></a><font color="#00FF00"><a href="match797-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_1.gif"/></a>
+
+        return false;
+    });
+}
+
+void Pregledi::ObrisiPregledePacijenta(const std::string &amp;ime_pacijenta)
+{
+    int k(0);
+    for(int i=0; i&lt;broj_pregleda; i++) {
+        if(pok[i]-&gt;DajImePacijenta()==ime_pacijenta) {
+            delete pok[i];
+            pok[i]=nullptr;
+        }
+    }
+    Pregled **pok1=new Pregled*[broj_pregleda];
+</font>    for(int i=0; i&lt;broj_pregleda; i++) {
+        if(pok[i]!=nullptr) {
+            pok1[k]=new Pregled(*pok[i]);
+            k++;
+        }
+    }
+    std::swap(pok,pok1);
+    for(int i=0; i&lt;broj_pregleda; i++) {
+        delete pok1[i];
+    }
+    delete[] pok1;
+    broj_pregleda=k;
+}
+
+void Pregledi::IspisiPregledeNaDatum(const Datum &amp;datum) const
+{
+    for(int i=0; i&lt;broj_pregleda; i++) {
+        if(std::get&lt;0&gt;(pok[i]-&gt;DajDatumPregleda().Ocitaj())==std::get&lt;0&gt;(datum.Ocitaj()) &amp;&amp;
+                std::get&lt;1&gt;(pok[i]-&gt;DajDatumPregleda().Ocitaj())==std::get&lt;1&gt;(datum.Ocitaj()) &amp;&amp;
+                std::get&lt;2&gt;(pok[i]-&gt;DajDatumPregleda().Ocitaj())==std::get&lt;2&gt;(datum.Ocitaj())) {
+            pok[i]-&gt;Ispisi();
+        }
+    }
+}
+
+void Pregledi::IspisiSvePreglede() const
+{
+    std::vector&lt;Pregled *&gt; ZaIspis;
+    for(int i=0; i&lt;broj_pregleda; i++){
+        ZaIspis.push_back(pok[i]);
+    }
+<a name="3"></a><font color="#00FFFF"><a href="match797-1.html#3" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_1.gif"/></a>
+
+    std::sort(ZaIspis.begin(),ZaIspis.end(),[](Pregled *p1,Pregled *p2){
+        return Pregled::DolaziPrije(*p1,*p2);
+    });
+    for(int i=0; i&lt;broj_pregleda; i++){
+        ZaIspis[i]-&gt;Ispisi();
+</font>    }
+}
+
+int main ()
+{
+    try {
+        int max_broj_pregleda, dan, mjesec, godina, sat, minuta;
+        std::string ime;
+        Pregledi skup(20);
+        std::vector&lt;Pregled *&gt; Osoba;
+        std::cout &lt;&lt; "Unesite maksimalan broj pregleda: ";
+        std::cin &gt;&gt; max_broj_pregleda;
+        if(max_broj_pregleda&lt;1) return 0;
+        int broj_pregleda(0);
+        for(;;) {
+            std::cout &lt;&lt; "Unesite ime novog pacijenta ili 'kraj' za zavrsetak unosa: ";
+            std::cin.ignore(1000, '\n');
+<a name="9"></a><font color="#FF00FF"><a href="match797-1.html#9" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_4_0.gif"/></a>
+
+            std::getline(std::cin,ime);
+            if(ime=="kraj") break;
+            std::cout &lt;&lt; "Unesite dan mjesec i godinu pregleda: ";
+            std::cin &gt;&gt; dan &gt;&gt; mjesec &gt;&gt; godina;
+</font>            try {
+                Datum d=Datum(dan,mjesec,godina);
+            } catch(std::domain_error izuzetak) {
+                std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                return 0;
+            }
+            std::cout &lt;&lt; "Unesite sate i minute pregleda: ";
+            std::cin &gt;&gt; sat &gt;&gt; minuta;
+            try {
+                Vrijeme v=Vrijeme(sat,minuta);
+            } catch(std::domain_error izuzetak) {
+                std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                return 0;
+            }
+            Osoba.push_back(new Pregled(ime,dan,mjesec,godina,sat,minuta));
+            try {
+<a name="6"></a><font color="#00FF00"><a href="match797-1.html#6" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_0.gif"/></a>
+
+                skup.RegistrirajPregled(ime,dan,mjesec,godina,sat,minuta);
+            } catch(std::range_error izuzetak) {
+                std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+</font>                return 0;
+            }
+            broj_pregleda++;
+            if(broj_pregleda==max_broj_pregleda) break;
+        }
+        std::cout &lt;&lt; "Trenutno su registrovani sljedeci pregledi" &lt;&lt; std::endl;
+<a name="0"></a><font color="#FF0000"><a href="match797-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_1.gif"/></a>
+
+        std::sort(Osoba.begin(),Osoba.end(),[](Pregled* o1,Pregled* o2) {
+            return Pregled::DolaziPrije(*o1,*o2);
+        });
+        for(int i=0; i&lt;Osoba.size(); i++) {
+            Osoba[i]-&gt;Ispisi();
+        }
+        for(int i=0; i&lt;Osoba.size(); i++) {
+            delete Osoba[i];
+        }
+        int U;
+</font>        for(;;) {
+            std::cout &lt;&lt; std::endl &lt;&lt; "Odaberite jednu od sljedecih opcija" &lt;&lt; std::endl;
+            std::cout &lt;&lt; "1 - Broj pregleda na datum" &lt;&lt; std::endl &lt;&lt; "2 - Najraniji pregled" &lt;&lt; std::endl &lt;&lt;
+                      "3 - Obrisi pregled pacijenta" &lt;&lt; std::endl &lt;&lt; "4 - Obrisi najraniji pregled" &lt;&lt; std::endl &lt;&lt;
+                      "5 - Ispisi sve pregleda na datum" &lt;&lt; std::endl &lt;&lt; "6 - Ispisi sve preglede" &lt;&lt; std::endl &lt;&lt; "7 - Kraj programa" &lt;&lt; std::endl;
+            std::cin &gt;&gt; U;
+            if(U==1) {
+                try {
+                    std::cout &lt;&lt; "Unesite dan mjesec i godinu : ";
+                    std::cin &gt;&gt; dan &gt;&gt; mjesec &gt;&gt; godina;
+                    try {
+                        Datum d=Datum(dan,mjesec,godina);
+                    } catch(std::domain_error izuzetak) {
+                        std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                        return 0;
+                    }
+<a name="7"></a><font color="#0000FF"><a href="match797-1.html#7" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_0.gif"/></a>
+
+                    std::cout &lt;&lt; "Broj pregleda na datum " &lt;&lt; dan &lt;&lt; " " &lt;&lt; mjesec &lt;&lt; " " &lt;&lt; godina &lt;&lt; " je: " &lt;&lt; skup.DajBrojPregledaNaDatum(Datum(dan,mjesec,godina));
+                    std::cout &lt;&lt; std::endl;
+</font>                } catch(std::domain_error izuzetak) {
+                    std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                    return 0;
+                }
+            } else if(U==2) {
+                try {
+                    skup.DajNajranijiPregled();
+                    std::cout &lt;&lt; "Najraniji pregled je:" &lt;&lt; std::endl;
+                    skup.DajNajranijiPregled().Ispisi();
+                    std::cout &lt;&lt; std::endl;
+                } catch(std::domain_error izuzetak) {
+                    std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                    return 0;
+                }
+<a name="8"></a><font color="#00FFFF"><a href="match797-1.html#8" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_3_0.gif"/></a>
+
+            } else if(U==3) {
+                std::cout &lt;&lt; "Unesite ime pacijenta: ";
+                std::string ime_za_brisati;
+                std::cin.ignore(1000, '\n');
+                std::getline(std::cin,ime_za_brisati);
+</font>                int br_preg1=skup.DajBrojPregleda();
+                skup.ObrisiPregledePacijenta(ime_za_brisati);
+                int br_preg2=skup.DajBrojPregleda();
+                std::cout &lt;&lt; "Uspjesno obrisano " &lt;&lt; br_preg1-br_preg2 &lt;&lt; " pregleda" &lt;&lt; std::endl;
+            } else if(U==4) {
+                try {
+                    skup.ObrisiNajranijiPregled();
+                    std::cout &lt;&lt; "Najraniji pregled uspjesno obrisan" &lt;&lt; std::endl;
+                } catch(std::range_error izuzetak) {
+                    std::cout &lt;&lt; izuzetak.what() &lt;&lt; std::endl;
+                    return 0;
+                }
+<a name="10"></a><font color="#FF0000"><a href="match797-1.html#10" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_0.gif"/></a>
+
+            } else if(U==5) {
+                std::cout &lt;&lt; "Unesite dan mjesec i godinu : ";
+                std::cin &gt;&gt; dan &gt;&gt; mjesec &gt;&gt; godina;
+                std::cout &lt;&lt; "Pregledi na datum " &lt;&lt; dan &lt;&lt; " " &lt;&lt; mjesec &lt;&lt; " " &lt;&lt; godina &lt;&lt; " su:" &lt;&lt; std::endl;
+</font>                skup.IspisiPregledeNaDatum(Datum(dan,mjesec,godina));
+            } else if(U==6) {
+                skup.IspisiSvePreglede();
+            }
+            if(U==7) {
+                return 0;
+            }
+        }
+    } catch(...) {
+    }
+    return 0;
+}
+</pre>
+</body>
+</html>

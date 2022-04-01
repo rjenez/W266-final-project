@@ -1,0 +1,231 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z1/student8100.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z2/Z1/student8100.cpp<p></p><pre>
+/*B 16/17, Zadaća 2, Zadatak 1
+	
+	NAPOMENA: i javni ATo-vi su dio postavke
+	
+	Autotestovi by Ivona Ivkovic. Sva pitanja, sugestije
+	i prijave gresaka saljite na mail: iivkovic2@etf.unsa.ba
+	
+*/
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+
+enum class Polje { Prazno, Posjeceno, Mina, BlokiranoPrazno, BlokiranoPosjeceno, BlokiranoMina };
+
+enum class Smjerovi { GoreLijevo, Gore, GoreDesno, Desno, DoljeDesno, Dolje, DoljeLijevo, Lijevo };
+
+enum class Status { NijeKraj, KrajPoraz, KrajPobjeda };
+
+enum class KodoviGresaka { PogresnaKomanda, NedostajeParmetar, SuvisanParametar, NeispravanParametar };
+
+enum class Komande { PomjeriJednoMjesto, PomjeriDalje, Blokiraj, Deblokiraj, PrikaziOkolinu, ZavrsiIgru, KreirajIgru };
+
+<a name="1"></a><font color="#00FF00"><a href="match784-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_20.gif"/></a>
+
+typedef std::vector&lt;std::vector&lt;Polje&gt;&gt; Tabla;
+
+Tabla KreirajIgru(int n, const std::vector&lt;std::vector&lt;int&gt;&gt; &amp;mine){
+	for(int i(0); i&lt;mine.size(); i++)
+		if(mine[i].size() != 2) throw std::domain_error("Ilegalan format zadavanja mina");
+	Tabla t;
+	t.resize(n);
+	for(int i(0); i&lt;n; i++) t[i].resize(n);
+	for(int i(0); i&lt;n; i++)
+		for(int j(0); j&lt;n; j++)
+			t[i][j] = Polje::Prazno;
+	for(int i(0); i&lt;int(mine.size()); i++){
+		if((mine[i][0]&gt;=n &amp;&amp; mine[i][0]&lt;=0) || (mine[i][1]&gt;=n &amp;&amp; mine[i][1]&lt;=0)) throw std::domain_error("Ilegalne pozicije mina");
+		t[mine[i][0]][mine[i][1]]=Polje::Mina;
+	}
+	return t;
+}
+
+bool UnosKomande(Komande &amp;komanda, Smjerovi &amp;smjer, int &amp;x, int &amp;y, KodoviGresaka &amp;greska){
+	std::string komanda1;
+	std::cin &gt;&gt; komanda1;
+	if(komanda1[0]=='P' &amp;&amp; (komanda1[1]=='1' || komanda1[1]=='&gt;' || komanda1[1]=='O') &amp;&amp; komanda1.length()&gt;2){
+		greska = KodoviGresaka::SuvisanParametar;
+		return false;
+	}
+	if(komanda1=="P"){
+		greska = KodoviGresaka::PogresnaKomanda;
+		return false;
+	}
+	if(komanda1=="P1"){
+		std::string temp;
+		std::cin &gt;&gt; temp;
+		if(temp=="GL"){smjer = Smjerovi::GoreLijevo; komanda = Komande::PomjeriJednoMjesto; return true;}
+		else if(temp=="G") {smjer = Smjerovi::Gore; komanda = Komande::PomjeriJednoMjesto; return true;}
+</font>		else if(temp=="GD") {smjer = Smjerovi::GoreDesno; komanda = Komande::PomjeriJednoMjesto; return true;}
+		else if(temp=="D") {smjer = Smjerovi::Desno; komanda = Komande::PomjeriJednoMjesto; return true;}
+		else if(temp=="DoD") {smjer = Smjerovi::DoljeDesno; komanda = Komande::PomjeriJednoMjesto; return true;}
+		else if(temp=="Do") {smjer = Smjerovi::Dolje; komanda = Komande::PomjeriJednoMjesto; return true;}
+<a name="0"></a><font color="#FF0000"><a href="match784-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_67.gif"/></a>
+
+		else if(temp=="DoL") {smjer = Smjerovi::DoljeLijevo; komanda = Komande::PomjeriJednoMjesto; return true;}
+		else if(temp=="L") {smjer = Smjerovi::Lijevo; komanda = Komande::PomjeriJednoMjesto; return true;}
+		else{
+			greska = KodoviGresaka::NeispravanParametar;
+			return false;
+		}
+	}
+	if(komanda1=="P&gt;"){
+		std::cin &gt;&gt; x &gt;&gt; y;
+		if(!std::cin){ 
+			greska = KodoviGresaka::NeispravanParametar;
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+			return false;
+		}
+		else{
+			komanda = Komande::PomjeriDalje;
+			return true;
+		}
+	}
+	if(komanda1=="PO"){
+		komanda = Komande::PrikaziOkolinu;
+		return true;
+	}
+	if((komanda1[0]=='B' || komanda1[0]=='D' || komanda1[0]=='Z' || komanda1[0]=='K') &amp;&amp; int(komanda1.size())&gt;1){
+		greska = KodoviGresaka::SuvisanParametar;
+		return false;
+	}
+	if(komanda1=="B"){
+		std::cin &gt;&gt; x &gt;&gt; y;
+		if(!std::cin){ 
+			greska = KodoviGresaka::NeispravanParametar;
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+			return false;
+		}
+		else{
+			komanda = Komande::Blokiraj;
+			return true;
+		}
+	}
+	if(komanda1=="D"){
+		std::cin &gt;&gt; x &gt;&gt; y;
+		if(!std::cin){ 
+			greska = KodoviGresaka::NeispravanParametar;
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+			return false;
+		}
+		else{
+			komanda = Komande::Deblokiraj;
+			return true;
+		}
+	}
+	if(komanda1=="Z"){
+		komanda = Komande::ZavrsiIgru;
+		return true;
+	}
+	if(komanda1=="K"){
+		komanda=Komande::KreirajIgru;
+		return true;
+	}
+	
+}
+
+std::vector&lt;std::vector&lt;int&gt;&gt; PrikaziOkolinu(const Tabla &amp;polja, int x, int y){
+	std::vector&lt;std::vector&lt;int&gt;&gt; okolina;
+	int brojac(0);
+	//if(x&gt;=1 &amp;&amp; y&gt;=1 &amp;&amp; x+1&lt;=polja.size() &amp;&amp; y+1&lt;=polja[0].size()){
+		for(int i(x-1); i&lt;x+2; i++)
+			for(int j(y-1); j&lt;y+2; j++){
+				 if(i==0 &amp;&amp; j==0){
+				 	if(polja[i+1][j] == Polje::Mina) brojac++;
+				 	if(polja[i+1][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i][j+1] == Polje::Mina) brojac++;
+				 	okolina[i].push_back(brojac);
+				 	brojac=0;
+				 }
+				 else if(i==0 &amp;&amp; (j&gt;0 &amp;&amp; j&lt;polja.size())){
+				 	if(polja[i+1][j] == Polje::Mina) brojac++;
+				 	if(polja[i+1][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i+1][j-1] == Polje::Mina) brojac++;
+				 	if(polja[i][j-1] == Polje::Mina) brojac++;
+				 	okolina[i].push_back(brojac);
+				 	brojac=0;
+				 }
+				 else if(i&gt;0 &amp;&amp; i&lt;polja.size() &amp;&amp; j==0){
+				 	if(polja[i-1][j] == Polje::Mina) brojac++;
+				 	if(polja[i-1][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i+1][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i+1][j] == Polje::Mina) brojac++;
+				 	okolina[i].push_back(brojac);
+				 	brojac=0;
+				 }
+				 else if(i==polja.size()-1 &amp;&amp; (j&gt;0 &amp;&amp; j&lt;polja.size())){
+				 	if(polja[i-1][j] == Polje::Mina) brojac++;
+				 	if(polja[i-1][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i-1][j-1] == Polje::Mina) brojac++;
+				 	if(polja[i][j-1] == Polje::Mina) brojac++;
+				 	okolina[i].push_back(brojac);
+				 	brojac=0;
+				 }
+				 else if(i&gt;0 &amp;&amp; i&lt;polja.size() &amp;&amp; j==polja.size()-1){
+				 	if(polja[i-1][j] == Polje::Mina) brojac++;
+				 	if(polja[i-1][j-1] == Polje::Mina) brojac++;
+				 	if(polja[i][j-1] == Polje::Mina) brojac++;
+				 	if(polja[i+1][j-1] == Polje::Mina) brojac++;
+				 	if(polja[i+1][j] == Polje::Mina) brojac++;
+				 	okolina[i].push_back(brojac);
+				 	brojac=0;
+				 }
+				 else{
+				 	if(polja[i-1][j-1] == Polje::Mina) brojac++;
+				 	if(polja[i+1][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i][j-1] == Polje::Mina) brojac++;
+				 	if(polja[i][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i+1][j] == Polje::Mina) brojac++;
+				 	if(polja[i-1][j] == Polje::Mina) brojac++;
+				 	if(polja[i-1][j+1] == Polje::Mina) brojac++;
+				 	if(polja[i+1][j-1] == Polje::Mina) brojac++;
+				 	okolina[i].push_back(brojac);
+				 	brojac=0;
+				 }
+				 
+			}
+	
+}
+
+/*void BlokirajPolje(Tabla &amp;polja, int x, int y);
+void DeblokirajPolje(Tabla &amp;polja, int x, int y);
+Status Idi(Tabla &amp;polja, int &amp;x, int &amp;y, Smjerovi smjer);
+Status Idi(Tabla &amp;polja, int &amp;x, int &amp;y, int novi_x, int novi_y);
+std::vector&lt;std::vector&lt;int&gt;&gt; PrikaziOkolinu(const Tabla &amp;polja, int x, int y);
+*//*
+void IzvrsiKomandu(Komande komanda, Tabla &amp;polja, int &amp;x, int &amp;y, Smjerovi p_smjer = Smjerovi::Gore, int p_x = 0, int p_y = 0){
+	switch (komanda){
+		case 
+	}
+}*/
+
+
+int main (){/*
+</font>	int x(0), y(0);
+	Komande kom = Komande::KreirajIgru;
+	Smjerovi smjer = Smjerovi::Gore;
+	KodoviGresaka belaj = KodoviGresaka::PogresnaKomanda;
+	Tabla t;
+	for(;;){
+		if(UnosKomande(kom, smjer, x, y, belaj)) IzvrsiKomandu(kom, t, x, y);
+	}
+	std::cout &lt;&lt; sqrt(3)*3.14;*/
+	return 0;
+
+}</pre>
+</body>
+</html>

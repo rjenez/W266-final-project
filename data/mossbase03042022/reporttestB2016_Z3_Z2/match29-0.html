@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student7162.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z2/student7162.cpp<p></p><pre>
+<a name="0"></a><font color="#FF0000"><a href="match29-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_99.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 2
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;stdexcept&gt;
+
+// VRACA VEKTOR RIJECI POJEDINACNO IZ RECENICE
+std::vector&lt;std::string&gt; RijeciPojedinacno (const std::string &amp;recenica){
+    std::vector&lt;std::string&gt; vektor_rijeci;
+    for(int i=0; i&lt;recenica.size(); i++){
+        std::string tmp_rijec;
+        while( (recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z') || (recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9') ){
+            tmp_rijec.push_back(recenica[i]);
+            i++;
+        }
+        if(tmp_rijec.size() &gt; 0){
+            vektor_rijeci.push_back(tmp_rijec);
+        }
+    }
+    return vektor_rijeci;
+}
+
+// VRACA VEKTOR SA INDEXIMA POCETKA SVAKE RIJECI
+std::vector&lt;int&gt; PozicijeRijeci (const std::string &amp;recenica){
+    std::vector&lt;int&gt; index_rijeci;
+    if( (recenica[0]&gt;='a' &amp;&amp; recenica[0]&lt;='z') || (recenica[0]&gt;='0' &amp;&amp; recenica[0]&lt;='9') ){
+        index_rijeci.push_back(0);
+    }
+    for(int i=1; i&lt;recenica.size(); i++){
+        if( ((recenica[i-1]&gt;=32 &amp;&amp; recenica[i-1]&lt;=47) || (recenica[i-1]&gt;=91 &amp;&amp; recenica[i-1]&lt;=96) || (recenica[i-1]&gt;=123 &amp;&amp; recenica[i-1]&lt;=126)) &amp;&amp; ((recenica[i]&gt;='a' &amp;&amp; recenica[i]&lt;='z') || (recenica[i]&gt;='0' &amp;&amp; recenica[i]&lt;='9')) ){
+            index_rijeci.push_back(i);
+        }
+    }
+ 
+    return index_rijeci;
+}
+
+std::map&lt;std::string, std::set&lt;int&gt;&gt; KreirajIndeksPojmova (std::string recenica){
+    // transfomacija u MALA slova
+    std::transform(recenica.begin(), recenica.end(), recenica.begin(), ::tolower);
+    std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa;
+    
+    //POZICIJE pojedinacno u VEKTORU
+    std::vector&lt;int&gt; pozicija_rijeci = PozicijeRijeci(recenica);
+    //RIJECI pojedinacno u VEKTORU
+    std::vector&lt;std::string&gt; vektor_rijeci = RijeciPojedinacno(recenica);
+    
+    for(int i=0; i&lt;vektor_rijeci.size(); i++){
+        mapa[vektor_rijeci[i]].insert(pozicija_rijeci[i]);
+    }
+    return mapa;
+}
+
+std::set&lt;int&gt; PretraziIndeksPojmova (std::string rijec, std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa){
+    std::set&lt;int&gt; pozicije_rijeci;
+    for(int i=0; i&lt;rijec.size(); i++){
+        if(rijec[i] == ' '){
+            rijec.erase(i, 1);
+        }
+    }
+    if(mapa.find(rijec) == mapa.end()){
+        throw std::logic_error("Pojam nije nadjen");
+    } else {
+        for(auto it = mapa.find(rijec)-&gt;second.begin(); it != mapa.find(rijec)-&gt;second.end(); ++it){
+            pozicije_rijeci.insert(*it);
+        }
+    }
+    return pozicije_rijeci;
+}
+
+void IspisiIndeksPojmova (std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa){
+    for(auto it = mapa.begin(); it != mapa.end(); ++it){
+        std::cout &lt;&lt; it-&gt;first &lt;&lt; ": ";
+        for(auto it2 = it-&gt;second.begin(); it2 != it-&gt;second.end(); ++it2){
+            if(it2 == ++it-&gt;second.end()){
+                std::cout &lt;&lt; *it2; 
+                break;
+            }
+            std::cout &lt;&lt; *it2 &lt;&lt; ",";
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+}
+
+
+int main (){
+    std::string recenica;
+	std::cout &lt;&lt; "Unesite tekst: ";
+	std::getline (std::cin, recenica);
+	std::map&lt;std::string, std::set&lt;int&gt;&gt; mapa = KreirajIndeksPojmova(recenica);
+	IspisiIndeksPojmova(mapa);
+	
+	for(;;){
+	    std::string tmp;
+	    std::cout &lt;&lt; "Unesite rijec: ";
+	    std::getline (std::cin, tmp);
+	    for(int i=0; i&lt;tmp.size(); i++){
+	        if(tmp[i] == ' '){
+                tmp.erase(i, 1);
+	        }
+	    }
+	    if(tmp == "."){
+	        return 0;
+	    }
+	    try{
+    	    std::set&lt;int&gt; pozicije_rijeci = PretraziIndeksPojmova(tmp, mapa);
+    	    for(auto iter=pozicije_rijeci.begin(); iter!=pozicije_rijeci.end();++iter){
+    	        std::cout &lt;&lt; *iter &lt;&lt; " ";
+    	    }
+    	    std::cout &lt;&lt; std::endl;
+	    } catch(std::logic_error){
+	        std::cout &lt;&lt; "Unesena rijec nije nadjena!";
+	        std::cout &lt;&lt; std::endl;
+</font>	    }
+	}
+    return 0;
+}
+</pre>
+</body>
+</html>

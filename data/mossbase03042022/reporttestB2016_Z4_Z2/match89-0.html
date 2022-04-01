@@ -1,0 +1,230 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student3424.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z4/Z2/student3424.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match89-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_26.gif"/></a>
+
+/B 2016/2017, Zadaća 4, Zadatak 2
+//Napomena: testovi ce biti dostupni dan pred rok!
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iomanip&gt;
+
+class GradjaninBiH
+{
+    std::string ime_i_prezime;
+    long long int JMBG;
+
+    GradjaninBiH *prethodni = nullptr;
+    static GradjaninBiH *posljednji;
+public:
+    enum Pol {Musko, Zensko};
+    
+    GradjaninBiH(std::string ime_i_prezime, long long int jmbg);
+    GradjaninBiH(std::string ime_i_prezime, int dan_rodjenja, int mjesec_rodjenja, int godina_rodjenja, int sifra_regije, Pol pol);
+    ~GradjaninBiH();
+    
+    std::string DajImeIPrezime() const { return ime_i_prezime; }
+    long long int DajJMBG() const { return JMBG; }
+    int DajDanRodjenja() const { return JMBG / 100000000000; }
+    int DajMjesecRodjenja() const { return (JMBG / 1000000000)%100; }
+    int DajGodinuRodjenja() const 
+    {
+        int godina((JMBG / 1000000)%1000);
+        if(godina &lt;= 17) godina += 2000;
+        else godina += 1000;
+        return godina;
+    }
+    int DajSifruRegije() const { return (JMBG / 10000)%100; }
+    Pol DajPol() const
+    {
+        short x((JMBG / 10)%1000);
+        if(x &gt;= 0 &amp;&amp; x &lt; 500) return Pol::Musko;
+        return Pol::Zensko;
+    }
+    void PromijeniImeIPrezime(std::string novo_ime) { ime_i_prezime = novo_ime;}
+};
+
+GradjaninBiH* GradjaninBiH::posljednji = nullptr;
+
+GradjaninBiH::GradjaninBiH(std::string ime_i_prezime, long long int jmbg) : ime_i_prezime(ime_i_prezime), JMBG(jmbg)
+{
+    int dan(DajDanRodjenja()), mjesec(DajMjesecRodjenja()), godina(DajGodinuRodjenja()%1000);
+    if(dan &lt;= 0 || dan &gt; 31 || mjesec &lt;= 0 || mjesec &gt; 12 || godina &lt; 0)
+      throw std::logic_error("JMBG nije validan");
+    
+    int sifra(DajSifruRegije()), pol(JMBG/10%1000), Kc(JMBG%10);
+    int c[]{dan/10, dan%10, mjesec/10, mjesec%10, godina/100, godina/10%10, godina%10, sifra/10, sifra%10, pol/100, pol/10%10, pol%10};
+    int c13(11 - (7 * (c[0] + c[6]) + 6 * (c[1] + c[7]) + 5 * (c[2] + c[8]) + 4 * (c[3] + c[9]) + 3 * (c[4] + c[10]) + 2 * (c[5] + c[11]))%11);
+</font><a name="2"></a><font color="#0000FF"><a href="match89-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_21.gif"/></a>
+
+    
+    if(c13 == 11) c13 = 0;
+    if(c13 == 10 || c13 != Kc)
+      throw std::logic_error("JMBG nije validan");
+      
+    for(auto i(posljednji); i != nullptr; i = i-&gt;prethodni)
+      if(jmbg == i-&gt;DajJMBG()) 
+        throw std::logic_error("Vec postoji gradjanin sa istim JMBG");
+    
+    if(posljednji != nullptr)
+    {
+        prethodni = posljednji;
+    }
+    posljednji = this;
+}
+
+GradjaninBiH::GradjaninBiH(std::string ime_i_prezime, int dan_rodjenja, int mjesec_rodjenja, int godina_rodjenja, int sifra_regije, Pol pol) : ime_i_prezime(ime_i_prezime)
+{
+    if(dan_rodjenja &lt;= 0 || dan_rodjenja &gt; 31 || mjesec_rodjenja &lt;= 0 || mjesec_rodjenja &gt; 12 || godina_rodjenja &lt; 0 || sifra_regije &lt; 0 || sifra_regije &gt; 99)
+      throw std::logic_error("Neispravni podaci");
+    
+    godina_rodjenja = godina_rodjenja%1000;
+    
+    int br(0);
+    for(auto i(posljednji); i != nullptr; i = i-&gt;prethodni)
+    {
+        if(dan_rodjenja == i-&gt;DajDanRodjenja() &amp;&amp; mjesec_rodjenja == i-&gt;DajMjesecRodjenja() &amp;&amp; godina_rodjenja == i-&gt;DajGodinuRodjenja() &amp;&amp; 
+           sifra_regije == i-&gt;DajSifruRegije() &amp;&amp; pol == i-&gt;DajPol())
+        {
+            br++;
+        }
+    }
+    
+    int sex(((pol == Pol::Musko) ? 0 : 500) + br);
+    int c[]{dan_rodjenja/10, dan_rodjenja%10, mjesec_rodjenja/10, mjesec_rodjenja%10, godina_rodjenja/100, godina_rodjenja/10%10, godina_rodjenja%10,
+            sifra_regije/10, sifra_regije%10, sex/100, sex/10%10, sex%10};
+    int c13(11 - (7 * (c[0] + c[6]) + 6 * (c[1] + c[7]) + 5 * (c[2] + c[8]) + 4 * (c[3] + c[9]) + 3 * (c[4] + c[10]) + 2 * (c[5] + c[11]))%11);
+</font><a name="0"></a><font color="#FF0000"><a href="match89-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_45.gif"/></a>
+
+    
+    if(c13 == 11) c13 = 0;
+    
+    JMBG = dan_rodjenja;
+    JMBG *= 100;
+    JMBG += mjesec_rodjenja;
+    JMBG *= 1000;
+    JMBG += godina_rodjenja;
+    JMBG *= 100;
+    JMBG += sifra_regije;
+    JMBG *= 1000;
+    JMBG += sex;
+    JMBG *= 10;
+    JMBG += c13;
+    
+    prethodni = posljednji;
+    posljednji = this;
+}
+
+GradjaninBiH::~GradjaninBiH()
+{
+    if(this == posljednji)
+    {
+        posljednji = posljednji-&gt;prethodni;
+        return;
+    }
+    
+    GradjaninBiH* prethodni;
+    for(auto i(posljednji); i != this; i = i-&gt;prethodni) prethodni = i;
+    
+    if(this-&gt;prethodni == nullptr) prethodni = nullptr;
+    else prethodni-&gt;prethodni = this-&gt;prethodni; 
+}
+
+int main ()
+{
+    int n;
+    std::cout &lt;&lt; "Koliko gradjana zelite unijeti po JMBG? ";
+    std::cin &gt;&gt; n;
+    
+    for(int i(0); i &lt; n; i++)
+    {
+        try
+        {
+            std::cin.ignore(10000, '\n');
+            std::cout &lt;&lt; std::endl;
+            
+            std::string ime_i_prezime;
+            std::cout &lt;&lt; "Unesite ime i prezime (u istom redu): ";
+            std::getline(std::cin, ime_i_prezime);
+            std::cout &lt;&lt; std::endl;
+            
+            long long int jmbg;
+            std::cout &lt;&lt; "Unesite JMBG: ";
+            std::cin &gt;&gt; jmbg;
+            std::cout &lt;&lt; std::endl;
+            
+            GradjaninBiH jadan(ime_i_prezime, jmbg);
+            
+            std::cout &lt;&lt; "Unijeli ste gradjanina " &lt;&lt; jadan.DajImeIPrezime() &lt;&lt; " rodjenog "
+                      &lt;&lt; jadan.DajDanRodjenja() &lt;&lt; "." &lt;&lt; jadan.DajMjesecRodjenja() &lt;&lt; "." &lt;&lt; jadan.DajGodinuRodjenja() 
+                      &lt;&lt; " u regiji " &lt;&lt; jadan.DajSifruRegije();
+            
+            if(jadan.DajPol() == GradjaninBiH::Pol::Musko)
+              std::cout &lt;&lt; ", musko.";
+            else
+              std::cout &lt;&lt; ", zensko.";
+        }
+        catch(const std::exception &amp;e)
+        {
+            std::cout &lt;&lt; e.what();
+            i--;
+        }
+    }
+    
+    std::cout &lt;&lt; std::endl &lt;&lt; "Koliko gradjana zelite unijeti po datumu rodjenja, regiji i polu? ";
+    std::cin &gt;&gt; n;
+    
+    for(int i(0); i &lt; n; i++)
+    {
+        try
+        {
+            std::cin.ignore(10000, '\n');
+            std::cout &lt;&lt; std::endl;
+            
+            std::string ime_i_prezime;
+            std::cout &lt;&lt; "Unesite ime i prezime (u istom redu): ";
+            std::getline(std::cin, ime_i_prezime);
+            std::cout &lt;&lt; std::endl;
+            
+            char znak;
+            int d, m, g;
+            std::cout &lt;&lt; "Unesite datum rodjenja (format dd/mm/gggg): ";
+            std::cin &gt;&gt; d &gt;&gt; znak &gt;&gt; m &gt;&gt; znak &gt;&gt; g;
+            std::cout &lt;&lt; std::endl;
+            
+            int sifra;
+            std::cout &lt;&lt; "Unesite sifru regije: ";
+            std::cin &gt;&gt; sifra;
+            std::cout &lt;&lt; std::endl;
+            std::cin.ignore(10000, '\n');
+            
+            char rod;
+            std::cout &lt;&lt; "Unesite M za musko, Z za zensko: ";
+            std::cin &gt;&gt; rod;
+            std::cout &lt;&lt; std::endl;
+            
+            if(rod == 'M')
+            {
+                GradjaninBiH jadan(ime_i_prezime, d, m, g, sifra, GradjaninBiH::Pol::Musko);
+                std::cout &lt;&lt; "Unijeli ste gradjanina " &lt;&lt; jadan.DajImeIPrezime() &lt;&lt; " JMBG: " &lt;&lt; jadan.DajJMBG() &lt;&lt; ".";
+            }
+            else
+            {
+                GradjaninBiH jadan(ime_i_prezime, d, m, g, sifra, GradjaninBiH::Pol::Zensko);
+                std::cout &lt;&lt; "Unijeli ste gradjanina " &lt;&lt; jadan.DajImeIPrezime() &lt;&lt; " JMBG: " &lt;&lt; jadan.DajJMBG() &lt;&lt; ".";
+            }
+        }
+        catch(const std::exception &amp;e)
+        {
+            std::cout &lt;&lt; e.what();
+            i--;
+</font>        }
+    }
+	return 0;
+}</pre>
+</body>
+</html>

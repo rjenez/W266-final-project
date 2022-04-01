@@ -1,0 +1,206 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student1317.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2016/Z3/Z5/student1317.cpp<p></p><pre>
+<a name="1"></a><font color="#00FF00"><a href="match934-1.html#1" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_1_3.gif"/></a>
+
+/B2016/2017: Zadaća 3, Zadatak 5
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iterator&gt;
+
+using namespace std;
+
+struct Dijete
+{
+    string ime;
+    Dijete* sljedeci;
+</font>};
+
+int BrojPom(string s)
+{
+    int brojac(0);
+    
+    for(int i=0; i&lt;s.length(); i++)
+<a name="0"></a><font color="#FF0000"><a href="match934-1.html#0" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_6.gif"/></a>
+
+        if((s[i]&gt;='0' &amp;&amp; s[i]&lt;='9') || (s[i]&gt;='A' &amp;&amp; s[i]&lt;='Z') || (s[i]&gt;='a' &amp;&amp; s[i]&lt;='z')) brojac++;
+    
+    return brojac;
+}
+
+// Funkcija Razvrstavanje vrsi kruzno razvrstavanje imena(stringova) po duzini stringova
+// u odredjeni broj timova
+vector&lt;set&lt;string&gt;&gt; Razvrstavanje(vector&lt;string&gt; imena, int broj_tim)
+{
+    if(broj_tim&lt;1 || broj_tim&gt;imena.size()) throw std::logic_error("Razvrstavanje nemoguce");
+</font>    
+    int broj_djece(imena.size());
+    Dijete* pocetak(nullptr), *prethodni(nullptr), *novi(nullptr);
+    for(int i=0; i&lt;broj_djece; i++)
+    {
+        novi=new Dijete;
+        novi-&gt;ime=imena[i];
+        novi-&gt;sljedeci=nullptr;
+        if(!pocetak) pocetak=novi;
+        else prethodni-&gt;sljedeci=novi;
+        prethodni=novi;
+    }
+    prethodni-&gt;sljedeci=pocetak;
+    
+    int broj_prvih_clan, broj_preo_clan, broj_prv_tim, broj_drug_tim;
+    
+    vector&lt;set&lt;string&gt;&gt; timovi;
+    Dijete* p(pocetak);
+    if(broj_djece%broj_tim==0)
+    {
+        broj_prvih_clan=broj_djece/broj_tim;
+        for(int i=0; i&lt;broj_tim; i++)
+        {
+            set&lt;string&gt; skup;
+            for(int j=0; j&lt;broj_prvih_clan; j++)
+            {
+                int korak(BrojPom(p-&gt;ime));
+                skup.insert(p-&gt;ime);
+                
+                auto pom(p);
+                p=p-&gt;sljedeci;
+                prethodni-&gt;sljedeci=p;
+                delete pom;
+                broj_djece--;
+                
+                if(broj_djece==0) break;
+                korak--;
+                while(1)
+                {
+                    p=p-&gt;sljedeci;
+                    prethodni=prethodni-&gt;sljedeci;
+                    korak--;
+                    if(korak==0) break;
+                }
+            }
+            timovi.push_back(skup);
+            if(broj_djece==0) break;
+        }
+    }
+    else 
+    {
+        broj_prvih_clan=(broj_djece/broj_tim)+1;
+        broj_preo_clan=broj_prvih_clan-1;
+        broj_prv_tim=broj_djece%broj_tim;
+        broj_drug_tim=broj_tim-broj_prv_tim;
+    
+        for(int i=0; i&lt;broj_prv_tim; i++)
+        {
+            set&lt;string&gt; skup;
+            for(int j=0; j&lt;broj_prvih_clan; j++)
+            {
+                int korak(BrojPom(p-&gt;ime));
+                skup.insert(p-&gt;ime);
+                
+                auto pom(p);
+                p=p-&gt;sljedeci;
+                prethodni-&gt;sljedeci=p;
+                delete pom;
+                broj_djece--;
+                
+                if(broj_djece==0) break;
+                korak--;
+                while(1)
+                {
+                    p=p-&gt;sljedeci;
+                    prethodni=prethodni-&gt;sljedeci;
+                    korak--;
+                    if(korak==0) break;
+                }
+            }
+            timovi.push_back(skup);
+            if(broj_djece==0) break;
+        }
+        for(int i=0; i&lt;broj_drug_tim; i++)
+        {
+            set&lt;string&gt; skup;
+            for(int j=0; j&lt;broj_preo_clan; j++)
+            {
+                int korak(BrojPom(p-&gt;ime));
+                skup.insert(p-&gt;ime);
+                
+                auto pom(p);
+                p=p-&gt;sljedeci;
+                prethodni-&gt;sljedeci=p;
+                delete pom;
+                broj_djece--;
+                
+                if(broj_djece==0) break;
+                korak--;
+                while(1)
+                {
+                    p=p-&gt;sljedeci;
+                    prethodni=prethodni-&gt;sljedeci;
+                    korak--;
+                    if(korak==0) break;
+                }
+            }
+            timovi.push_back(skup);
+            if(broj_djece==0) break;
+        }
+    }
+    
+    return timovi;
+}
+
+int main ()
+{
+    try
+    {
+        int br_djece;
+        
+        cout &lt;&lt; "Unesite broj djece: ";
+        cin &gt;&gt; br_djece;
+        
+        cin.ignore(1000, '\n');
+        
+        vector&lt;string&gt; imena;
+        cout &lt;&lt; "Unesite imena djece: " &lt;&lt; endl;
+        for(int i=0; i&lt;br_djece; i++)
+        {
+            string ime;
+            getline(cin, ime);
+            imena.push_back(ime);
+        }
+    	
+    	int br_timova;
+    	cout &lt;&lt; "Unesite broj timova: ";
+    	cin &gt;&gt; br_timova;
+    
+<a name="2"></a><font color="#0000FF"><a href="match934-1.html#2" target="1"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_2_3.gif"/></a>
+
+    	vector&lt;set&lt;string&gt;&gt; timovi(Razvrstavanje(imena, br_timova));
+    	for(int i=0; i&lt;timovi.size(); i++)
+    	{
+    	    cout &lt;&lt; "Tim " &lt;&lt; i+1 &lt;&lt; ": ";
+    	    auto it(timovi[i].begin());
+</font>    	    for(it=timovi[i].begin(); it!=timovi[i].end(); it++)
+    	    {
+    	        if(std::distance(it, timovi[i].end())==1) break;
+    	        cout &lt;&lt; *it &lt;&lt; ", ";
+    	    }
+    	    cout &lt;&lt; *it &lt;&lt; endl;
+    	}
+    }
+    catch(std::logic_error izuzetak)
+    {
+        cout &lt;&lt; "Izuzetak: " &lt;&lt; izuzetak.what() &lt;&lt; endl;
+    }
+	
+	return 0;
+}
+</pre>
+</body>
+</html>

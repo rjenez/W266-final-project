@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student2908.cpp</title>
+</head>
+<body bgcolor="white">
+<hr/>
+../../data/programming-homework-dataset-plagiarism-detection/src/B2017/Z1/Z3/student6617.cpp<p></p><pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;deque&gt;
+#include &lt;limits&gt;
+#include &lt;cmath&gt;
+
+<a name="0"></a><font color="#FF0000"><a href="match295-0.html#0" target="0"><img align="left" alt="other" border="0" src="http://moss.stanford.edu/bitmaps/tm_0_91.gif"/></a>
+
+typedef std::vector&lt;int&gt; vektor;
+typedef std::deque&lt;std::vector&lt;int&gt;&gt; dek;
+enum Smjer{Rastuci=1, Opadajuci=2};
+
+bool Jelistepen2(int n) {
+	long int granica(std::numeric_limits&lt;long&gt;::max());
+	if(n%2!=0 || n&lt;=0) return false;
+	if(n==1) return true;
+	for(long int i=0; i&lt;granica; i++) {
+		if(n==static_cast&lt;long int&gt;(pow(2, i))) return true;
+		if(n&lt;int(pow(2, i))) return false;
+	}
+	return false;
+}
+
+dek MaksimalniPodnizoviStepenaDvojke(vektor v, Smjer s)
+{
+	dek d(1);
+	int brojac(1), init(0), opc(s);
+	for(int i=0; i&lt;v.size(); i++) {
+		brojac=1;
+		if(Jelistepen2(v.at(i))) {
+			int j(i+1);
+			for(j=i+1; j&lt;v.size(); j++) {
+				if(Jelistepen2(v.at(j))) {
+					if(opc==1) {
+						if(v.at(j)&gt;=v.at(j-1)) {
+							brojac++;
+							if(brojac==2) {
+								d.at(init).push_back(v.at(j-1));
+								d.at(init).push_back(v.at(j));
+							} else {
+								d.at(init).push_back(v.at(j));
+							}
+						} else break;
+					}
+					else {
+						if(v.at(j)&lt;=v.at(j-1)) {
+							brojac++;
+							if(brojac==2) {
+								d.at(init).push_back(v.at(j-1));
+								d.at(init).push_back(v.at(j));
+							} else {
+								d.at(init).push_back(v.at(j));
+							}
+						} else break;
+					}
+				}
+			}
+			i=j-1;
+			init++;
+			d.resize(init+1);
+		}
+	}
+	return d;
+}
+
+
+int main ()
+{
+	int br_elemenata;
+	std::cout&lt;&lt;"Unesite broj elemenata vektora: ";
+	std::cin&gt;&gt;br_elemenata;
+	vektor vekt;
+	int n;
+	std::cout&lt;&lt;"Unesite elemente vektora: ";
+	for(int i=0; i&lt;br_elemenata; i++) {
+		std::cin&gt;&gt;n;
+		vekt.push_back(n);
+	}
+	int opcija;
+	std::cout&lt;&lt;"Unesite: 1 - za rastuce podnizove, 2 - za opadajuce podnizove: ";
+	std::cin&gt;&gt;opcija;
+	Smjer sm;
+	if(opcija==1) sm=Rastuci;
+	else sm=Opadajuci;
+	dek p(MaksimalniPodnizoviStepenaDvojke(vekt,sm));
+	if(opcija==1) std::cout&lt;&lt;"Maksimalni rastuci podnizovi: "&lt;&lt;std::endl;
+	else std::cout&lt;&lt;"Maksimalni opadajuci podnizovi: "&lt;&lt;std::endl;
+	for(int i=0; i&lt;p.size(); i++) {
+		for(int j=0; j&lt;p.at(i).size(); j++) {
+</font>			std::cout&lt;&lt;p.at(i).at(j)&lt;&lt;" ";
+		}
+		std::cout&lt;&lt;std::endl;
+	}
+	return 0;
+}</pre>
+</body>
+</html>
