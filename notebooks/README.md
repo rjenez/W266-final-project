@@ -6,7 +6,7 @@
 [Plagiarism_with_CodeBert.ipynb](./Plagiarism_with_CodeBert.ipynb)<br>
 [Plagiarism_with_Sentence_Transformer.ipynb](./Plagiarism_with_Sentence_Transformer.ipynb)<br>
 [Plagiarism_with_Trainer_Classifiers.ipynb](./Plagiarism_with_Trainer_Classifiers.ipynb)<br>
-$
+$$
 
 \begin{table}[h]
 \centering
@@ -50,4 +50,4 @@ $
 \end{table}
 \\)
 
-$
+$$
