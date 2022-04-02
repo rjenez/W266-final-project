@@ -146,7 +146,7 @@ class Moss:
         s.send(b"end\n")
         s.close()
 
-        return response.decode().replace("\n","")
+        return response.decode().replace("\n",""),response
 
     def saveWebPage(self, url, path):
         if len(url) == 0:
