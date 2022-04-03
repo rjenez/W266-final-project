@@ -7,10 +7,8 @@ for individual assignments. On each course students were required to solve 16-22
 "Z1/Z1", "Z1/Z2", "Z2/Z1" etc. Finally, in each folder are actual C or C++ files named after student (anonymized, 
 so actual student names were replaced by strings in form "student1393").
 
-generatemoss.sh - compares different files and gets the degree of similarity expressed by MOSS and tags each comparison with whether
-or not the two comparison files have been plagiarized. The scripts looks at 
+[gathermoss.sh](./gathermoss.sh) - This simple script repeats trying to run MOSS service against all the files in directories in samples.json by invoking mosscompare.p and storing results in the local directory. It is first important to make a directory for the reports, cd into that directory and the references will allwork against the files in the plagiaristm directory. The output of running this will be a series of html files that represent the results of the MOSS comparisons for the files that were sent.<br>
+[generatedata.sh](./generatedata.sh) - older generation script that produces data just based upon the plagiarism dataset without MOSS output.<br>
+[generatedataset.sh](./generatedataset.sh) - genreate training and test csv files. It reads the html files gneraed by gathermoss.sh and the identified plagiarized files by students in ground-truth-static-anon.txt file. The results can be packaged in a tar file and in our case we push to a GCP bucket. From there we pick up the results in our Google Colab environments.<br>
+[gethwplag.sh](./gethwplag.sh) - Download the plagiarized homework dataset. Note requires access to IEEE dataport. <br>
 
-[gathermoss.sh](./gathermoss.sh) - This simple script repeats trying to run MOSS service against all the files in directories in samples.json by invoking mosscompare.p and storing results in the local directory. It is first important to make a directory for the reports, cd into that directory and the references will allwork against the files in the plagiaristm directory. The output of running this will be a series of html files that represent the results of the MOSS comparisons for the files that were sent.
-[generatedata.sh](./generatedata.sh) - older generation script that produces data just based upon the plagiarism dataset without MOSS output.
-[generatedataset.sh](./generatedataset.sh) - genreate training and test csv files. It reads the html files gneraed by gathermoss.sh and the identified plagiarized files by students in ground-truth-static-anon.txt file. The results can be packaged in a tar file and in our case we push to a GCP bucket. From there we pick up the results in our Google Colab environments.
-[gethwplag.sh](./gethwplag.sh) - Download the plagiarized homework dataset. Note requires access to IEEE dataport.
