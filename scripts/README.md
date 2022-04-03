@@ -9,3 +9,8 @@ so actual student names were replaced by strings in form "student1393").
 
 generatemoss.sh - compares different files and gets the degree of similarity expressed by MOSS and tags each comparison with whether
 or not the two comparison files have been plagiarized. The scripts looks at 
+
+[gathermoss.sh](./gathermoss.sh)
+[generatedata.sh](./generatedata.sh)
+[generatedataset.sh](./generatedataset.sh)
+[gethwplag.sh](./gethwplag.sh)
