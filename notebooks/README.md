@@ -5,7 +5,6 @@
 [Plagiarism_with_Chinese_Bert.ipynb](./Plagiarism_with_Chinese_Bert.ipynb)<br>
 [Plagiarism_with_CodeBert.ipynb](./Plagiarism_with_CodeBert.ipynb)<br>
 [Plagiarism_with_Sentence_Transformer.ipynb](./Plagiarism_with_Sentence_Transformer.ipynb)<br>
-[Plagiarism_with_Trainer_Classifiers.ipynb](./Plagiarism_with_Trainer_Classifiers.ipynb)<br>
 [Plagiarism_with_BigBird.ipynb](./Plagiarism_with_BigBird.ipynb) <br>
 [Plagiarism_with_LongFormer.ipynb](./Plagiarism_with_LongFormer.ipynb) <br>
 
