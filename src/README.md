@@ -1,6 +1,6 @@
 ### Files for processing data from the plagiarism dataset and interacting with MOSS to generate similarity
 
-[mosspylocal](./mosspylocal) - local copy with modification of the [mosspy package](https://github.com/soachishti/moss.py).l<br>
+[mosspylocal](./mosspylocal) - local copy with modification of the [mosspy package](https://github.com/soachishti/moss.py).<br>
 [mosscompare.py](./mosscompare.py) - This file executes a comparison between all the files in a directory against the MOSS serivce hosted at Stanford, and downloads the results in the HTML files that details all the comparisons, the percent similarities between the two files and the lines that are similar. This information is stored in an output directory. This file is then post processed to generate our dataset.<br>
 [mossum.py](./mossum.py) - This file is a copy of an opensource tool for processing MOSS output - kept here as a convenience. <br> 
 [parse.py](./parse.py) - This file has code for  parsingC files. Currently not used - went with ANTLR<br>
