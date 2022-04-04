@@ -5,7 +5,7 @@
 ### Title: Rolling Stone: A System To Do Plagiarism Detection Of Software.
 
 ### Abstract:
-We propose to build an NLP system that will do Plagiarism Detection on Software (C, Python, Java) code using NLP. This system will allow the detection of similar code snippets and tell if there is sufficient similarity between code snippets to warrant further review. The goal will be to outperform an industry-standard plagiarism detection system, called MOSS (“Measure Of Software Similarity”) which uses text fingerprinting.
+Software plagiarism is a growing issue in university and commercial software development environments. The true state of the art in these systems NLP-PL (Natural Language Processing - Programming Languages) has not advanced as quickly as in pure NLP environments. We propose to test and extend NLP systems that will perform Code Similarity Detection on Software (C/C++, Python, Java) code using state of the art deep learning architectures. This system will allow the detection of similar code programs (not just snippets) and determine if there is sufficient similarity between code examples to warrant further review for plagiarism. The goal will be to outperform an industry-standard similarity detection system, called MOSS (“Measure Of Software Similarity”) which uses text fingerprinting\cite{schleimer} to identify software similarity.
 
 Proposal and Steps:
 We will use NLP tools to build a plagiarism detector using a dataset based on code snippets from actual student assignments (Datasets #1, #2 below) and Stack Overflow (SO) modified datasets (Datasets #s 3,4,5) . We intend to benchmark MOSS on these datasets and see how effectively Rolling Stone can perform against MOSS.
@@ -16,13 +16,17 @@ Once we have Rolling Stone functioning, we intend to compare how it performs aga
 <<<Done Main Proposal>>>
 
 ### Motivation:
-In many colleges and universities, there is a rising incidence of plagiarism in code implemented by students in class programming assignments ( “Experience Using ”MOSS” to Detect Cheating On Programming Assignments,” Kevin W. Bowyer and Lawrence O. Hall https://www3.nd.edu/~kwb/nsf-ufe/1110.pdf). 
+  In many colleges and universities, there is an increased incidence of plagiarism in code implemented by students in programming assignments \cite{bowyer}. 
 
-Similarly, in industry, there is a danger that commercial code can be “infected” by code snippets taken from the open-source or on popular sites like StackOverflow (SO), leading to liabilities for companies who have unauthorized use of open source in their products. Additionally, copy and paste code leads to more brittle codebases. Detecting similar code fragments to be swept up into common functions or classes would significantly reduce code complexity and size. (“Recent studies have shown that developers use SO snippets in their software projects, regardless of maintainability, security, and licensing implications [1, 2, 4, 14, 25, 27, 59, 61]. Assuming that developers copy and paste snippets from SO without trying to thoroughly understand them, maintenance issues arise”. “SOTorrent: Reconstructing and Analyzing the Evolution of Stack Overflow Posts” https://arxiv.org/pdf/1803.07311.pdf). 
+Similarly, in industry, there is a danger that commercial code can be “infected” by code snippets taken from the open-source or on popular sites like StackOverflow (SO), leading to liabilities for companies who have unauthorized use of open source in their products. Additionally, copy and paste code leads to more brittle code bases. Detecting similar code fragments that are swept up into common functions or classes would significantly reduce code complexity and size. (“Recent studies have shown that developers use SO snippets in their software projects, regardless of maintainability, security, and licensing implications (citations redacted). Assuming that developers copy and paste snippets from SO without trying to thoroughly understand them, maintenance issues arise”. \cite{baltes}.
 
-The most used plagiarism detection tool MOSS (“Measure Of Software Similarity”) (https://theory.stanford.edu/~aiken/moss), was developed at UC Berkeley by Alex Aiken, et al. based upon the paper “Winnowing: Local Algorithms for Document Fingerprinting” (https://theory.stanford.edu/~aiken/publications/papers/sigmod03.pdf). MOSS has been in use for over 20 years and is still the gold standard. Why has this not been replaced with advances in NLP and Deep Learning?
+The most used plagiarism detection tool MOSS (“Measure Of Software Similarity”  (https://theory.stanford.edu/~aiken/moss) andWinnowing: Local Algorithms for Document Fingerprinting” (https://theory.stanford.edu/~aiken/publications/papers/sigmod03.pd ), was developed at UC Berkeley by Alex Aiken, et al. based upon the paper\cite{schleimer}. MOSS has been in use for over 20 years and is still the gold standard. One question we are attempting to answer is: Given the subsequent advances in NLP and Deep Learning, could we use these techniques to develop a solution that's more effective than MOSS?
 
-### Datasets 
+The advent of attention-oriented architectures such as Transformers \cite{viswani} and the language models they've enabled, such as BERT\cite{devlin} and T5\cite{raffel}, would seem to provide an opportunity to advance the state of the art in this area. Programming Language (PL) variants, trained on large code corpora, seem even more promising. 
+
+One challenge for the systems named above is that the code files being examined for similarity may contain between 4,000 and 10,000 tokens, far exceeding those systems' maximum input lengths of 512 tokens. So while these transformer architectures may provide benefits, we need to consider architectures that could encode event larger files, such as Sentence-BERT\cite{reimers}[512 tokens], LongT5\cite{guo}[up to 4K tokens], LongFormer\cite{beltagy}[up to 16K tokens] and PoolingFormer\cite{zhang}[up to 16K tokens], all of which might better help determine the similarity between entire documents. In all of these cases, except for CodeBERT, they are not trained specifically on programming languages.
+
+  ### Datasets 
 
 1. Programming Homework Dataset for Plagiarism Detection (https://ieee-dataport.org/open-access/programming-homework-dataset-plagiarism-detection)<br>
 Dataset is intended for studying how student programming styles and usage of IDE differs between students who plagiarise their homework and students who solve them honestly.
@@ -62,18 +66,12 @@ https://medium.com/geekculture/python-source-code-obfuscation-6b97f88a460d
 #### Systems
 - BERT/Roberta/DistilBert/XLNet https://towardsdatascience.com/bert-roberta-distilbert-xlnet-which-one-to-use-3d5ab82ba5f8
 
-- CodeBerta https://huggingface.co/huggingface/CodeBERTa-small-v1.
-
-- Codex GPT-3 (https://openai.com/blog/openai-codex/)
+- CodeBERT
 
 
-#### Metrics (still TBD)
-- BERT Score 
-- BLEURT scores.
-- MAP
-- Jaccard Similarity
-- Cosine SImilarity
-
+#### Metrics )
+- Maximize the F1-score
+  - Highest Precision, Recall and Accuracy.
 
  
 
