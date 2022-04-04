@@ -10,7 +10,6 @@ mosspylocal<br>
 [processmoss.py](./processmoss.py) - Example file for processing MOSS comparisons.<br>
 [readurl.py](./readurl.py) This file reads MOSS generated html files and produces training and test csv files and an alldata.csv file that allows us to see data about all the comparisons. <br>
 [runmoss.py](./runmoss.py) - Example file for running moss comparisons. <br>
-[samples.json](./samples.json) - File that details all the direcories to use for comparison in mosscompare.py <br>
 [test.csv](./test.csv)  <br>
 [test2.csv](./test2.csv)  <br> 
 [train.csv](./train.csv)  <br>
