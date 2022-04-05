@@ -7,6 +7,7 @@
 [Plagiarism_with_BigBird.ipynb](./Plagiarism_with_BigBird.ipynb)  - Model training using BigBird to look at the effect of having larger token size <br>
 [Plagiarism_with_LongFormer.ipynb](./Plagiarism_with_LongFormer.ipynb) - Model training using Longformer 4K to see the effect of significantly larger size.<br>
 [Plagiarism_with_Sentence_Transformer.ipynb](./Plagiarism_with_Sentence_Transformer.ipynb) - Using Sentence Transformers and averaging embeddings over the entire code file, then doing cosine similarities between the average embeddings - done with BERT, CodeBERT, LongFormer and T5Large<br>
+[Model_Error_Calculation.ipynb](./Model_Error_Calculation.ipynb) - Colab notebooks to generate the examples of TP/TN/FN/TN and precision, recall and aucpr for an already trained model.
 
 
 
