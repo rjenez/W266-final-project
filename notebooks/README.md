@@ -1,5 +1,7 @@
 # Directory For Notebooks For All Experiments
 #
+These are all noebooks that we used to develop each of the models for our paper and to do some level of analysis.<pr>
+  
 [Plagiarism_with_Bert_Trainer_codebert_antlr_lower_4.ipynb](./Plagiarism_with_Bert_Trainer_codebert_antlr_lower_4.ipynb) - model training with using codebert, and data prepartion with ANTLR and whitespace elimination.<br>
 [Plagiarism_with_Trainer_Classifiers.ipynb](./Plagiarism_with_Trainer_Classifiers.ipynb) - Latest version of code to run the BERT model in Google Colab environment. Reads data, Sets up model and run training and prediction on the test data. <br>
 [Plagiarism_with_Chinese_Bert.ipynb](./Plagiarism_with_Chinese_Bert.ipynb) - Running Chinese version of Codebert trained on masked whole words <br> 
