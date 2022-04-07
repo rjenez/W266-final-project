@@ -1,9 +1,11 @@
 # W266-final-project
 
-### Team: Albert (Yu) Jiang, Joe Mirza, Ricardo Jenez
+## Team: Albert (Yu) Jiang, Joe Mirza, Ricardo Jenez
 
 ### Title: Rolling Stone: A System To Do Plagiarism Detection Of Software.
+## Directory Structure and Replicating Results
 
+## Paper Details
 ### Abstract:
 Software plagiarism is a growing issue in university and commercial software development environments. The true state of the art in these systems NLP-PL (Natural Language Processing - Programming Languages) has not advanced as quickly as in pure NLP environments. We propose to test and extend NLP systems that will perform Code Similarity Detection on Software (C/C++, Python, Java) code using state of the art deep learning architectures. This system will allow the detection of similar code programs (not just snippets) and determine if there is sufficient similarity between code examples to warrant further review for plagiarism. The goal will be to outperform an industry-standard similarity detection system, called MOSS (“Measure Of Software Similarity”) which uses text fingerprinting\cite{schleimer} to identify software similarity.
 
