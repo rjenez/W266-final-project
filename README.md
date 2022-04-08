@@ -3,8 +3,17 @@
 ## Team: Albert (Yu) Jiang, Joe Mirza, Ricardo Jenez
 
 ### Title: Rolling Stone: A System To Do Plagiarism Detection Of Software.
-## Directory Structure and Replicating Results
+This is the main area for our project to analyze the performance of Transformer models against industry standard (MOSS)[https://theory.stanford.edu/~aiken/publications/papers/sigmod03.pdf] for plagiarism detection. 
 
+## Directory Structure and Replicating Results
+(analysis)[./analysis] - Directory containing all code associated with final analysis of MOSS v. BERT v. CodeBERT.
+(antlr)[./antlr] - ANTLR preprocessing library
+(data)[./data] - Main area for Plagiarism homework data and the MOSS generated data.
+(models)[./models] - Our saved final model for CodeBERT
+(notebooks)[./notebooks] - Main area for all the notebooks that we used to generate the data for our paper.
+(oscar)[./oscar] - Area for data and replication of the resuls for the paper by (Oscar Karnalim)[https://arxiv.org/pdf/1805.11035.pdf]
+(scripts)[./scripts] - Scripts for data generation and construction.
+(src)[./src] - Python files used in data generation and construction.
 ## Paper Details
 ### Abstract:
 Software plagiarism is a growing issue in university and commercial software development environments. The true state of the art in these systems NLP-PL (Natural Language Processing - Programming Languages) has not advanced as quickly as in pure NLP environments. We propose to test and extend NLP systems that will perform Code Similarity Detection on Software (C/C++, Python, Java) code using state of the art deep learning architectures. This system will allow the detection of similar code programs (not just snippets) and determine if there is sufficient similarity between code examples to warrant further review for plagiarism. The goal will be to outperform an industry-standard similarity detection system, called MOSS (“Measure Of Software Similarity”) which uses text fingerprinting\cite{schleimer} to identify software similarity.
