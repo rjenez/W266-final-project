@@ -6,7 +6,7 @@
 This is the main area for our project to analyze the performance of Transformer models against industry standard [MOSS](https://theory.stanford.edu/~aiken/publications/papers/sigmod03.pdf) for plagiarism detection. <p>
 
 ## Directory Structure and Replicating Results
-[analysis][./analysis] - Directory containing all code associated with final analysis of MOSS v. BERT v. CodeBERT.<br>
+[analysis](./analysis) - Directory containing all code associated with final analysis of MOSS v. BERT v. CodeBERT.<br>
 [antlr](./antlr) - ANTLR preprocessing library<br>
 [data](./data) - Main area for Plagiarism homework data and the MOSS generated data.<br>
 [models](./models) - Our saved final model for CodeBERT<br>
