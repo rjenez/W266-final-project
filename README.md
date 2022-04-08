@@ -11,7 +11,7 @@ This is the main area for our project to analyze the performance of Transformer 
 [data](./data) - Main area for Plagiarism homework data and the MOSS generated data.<br>
 [models](./models) - Our saved final model for CodeBERT<br>
 [notebook](./notebooks) - Main area for all the notebooks that we used to generate the data for our paper.<br>
-[oscar](./oscar) - Area for data and replication of the resuls for the paper by (Oscar Karnalim)[https://arxiv.org/pdf/1805.11035.pdf]<br>
+[oscar](./oscar) - Area for data and replication of the resuls for the paper by [Oscar Karnalim](https://arxiv.org/pdf/1805.11035.pdf)<br>
 [scripts](./scripts) - Scripts for data generation and construction.<br>
 [src](./src) - Python files used in data generation and construction.<p>
 ## Paper Details
