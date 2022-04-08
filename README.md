@@ -3,16 +3,16 @@
 ## Team: Albert (Yu) Jiang, Joe Mirza, Ricardo Jenez
 
 ### Title: Rolling Stone: A System To Do Plagiarism Detection Of Software.
-This is the main area for our project to analyze the performance of Transformer models against industry standard [MOSS](https://theory.stanford.edu/~aiken/publications/papers/sigmod03.pdf) for plagiarism detection. 
+This is the main area for our project to analyze the performance of Transformer models against industry standard [MOSS](https://theory.stanford.edu/~aiken/publications/papers/sigmod03.pdf) for plagiarism detection. <p>
 
 ## Directory Structure and Replicating Results
-[analysis][./analysis] - Directory containing all code associated with final analysis of MOSS v. BERT v. CodeBERT.
-[antlr](./antlr) - ANTLR preprocessing library
-[data](./data) - Main area for Plagiarism homework data and the MOSS generated data.
-[models](./models) - Our saved final model for CodeBERT
-[notebook](./notebooks) - Main area for all the notebooks that we used to generate the data for our paper.
-[oscar](./oscar) - Area for data and replication of the resuls for the paper by (Oscar Karnalim)[https://arxiv.org/pdf/1805.11035.pdf]
-[scripts](./scripts) - Scripts for data generation and construction.
+[analysis][./analysis] - Directory containing all code associated with final analysis of MOSS v. BERT v. CodeBERT.<br>
+[antlr](./antlr) - ANTLR preprocessing library<br>
+[data](./data) - Main area for Plagiarism homework data and the MOSS generated data.<br>
+[models](./models) - Our saved final model for CodeBERT<br>
+[notebook](./notebooks) - Main area for all the notebooks that we used to generate the data for our paper.<br>
+[oscar](./oscar) - Area for data and replication of the resuls for the paper by (Oscar Karnalim)[https://arxiv.org/pdf/1805.11035.pdf]<br>
+[scripts](./scripts) - Scripts for data generation and construction.<br>
 [src](./src) - Python files used in data generation and construction.<p>
 ## Paper Details
 ### Abstract:
