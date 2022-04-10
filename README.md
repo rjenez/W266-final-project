@@ -7,7 +7,7 @@ This is the main area for our project to analyze the performance of Transformer 
 
 ## Directory Structure and Replicating Results
 [w266_final_project_jiang_jenez_mirza.pdf](./w266_final_project_jiang_jenez_mirza.pdf) - Final paper.
-[w266_final_project_jiang_jenez_mirza](./w266_final_project_jiang_jenez_mirza) - Final paper source.
+[w266_draft_project_Jiang_Jenez_Mirza_source_code](./w266_draft_project_Jiang_Jenez_Mirza_source_code) - Final paper source.
 [analysis](./analysis) - Directory containing all code associated with final analysis of MOSS v. BERT v. CodeBERT.<br>
 [antlr](./antlr) - ANTLR preprocessing library<br>
 [data](./data) - Main area for Plagiarism homework data and the MOSS generated data.<br>
